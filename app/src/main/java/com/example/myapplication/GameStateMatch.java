@@ -35,10 +35,11 @@ public class GameStateMatch implements GameState {
         if (__count == 4)
             // assembled
             switchState(MatchStateType.SELECT_CHARACTER);
-        if (__count == 7)
+        if (__count == 7){
             // character selected
             createCharacters();
             switchState(MatchStateType.GET_READY);
+        }
 
         /* ===== DEBUG END ===== */
     }
