@@ -37,8 +37,8 @@ public class GameStateContext {
      * 현재 상태를 호출하는 클래스.
      * @param ms 지난 프레임부터 경과한 밀리세컨드.
      */
-    public void run(int ms){
-        _currentState.run(ms);
+    public void update(int ms){
+        _currentState.update(ms);
     }
 
     /**

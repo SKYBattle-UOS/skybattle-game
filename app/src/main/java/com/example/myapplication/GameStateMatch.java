@@ -59,8 +59,8 @@ public class GameStateMatch implements GameState {
     }
 
     @Override
-    public void run(int ms) {
-        _currentState.run(ms);
+    public void update(int ms) {
+        _currentState.update(ms);
 
         // TODO: DEBUG DELETE
         /* ===== DEBUG START ===== */
