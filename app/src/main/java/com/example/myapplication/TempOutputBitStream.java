@@ -1,15 +1,7 @@
 package com.example.myapplication;
 
 public class TempOutputBitStream implements OutputBitStream {
-    private byte[] _buffer;
-
-    TempOutputBitStream(){
-        _buffer = new byte[1300];
-    }
-
-    TempOutputBitStream(byte[] buffer){
-        _buffer = buffer;
-    }
+    private byte[] _buffer = new byte[1300];
 
     @Override
     public void writeBits(byte[] data, int numBits) {
@@ -17,7 +9,8 @@ public class TempOutputBitStream implements OutputBitStream {
     }
 
     @Override
-    public void reset() {
+    public boolean isBufferOwner() {
         // TODO
+        return true;
     }
 }
