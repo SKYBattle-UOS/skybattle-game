@@ -12,6 +12,11 @@ enum GameStateType {
      */
     MAIN,
     /**
+     * 방 화면
+     * @see GameStateRoom
+     */
+    ROOM,
+    /**
      * 매치 화면
      * @see GameStateMatch
      */
@@ -50,6 +55,9 @@ public class GameStateContext {
         switch (gameState){
             case MAIN:
                 _currentState = new GameStateMain();
+                break;
+            case ROOM:
+                _currentState = new GameStateRoom(this);
                 break;
             case MATCH:
                 _currentState = new GameStateMatch();

@@ -44,9 +44,7 @@ public abstract class GameObject implements com.example.myapplication.Serializab
      * @param stream OutStream 인터페이스를 만족하는 모든 스트림
      */
     public void writeToStream(OutputBitStream stream) {
-        stream.write(_position[0]);
-        stream.write(_position[1]);
-        stream.write(_name);
+        // TODO
     }
 
     /**
@@ -54,9 +52,7 @@ public abstract class GameObject implements com.example.myapplication.Serializab
      * @param stream InStream 인터페이스를 만족하는 모든 스트림
      */
     public void readFromStream(InputBitStream stream) {
-        _position[0] = stream.readFloat();
-        _position[1] = stream.readFloat();
-        _name = stream.readString();
+        // TODO
     }
 
     /**

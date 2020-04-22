@@ -43,12 +43,12 @@ enum MatchStateType {
  */
 public class GameStateMatch implements GameState {
     // TODO: DEBUG DELETE
-    /* ===== DEBUG START ===== */
+    // region DEBUG
     private int __count = 0;
     private TempPlayer _thisPlayer;
     private TempPlayer _anotherPlayer;
     private TempPlayer _yetAnotherPlayer;
-    /* ===== DEBUG END ===== */
+    // endregion
 
     // TODO: DEBUG EDIT
     final int GETREADYCOUNT = 10000; // 10 seconds
@@ -63,7 +63,7 @@ public class GameStateMatch implements GameState {
         _currentState.update(ms);
 
         // TODO: DEBUG DELETE
-        /* ===== DEBUG START ===== */
+        // region DEBUG
         __count++;
         if (__count == 4)
             // assembled
@@ -73,7 +73,7 @@ public class GameStateMatch implements GameState {
             createCharacters();
             switchState(MatchStateType.GET_READY);
         }
-        /* ===== DEBUG END ===== */
+        // endregion
     }
 
     /**

@@ -1,11 +1,7 @@
 package com.example.myapplication;
 
 public class TempInputBitStream implements InputBitStream {
-    private byte[] _buffer;
-
-    TempInputBitStream(byte[] buffer){
-        _buffer = buffer;
-    }
+    private byte[] _buffer = new byte[1300];
 
     @Override
     public void readBytes(byte[] buffer, int numBits) {
@@ -13,7 +9,8 @@ public class TempInputBitStream implements InputBitStream {
     }
 
     @Override
-    public void reset(){
+    public boolean isBufferOwner() {
         // TODO
+        return true;
     }
 }
