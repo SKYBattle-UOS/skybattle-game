@@ -17,7 +17,7 @@ public class MatchStateInGame implements GameState {
     }
 
     @Override
-    public void run(int ms) {
+    public void update(int ms) {
         // TODO: DEBUG EDIT
         Log.i("Stub", "MatchStateInGame: Game is Playing");
 

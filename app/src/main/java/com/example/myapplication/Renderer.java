@@ -21,7 +21,7 @@ public class Renderer {
         // TODO: DEBUG EDIT
         Log.i("Stub",
                 String.format(
-                        "Renderer: drew filled #%X circle at %f, %f with size %f",
+                        "Renderer: batched filled #%X circle at %f, %f with size %f",
                         color, latitude, longitude, size));
     }
 
@@ -37,7 +37,12 @@ public class Renderer {
         // TODO: DEBUG EDIT
         Log.i("Stub",
                 String.format(
-                        "Renderer: drew #%X circle at %f, %f with radius %f and weight %f",
+                        "Renderer: batched #%X circle at %f, %f with radius %f and weight %f",
                         color, latitude, longitude, radius, weight));
+    }
+
+    public void render(int ms){
+        // TODO: DEBUG EDIT
+        Log.i("Stub", "Renderer: Rendered batched render calls");
     }
 }

@@ -11,7 +11,7 @@ import android.util.Log;
  */
 public class MatchStateAssemble implements GameState {
     @Override
-    public void run(int ms) {
+    public void update(int ms) {
         // TODO: DEBUG EDIT
         Log.d("Stub", "MatchStateAssemble: Showing assemble screen");
     }

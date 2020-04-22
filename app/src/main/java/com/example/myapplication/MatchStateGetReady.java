@@ -20,7 +20,7 @@ public class MatchStateGetReady implements GameState {
     }
 
     @Override
-    public void run(int ms) {
+    public void update(int ms) {
         _countDown -= ms;
         if (_countDown < 0){
             _match.switchState(MatchStateType.INGAME);
