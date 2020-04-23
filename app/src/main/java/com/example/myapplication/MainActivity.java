@@ -12,6 +12,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.os.Bundle;
 
+public class MainActivity extends AppCompatActivity {
+
+    static Core core = new Core();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        core.run();
+    }
+}
+
+/*
 public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback {
 
@@ -45,18 +59,6 @@ public class MainActivity extends AppCompatActivity
     }
 }
 
-/*
-public class MainActivity extends AppCompatActivity {
-
-    static Core core = new Core();
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        core.run();
-    }
-}
 */
+
 
