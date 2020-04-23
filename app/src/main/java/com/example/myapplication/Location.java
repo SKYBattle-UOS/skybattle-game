@@ -33,18 +33,21 @@ public class Location {
         getCurrentLocation();
     }
 
-    public android.location.Location getCurrentLocation(){
+    public double[] getCurrentLocation(){
+
+        double[] locationArray = new double[2];
 
         try {
+
             myLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if(myLocation != null) {
-                double latitude = myLocation.getLatitude();
-                double longitude = myLocation.getLongitude();
+                locationArray[0] = myLocation.getLatitude(); //latitude
+                locationArray[1] = myLocation.getLongitude(); //longitude
 
                 Log.i("Stub",
                         String.format(
                                 "Check now Location: latitude : %f, longitude : %f",
-                                latitude, longitude));
+                                locationArray[0], locationArray[1]));
             }else
                 Log.i("Stub",
                         "getCurrentLocation Error");
@@ -52,7 +55,7 @@ public class Location {
             e.printStackTrace();
         }
 
-        return myLocation;
+        return locationArray;
     }
 }
 
@@ -74,6 +77,4 @@ class GPSListener implements LocationListener{
     public void onProviderEnabled(String provider){}
     public void onStatusChanged(String provider, int status,Bundle extras){}
 }*/
-
-
 
