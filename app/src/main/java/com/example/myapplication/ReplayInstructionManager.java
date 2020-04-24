@@ -11,7 +11,7 @@ import java.nio.ByteOrder;
 public class ReplayInstructionManager extends InstructionManager {
     private InputStream _inputStream;
 
-    ReplayInstructionManager(Context context) throws IOException {
+    ReplayInstructionManager(Context context)  {
         super(context);
 
         // TODO
