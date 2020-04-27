@@ -1,6 +1,10 @@
 package com.example.myapplication;
 
+import android.os.Bundle;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 준비화면.
@@ -10,9 +14,15 @@ import android.util.Log;
  * @version 0.0
  * @since 2020-04-21
  */
-public class MatchStateGetReady implements GameState {
+public class MatchStateGetReady extends AppCompatActivity implements GameState {
     private int _countDown;
     private GameStateMatch _match;
+
+    public MatchStateGetReady() {
+/**
+ * InstantiationException: java.lang.Class<com.example.myapplication.MatchStateGetReady> has no zero argument constructor 해결위해 만든 생상자
+ */
+    }
 
     MatchStateGetReady(GameStateMatch parent, int countInMS){
         _match = parent;
@@ -29,5 +39,11 @@ public class MatchStateGetReady implements GameState {
 
         // TODO: DEBUG EDIT
         Log.i("Stub", String.format("MatchStateGetReady: Showing Get Ready Screen; %d seconds left", _countDown / 1000));
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_match_state_get_ready);
     }
 }
