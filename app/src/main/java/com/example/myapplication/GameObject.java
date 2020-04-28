@@ -8,7 +8,7 @@ package com.example.myapplication;
  * @since 2020-04-21
  */
 public abstract class GameObject implements com.example.myapplication.Serializable {
-    private float[] _position;
+    private double[] _position;
     private String _name;
 
     /**
@@ -18,11 +18,11 @@ public abstract class GameObject implements com.example.myapplication.Serializab
      * @param name 오브젝트 이름
      */
     GameObject(float latitude, float longitude, String name){
-        _position = new float[]{ latitude, longitude };
+        _position = new double[]{ latitude, longitude };
         _name = name;
     }
 
-    public float[] getPosition(){
+    public double[] getPosition(){
         return _position.clone();
     }
 
@@ -30,7 +30,7 @@ public abstract class GameObject implements com.example.myapplication.Serializab
         return _name;
     }
 
-    public void setPosition(float latitude, float longitude){
+    public void setPosition(double latitude, double longitude){
         _position[0] = latitude;
         _position[1] = longitude;
     }
