@@ -3,6 +3,8 @@ package com.example.myapplication;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.IOException;
+
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
  * 게임루프가 들어있습니다.
@@ -21,7 +23,7 @@ public class Core {
     private InstructionManager _instructionManager;
     private WorldSetter _worldSetter;
 
-    private Core(Context context){
+    private Core(Context context) throws IOException {
         this._context = context;
         _inputManager = new InputManager();
         _renderer = new Renderer();
@@ -30,7 +32,7 @@ public class Core {
         _worldSetter = new WorldSetter();
     }
 
-    public static void createInstance(Context context){
+    public static void createInstance(Context context) throws IOException {
         _coreInstance = new Core(context);
     }
 
