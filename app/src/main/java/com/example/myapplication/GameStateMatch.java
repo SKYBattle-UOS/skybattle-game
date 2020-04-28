@@ -55,7 +55,7 @@ public class GameStateMatch implements GameState {
     private GameState _currentState;
 
     GameStateMatch(){
-        _currentState = new MatchStateAssemble();
+        _currentState = new MatchStateAssemble(this);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class GameStateMatch implements GameState {
     public void switchState(MatchStateType matchState){
         switch (matchState){
             case ASSEMBLE:
-                _currentState = new MatchStateAssemble();
+                _currentState = new MatchStateAssemble(this);
                 break;
             case SELECT_CHARACTER:
                 _currentState = new MatchStateSelectCharacter();

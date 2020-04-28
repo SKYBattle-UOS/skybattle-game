@@ -12,10 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".MatchStateGetReady"></activity>
-        <activity android:name=".MatchStateSelectCharacter" />
-        <activity android:name=".MatchStateAssemble" />
-        <activity android:name=".MatchStateRoom" />
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,9 +28,11 @@
             </intent-filter>
         </activity>
 
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCE-WXuWVGrGbcEaZMxm2nU4VszoY_yYeY" />
+            android:value="AIzaSyCE-WXuWVGrGbcEaZMxm2nU4VszoY_yYeY"/>
+
     </application>
 
 </manifest>
