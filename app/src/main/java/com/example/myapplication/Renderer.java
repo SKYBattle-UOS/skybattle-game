@@ -17,7 +17,7 @@ public class Renderer {
      * @param color 채우기 색
      * @param size 크기
      */
-    public void drawFilledCircle(float latitude, float longitude, int color, float size){
+    public void drawFilledCircle(double latitude, double longitude, int color, float size){
         // TODO: DEBUG EDIT
         Log.i("Stub",
                 String.format(
@@ -33,7 +33,7 @@ public class Renderer {
      * @param weight 태두리 굵기
      * @param radius 반지름
      */
-    public void drawCircle(float latitude, float longitude, int color, float weight, float radius){
+    public void drawCircle(double latitude, double longitude, int color, float weight, float radius){
         // TODO: DEBUG EDIT
         Log.i("Stub",
                 String.format(
