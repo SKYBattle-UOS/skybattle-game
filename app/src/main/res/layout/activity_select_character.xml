@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_character"
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:gravity="center_horizontal"
+        android:padding="1dp"
+        android:text="캐릭터를 선택하세요"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btn_character1"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="멋쟁이"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_character2"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="돌팔이"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_character3"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="깐깐이"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_character4"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="진심이"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_character5"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="날쌘돌이"
+        android:textSize="20sp" />
+
+</LinearLayout>
