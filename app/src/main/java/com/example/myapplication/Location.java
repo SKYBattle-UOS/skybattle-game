@@ -18,7 +18,8 @@ public class Location extends Activity {
 
         this.mContext = mContext;
         manager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-
+        Log.i("Stub", "Location: created");
+    /*
        // 권한 부분 어떻게 할것인지?
         if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -33,7 +34,7 @@ public class Location extends Activity {
                 return;
             }
         }
-
+*/
         //getCurrentLocation();
     }
 

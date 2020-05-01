@@ -13,7 +13,6 @@ import com.google.android.gms.maps.GoogleMap;
  * @since 2020-04-28
  */
 public interface IMap {
-     void onCreate(Bundle savedInstanceState);
-     void onMapReady(GoogleMap googleMap);
+
 
 }
