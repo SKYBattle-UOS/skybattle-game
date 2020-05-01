@@ -1,5 +1,15 @@
 package com.example.myapplication;
 
-public interface Screen {
+enum ScreenType {
+    MAIN,
+    ROOM,
+    ASSEMBLE,
+    CHARACTERSELECT,
+    GETREADY,
+    INGAME,
+    END
+}
 
+public interface Screen {
+    void switchTo(ScreenType type);
 }
