@@ -13,4 +13,5 @@ public interface GameState {
      * @param ms 지난 프레임부터 경과한 밀리세컨드.
      */
     void update(int ms);
+    void render(Renderer renderer, int ms);
 }

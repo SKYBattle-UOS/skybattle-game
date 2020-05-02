@@ -33,6 +33,10 @@ public class MatchStateAssemble implements GameState {
             _parent.createCharacters();
         }
 
+    }
+
+    @Override
+    public void render(Renderer renderer, int ms) {
         Log.d("Stub", "MatchStateAssemble: Showing assemble screen");
     }
 }

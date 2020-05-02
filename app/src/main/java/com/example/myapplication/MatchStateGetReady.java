@@ -24,10 +24,11 @@ public class MatchStateGetReady implements GameState {
         _countDown -= ms;
         if (_countDown < 0){
             _match.switchState(MatchStateType.INGAME);
-            return;
         }
+    }
 
-        // TODO: DEBUG EDIT
+    @Override
+    public void render(Renderer renderer, int ms) {
         Log.i("Stub", String.format("MatchStateGetReady: Showing Get Ready Screen; %d seconds left", _countDown / 1000));
     }
 }

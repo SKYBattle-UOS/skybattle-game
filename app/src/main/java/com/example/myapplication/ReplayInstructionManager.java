@@ -1,30 +1,31 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 public class ReplayInstructionManager extends InstructionManager {
     private InputStream _inputStream;
     // TODO
-    private TempInputBitStream _tempBit;
+    private TempInputBitStream _temp;
 
     ReplayInstructionManager(Context context)  {
         super(context);
 
-        _tempBit = new TempInputBitStream();
+        _temp = new TempInputBitStream();
 
-        // TODO
-        try {
-            _inputStream = _context.getAssets().open("saveFile.sav");
-            _inputStream.read(_tempBit.getBuffer());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        _temp.getBuffer()[0] = 'z';
+        _temp.getBuffer()[1] = 'a';
+        _temp.getBuffer()[2] = 's';
+
+//        // TODO
+//        try {
+//            _inputStream = _context.getAssets().open("saveFile.sav");
+//            _inputStream.read(_tempBit2.getBuffer());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -35,6 +36,6 @@ public class ReplayInstructionManager extends InstructionManager {
     @Override
     public InputBitStream getPacketStream() {
         // TODO
-        return _tempBit;
+        return _temp;
     }
 }

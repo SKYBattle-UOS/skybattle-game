@@ -12,7 +12,11 @@ import android.util.Log;
 public class MatchStateSelectCharacter implements GameState {
     @Override
     public void update(int ms) {
-        // TODO: DEBUG EDIT
+        // TODO
+    }
+
+    @Override
+    public void render(Renderer renderer, int ms) {
         Log.i("Stub", "MatchStateSelectCharacter: Showing Character Selection Screen");
     }
 }

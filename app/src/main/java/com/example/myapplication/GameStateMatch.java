@@ -63,6 +63,11 @@ public class GameStateMatch implements GameState {
         _currentState.update(ms);
     }
 
+    @Override
+    public void render(Renderer renderer, int ms) {
+        _currentState.render(renderer, ms);
+    }
+
     /**
      * 현재 상태를 변경하는 함수.
      * @param matchState 현재 상태를 이 상태로 변경함.
@@ -98,7 +103,9 @@ public class GameStateMatch implements GameState {
         // TODO: DEBUG EDIT
         _thisPlayer = new TempPlayer("ThisPlayer");
         _anotherPlayer = new TempPlayer("AnotherPlayer");
+        _anotherPlayer.setPosition(1.0, 1.0);
         _yetAnotherPlayer = new TempPlayer("YetAnotherPlayer");
+        _yetAnotherPlayer.setPosition(2.0, 2.0);
     }
 
     /**

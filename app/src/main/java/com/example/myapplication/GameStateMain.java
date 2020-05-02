@@ -13,6 +13,11 @@ import android.util.Log;
 public class GameStateMain implements GameState {
     @Override
     public void update(int ms) {
+        // TODO
+    }
+
+    @Override
+    public void render(Renderer renderer, int ms) {
         Log.i("Stub", "GameStateMain: Showing Main Screen UI");
     }
 }

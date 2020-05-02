@@ -21,7 +21,7 @@ public class TempPlayer extends GameObject {
     }
 
     @Override
-    public void render(Renderer renderer) {
+    public void render(Renderer renderer, int ms) {
         double[] position = getPosition();
         renderer.drawFilledCircle(position[0], position[1], Color.YELLOW, 10f);
     }

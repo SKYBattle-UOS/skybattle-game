@@ -46,6 +46,10 @@ public class GameStateContext {
         _currentState.update(ms);
     }
 
+    public void render(Renderer renderer, int ms){
+        _currentState.render(renderer, ms);
+    }
+
     /**
      * 현재 상태를 변경하는 함수.
      * @param gameState 현재 상태를 이 상태로 변경함.

@@ -19,10 +19,18 @@ public class MatchStateInGame implements GameState {
     @Override
     public void update(int ms) {
         // TODO: DEBUG EDIT
-        Log.i("Stub", "MatchStateInGame: Game is Playing");
-
         GameObject[] gameObjects = _match.getGameObjects();
-        for (GameObject go : gameObjects)
+        for (GameObject go : gameObjects){
            go.update(ms);
+        }
+    }
+
+    @Override
+    public void render(Renderer renderer, int ms) {
+        Log.i("Stub", "MatchStateInGame: Game is Playing");
+        GameObject[] gameObjects = _match.getGameObjects();
+        for (GameObject go : gameObjects){
+            go.render(renderer, ms);
+        }
     }
 }
