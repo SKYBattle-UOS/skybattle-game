@@ -2,15 +2,25 @@ package com.example.myapplication;
 
 public class TempInputBitStream implements InputBitStream {
     private byte[] _buffer = new byte[1300];
+    private int _nextByte = 0;
 
     @Override
     public void readBytes(byte[] buffer, int numBits) {
-        // TODO
+        int bytes = numBits / 8;
+
+        for (int i = 0; i < bytes; i++)
+            buffer[i] = _buffer[_nextByte + i];
+
+        _nextByte += bytes;
     }
 
     @Override
     public boolean isBufferOwner() {
         // TODO
         return true;
+    }
+
+    public byte[] getBuffer(){
+        return _buffer;
     }
 }

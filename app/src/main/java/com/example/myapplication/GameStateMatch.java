@@ -61,19 +61,6 @@ public class GameStateMatch implements GameState {
     @Override
     public void update(int ms) {
         _currentState.update(ms);
-
-        // TODO: DEBUG DELETE
-        // region DEBUG
-        __count++;
-        if (__count == 4)
-            // assembled
-            switchState(MatchStateType.SELECT_CHARACTER);
-        if (__count == 7){
-            // character selected
-            createCharacters();
-            switchState(MatchStateType.GET_READY);
-        }
-        // endregion
     }
 
     /**
