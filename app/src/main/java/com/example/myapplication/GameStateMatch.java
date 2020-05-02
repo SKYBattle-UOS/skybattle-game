@@ -1,5 +1,9 @@
 package com.example.myapplication;
 
+import android.util.Log;
+
+import java.util.Collection;
+
 /**
  * GameStateMatch에서 상태 전환을 위해 사용하는 Enum
  * @see GameStateMatch
@@ -42,6 +46,10 @@ enum MatchStateType {
  * @see GameStateContext
  */
 public class GameStateMatch implements GameState {
+    private WorldSetter _worldSetter;
+    private GameObjectRegistry _gameObjectRegistry;
+    private boolean _isInitialized;
+
     // TODO: DEBUG DELETE
     // region DEBUG
     private int __count = 0;
@@ -56,15 +64,42 @@ public class GameStateMatch implements GameState {
 
     GameStateMatch(){
         _currentState = new MatchStateAssemble(this);
+        _gameObjectRegistry = new GameObjectRegistry();
+        _worldSetter = new WorldSetter(_gameObjectRegistry);
     }
 
     @Override
     public void update(int ms) {
-        _currentState.update(ms);
+        if (!_isInitialized){
+            initialize();
+        }
+        else {
+            _currentState.update(ms);
+        }
+    }
+
+    private void initialize() {
+        InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
+        if (packetStream == null)
+            return;
+
+        byte[] firstByte = new byte[1];
+        packetStream.readBytes(firstByte, 8);
+
+        // TODO: initialize
+        if (firstByte[0] == 'i'){
+            _worldSetter.processInstructions(packetStream);
+            _isInitialized = true;
+            Core.getInstance().getInstructionManager().sendInput(new byte[]{ 'g' });
+        }
     }
 
     @Override
     public void render(Renderer renderer, int ms) {
+        if (!_isInitialized){
+            Log.i("Stub", "GameStateMatch: Initializing...");
+            return;
+        }
         _currentState.render(renderer, ms);
     }
 
@@ -111,8 +146,8 @@ public class GameStateMatch implements GameState {
     /**
      * @return 현재 매치에 존재한는 모든 GameObject의 Array
      */
-    public GameObject[] getGameObjects(){
+    public Collection<GameObject> getGameObjects(){
         // TODO: DEBUG EDIT
-        return new GameObject[] { _thisPlayer, _anotherPlayer, _yetAnotherPlayer };
+        return _gameObjectRegistry.getGameObjects();
     }
 }

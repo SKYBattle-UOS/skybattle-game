@@ -1,7 +1,10 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
@@ -19,7 +22,7 @@ public class Core {
     private Renderer _renderer;
     private GameStateContext _stateContext;
     private InstructionManager _instructionManager;
-    private WorldSetter _worldSetter;
+    private GameObjectFactory _gameObjectFactory;
 
     private Core(Context context){
         this._context = context;
@@ -27,7 +30,9 @@ public class Core {
         _renderer = new Renderer();
         _stateContext = new GameStateContext();
         _instructionManager = new ReplayInstructionManager(context);
-        _worldSetter = new WorldSetter();
+        _gameObjectFactory = new GameObjectFactory();
+
+        registerGameObjects();
     }
 
     public static void createInstance(Context context){
@@ -70,11 +75,19 @@ public class Core {
         _renderer.render(ms);
 
         _inputManager.update(ms);
-        _instructionManager.sendInput();
     }
     // endregion
 
     public InstructionManager getInstructionManager(){
         return _instructionManager;
+    }
+
+    public GameObjectFactory getGameObjectFactory(){
+        return _gameObjectFactory;
+    }
+
+    private void registerGameObjects(){
+        // WARNING: should be listed in the same order as that in the server
+        TempPlayer.classId = _gameObjectFactory.registerCreateMethod(TempPlayer::createInstance);
     }
 }

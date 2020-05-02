@@ -13,7 +13,7 @@ public class NetworkInstructionManager extends InstructionManager {
     }
 
     @Override
-    public void sendInput() {
+    public void sendInput(byte[] data) {
         // TODO
     }
 
