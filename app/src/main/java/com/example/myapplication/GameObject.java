@@ -8,6 +8,8 @@ package com.example.myapplication;
  * @since 2020-04-21
  */
 public abstract class GameObject implements com.example.myapplication.Serializable {
+    static int classId;
+
     private double[] _position;
     private String _name;
 
@@ -66,4 +68,8 @@ public abstract class GameObject implements com.example.myapplication.Serializab
      * @param renderer Renderer 객체 인스턴스.
      */
     public abstract void render(Renderer renderer, int ms);
+
+    public static GameObject createInstance(){
+        return null;
+    };
 }

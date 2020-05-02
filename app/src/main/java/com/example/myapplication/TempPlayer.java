@@ -25,4 +25,8 @@ public class TempPlayer extends GameObject {
         double[] position = getPosition();
         renderer.drawFilledCircle(position[0], position[1], Color.YELLOW, 10f);
     }
+
+    public static GameObject createInstance() {
+        return new TempPlayer("Temp Player");
+    }
 }

@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import android.util.Log;
 
+import java.util.Collection;
+
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 매치 진행 중 화면.
  *
@@ -19,7 +21,7 @@ public class MatchStateInGame implements GameState {
     @Override
     public void update(int ms) {
         // TODO: DEBUG EDIT
-        GameObject[] gameObjects = _match.getGameObjects();
+        Collection<GameObject> gameObjects = _match.getGameObjects();
         for (GameObject go : gameObjects){
            go.update(ms);
         }
@@ -28,7 +30,7 @@ public class MatchStateInGame implements GameState {
     @Override
     public void render(Renderer renderer, int ms) {
         Log.i("Stub", "MatchStateInGame: Game is Playing");
-        GameObject[] gameObjects = _match.getGameObjects();
+        Collection<GameObject> gameObjects = _match.getGameObjects();
         for (GameObject go : gameObjects){
             go.render(renderer, ms);
         }

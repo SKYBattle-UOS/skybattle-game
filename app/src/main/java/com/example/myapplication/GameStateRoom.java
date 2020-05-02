@@ -23,8 +23,10 @@ public class GameStateRoom implements GameState {
         int message = buffer[0];
 
         // match start
-        if (message == 'a') // assemble
+        if (message == 'a') { // assemble
+            Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
             _parent.switchState(GameStateType.MATCH);
+        }
         // endregion
     }
 

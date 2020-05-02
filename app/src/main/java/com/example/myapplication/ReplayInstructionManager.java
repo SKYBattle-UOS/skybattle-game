@@ -15,9 +15,24 @@ public class ReplayInstructionManager extends InstructionManager {
 
         _temp = new TempInputBitStream();
 
-        _temp.getBuffer()[0] = 'z';
-        _temp.getBuffer()[1] = 'a';
-        _temp.getBuffer()[2] = 's';
+        int i = 0;
+        _temp.getBuffer()[i++] = 'z'; // nothing
+        _temp.getBuffer()[i++] = 'a'; // start button pressed by host
+        _temp.getBuffer()[i++] = 'z'; // nothing
+        _temp.getBuffer()[i++] = 'z'; // nothing
+        _temp.getBuffer()[i++] = 'i'; // initialize players for assemble
+        _temp.getBuffer()[i++] = 0; // CREATE
+        _temp.getBuffer()[i++] = 1; // network Id 1
+        _temp.getBuffer()[i++] = 0; //
+        _temp.getBuffer()[i++] = 0; //
+        _temp.getBuffer()[i++] = 0; //
+        _temp.getBuffer()[i++] = 0; // class Id 0
+        _temp.getBuffer()[i++] = 0; //
+        _temp.getBuffer()[i++] = 0; //
+        _temp.getBuffer()[i++] = 0; //
+        _temp.getBuffer()[i++] = 'z'; // nothing
+        _temp.getBuffer()[i++] = 'z'; // nothing
+        _temp.getBuffer()[i++] = 's'; // assemble complete
 
 //        // TODO
 //        try {
@@ -29,7 +44,7 @@ public class ReplayInstructionManager extends InstructionManager {
     }
 
     @Override
-    public void sendInput() {
+    public void sendInput(byte[] data) {
         // nothing to send when playing a replay
     }
 
