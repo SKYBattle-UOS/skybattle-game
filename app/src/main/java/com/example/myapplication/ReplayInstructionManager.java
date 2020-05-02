@@ -10,13 +10,18 @@ import java.nio.ByteOrder;
 
 public class ReplayInstructionManager extends InstructionManager {
     private InputStream _inputStream;
+    // TODO
+    private TempInputBitStream _tempBit;
 
     ReplayInstructionManager(Context context)  {
         super(context);
 
+        _tempBit = new TempInputBitStream();
+
         // TODO
         try {
             _inputStream = _context.getAssets().open("saveFile.sav");
+            _inputStream.read(_tempBit.getBuffer());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,6 +35,6 @@ public class ReplayInstructionManager extends InstructionManager {
     @Override
     public InputBitStream getPacketStream() {
         // TODO
-        return null;
+        return _tempBit;
     }
 }

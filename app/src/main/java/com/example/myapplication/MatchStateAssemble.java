@@ -23,13 +23,15 @@ public class MatchStateAssemble implements GameState {
         InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
         if (packetStream == null) return;
 
-        byte[] buffer = new byte[4];
-        packetStream.readBytes(buffer, 32);
-        int message = ByteBuffer.wrap(buffer).getInt(); // big-endian
+        byte[] buffer = new byte[1];
+        packetStream.readBytes(buffer, 8);
+        int message = buffer[0];
 
         // match start
-        if (message == 44) // 44 == '집합 완료' 메시지라 가정 (임시)
+        if (message == 's') { // 's' == '집합 완료' 메시지라 가정 (임시)
             _parent.switchState(MatchStateType.GET_READY);
+            _parent.createCharacters();
+        }
 
         Log.d("Stub", "MatchStateAssemble: Showing assemble screen");
     }

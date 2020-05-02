@@ -20,12 +20,12 @@ public class GameStateRoom implements GameState {
 
         // TODO EDIT
         // region DEBUG
-        byte[] buffer = new byte[4];
-        packetStream.readBytes(buffer, 32);
-        int message = ByteBuffer.wrap(buffer).getInt(); // big-endian
+        byte[] buffer = new byte[1];
+        packetStream.readBytes(buffer, 8);
+        int message = buffer[0];
 
         // match start
-        if (message == 42)
+        if (message == 'a') // assemble
             _parent.switchState(GameStateType.MATCH);
         // endregion
     }
