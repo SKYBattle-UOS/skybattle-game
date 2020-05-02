@@ -65,5 +65,5 @@ public abstract class GameObject implements com.example.myapplication.Serializab
      * 그래픽 렌더 시에 호출되는 함수.
      * @param renderer Renderer 객체 인스턴스.
      */
-    public abstract void render(Renderer renderer);
+    public abstract void render(Renderer renderer, int ms);
 }

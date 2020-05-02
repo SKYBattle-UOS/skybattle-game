@@ -51,7 +51,7 @@ public class Core {
         run(ms);
 
         // room button pressed
-        Log.i("Stub", "Room Enter Button Pressed");
+        Log.i("Stub", "Core: Room Enter Button Pressed");
         _stateContext.switchState(GameStateType.ROOM);
 
         // continue running
@@ -65,6 +65,8 @@ public class Core {
     // region DEBUG
     public void run(int ms){
         _stateContext.update(ms);
+        _stateContext.render(_renderer, ms);
+
         _renderer.render(ms);
 
         _inputManager.update(ms);

@@ -8,13 +8,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AssembleActivity extends AppCompatActivity implements GameState {
-    @Override
-    public void update(int ms) {
-        // TODO: DEBUG EDIT
-        Log.d("Stub", "MatchStateAssemble: Showing assemble screen");
-    }
-
+public class AssembleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
