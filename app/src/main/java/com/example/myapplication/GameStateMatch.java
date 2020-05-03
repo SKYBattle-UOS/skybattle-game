@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.util.Log;
 
 import java.util.Collection;
+import java.util.Vector;
 
 /**
  * GameStateMatch에서 상태 전환을 위해 사용하는 Enum
@@ -48,58 +49,46 @@ enum MatchStateType {
 public class GameStateMatch implements GameState {
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
-    private boolean _isInitialized;
-
-    // TODO: DEBUG DELETE
-    // region DEBUG
-    private int __count = 0;
-    private TempPlayer _thisPlayer;
-    private TempPlayer _anotherPlayer;
-    private TempPlayer _yetAnotherPlayer;
-    // endregion
+    private Vector<GameObject> _gameObjects;
+    private int _numPlayers;
 
     // TODO: DEBUG EDIT
     final int GETREADYCOUNT = 10000; // 10 seconds
     private GameState _currentState;
 
     GameStateMatch(){
-        _currentState = new MatchStateAssemble(this);
+        // TODO: for now, only 2 players
+        _numPlayers = 2;
+        _currentState = new MatchStateAssemble(this, _numPlayers);
         _gameObjectRegistry = new GameObjectRegistry();
-        _worldSetter = new WorldSetter(_gameObjectRegistry);
+        _gameObjects = new Vector<>();
+        _worldSetter = new WorldSetter(_gameObjects, _gameObjectRegistry);
     }
 
     @Override
     public void update(int ms) {
-        if (!_isInitialized){
-            initialize();
-        }
-        else {
-            _currentState.update(ms);
-        }
-    }
-
-    private void initialize() {
         InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
-        if (packetStream == null)
-            return;
-
-        byte[] firstByte = new byte[1];
-        packetStream.readBytes(firstByte, 8);
-
-        // TODO: initialize
-        if (firstByte[0] == 'i'){
+        if (packetStream != null)
             _worldSetter.processInstructions(packetStream);
-            _isInitialized = true;
-            Core.getInstance().getInstructionManager().sendInput(new byte[]{ 'g' });
+
+        for (GameObject go : _gameObjects){
+            if (!go.doesWantToDie())
+                go.update(ms);
         }
+
+        _currentState.update(ms);
+
+        int goSize = _gameObjects.size();
+        for (int i = 0; i < goSize; i++)
+            if (_gameObjects.get(i).doesWantToDie()){
+                killGameObject(_gameObjects.get(i));
+                goSize--;
+                i--;
+            }
     }
 
     @Override
     public void render(Renderer renderer, int ms) {
-        if (!_isInitialized){
-            Log.i("Stub", "GameStateMatch: Initializing...");
-            return;
-        }
         _currentState.render(renderer, ms);
     }
 
@@ -107,10 +96,10 @@ public class GameStateMatch implements GameState {
      * 현재 상태를 변경하는 함수.
      * @param matchState 현재 상태를 이 상태로 변경함.
      */
-    public void switchState(MatchStateType matchState){
-        switch (matchState){
+    public void switchState(MatchStateType matchState) {
+        switch (matchState) {
             case ASSEMBLE:
-                _currentState = new MatchStateAssemble(this);
+                _currentState = new MatchStateAssemble(this, _numPlayers);
                 break;
             case SELECT_CHARACTER:
                 _currentState = new MatchStateSelectCharacter();
@@ -125,29 +114,20 @@ public class GameStateMatch implements GameState {
     }
 
     /**
-     * 방에서 게임시작을 누르면 매치를 시작한 플레이어들을 생성하기 위한 함수.
-     */
-    public void createPlayers(){
-        // TODO: DEBUG EDIT
-    }
-
-    /**
-     * 캐릭터 선택이 완료되면 캐릭터를 생성하기 위한 함수.
-     */
-    public void createCharacters(){
-        // TODO: DEBUG EDIT
-        _thisPlayer = new TempPlayer("ThisPlayer");
-        _anotherPlayer = new TempPlayer("AnotherPlayer");
-        _anotherPlayer.setPosition(1.0, 1.0);
-        _yetAnotherPlayer = new TempPlayer("YetAnotherPlayer");
-        _yetAnotherPlayer.setPosition(2.0, 2.0);
-    }
-
-    /**
      * @return 현재 매치에 존재한는 모든 GameObject의 Array
      */
     public Collection<GameObject> getGameObjects(){
         // TODO: DEBUG EDIT
-        return _gameObjectRegistry.getGameObjects();
+        return _gameObjects;
+    }
+
+    public WorldSetter getWorldSetter(){
+        return _worldSetter;
+    }
+
+    private void killGameObject(GameObject gameObject){
+        gameObject.faceDeath();
+        _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
+        _gameObjects.remove(_gameObjects.size() - 1);
     }
 }

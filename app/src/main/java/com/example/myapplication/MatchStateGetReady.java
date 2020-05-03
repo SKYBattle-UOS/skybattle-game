@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import android.util.Log;
 
+import java.util.Collection;
+
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 준비화면.
  * 게임시작 전 러너들이 도망가는 화면.
@@ -30,5 +32,9 @@ public class MatchStateGetReady implements GameState {
     @Override
     public void render(Renderer renderer, int ms) {
         Log.i("Stub", String.format("MatchStateGetReady: Showing Get Ready Screen; %d seconds left", _countDown / 1000));
+        Collection<GameObject> gameObjects = _match.getGameObjects();
+        for (GameObject go : gameObjects){
+            go.render(renderer, ms);
+        }
     }
 }

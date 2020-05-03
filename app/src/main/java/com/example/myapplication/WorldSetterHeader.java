@@ -30,8 +30,11 @@ public class WorldSetterHeader {
         bb.order(ByteOrder.LITTLE_ENDIAN);
         networkId = bb.getInt();
 
-        bb = ByteBuffer.wrap(bytes, 5, 4);
-        bb.order(ByteOrder.LITTLE_ENDIAN);
-        classId = bb.getInt();
+        // if create
+        if (bytes[0] == 0){
+            bb = ByteBuffer.wrap(bytes, 5, 4);
+            bb.order(ByteOrder.LITTLE_ENDIAN);
+            classId = bb.getInt();
+        }
     }
 }

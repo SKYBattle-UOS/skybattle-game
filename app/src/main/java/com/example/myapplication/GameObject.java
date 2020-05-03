@@ -12,6 +12,8 @@ public abstract class GameObject implements com.example.myapplication.Serializab
 
     private double[] _position;
     private String _name;
+    private boolean _wantsToDie;
+    private int _indexInWorld;
 
     /**
      * 간단한 constructor.
@@ -41,6 +43,22 @@ public abstract class GameObject implements com.example.myapplication.Serializab
         _name = name;
     }
 
+    public void setIndexInWorld(int index){
+        _indexInWorld = index;
+    }
+
+    public int getIndexInWorld(){
+        return _indexInWorld;
+    }
+
+    public void scheduleDeath(){
+        _wantsToDie = true;
+    }
+
+    public boolean doesWantToDie(){
+        return _wantsToDie;
+    }
+
     /**
      * 스트림에 해당 객체를 Serialize 합니다.
      * @param stream OutStream 인터페이스를 만족하는 모든 스트림
@@ -55,6 +73,10 @@ public abstract class GameObject implements com.example.myapplication.Serializab
      */
     public void readFromStream(InputBitStream stream) {
         // TODO
+    }
+
+    public void faceDeath(){
+        // by default nothing
     }
 
     /**

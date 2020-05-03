@@ -18,6 +18,10 @@ public class GameObjectRegistry {
         _mappingN2G.remove(networkId);
     }
 
+    public void remove(GameObject go){
+        remove(getId(go));
+    }
+
     public int getId(GameObject go){
         return _mappingG2N.get(go);
     }

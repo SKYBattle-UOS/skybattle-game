@@ -20,11 +20,7 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void update(int ms) {
-        // TODO: DEBUG EDIT
-        Collection<GameObject> gameObjects = _match.getGameObjects();
-        for (GameObject go : gameObjects){
-           go.update(ms);
-        }
+        // TODO
     }
 
     @Override

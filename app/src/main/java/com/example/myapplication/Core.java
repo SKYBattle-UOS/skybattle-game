@@ -50,7 +50,7 @@ public class Core {
 
         // TODO: DEBUG DELETE
         // region DEBUG
-        int ms = 1000; // update every one second (1000 millisecond)
+        int ms = 1000; // update every 1 second (1000 millisecond)
 
         run(ms);
         run(ms);
@@ -60,7 +60,7 @@ public class Core {
         _stateContext.switchState(GameStateType.ROOM);
 
         // continue running
-        for (int i = 0; i < 30; i++){
+        for (int i = 0; i < 50; i++){
             run(ms);
         }
         // endregion
@@ -69,6 +69,8 @@ public class Core {
     // TODO: DEBUG DELETE
     // region DEBUG
     public void run(int ms){
+        ((ReplayInstructionManager) _instructionManager).tempUpdate(ms);
+
         _stateContext.update(ms);
         _stateContext.render(_renderer, ms);
 

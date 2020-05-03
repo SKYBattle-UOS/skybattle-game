@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.graphics.Color;
+import android.util.Log;
 
 /**
  * 임시 캐릭터 클래스. 볼품없는 스킬을 넣을 예정.
@@ -28,5 +29,10 @@ public class TempPlayer extends GameObject {
 
     public static GameObject createInstance() {
         return new TempPlayer("Temp Player");
+    }
+
+    @Override
+    public void faceDeath(){
+        Log.i("Stub", "TempPlayer: " + getName() + " is dying");
     }
 }
