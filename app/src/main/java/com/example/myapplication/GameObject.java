@@ -12,7 +12,8 @@ public abstract class GameObject implements com.example.myapplication.Serializab
 
     private double[] _position;
     private String _name;
-    boolean _wantsToDie;
+    private boolean _wantsToDie;
+    private int _indexInWorld;
 
     /**
      * 간단한 constructor.
@@ -40,6 +41,14 @@ public abstract class GameObject implements com.example.myapplication.Serializab
 
     public void setName(String name){
         _name = name;
+    }
+
+    public void setIndexInWorld(int index){
+        _indexInWorld = index;
+    }
+
+    public int getIndexInWorld(){
+        return _indexInWorld;
     }
 
     public void scheduleDeath(){

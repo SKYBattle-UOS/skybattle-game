@@ -40,10 +40,20 @@ public class ReplayInstructionManager extends InstructionManager {
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 'r'; // replication
+        _packets[p].getBuffer()[i++] = 0; // CREATE
+        _packets[p].getBuffer()[i++] = 2; // network Id 2
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 0; // class Id 0
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 0; //
         p++;
         i = 0;
 
-        _packets[p].getBuffer()[i++] = 'z'; // nothing
+        _packets[p].getBuffer()[i++] = 'z'; // not replication
         p++;
         i = 0;
 
@@ -52,7 +62,7 @@ public class ReplayInstructionManager extends InstructionManager {
         p++;
         i = 0;
 
-        _packets[p].getBuffer()[i++] = 'z'; // nothing
+        _packets[p].getBuffer()[i++] = 'z'; // not replication
         p++;
         i = 0;
 

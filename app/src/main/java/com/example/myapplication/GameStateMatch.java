@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.util.Log;
 
 import java.util.Collection;
+import java.util.Vector;
 
 /**
  * GameStateMatch에서 상태 전환을 위해 사용하는 Enum
@@ -48,6 +49,7 @@ enum MatchStateType {
 public class GameStateMatch implements GameState {
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
+    private Vector<GameObject> _gameObjects;
     private int _numPlayers;
 
     // TODO: DEBUG EDIT
@@ -59,7 +61,8 @@ public class GameStateMatch implements GameState {
         _numPlayers = 2;
         _currentState = new MatchStateAssemble(this, _numPlayers);
         _gameObjectRegistry = new GameObjectRegistry();
-        _worldSetter = new WorldSetter(_gameObjectRegistry);
+        _gameObjects = new Vector<>();
+        _worldSetter = new WorldSetter(_gameObjects, _gameObjectRegistry);
     }
 
     @Override
@@ -68,20 +71,20 @@ public class GameStateMatch implements GameState {
         if (packetStream != null)
             _worldSetter.processInstructions(packetStream);
 
-        Collection<GameObject> gameObjects = getGameObjects();
-        for (GameObject go : gameObjects){
+        for (GameObject go : _gameObjects){
             if (!go.doesWantToDie())
                 go.update(ms);
         }
 
         _currentState.update(ms);
 
-        for (GameObject go : gameObjects){
-            if (go.doesWantToDie()){
-                go.faceDeath();
-                _gameObjectRegistry.remove(go);
+        int goSize = _gameObjects.size();
+        for (int i = 0; i < goSize; i++)
+            if (_gameObjects.get(i).doesWantToDie()){
+                killGameObject(_gameObjects.get(i));
+                goSize--;
+                i--;
             }
-        }
     }
 
     @Override
@@ -115,10 +118,16 @@ public class GameStateMatch implements GameState {
      */
     public Collection<GameObject> getGameObjects(){
         // TODO: DEBUG EDIT
-        return _gameObjectRegistry.getGameObjects();
+        return _gameObjects;
     }
 
     public WorldSetter getWorldSetter(){
         return _worldSetter;
+    }
+
+    private void killGameObject(GameObject gameObject){
+        gameObject.faceDeath();
+        _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
+        _gameObjects.remove(_gameObjects.size() - 1);
     }
 }
