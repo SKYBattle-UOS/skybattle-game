@@ -32,6 +32,23 @@ public class TempPlayer extends GameObject {
     }
 
     @Override
+    public void writeToStream(OutputBitStream stream) {
+        // TODO
+    }
+
+    @Override
+    public void readFromStream(InputBitStream stream) {
+        // TODO
+        byte[] b = new byte[1];
+        stream.readBytes(b, 8);
+
+        if (b[0] == 1){
+            stream.readBytes(b, 8);
+            setPosition(b[0], b[0]);
+        }
+    }
+
+    @Override
     public void faceDeath(){
         Log.i("Stub", "TempPlayer: " + getName() + " is dying");
     }

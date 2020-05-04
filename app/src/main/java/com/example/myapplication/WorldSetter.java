@@ -26,10 +26,10 @@ public class WorldSetter {
 
             switch (_header.action){
                 case CREATE:
-                    createGO();
+                    createGO(stream);
                     break;
                 case UPDATE:
-                    updateGO();
+                    updateGO(stream);
                     break;
                 case DESTROY:
                     destroyGO();
@@ -41,17 +41,21 @@ public class WorldSetter {
         }
     }
 
-    private void createGO(){
+    private void createGO(InputBitStream stream){
         if (_registry.getGameObject(_header.networkId) == null){
             GameObject newGO = Core.getInstance().getGameObjectFactory().createGameObject(_header.classId);
+            newGO.readFromStream(stream);
             _registry.add(_header.networkId, newGO);
             newGO.setIndexInWorld(_world.size());
             _world.add(newGO);
         }
     }
 
-    private void updateGO(){
+    private void updateGO(InputBitStream stream){
+        GameObject goToUpdate = _registry.getGameObject(_header.networkId);
+        if (goToUpdate == null) return;
 
+        goToUpdate.readFromStream(stream);
     }
 
     private void destroyGO(){

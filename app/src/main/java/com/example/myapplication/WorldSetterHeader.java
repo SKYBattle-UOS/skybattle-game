@@ -19,20 +19,21 @@ public class WorldSetterHeader {
     int classId;
 
     public void setMembers(InputBitStream stream){
-        byte[] bytes = new byte[9];
-        stream.readBytes(bytes, 72);
+        byte[] bytes = new byte[4];
+        stream.readBytes(bytes, 8);
         if (bytes[0] >= actionLen)
             action = WorldSetterAction.UNKNOWN;
         else
             action = actionValues[bytes[0]];
 
-        ByteBuffer bb = ByteBuffer.wrap(bytes, 1, 4);
+        stream.readBytes(bytes, 32);
+        ByteBuffer bb = ByteBuffer.wrap(bytes, 0, 4);
         bb.order(ByteOrder.LITTLE_ENDIAN);
         networkId = bb.getInt();
 
-        // if create
-        if (bytes[0] == 0){
-            bb = ByteBuffer.wrap(bytes, 5, 4);
+        if (action == WorldSetterAction.CREATE){
+            stream.readBytes(bytes, 32);
+            bb = ByteBuffer.wrap(bytes, 0, 4);
             bb.order(ByteOrder.LITTLE_ENDIAN);
             classId = bb.getInt();
         }

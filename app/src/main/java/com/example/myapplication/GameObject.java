@@ -63,17 +63,12 @@ public abstract class GameObject implements com.example.myapplication.Serializab
      * 스트림에 해당 객체를 Serialize 합니다.
      * @param stream OutStream 인터페이스를 만족하는 모든 스트림
      */
-    public void writeToStream(OutputBitStream stream) {
-        // TODO
-    }
-
+    public abstract void writeToStream(OutputBitStream stream);
     /**
      * 스트림에서 읽어서 해당 객체를 업데이트 합니다.
      * @param stream InStream 인터페이스를 만족하는 모든 스트림
      */
-    public void readFromStream(InputBitStream stream) {
-        // TODO
-    }
+    public abstract void readFromStream(InputBitStream stream);
 
     public void faceDeath(){
         // by default nothing

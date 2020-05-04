@@ -40,6 +40,8 @@ public class ReplayInstructionManager extends InstructionManager {
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 1; // position is dirty
+        _packets[p].getBuffer()[i++] = 3; // position (both lat and lon)
         _packets[p].getBuffer()[i++] = 'r'; // replication
         _packets[p].getBuffer()[i++] = 0; // CREATE
         _packets[p].getBuffer()[i++] = 2; // network Id 2
@@ -50,6 +52,8 @@ public class ReplayInstructionManager extends InstructionManager {
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 1; // position is dirty
+        _packets[p].getBuffer()[i++] = 9; // position (both lat and lon)
         p++;
         i = 0;
 
@@ -77,6 +81,34 @@ public class ReplayInstructionManager extends InstructionManager {
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
+        p++;
+        i = 0;
+
+        _packets[p].getBuffer()[i++] = 'z'; // not replication
+        p++;
+        i = 0;
+
+        _packets[p].getBuffer()[i++] = 'z'; // not replication
+        p++;
+        i = 0;
+
+        _packets[p].getBuffer()[i++] = 'z'; // not replication
+        p++;
+        i = 0;
+
+        _packets[p].getBuffer()[i++] = 'z'; // not replication
+        p++;
+        i = 0;
+
+        _packets[p].getBuffer()[i++] = 'r'; // replication
+        _packets[p].getBuffer()[i++] = 1; // UPDATE
+        _packets[p].getBuffer()[i++] = 2; // network Id 2
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 1; // position is dirty
+        _packets[p].getBuffer()[i++] = 42; // position
+
         p++;
         i = 0;
 
@@ -110,9 +142,13 @@ public class ReplayInstructionManager extends InstructionManager {
         }
         else if (_elapsed == 5000 || _elapsed == 9000 || _elapsed == 15000
             || _elapsed == 20000 || _elapsed == 23000 || _elapsed == 25000
-            || _elapsed == 40000){
+            || _elapsed == 40000 || _elapsed == 41000 || _elapsed == 42000
+            || _elapsed == 43000 || _elapsed == 44000 || _elapsed == 45000
+            || _elapsed == 46000){
             _packet = _packets[_packetNum];
             _packetNum++;
         }
+        else
+            _packet = null;
     }
 }
