@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import android.util.Log;
-
 import java.util.Collection;
 
 /**
@@ -27,7 +25,7 @@ public class MatchStateAssemble implements GameState {
     }
 
     @Override
-    public void update(int ms) {
+    public void update(long ms) {
         InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
         if (packetStream == null) return;
         packetStream.readBytes(_buffer, 8);
@@ -48,17 +46,15 @@ public class MatchStateAssemble implements GameState {
 
             // assemble complete
             case 's':
-                _parent.switchState(MatchStateType.GET_READY);
+                _parent.switchState(MatchStateType.SELECT_CHARACTER);
+                Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT);
                 break;
         }
     }
 
     @Override
-    public void render(Renderer renderer, int ms) {
-        if (!_isInitialized)
-            Log.d("Stub", "MatchStateAssemble: Initializing...");
-        else {
-            Log.d("Stub", "MatchStateAssemble: Showing assemble screen");
+    public void render(Renderer renderer, long ms) {
+        if (_isInitialized) {
             Collection<GameObject> gameObjects = _parent.getGameObjects();
             for (GameObject go : gameObjects){
                 go.render(renderer, ms);

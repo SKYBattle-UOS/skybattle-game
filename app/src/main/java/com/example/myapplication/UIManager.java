@@ -1,25 +1,39 @@
 package com.example.myapplication;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+
 public class UIManager {
-    Screen _currentScreen;
-    ScreenType _screenToSwitch;
+    private Screen _currentScreen = null;
+    private Map<Integer, Runnable> _callbackMapping = new HashMap<>();
+    private Queue<ScreenType> _toSwitch = new LinkedList<>();
 
-    // UIManager를 activity에 대한 lifecycle-aware component로 만들면 더 좋을 겉 같습니다.
     public void switchScreen(ScreenType type){
-        // TODO
-        if (_currentScreen == null){
-            _screenToSwitch = type; // 스크린이 없으면 기록해뒀다가 스크린이 등록될 때 바꾼다. (가장 최근에 요청된걸로)
-            return;
-        }
+        _toSwitch.add(type);
 
-        _currentScreen.switchTo(type);
-        _screenToSwitch = null;
+        if (_currentScreen != null)
+            _currentScreen.switchTo(_toSwitch.remove());
     }
 
     public void setCurrentScreen(Screen screen){
         _currentScreen = screen;
 
-        // TODO
-        if (_screenToSwitch != null); // 스크린이 준비가 되면 바꾸라고 해야한다. (onCreate에서 바꾸면 안됨)
+        if (!_toSwitch.isEmpty()){
+            _currentScreen.switchTo(_toSwitch.remove());
+        }
+    }
+
+    public void invoke(int port){
+        Runnable func = _callbackMapping.get(port);
+        if (func != null)
+            func.run();
+    }
+
+    public void registerCallback(int port, Runnable func){
+        Objects.requireNonNull(func);
+        _callbackMapping.put(port, func);
     }
 }

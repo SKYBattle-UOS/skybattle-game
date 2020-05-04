@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -20,6 +21,7 @@ public class Core {
     private GameStateContext _stateContext;
     private InstructionManager _instructionManager;
     private GameObjectFactory _gameObjectFactory;
+    private UIManager _uiManager;
 
     private Core(Context context){
         this._context = context;
@@ -28,12 +30,21 @@ public class Core {
         _stateContext = new GameStateContext();
         _instructionManager = new ReplayInstructionManager(context);
         _gameObjectFactory = new GameObjectFactory();
+        _uiManager = new UIManager();
 
         registerGameObjects();
     }
 
+    public void init(){
+        _stateContext.switchState(GameStateType.MAIN);
+    }
+
     public static void createInstance(Context context){
-        _coreInstance = new Core(context);
+        if (_coreInstance == null){
+            _coreInstance = new Core(context);
+            _coreInstance.init();
+            (new Thread(() -> _coreInstance.run())).start();
+        }
     }
 
     public static Core getInstance(){
@@ -44,28 +55,29 @@ public class Core {
      * 애플리케이션 로직의 시작점.
      */
     public void run(){
+        long prev = SystemClock.uptimeMillis();
+        long ms;
 
-        // TODO: DEBUG DELETE
-        // region DEBUG
-        int ms = 1000; // update every 1 second (1000 millisecond)
-
-        run(ms);
-        run(ms);
-
-        // room button pressed
-        Log.i("Stub", "Core: Room Enter Button Pressed");
-        _stateContext.switchState(GameStateType.ROOM);
-
-        // continue running
-        for (int i = 0; i < 50; i++){
+        while (true){
+            long now = SystemClock.uptimeMillis();
+            ms = now - prev;
             run(ms);
+
+            long elapsed = SystemClock.uptimeMillis() - now;
+            if (elapsed < 33)
+                try {
+                    Thread.sleep(33 - elapsed);
+                } catch (InterruptedException e) {
+                    // nothing
+                }
+
+            prev = now;
         }
-        // endregion
     }
 
     // TODO: DEBUG DELETE
     // region DEBUG
-    public void run(int ms){
+    public void run(long ms){
         _instructionManager.update(ms);
 
         _stateContext.update(ms);
@@ -86,6 +98,8 @@ public class Core {
     }
 
     public InputManager getInputManager() { return _inputManager; }
+
+    public UIManager getUIManager() { return _uiManager; }
 
     private void registerGameObjects(){
         // WARNING: should be listed in the same order as that in the server

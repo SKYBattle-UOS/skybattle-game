@@ -16,16 +16,16 @@ public class MatchStateInGame implements GameState {
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
+        Log.i("Stub", "MatchStateInGame: Game is Playing");
     }
 
     @Override
-    public void update(int ms) {
+    public void update(long ms) {
         // TODO
     }
 
     @Override
-    public void render(Renderer renderer, int ms) {
-        Log.i("Stub", "MatchStateInGame: Game is Playing");
+    public void render(Renderer renderer, long ms) {
         Collection<GameObject> gameObjects = _match.getGameObjects();
         for (GameObject go : gameObjects){
             go.render(renderer, ms);

@@ -34,19 +34,15 @@ enum GameStateType {
 public class GameStateContext {
     private GameState _currentState;
 
-    GameStateContext(){
-        _currentState = new GameStateMain();
-    }
-
     /**
      * 현재 상태를 호출하는 클래스.
      * @param ms 지난 프레임부터 경과한 밀리세컨드.
      */
-    public void update(int ms){
+    public void update(long ms){
         _currentState.update(ms);
     }
 
-    public void render(Renderer renderer, int ms){
+    public void render(Renderer renderer, long ms){
         _currentState.render(renderer, ms);
     }
 
@@ -58,7 +54,7 @@ public class GameStateContext {
     public void switchState(GameStateType gameState){
         switch (gameState){
             case MAIN:
-                _currentState = new GameStateMain();
+                _currentState = new GameStateMain(this);
                 break;
             case ROOM:
                 _currentState = new GameStateRoom(this);
@@ -67,5 +63,6 @@ public class GameStateContext {
                 _currentState = new GameStateMatch();
                 break;
         }
+        _currentState.start();
     }
 }

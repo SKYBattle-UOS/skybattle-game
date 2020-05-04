@@ -13,13 +13,4 @@
         android:text="집합: 시작지점으로 모이세요"
         android:textSize="25sp" />
 
-    <Button
-        android:id="@+id/btn_pointer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="160dp"
-        android:layout_marginTop="400dp"
-        android:text="→"
-        android:textSize="20sp" />
-
 </LinearLayout>

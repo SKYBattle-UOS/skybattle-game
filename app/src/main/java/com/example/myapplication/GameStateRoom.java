@@ -10,7 +10,7 @@ public class GameStateRoom implements GameState {
     }
 
     @Override
-    public void update(int ms) {
+    public void update(long ms) {
         InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
         if (packetStream == null) return;
 
@@ -24,12 +24,13 @@ public class GameStateRoom implements GameState {
         if (message == 'a') { // assemble
             Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
             _parent.switchState(GameStateType.MATCH);
+            Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE);
         }
         // endregion
     }
 
     @Override
-    public void render(Renderer renderer, int ms) {
-        Log.i("Stub", "GameStateRoom: Showing Room Screen");
+    public void render(Renderer renderer, long ms) {
+//        Log.i("Stub", "GameStateRoom: Showing Room Screen");
     }
 }

@@ -78,13 +78,14 @@ public abstract class GameObject implements com.example.myapplication.Serializab
      * 매 프레임 호출되는 함수.
      * @param ms 지난 프레임부터 경과한 밀리세컨드.
      */
-    public abstract void update(int ms);
+    public abstract void update(long ms);
 
     /**
      * 그래픽 렌더 시에 호출되는 함수.
      * @param renderer Renderer 객체 인스턴스.
+     * @param ms
      */
-    public abstract void render(Renderer renderer, int ms);
+    public abstract void render(Renderer renderer, long ms);
 
     public static GameObject createInstance(){
         return null;

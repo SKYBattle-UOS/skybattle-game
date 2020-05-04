@@ -11,13 +11,29 @@ import android.util.Log;
  * @see GameStateContext
  */
 public class GameStateMain implements GameState {
+    static final int switchScreenPort = 0;
+
+    private GameStateContext _parent;
+
+    GameStateMain(GameStateContext parent){
+        _parent = parent;
+    }
+
     @Override
-    public void update(int ms) {
+    public void start() {
+        Core.getInstance().getUIManager().registerCallback(switchScreenPort, () -> {
+            _parent.switchState(GameStateType.ROOM);
+            Core.getInstance().getUIManager().switchScreen(ScreenType.ROOM);
+        } );
+    }
+
+    @Override
+    public void update(long ms) {
         // TODO
     }
 
     @Override
-    public void render(Renderer renderer, int ms) {
-        Log.i("Stub", "GameStateMain: Showing Main Screen UI");
+    public void render(Renderer renderer, long ms) {
+//        Log.i("Stub", "GameStateMain: Showing Main Screen UI");
     }
 }

@@ -64,7 +64,7 @@ public class GameStateMatch implements GameState {
     }
 
     @Override
-    public void update(int ms) {
+    public void update(long ms) {
         InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
         if (packetStream != null)
             _worldSetter.processInstructions(packetStream);
@@ -86,7 +86,7 @@ public class GameStateMatch implements GameState {
     }
 
     @Override
-    public void render(Renderer renderer, int ms) {
+    public void render(Renderer renderer, long ms) {
         _currentState.render(renderer, ms);
     }
 
@@ -100,7 +100,7 @@ public class GameStateMatch implements GameState {
                 _currentState = new MatchStateAssemble(this, _numPlayers);
                 break;
             case SELECT_CHARACTER:
-                _currentState = new MatchStateSelectCharacter();
+                _currentState = new MatchStateSelectCharacter(this);
                 break;
             case GET_READY:
                 _currentState = new MatchStateGetReady(this, GETREADYCOUNT);
@@ -109,6 +109,7 @@ public class GameStateMatch implements GameState {
                 _currentState = new MatchStateInGame(this);
                 break;
         }
+        _currentState.start();
     }
 
     /**

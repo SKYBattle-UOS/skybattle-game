@@ -7,7 +7,7 @@ enum CharacterType {
 }
 
 public class InputManager {
-    public void update(int ms){
+    public void update(long ms){
         // TODO
     }
 
