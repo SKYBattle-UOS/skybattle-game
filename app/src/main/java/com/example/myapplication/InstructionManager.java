@@ -11,5 +11,5 @@ public abstract class InstructionManager {
     }
 
     public abstract InputBitStream getPacketStream();
-    public abstract void update(int ms);
+    public abstract void update(long ms);
 }

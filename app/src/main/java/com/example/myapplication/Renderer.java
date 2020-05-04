@@ -19,10 +19,10 @@ public class Renderer {
      */
     public void drawFilledCircle(double latitude, double longitude, int color, float size){
         // TODO: DEBUG EDIT
-        Log.i("Stub",
-                String.format(
-                        "Renderer: batched filled #%X circle at %f, %f with size %f",
-                        color, latitude, longitude, size));
+//        Log.i("Stub",
+//                String.format(
+//                        "Renderer: batched filled #%X circle at %f, %f with size %f",
+//                        color, latitude, longitude, size));
     }
 
     /**
@@ -35,14 +35,14 @@ public class Renderer {
      */
     public void drawCircle(double latitude, double longitude, int color, float weight, float radius){
         // TODO: DEBUG EDIT
-        Log.i("Stub",
-                String.format(
-                        "Renderer: batched #%X circle at %f, %f with radius %f and weight %f",
-                        color, latitude, longitude, radius, weight));
+//        Log.i("Stub",
+//                String.format(
+//                        "Renderer: batched #%X circle at %f, %f with radius %f and weight %f",
+//                        color, latitude, longitude, radius, weight));
     }
 
-    public void render(int ms){
+    public void render(long ms){
         // TODO: DEBUG EDIT
-        Log.i("Stub", "Renderer: Rendered batched render calls");
+//        Log.i("Stub", "Renderer: Rendered batched render calls");
     }
 }

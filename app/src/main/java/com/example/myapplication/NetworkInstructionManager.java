@@ -17,7 +17,7 @@ public class NetworkInstructionManager extends InstructionManager {
     }
 
     @Override
-    public void update(int ms) {
+    public void update(long ms) {
         // TODO
     }
 }

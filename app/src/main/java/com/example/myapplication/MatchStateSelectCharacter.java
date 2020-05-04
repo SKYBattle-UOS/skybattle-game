@@ -10,13 +10,27 @@ import android.util.Log;
  * @since 2020-04-21
  */
 public class MatchStateSelectCharacter implements GameState {
-    @Override
-    public void update(int ms) {
-        // TODO
+    private byte[] _buffer = new byte[1];
+    private GameStateMatch _match;
+
+    MatchStateSelectCharacter(GameStateMatch match){
+        _match = match;
     }
 
     @Override
-    public void render(Renderer renderer, int ms) {
-        Log.i("Stub", "MatchStateSelectCharacter: Showing Character Selection Screen");
+    public void update(long ms) {
+        InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
+        if (packetStream == null) return;
+        packetStream.readBytes(_buffer, 8);
+
+        if (_buffer[0] == 'c'){
+            Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY);
+            _match.switchState(MatchStateType.GET_READY);
+        }
+    }
+
+    @Override
+    public void render(Renderer renderer, long ms) {
+//        Log.i("Stub", "MatchStateSelectCharacter: Showing Character Selection Screen");
     }
 }

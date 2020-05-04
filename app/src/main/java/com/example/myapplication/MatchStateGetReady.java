@@ -22,7 +22,7 @@ public class MatchStateGetReady implements GameState {
     }
 
     @Override
-    public void update(int ms) {
+    public void update(long ms) {
         _countDown -= ms;
         if (_countDown < 0){
             _match.switchState(MatchStateType.INGAME);
@@ -30,7 +30,7 @@ public class MatchStateGetReady implements GameState {
     }
 
     @Override
-    public void render(Renderer renderer, int ms) {
+    public void render(Renderer renderer, long ms) {
         Log.i("Stub", String.format("MatchStateGetReady: Showing Get Ready Screen; %d seconds left", _countDown / 1000));
         Collection<GameObject> gameObjects = _match.getGameObjects();
         for (GameObject go : gameObjects){
