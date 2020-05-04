@@ -2,8 +2,6 @@ package com.example.myapplication;
 
 import android.content.Context;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class NetworkInstructionManager extends InstructionManager {
@@ -13,13 +11,13 @@ public class NetworkInstructionManager extends InstructionManager {
     }
 
     @Override
-    public void sendInput(byte[] data) {
-        // TODO
-    }
-
-    @Override
     public InputBitStream getPacketStream() {
         // TODO
         return null;
+    }
+
+    @Override
+    public void update(int ms) {
+        // TODO
     }
 }

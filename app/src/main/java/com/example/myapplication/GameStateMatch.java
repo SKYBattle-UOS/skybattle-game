@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import android.util.Log;
-
 import java.util.Collection;
 import java.util.Vector;
 
