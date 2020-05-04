@@ -39,12 +39,12 @@ public class TempPlayer extends GameObject {
     @Override
     public void readFromStream(InputBitStream stream) {
         // TODO
-        byte[] b = new byte[1];
+        byte[] b = new byte[2];
         stream.readBytes(b, 8);
 
         if (b[0] == 1){
-            stream.readBytes(b, 8);
-            setPosition(b[0], b[0]);
+            stream.readBytes(b, 16);
+            setPosition(b[0], b[1]);
         }
     }
 

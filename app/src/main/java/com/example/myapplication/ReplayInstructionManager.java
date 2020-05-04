@@ -12,10 +12,12 @@ public class ReplayInstructionManager extends InstructionManager {
     private int _elapsed;
     private int _packetNum;
     private TempInputBitStream _packet;
+    private TempOutputBitStream _outputStream;
 
     ReplayInstructionManager(Context context)  {
         super(context);
 
+        _outputStream = new TempOutputBitStream();
         _packetNum = 0;
         _packets = new TempInputBitStream[30];
         for (int i = 0; i < _packets.length; i++)
@@ -41,7 +43,8 @@ public class ReplayInstructionManager extends InstructionManager {
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 1; // position is dirty
-        _packets[p].getBuffer()[i++] = 3; // position (both lat and lon)
+        _packets[p].getBuffer()[i++] = 3; // lat
+        _packets[p].getBuffer()[i++] = 3; // lon
         _packets[p].getBuffer()[i++] = 'r'; // replication
         _packets[p].getBuffer()[i++] = 0; // CREATE
         _packets[p].getBuffer()[i++] = 2; // network Id 2
@@ -53,7 +56,8 @@ public class ReplayInstructionManager extends InstructionManager {
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 1; // position is dirty
-        _packets[p].getBuffer()[i++] = 9; // position (both lat and lon)
+        _packets[p].getBuffer()[i++] = 9; // lat
+        _packets[p].getBuffer()[i++] = 9; // lon
         p++;
         i = 0;
 
@@ -107,7 +111,8 @@ public class ReplayInstructionManager extends InstructionManager {
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 0; //
         _packets[p].getBuffer()[i++] = 1; // position is dirty
-        _packets[p].getBuffer()[i++] = 42; // position
+        _packets[p].getBuffer()[i++] = 42; // lat
+        _packets[p].getBuffer()[i++] = 42; // lon
 
         p++;
         i = 0;
@@ -122,18 +127,13 @@ public class ReplayInstructionManager extends InstructionManager {
     }
 
     @Override
-    public void sendInput(byte[] data) {
-        // nothing to send when playing a replay
-    }
-
-    @Override
     public InputBitStream getPacketStream() {
         // TODO
         return _packet;
     }
 
-    // TODO: Temp
-    public void tempUpdate(int ms){
+    public void update(int ms){
+        // TODO
         _elapsed += ms;
         Log.i("Stub", String.format("ReplayInstructionManager: elapsed %d ms", _elapsed));
 

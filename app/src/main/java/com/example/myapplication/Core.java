@@ -1,10 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
@@ -69,7 +66,7 @@ public class Core {
     // TODO: DEBUG DELETE
     // region DEBUG
     public void run(int ms){
-        ((ReplayInstructionManager) _instructionManager).tempUpdate(ms);
+        _instructionManager.update(ms);
 
         _stateContext.update(ms);
         _stateContext.render(_renderer, ms);
@@ -87,6 +84,8 @@ public class Core {
     public GameObjectFactory getGameObjectFactory(){
         return _gameObjectFactory;
     }
+
+    public InputManager getInputManager() { return _inputManager; }
 
     private void registerGameObjects(){
         // WARNING: should be listed in the same order as that in the server

@@ -10,6 +10,6 @@ public abstract class InstructionManager {
         _context = context;
     }
 
-    public abstract void sendInput(byte[] data);
     public abstract InputBitStream getPacketStream();
+    public abstract void update(int ms);
 }
