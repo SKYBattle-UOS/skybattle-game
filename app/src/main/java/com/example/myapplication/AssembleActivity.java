@@ -57,7 +57,8 @@ public class AssembleActivity extends AppCompatActivity implements GameState, On
                 String.format(
                         "Check now Location: latitude : %f, longitude : %f",
                         locationArray[0], locationArray[1]));
-        googlemap_fun.onAddMarker(mMap,locationArray);
+
+        googlemap_fun.onAddMarker(mMap,locationArray, (float) 60.0);
     }
 
 }
