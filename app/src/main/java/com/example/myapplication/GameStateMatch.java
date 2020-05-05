@@ -4,38 +4,6 @@ import java.util.Collection;
 import java.util.Vector;
 
 /**
- * GameStateMatch에서 상태 전환을 위해 사용하는 Enum
- * @see GameStateMatch
- * @see GameStateType
- */
-enum MatchStateType {
-    /**
-     * 집합화면
-     * @see MatchStateAssemble
-     */
-    ASSEMBLE,
-    /**
-     * 캐릭터 선택 화면
-     * @see MatchStateSelectCharacter
-     */
-    SELECT_CHARACTER,
-    /**
-     * 준비하는 화면. 러너들이 도망가기 위한 시간.
-     * @see MatchStateGetReady
-     */
-    GET_READY,
-    /**
-     * 게임 진행 중 화면.
-     * @see MatchStateInGame
-     */
-    INGAME,
-    /**
-     * 게임 종료 후 재집합 안내 화면.
-     */
-    END
-}
-
-/**
  * 앱의 각 화면에 대한 상태패턴의 상태 객체 중 매치화면.
  * 동시에 매치의 각 화면에 대한 상태패턴의 Context 클래스.
  *

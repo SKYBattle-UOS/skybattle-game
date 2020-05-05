@@ -10,7 +10,7 @@ import java.util.Collection;
  *
  * @author Korimart
  * @version 0.0
- * @since 2020-04-21
+ * @since 2020-04-21a
  */
 public class MatchStateGetReady implements GameState {
     private int _countDown;
@@ -32,9 +32,9 @@ public class MatchStateGetReady implements GameState {
     @Override
     public void render(Renderer renderer, long ms) {
         Log.i("Stub", String.format("MatchStateGetReady: Showing Get Ready Screen; %d seconds left", _countDown / 1000));
-        Collection<GameObject> gameObjects = _match.getGameObjects();
-        for (GameObject go : gameObjects){
-            go.render(renderer, ms);
-        }
+//        Collection<GameObject> gameObjects = _match.getGameObjects();
+//        for (GameObject go : gameObjects){
+//            go.render(renderer, ms);
+//        }
     }
 }
