@@ -3,6 +3,8 @@ package com.example.myapplication;
 import android.content.Context;
 import android.os.SystemClock;
 
+import java.io.IOException;
+
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
  * 게임루프가 들어있습니다.
