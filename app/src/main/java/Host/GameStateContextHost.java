@@ -1,7 +1,7 @@
 package Host;
 
-import com.example.myapplication.GameState;
-import com.example.myapplication.GameStateType;
+import Common.GameState;
+import Common.GameStateType;
 
 public class GameStateContextHost {
     private GameState _currentState;

@@ -1,6 +1,6 @@
 package Host;
 
-import com.example.myapplication.InputBitStream;
+import Common.InputBitStream;
 
 public class NetworkManager {
     public InputBitStream getPacketStream(){
