@@ -1,6 +1,6 @@
 package Host;
 
-import com.example.myapplication.GameState;
+import Common.GameState;
 
 class MatchStateGetReadyHost implements GameState {
     private GameStateMatchHost _match;

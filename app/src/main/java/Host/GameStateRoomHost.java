@@ -1,9 +1,7 @@
 package Host;
 
-import android.net.Network;
-
-import com.example.myapplication.GameState;
-import com.example.myapplication.InputBitStream;
+import Common.GameState;
+import Common.InputBitStream;
 
 public class GameStateRoomHost implements GameState {
     private GameStateContextHost _parent;

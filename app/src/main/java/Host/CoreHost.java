@@ -1,7 +1,6 @@
 package Host;
 
-import com.example.myapplication.GameStateType;
-import com.example.myapplication.InputBitStream;
+import Common.GameStateType;
 
 public class CoreHost {
     private static CoreHost _instance;
