@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import java.io.IOException;
+
 public class TempInputBitStream implements InputBitStream {
     private byte[] _buffer = new byte[1300];
     private int _nextByte = 0;
@@ -12,6 +14,16 @@ public class TempInputBitStream implements InputBitStream {
             buffer[i] = _buffer[_nextByte + i];
 
         _nextByte += bytes;
+    }
+
+    @Override
+    public int read(int numBits) throws IOException {
+        return 0;
+    }
+
+    @Override
+    public int read(byte[] data, int numBits) throws IOException {
+        return 0;
     }
 
     @Override

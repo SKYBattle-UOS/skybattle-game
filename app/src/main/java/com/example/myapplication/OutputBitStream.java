@@ -1,6 +1,9 @@
 package com.example.myapplication;
 
+import java.io.IOException;
+
 public interface OutputBitStream {
-    void writeBits(byte[] data, int numBits);
+    void write(byte[] data, int numBits) throws IOException;
+    void write(int data, int numBits) throws IOException;
     boolean isBufferOwner();
 }

@@ -2,7 +2,8 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.os.SystemClock;
-import android.util.Log;
+
+import java.io.IOException;
 
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
@@ -15,6 +16,7 @@ import android.util.Log;
 public class Core {
     private static Core _coreInstance;
 
+    private boolean _isInitialized;
     private Context _context;
     private InputManager _inputManager;
     private Renderer _renderer;
@@ -24,7 +26,8 @@ public class Core {
     private UIManager _uiManager;
 
     private Core(Context context){
-        this._context = context;
+        _isInitialized = false;
+        _context = context;
         _inputManager = new InputManager();
         _renderer = new Renderer();
         _stateContext = new GameStateContext();
@@ -36,7 +39,10 @@ public class Core {
     }
 
     public void init(){
-        _stateContext.switchState(GameStateType.MAIN);
+        if (!_isInitialized){
+            _stateContext.switchState(GameStateType.MAIN);
+            _isInitialized = true;
+        }
     }
 
     public static void createInstance(Context context){

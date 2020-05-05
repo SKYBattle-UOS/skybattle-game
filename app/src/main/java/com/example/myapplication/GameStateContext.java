@@ -1,29 +1,6 @@
 package com.example.myapplication;
 
 /**
- * GameStateContext 에서 사용하는 Enum.
- * @see GameStateContext
- * @see MatchStateType
- */
-enum GameStateType {
-    /**
-     * 메인 화면
-     * @see GameStateMain
-     */
-    MAIN,
-    /**
-     * 방 화면
-     * @see GameStateRoom
-     */
-    ROOM,
-    /**
-     * 매치 화면
-     * @see GameStateMatch
-     */
-    MATCH
-}
-
-/**
  * 애플리케이션의 매치와 관련 없는 각 화면에 대한 상태패턴의 Context 클래스.
  *
  * @author Korimart
