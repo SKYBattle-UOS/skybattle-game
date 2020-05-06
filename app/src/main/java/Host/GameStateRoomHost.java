@@ -17,7 +17,7 @@ public class GameStateRoomHost implements GameState {
         // TODO
         NetworkManager net = CoreHost.getInstance().getNetworkManager();
         InputBitStream packetStream = net.getPacketStream();
-        packetStream.readBytes(_buffer, 8);
+        packetStream.read(_buffer, 8);
 
         // 방장이 보냄
         if (_buffer[0] == 'a')

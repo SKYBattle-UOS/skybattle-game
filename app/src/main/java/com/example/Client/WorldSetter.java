@@ -21,7 +21,7 @@ public class WorldSetter {
     public void processInstructions(InputBitStream stream){
         // TODO: check remaining bits in the stream
         while (true){
-            stream.readBytes(_buffer, 8);
+            stream.read(_buffer, 8);
             if (_buffer[0] != 'r')
                 return;
 

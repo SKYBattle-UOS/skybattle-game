@@ -3,10 +3,8 @@ package Common;
 import java.io.IOException;
 
 public interface InputBitStream {
-    // TODO: delete readbytes later
-    void readBytes(byte[] buffer, int numBits);
-
-    int read(int numBits) throws IOException;
-    int read(byte[] data, int numBits) throws IOException;
+    int read(int numBits);
+    void read(byte[] data, int numBits);
     boolean isBufferOwner();
+    byte[] getBuffer();
 }

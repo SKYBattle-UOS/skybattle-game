@@ -32,7 +32,7 @@ public class MatchStateAssemble implements GameState {
     public void update(long ms) {
         InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
         if (packetStream == null) return;
-        packetStream.readBytes(_buffer, 8);
+        packetStream.read(_buffer, 8);
 
         if (!_sentConfirm){
             Collection<GameObject> gos = _parent.getGameObjects();
