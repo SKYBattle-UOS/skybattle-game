@@ -110,6 +110,16 @@ public class BitInputStream implements InputBitStream {
         return result;
     }
 
+    @Override
+    public void resetPos() {
+
+    }
+
+    @Override
+    public void setBufferLength(int numBytes) {
+
+    }
+
     public void getBuffer() {
         //todo
         //return 0;
