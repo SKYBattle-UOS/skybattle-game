@@ -30,7 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  *  float	HUE_VIOLET 270 .0
  *  float	HUE_YELLOW	60 .0 marker 색상
  */
-public class Googlemap<string> extends Activity implements IMap{
+public class Googlemap extends Activity implements IMap{
     //Location location;
     //double[] locationArray;
     public Googlemap(){
