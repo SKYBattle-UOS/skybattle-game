@@ -14,9 +14,9 @@ public class GameStateRoomHost implements GameState {
 
     @Override
     public void update(long ms) {
-        // TODO
+        // TODO: thread safety
         NetworkManager net = CoreHost.getInstance().getNetworkManager();
-        InputBitStream packetStream = net.getPacketStream();
+        InputBitStream packetStream = net.getHostClientProxy().getPacketStream();
         packetStream.readBytes(_buffer, 8);
 
         // 방장이 보냄
