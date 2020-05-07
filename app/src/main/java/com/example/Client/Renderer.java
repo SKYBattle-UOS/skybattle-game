@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +23,7 @@ public class Renderer {
      */
     private GoogleMap googlemap;
     private GoogleMapAdapter mapAdapter=new GoogleMapAdapter();;
+    private Handler _mainHandler = new Handler(Looper.getMainLooper());
 
     public void drawFilledCircle(GoogleMap map,double latitude, double longitude, int color, float size) {
         mapAdapter.onAddMarker(map, latitude,  longitude, color,  size );
@@ -31,7 +34,13 @@ public class Renderer {
                 String.format(
                         "Renderer: batched filled #%X circle at %f, %f with size %f",
                         color, latitude, longitude, size));
-        mapAdapter.onAddMarker(googlemap, latitude,  longitude, color,  size );
+        Runnable func = () -> {
+            mapAdapter.onAddMarker(googlemap, latitude,  longitude, color,  size );
+        };
+        if (func != null) {
+            _mainHandler.post(func);
+        }
+
     }
 
     /**
