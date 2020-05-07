@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Location loca = new Location(this, this);
         Core.createInstance(getApplicationContext());
 
         Button btn_entrance = findViewById(R.id.btn_entrance);
