@@ -25,14 +25,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class GoogleMapAdapter extends Activity implements IMap {
     //Location location;
     //double[] locationArray;
+    float hue_color= (float) 0.0; //default
     public GoogleMapAdapter(){
     }
 
 
-    public void onAddMarker(GoogleMap activityMap,double[] locationArray,float hue_color){
+    public void onAddMarker(GoogleMap activityMap,double latitude, double longitude,int color, float size ){
 
         LatLng position = new LatLng(37.56 , 126.97);
-        System.out.println(locationArray[0]);
+        //System.out.println(locationArray[0]);
         //나의위치 마커
         MarkerOptions mymarker = new MarkerOptions();
                 //.position(position);   //마커위치
@@ -47,7 +48,7 @@ public class GoogleMapAdapter extends Activity implements IMap {
 
         CircleOptions circle1KM = new CircleOptions()
                 .center(position) //원점
-                .radius(1000)      //반지름 단위 : m
+                .radius(size)      //반지름 단위 : 1000m
                 .strokeWidth(3f)  //선너비 0f : 선없음,default=10
                 .strokeColor(Color.parseColor(color_stroke))
                 .fillColor(Color.parseColor(color_fill));

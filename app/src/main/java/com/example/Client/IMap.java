@@ -14,5 +14,6 @@ import com.google.android.gms.maps.GoogleMap;
  */
 public interface IMap {
 
+    public void onAddMarker(GoogleMap activityMap,double latitude, double longitude, int color, float size );
 
 }

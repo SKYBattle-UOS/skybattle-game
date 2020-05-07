@@ -107,6 +107,8 @@ public class Core {
 
     public UIManager getUIManager() { return _uiManager; }
 
+    public Renderer getRenderer() { return _renderer; }
+
     private void registerGameObjects(){
         // WARNING: should be listed in the same order as that in the server
         TempPlayer.classId = _gameObjectFactory.registerCreateMethod(TempPlayer::createInstance);

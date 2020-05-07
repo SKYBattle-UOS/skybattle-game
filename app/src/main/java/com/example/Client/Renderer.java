@@ -1,5 +1,9 @@
 package com.example.Client;
 
+import android.util.Log;
+
+import com.google.android.gms.maps.GoogleMap;
+
 /**
  * 그리기 연산을 하고 싶을 때 사용하는 클래스.
  *
@@ -15,12 +19,19 @@ public class Renderer {
      * @param color 채우기 색
      * @param size 크기
      */
+    private GoogleMap googlemap;
+    private GoogleMapAdapter mapAdapter=new GoogleMapAdapter();;
+
+    public void drawFilledCircle(GoogleMap map,double latitude, double longitude, int color, float size) {
+        mapAdapter.onAddMarker(map, latitude,  longitude, color,  size );
+    }
     public void drawFilledCircle(double latitude, double longitude, int color, float size){
-        // TODO: DEBUG EDIT
-//        Log.i("Stub",
-//                String.format(
-//                        "Renderer: batched filled #%X circle at %f, %f with size %f",
-//                        color, latitude, longitude, size));
+        //TODO: DEBUG EDIT
+        Log.i("Stub",
+                String.format(
+                        "Renderer: batched filled #%X circle at %f, %f with size %f",
+                        color, latitude, longitude, size));
+        mapAdapter.onAddMarker(googlemap, latitude,  longitude, color,  size );
     }
 
     /**
@@ -42,5 +53,8 @@ public class Renderer {
     public void render(long ms){
         // TODO: DEBUG EDIT
 //        Log.i("Stub", "Renderer: Rendered batched render calls");
+    }
+    public void setMap(GoogleMap map){
+        googlemap=map;
     }
 }

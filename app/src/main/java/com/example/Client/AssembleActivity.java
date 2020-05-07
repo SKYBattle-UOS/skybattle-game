@@ -5,11 +5,21 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AssembleActivity extends AppCompatActivity implements Screen {
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+
+public class AssembleActivity extends AppCompatActivity implements Screen, OnMapReadyCallback {
+    public GoogleMap Mmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assemble);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
     }
 
     @Override
@@ -29,5 +39,15 @@ public class AssembleActivity extends AppCompatActivity implements Screen {
         Intent selection_intent = new Intent(AssembleActivity.this, SelectCharacterActivity.class);
         startActivity(selection_intent);
         finish();
+    }
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        setGoogleMap(googleMap);
+        Renderer renderer=Core.getInstance().getRenderer();
+        renderer.setMap(Mmap);
+        //renderer.drawFilledCircle(googleMap,37.56,126.97,2337,1000);
+    }
+    public void setGoogleMap(GoogleMap map){
+        Mmap=map;
     }
 }
