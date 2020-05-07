@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AssembleActivity extends AppCompatActivity implements GameState, OnMapReadyCallback {
     public GoogleMap mMap;
-    public Googlemap googlemap_fun=new Googlemap();
+    public GoogleMapAdapter googlemap_fun=new GoogleMapAdapter();
     Location location;
     double[] locationArray;
     @Override
