@@ -8,5 +8,8 @@ public interface InputBitStream {
 
     int read(int numBits) throws IOException;
     int read(byte[] data, int numBits) throws IOException;
+    byte[] getBuffer();
+    void resetPos();
+    void setBufferLength(int numBytes);
     boolean isBufferOwner();
 }

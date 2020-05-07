@@ -110,13 +110,21 @@ public class BitInputStream implements InputBitStream {
         return result;
     }
 
-    public void getBuffer() {
-        //todo
-        //return 0;
+    @Override
+    public void resetPos() {
 
     }
 
+    @Override
+    public void setBufferLength(int numBytes) {
 
+    }
+
+    public byte[] getBuffer() {
+        //todo
+        //return 0;
+        return null;
+    }
 
     /**
      * @return if this bit input stream supports mark and reset.

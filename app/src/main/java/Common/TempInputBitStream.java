@@ -27,6 +27,16 @@ public class TempInputBitStream implements InputBitStream {
     }
 
     @Override
+    public void resetPos() {
+
+    }
+
+    @Override
+    public void setBufferLength(int numBytes) {
+
+    }
+
+    @Override
     public boolean isBufferOwner() {
         // TODO
         return true;
