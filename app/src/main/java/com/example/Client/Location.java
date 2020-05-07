@@ -45,6 +45,11 @@ public class Location
                 String.format("now Location : latitude : %f, longitude : %f", latitude, longitude));
     }
 
+    public double[] getLocation() {
+        gpsTracker.getLocation();
+        return new double[]{gpsTracker.getLatitude(), gpsTracker.getLongitude() };
+    }
+
     /*
      * ActivityCompat.requestPermissions를 사용한 퍼미션 요청의 결과를 리턴받는 메소드입니다.
      */
@@ -212,7 +217,7 @@ public class Location
     }
 
 
-    public double[] getLocation() {
+    public android.location.Location getLocation() {
         try {
             locationManager = (LocationManager) mContext.getSystemService(mContext.LOCATION_SERVICE);
 
@@ -271,7 +276,7 @@ public class Location
                     ""+e.toString());
         }
 
-        return new double[]{latitude, longitude};
+        return location;
     }
 
     public double getLatitude()
