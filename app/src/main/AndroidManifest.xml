@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.myapplication">
+    package="com.example.Client">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -12,18 +12,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".GetReadyActivity"></activity>
-        <activity android:name=".SelectCharacterActivity" />
-        <activity android:name=".AssembleActivity" />
-        <activity android:name=".RoomActivity" />
-        <activity android:name=".SplashActivity">
+        <activity android:name="com.example.Client.GetReadyActivity"></activity>
+        <activity android:name="com.example.Client.SelectCharacterActivity" />
+        <activity android:name="com.example.Client.AssembleActivity" />
+        <activity android:name="com.example.Client.RoomActivity" />
+        <activity android:name="com.example.Client.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.Client.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

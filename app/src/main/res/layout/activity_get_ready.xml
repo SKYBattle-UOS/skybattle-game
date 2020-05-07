@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
-        android:text="준비 : 전장이 결정되었습니다."
-        android:textSize="25sp"/>
+        android:text="도망가세요. 남은시간 : 초"
+        android:textSize="25sp" />
 
 </LinearLayout>
