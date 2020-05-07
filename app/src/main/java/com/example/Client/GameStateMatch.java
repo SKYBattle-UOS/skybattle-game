@@ -3,6 +3,7 @@ package com.example.Client;
 import java.util.Collection;
 import java.util.Vector;
 
+import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;

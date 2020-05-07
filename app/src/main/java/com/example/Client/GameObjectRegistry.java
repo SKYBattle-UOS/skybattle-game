@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import Common.GameObject;
+
 public class GameObjectRegistry {
     private Map<Integer, GameObject> _mappingN2G = new HashMap<Integer, GameObject>();
     private Map<GameObject, Integer> _mappingG2N = new HashMap<GameObject, Integer>();

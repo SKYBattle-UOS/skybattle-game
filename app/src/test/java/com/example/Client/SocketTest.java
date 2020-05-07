@@ -1,18 +1,9 @@
 package com.example.Client;
 
-import android.net.Network;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
-
 import Host.NetworkManager;
-
-import static org.junit.Assert.*;
 
 public class SocketTest {
     NetworkManager server;
@@ -21,7 +12,7 @@ public class SocketTest {
     @Before
     public void setup(){
         server = new NetworkManager(9998);
-        server.init();
+        server.open();
         client = new NetworkInstructionManager();
         client.init();
     }
