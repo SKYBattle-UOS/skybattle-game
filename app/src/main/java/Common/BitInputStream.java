@@ -102,7 +102,8 @@ public class BitInputStream implements InputBitStream {
 
     @Override
     public void resetPos() {
-
+        byteOffset = 0;
+        bitOffset = 0;
     }
 
     @Override
