@@ -4,6 +4,9 @@ package com.example.Client;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+
+import java.util.Map;
 
 /**
  * 앱에서 지도 상황을 보여주는 인터페이스
@@ -14,6 +17,6 @@ import com.google.android.gms.maps.GoogleMap;
  */
 public interface IMap {
 
-    public void onAddMarker(GoogleMap activityMap,double latitude, double longitude, int color, float size );
+    public void onAddMarker(GoogleMap activityMap, double latitude, double longitude, int color, float size );
 
 }
