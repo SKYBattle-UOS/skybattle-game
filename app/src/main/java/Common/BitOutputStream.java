@@ -37,6 +37,24 @@ public class BitOutputStream implements OutputBitStream {
         bufferOwner = true;
     }
 
+    private int byteArrayToInt(byte[] bytes) {
+
+        final int size = Integer.SIZE / 8;
+        ByteBuffer buff = ByteBuffer.allocate(size);
+        final byte[] newBytes = new byte[size];
+
+        for (int i = 0; i < size; i++) {
+            if (i + bytes.length < size) {
+                newBytes[i] = (byte) 0x00;
+            } else {
+                newBytes[i] = bytes[i + bytes.length - size];
+            }
+        }
+        buff = ByteBuffer.wrap(newBytes);
+        buff.order(ByteOrder.LITTLE_ENDIAN ); //LITTLE_ENDIAN Endian에 맞게 세팅
+        return buff.getInt();
+    }
+
     /**
      * 비트들을 쓴다.
      * @param data          bits to be written, which are stored in low bits.
@@ -60,25 +78,6 @@ public class BitOutputStream implements OutputBitStream {
                 buffer = 0;
             }
         }
-    }
-
-    private static int byteArrayToInt(byte[] bytes) {
-
-        final int size = Integer.SIZE / 8;
-        ByteBuffer buff = ByteBuffer.allocate(size);
-        final byte[] newBytes = new byte[size];
-
-        for (int i = 0; i < size; i++) {
-            if (i + bytes.length < size) {
-                newBytes[i] = (byte) 0x00;
-            } else {
-                newBytes[i] = bytes[i + bytes.length - size];
-            }
-        }
-        buff = ByteBuffer.wrap(newBytes);
-        buff.order(ByteOrder.LITTLE_ENDIAN ); //LITTLE_ENDIAN Endian에 맞게 세팅
-        return buff.getInt();
-
     }
 
     /**

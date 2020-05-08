@@ -1,30 +1,28 @@
 package com.example.Client;
 
 import android.util.Log;
-
 import java.io.InputStream;
-
+import Common.BitInputStream;
 import Common.InputBitStream;
-import Common.TempInputBitStream;
 import Common.TempOutputBitStream;
 
 public class ReplayPacketManager implements PacketManager {
     private InputStream _inputStream;
     // TODO
-    private TempInputBitStream[] _packets;
+    private BitInputStream[] _packets;
     private int[] _packetArrivalTime;
     private int _elapsed;
     private int _packetNum;
-    private TempInputBitStream _packet;
+    private BitInputStream _packet;
     private TempOutputBitStream _outputStream;
 
     ReplayPacketManager()  {
         _outputStream = new TempOutputBitStream();
         _packetNum = 0;
-        _packets = new TempInputBitStream[30];
+        _packets = new BitInputStream[30];
         _packetArrivalTime = new int[30];
         for (int i = 0; i < _packets.length; i++)
-            _packets[i] = new TempInputBitStream();
+            _packets[i] = new BitInputStream();
 
         _elapsed = 0;
 

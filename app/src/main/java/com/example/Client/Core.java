@@ -37,6 +37,7 @@ public class Core {
         _uiManager = new UIManager();
 
         registerGameObjects();
+
     }
 
     private void init(){
