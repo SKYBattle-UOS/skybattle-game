@@ -60,14 +60,14 @@ public class BitInputStream implements InputBitStream {
 
     /**
      * Reads {@code numBits} bits into {@code buffer}.
-     *
-     * @param buffer The array into which the read data should be written. The trailing
+     *  @param buffer The array into which the read data should be written. The trailing
      *     {@code numBits % 8} bits are written into the most significant bits of the last modified
      *     {@code buffer} byte. The remaining ones are unmodified.
      * @param numBits The number of bits to read.
+     * @return
      */
     @Override
-    public void read(byte[] buffer, int numBits) {
+    public int read(byte[] buffer, int numBits) {
         // Whole bytes.
         int to = (numBits >> 3) /* numBits / 8 */;
         for (int i = 0; i < to; i++) {
@@ -77,7 +77,7 @@ public class BitInputStream implements InputBitStream {
         // Trailing bits.
         int bitsLeft = numBits & 7 /* numBits % 8 */;
         if (bitsLeft == 0) {
-            return;
+            return to;
         }
         // Set bits that are going to be overwritten to 0.
         buffer[to] = (byte) (buffer[to] & (0xFF >> bitsLeft));
@@ -93,10 +93,21 @@ public class BitInputStream implements InputBitStream {
             bitOffset = 0;
             byteOffset++;
         }
+        return to;
     }
 
     public byte[] getBuffer(){
         return data;
+    }
+
+    @Override
+    public void resetPos() {
+
+    }
+
+    @Override
+    public void setBufferLength(int numBytes) {
+
     }
 
     public boolean isBufferOwner(){

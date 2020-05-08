@@ -59,15 +59,11 @@ public class GameStateMatchHost implements GameState {
 
     private void handleInputPacket(ClientProxy client, InputBitStream packet) {
         MoveList moveList = client.getUnprocessedMoves();
-        try {
-            int numMoves = packet.read(2);
-            for (int i = 0; i < numMoves; i++){
-                Move newMove = new Move();
-                newMove.readFromStream(packet);
-                moveList.append(newMove);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        int numMoves = packet.read(2);
+        for (int i = 0; i < numMoves; i++){
+            Move newMove = new Move();
+            newMove.readFromStream(packet);
+            moveList.append(newMove);
         }
     }
 
