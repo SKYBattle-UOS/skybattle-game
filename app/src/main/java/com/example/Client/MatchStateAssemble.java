@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import Common.GameObject;
 import Common.GameState;
-import Common.InputBitStream;
 import Common.MatchStateType;
 
 /**
@@ -18,42 +17,32 @@ public class MatchStateAssemble implements GameState {
     private GameStateMatch _parent;
     private boolean _isInitialized;
     private boolean _sentConfirm;
-    private byte[] _buffer;
     private int _numPlayers;
+    private IOManager _ioManager;
 
     public MatchStateAssemble(GameStateMatch parentMatch, int numPlayers) {
         _parent = parentMatch;
         _isInitialized = false;
         _sentConfirm = false;
-        _buffer = new byte[1];
         _numPlayers = numPlayers;
+        _ioManager = Core.getInstance().getIOManager();
     }
 
     @Override
     public void update(long ms) {
-        InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
-        if (packetStream == null) return;
-        packetStream.readBytes(_buffer, 8);
-
         if (!_sentConfirm){
             Collection<GameObject> gos = _parent.getGameObjects();
             if (gos.size() >= _numPlayers){
-                Core.getInstance().getInputManager().confirmPlayerInit();
+                _ioManager.confirmPlayerInit();
                 _sentConfirm = true;
             }
         }
 
-        switch(_buffer[0]){
-            // everybody's initialized for assemble
-            case 'i':
-                _isInitialized = true;
-                break;
+        _isInitialized = _ioManager.isEverybodyInitializedForAssemble();
 
-            // assemble complete
-            case 's':
-                _parent.switchState(MatchStateType.SELECT_CHARACTER);
-                Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT);
-                break;
+        if (_ioManager.isAssembleComplete()){
+            _parent.switchState(MatchStateType.SELECT_CHARACTER);
+            Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT);
         }
     }
 

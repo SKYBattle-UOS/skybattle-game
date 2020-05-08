@@ -38,7 +38,7 @@ public class GameStateMatch implements GameState {
 
     @Override
     public void update(long ms) {
-        InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
+        InputBitStream packetStream = Core.getInstance().getPakcetManager().getPacketStream();
         if (packetStream != null)
             _worldSetter.processInstructions(packetStream);
 

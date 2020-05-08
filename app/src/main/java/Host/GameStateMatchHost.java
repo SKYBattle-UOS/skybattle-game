@@ -2,6 +2,7 @@ package Host;
 
 import Common.GameObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
@@ -9,6 +10,8 @@ import java.util.Queue;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
+import Common.Move;
+import Common.MoveList;
 
 public class GameStateMatchHost implements GameState {
     private GameState _currentState;
@@ -49,13 +52,23 @@ public class GameStateMatchHost implements GameState {
                 InputBitStream packet = packetQueue.poll();
                 if (packet == null)
                     break;
-                handleInputPacket(packet);
+                handleInputPacket(client, packet);
             }
         }
     }
 
-    private void handleInputPacket(InputBitStream packet) {
-
+    private void handleInputPacket(ClientProxy client, InputBitStream packet) {
+        MoveList moveList = client.getUnprocessedMoves();
+        try {
+            int numMoves = packet.read(2);
+            for (int i = 0; i < numMoves; i++){
+                Move newMove = new Move();
+                newMove.readFromStream(packet);
+                moveList.append(newMove);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void switchState(MatchStateType matchState) {

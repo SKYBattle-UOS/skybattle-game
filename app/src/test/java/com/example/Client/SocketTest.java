@@ -7,13 +7,13 @@ import Host.NetworkManager;
 
 public class SocketTest {
     NetworkManager server;
-    NetworkInstructionManager client;
+    NetworkPacketManager client;
 
     @Before
     public void setup(){
         server = new NetworkManager(9998);
         server.open();
-        client = new NetworkInstructionManager();
+        client = new NetworkPacketManager();
         client.init();
     }
 

@@ -10,7 +10,7 @@ import com.example.Client.Renderer;
  * @since 2020-04-21
  */
 public abstract class GameObject implements com.example.Client.Serializable {
-    static int classId;
+    public static int classId;
 
     private double[] _position;
     private String _name;
