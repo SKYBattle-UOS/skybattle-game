@@ -21,7 +21,7 @@ public class GameStateRoom implements GameState {
         // TODO EDIT
         // region DEBUG
         byte[] buffer = new byte[1];
-        packetStream.readBytes(buffer, 8);
+        packetStream.read(buffer, 8);
         int message = buffer[0];
 
         // match start

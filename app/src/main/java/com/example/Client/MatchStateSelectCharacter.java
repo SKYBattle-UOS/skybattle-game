@@ -23,7 +23,7 @@ public class MatchStateSelectCharacter implements GameState {
     public void update(long ms) {
         InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
         if (packetStream == null) return;
-        packetStream.readBytes(_buffer, 8);
+        packetStream.read(_buffer, 8);
 
         if (_buffer[0] == 'c'){
             Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY);
