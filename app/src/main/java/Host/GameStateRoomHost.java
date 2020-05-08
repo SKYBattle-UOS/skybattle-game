@@ -1,6 +1,7 @@
 package Host;
 
 import Common.GameState;
+import Common.GameStateType;
 import Common.InputBitStream;
 
 public class GameStateRoomHost implements GameState {
@@ -14,13 +15,17 @@ public class GameStateRoomHost implements GameState {
 
     @Override
     public void update(long ms) {
-        // TODO: thread safety
         NetworkManager net = CoreHost.getInstance().getNetworkManager();
-        InputBitStream packetStream = net.getHostClientProxy().getPacketStream();
-        packetStream.read(_buffer, 8);
+        InputBitStream packetStream = net.getHostClientProxy().getRawPacketQueue().poll();
+        if (packetStream != null){
+            packetStream.read(_buffer, 8);
 
-        // 방장이 보냄
-        if (_buffer[0] == 'a')
-            net.broadCastToClients(_buffer);
+            // 방장이 보냄
+            if (_buffer[0] == 'a'){
+                net.closeAccept();
+                net.broadCastToClients(_buffer);
+                _parent.switchState(GameStateType.MATCH);
+            }
+        }
     }
 }
