@@ -9,15 +9,24 @@ public class Move {
         _timeStamp = timeStamp;
     }
 
+    public Move() {
+        _timeStamp = 0;
+        _inputState = null;
+    }
+
     public float getTimeStamp(){
         return _timeStamp;
     }
 
     public void writeToStream(OutputBitStream stream){
         // TODO
+        // stream.write(timeStamp);
+        _inputState.writeToStream(stream);
     }
 
     public void readFromStream(InputBitStream stream){
         // TODO
+        // _timeStamp = stream.read();
+        _inputState.readFromStream(stream);
     }
 }

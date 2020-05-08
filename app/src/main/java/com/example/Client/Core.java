@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.SystemClock;
 
 import Common.GameStateType;
+import Common.TempPlayer;
 
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
@@ -18,20 +19,20 @@ public class Core {
 
     private boolean _isInitialized;
     private Context _context;
-    private InputManager _inputManager;
+    private IOManager _IOManager;
     private Renderer _renderer;
     private GameStateContext _stateContext;
-    private InstructionManager _instructionManager;
+    private PacketManager _packetManager;
     private GameObjectFactory _gameObjectFactory;
     private UIManager _uiManager;
 
     private Core(Context context){
         _isInitialized = false;
         _context = context;
-        _inputManager = new InputManager();
         _renderer = new Renderer();
         _stateContext = new GameStateContext();
-        _instructionManager = new ReplayInstructionManager(context);
+        _packetManager = new ReplayPacketManager();
+        _IOManager = new IOManager(_packetManager);
         _gameObjectFactory = new GameObjectFactory();
         _uiManager = new UIManager();
 
@@ -85,26 +86,26 @@ public class Core {
     // TODO: DEBUG DELETE
     // region DEBUG
     private void run(long ms){
-        _instructionManager.update(ms);
+        _packetManager.update(ms);
 
         _stateContext.update(ms);
         _stateContext.render(_renderer, ms);
 
         _renderer.render(ms);
 
-        _inputManager.update(ms);
+        _IOManager.update(ms);
     }
     // endregion
 
-    public InstructionManager getInstructionManager(){
-        return _instructionManager;
+    public PacketManager getPakcetManager(){
+        return _packetManager;
     }
 
     public GameObjectFactory getGameObjectFactory(){
         return _gameObjectFactory;
     }
 
-    public InputManager getInputManager() { return _inputManager; }
+    public IOManager getIOManager() { return _IOManager; }
 
     public UIManager getUIManager() { return _uiManager; }
 

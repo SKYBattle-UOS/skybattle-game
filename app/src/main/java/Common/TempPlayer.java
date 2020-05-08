@@ -1,10 +1,9 @@
-package com.example.Client;
+package Common;
 
 import android.graphics.Color;
 import android.util.Log;
 
-import Common.InputBitStream;
-import Common.OutputBitStream;
+import com.example.Client.Renderer;
 
 /**
  * 임시 캐릭터 클래스. 볼품없는 스킬을 넣을 예정.

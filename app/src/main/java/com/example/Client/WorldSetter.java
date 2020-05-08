@@ -2,6 +2,7 @@ package com.example.Client;
 
 import java.util.Vector;
 
+import Common.GameObject;
 import Common.InputBitStream;
 import Common.WorldSetterHeader;
 

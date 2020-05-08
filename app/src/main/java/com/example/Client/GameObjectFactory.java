@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import Common.GameObject;
+
 public class GameObjectFactory {
     private int _nextClassId;
     private Map<Integer, Supplier<GameObject>> _mappingC2F = new HashMap<>();

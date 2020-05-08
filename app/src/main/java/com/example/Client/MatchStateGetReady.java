@@ -2,6 +2,9 @@ package com.example.Client;
 
 import android.util.Log;
 
+import java.util.Collection;
+
+import Common.GameObject;
 import Common.GameState;
 import Common.MatchStateType;
 
@@ -33,9 +36,9 @@ public class MatchStateGetReady implements GameState {
     @Override
     public void render(Renderer renderer, long ms) {
         Log.i("Stub", String.format("MatchStateGetReady: Showing Get Ready Screen; %d seconds left", _countDown / 1000));
-//        Collection<GameObject> gameObjects = _match.getGameObjects();
-//        for (GameObject go : gameObjects){
-//            go.render(renderer, ms);
-//        }
+        Collection<GameObject> gameObjects = _match.getGameObjects();
+        for (GameObject go : gameObjects){
+            go.render(renderer, ms);
+        }
     }
 }

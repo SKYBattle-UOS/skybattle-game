@@ -1,6 +1,9 @@
 package Host;
 
-import Common.BitInputStream;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import Common.InputBitStream;
 import Common.MoveList;
 
@@ -9,16 +12,16 @@ public class ClientProxy {
     private MoveList _unprocessedMoves;
     private int _playerId;
     private boolean _shouldSendLastTimeStamp;
-    private InputBitStream _packetStream;
+    private ConcurrentLinkedQueue<InputBitStream> _rawPackets;
+    private LinkedList<InputBitStream> _packets;
 
     public ClientProxy(int playerId){
         _playerId = playerId;
         _shouldSendLastTimeStamp = false;
         _worldSetter = new WorldSetterHost();
         _unprocessedMoves = new MoveList();
-
-        // TODO: set size to 0
-        _packetStream = new BitInputStream();
+        _rawPackets = new ConcurrentLinkedQueue<>();
+        _packets = new LinkedList<>();
     }
 
     public int getPlayerId(){
@@ -29,16 +32,11 @@ public class ClientProxy {
         return _unprocessedMoves;
     }
 
-    public byte[] getPacketBuffer(){
-        return _packetStream.getBuffer();
+    public Queue<InputBitStream> getRawPacketQueue(){
+        return _rawPackets;
     }
 
-    public void setPacketBufferLen(int numBytes){
-        _packetStream.resetPos();
-        _packetStream.setBufferLength(numBytes);
-    }
-
-    public InputBitStream getPacketStream(){
-        return _packetStream;
+    public Queue<InputBitStream> getPacketQueue(){
+        return _packets;
     }
 }

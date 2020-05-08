@@ -5,7 +5,11 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Collection;
 import java.util.Map;
+
+import Common.BitInputStream;
+import Common.InputBitStream;
 
 public class NetworkManager {
     private int _newPlayerId;
@@ -19,11 +23,20 @@ public class NetworkManager {
         _port = port;
     }
 
-    public void init(){
+    public void open(){
         try {
             _socket = new ServerSocket(_port);
             (new Thread(this::acceptor)).start();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeAccept(){
+        try {
+            _socket.close();
+        } catch (IOException e) {
+            // I don't know why this could happen
             e.printStackTrace();
         }
     }
@@ -50,12 +63,14 @@ public class NetworkManager {
         try {
             InputStream stream = socket.getInputStream();
             while (true){
-                numBytes = stream.read(client.getPacketBuffer());
-                client.setPacketBufferLen(numBytes);
+                InputBitStream packetStream = new BitInputStream();
+                numBytes = stream.read(packetStream.getBuffer());
+                packetStream.setBufferLength(numBytes);
+                client.getRawPacketQueue().offer(packetStream);
             }
         } catch (IOException e) {
             // socket closed; thread exit
-            e.printStackTrace();
+            _mappingAddr2Proxy.remove(socket.getInetAddress());
         }
     }
 
@@ -64,5 +79,13 @@ public class NetworkManager {
     }
 
     public void broadCastToClients(byte[] buffer) {
+    }
+
+    public int getNumConnections(){
+        return _mappingAddr2Proxy.size();
+    }
+
+    public Collection<ClientProxy> getClientProxies(){
+        return _mappingAddr2Proxy.values();
     }
 }

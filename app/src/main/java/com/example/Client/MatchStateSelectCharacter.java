@@ -12,27 +12,19 @@ import Common.MatchStateType;
  * @since 2020-04-21
  */
 public class MatchStateSelectCharacter implements GameState {
-    private byte[] _buffer = new byte[1];
     private GameStateMatch _match;
+    private IOManager _ioManager;
 
     MatchStateSelectCharacter(GameStateMatch match){
         _match = match;
+        _ioManager = Core.getInstance().getIOManager();
     }
 
     @Override
     public void update(long ms) {
-        InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
-        if (packetStream == null) return;
-        packetStream.read(_buffer, 8);
-
-        if (_buffer[0] == 'c'){
+        if (_ioManager.isCharacterSelectComplete()){
             Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY);
             _match.switchState(MatchStateType.GET_READY);
         }
-    }
-
-    @Override
-    public void render(Renderer renderer, long ms) {
-//        Log.i("Stub", "MatchStateSelectCharacter: Showing Character Selection Screen");
     }
 }
