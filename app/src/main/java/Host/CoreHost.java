@@ -1,9 +1,12 @@
 package Host;
 
+import android.os.SystemClock;
+
 import Common.GameStateType;
 
 public class CoreHost {
     private static CoreHost _instance;
+    private static final int _port = 9998;
 
     private boolean _isInitialized;
     private NetworkManager _networkManager;
@@ -11,7 +14,7 @@ public class CoreHost {
 
     private CoreHost(){
         _isInitialized = false;
-        _networkManager = new NetworkManager();
+        _networkManager = new NetworkManager(_port);
         _gameStateContext = new GameStateContextHost();
     }
 
@@ -29,6 +32,35 @@ public class CoreHost {
             _gameStateContext.switchState(GameStateType.ROOM);
             _isInitialized = true;
         }
+    }
+
+    private void run(){
+        long prev = SystemClock.uptimeMillis();
+        long ms;
+
+        while (true){
+            long now = SystemClock.uptimeMillis();
+            ms = now - prev;
+            run(ms);
+
+            long elapsed = SystemClock.uptimeMillis() - now;
+            if (elapsed < 33)
+                try {
+                    Thread.sleep(33 - elapsed);
+                } catch (InterruptedException e) {
+                    // nothing
+                }
+
+            prev = now;
+        }
+    }
+
+    private void run(long ms){
+        _networkManager.update(ms);
+    }
+
+    public void destroy(){
+        // TODO
     }
 
     public NetworkManager getNetworkManager(){

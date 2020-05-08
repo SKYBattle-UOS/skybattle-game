@@ -39,14 +39,14 @@ public class Core {
 
     }
 
-    public void init(){
+    private void init(){
         if (!_isInitialized){
             _stateContext.switchState(GameStateType.MAIN);
             _isInitialized = true;
         }
     }
 
-    public static void createInstance(Context context){
+    static void createInstance(Context context){
         if (_coreInstance == null){
             _coreInstance = new Core(context);
             _coreInstance.init();
@@ -61,7 +61,7 @@ public class Core {
     /**
      * 애플리케이션 로직의 시작점.
      */
-    public void run(){
+    private void run(){
         long prev = SystemClock.uptimeMillis();
         long ms;
 
@@ -84,7 +84,7 @@ public class Core {
 
     // TODO: DEBUG DELETE
     // region DEBUG
-    public void run(long ms){
+    private void run(long ms){
         _instructionManager.update(ms);
 
         _stateContext.update(ms);

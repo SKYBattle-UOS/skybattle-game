@@ -1,5 +1,8 @@
 package com.example.Client;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -10,6 +13,7 @@ public class UIManager {
     private Screen _currentScreen = null;
     private Map<Integer, Runnable> _callbackMapping = new HashMap<>();
     private Queue<ScreenType> _toSwitch = new LinkedList<>();
+    private Handler _mainHandler = new Handler(Looper.getMainLooper());
 
     public void switchScreen(ScreenType type){
         _toSwitch.add(type);
@@ -28,8 +32,9 @@ public class UIManager {
 
     public void invoke(int port){
         Runnable func = _callbackMapping.get(port);
-        if (func != null)
-            func.run();
+        if (func != null) {
+            _mainHandler.post(func);
+        }
     }
 
     public void registerCallback(int port, Runnable func){
