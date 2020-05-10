@@ -29,7 +29,6 @@ public class Core {
     private Core(Context context){
         _isInitialized = false;
         _context = context;
-        _renderer = new Renderer();
         _stateContext = new GameStateContext();
         _packetManager = new ReplayPacketManager();
         _IOManager = new IOManager(_packetManager);
@@ -37,7 +36,6 @@ public class Core {
         _uiManager = new UIManager();
 
         registerGameObjects();
-
     }
 
     private void init(){
@@ -91,7 +89,8 @@ public class Core {
         _stateContext.update(ms);
         _stateContext.render(_renderer, ms);
 
-        _renderer.render(ms);
+        if (_renderer != null)
+            _renderer.render(ms);
 
         _IOManager.update(ms);
     }
@@ -110,6 +109,10 @@ public class Core {
     public UIManager getUIManager() { return _uiManager; }
 
     public Renderer getRenderer() { return _renderer; }
+
+    public void setRenderer(Renderer renderer){
+        _renderer = renderer;
+    }
 
     private void registerGameObjects(){
         // WARNING: should be listed in the same order as that in the server

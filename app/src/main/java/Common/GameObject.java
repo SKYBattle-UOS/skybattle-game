@@ -1,5 +1,6 @@
 package Common;
 
+import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
 /**
@@ -16,6 +17,7 @@ public abstract class GameObject implements com.example.Client.Serializable {
     private String _name;
     private boolean _wantsToDie;
     private int _indexInWorld;
+    private RenderComponent _renderComponent;
 
     /**
      * 간단한 constructor.
@@ -72,9 +74,7 @@ public abstract class GameObject implements com.example.Client.Serializable {
      */
     public abstract void readFromStream(InputBitStream stream);
 
-    public void faceDeath(){
-        // by default nothing
-    }
+    public void faceDeath(){}
 
     /**
      * 매 프레임 호출되는 함수.
@@ -85,11 +85,22 @@ public abstract class GameObject implements com.example.Client.Serializable {
     /**
      * 그래픽 렌더 시에 호출되는 함수.
      * @param renderer Renderer 객체 인스턴스.
-     * @param ms
+     *
      */
-    public abstract void render(Renderer renderer, long ms);
+    public void render(Renderer renderer){
+        if (_renderComponent != null)
+            renderer.batch(_renderComponent);
+    }
 
     public static GameObject createInstance(){
         return null;
     };
+
+    public RenderComponent getRenderComponent() {
+        return _renderComponent;
+    }
+
+    public void setRenderComponent(RenderComponent renderComponent) {
+        this._renderComponent = renderComponent;
+    }
 }
