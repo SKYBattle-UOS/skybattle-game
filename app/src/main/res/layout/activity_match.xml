@@ -6,27 +6,19 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/text_assemble"
+        android:id="@+id/topText"
         android:layout_width="match_parent"
         android:layout_height="57dp"
         android:gravity="center_horizontal"
         android:padding="1dp"
-        android:text="집합: 시작지점으로 모이세요"
+        android:text="이 메시지는 보이면 안 되는데"
         android:textSize="25sp" />
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="700dp"
         tools:context=".MapsActivity" />
-    <Button
-        android:id="@+id/btn_pointer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="160dp"
-        android:layout_marginTop="20dp"
-        android:text="→"
-        android:textSize="20sp" />
 
 </LinearLayout>

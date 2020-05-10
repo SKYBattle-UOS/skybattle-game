@@ -1,12 +1,12 @@
 package com.example.Client;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,9 +14,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-public class AssembleActivity extends AppCompatActivity implements Screen, OnMapReadyCallback {
-    private Map _map;
+public class MatchActivity extends AppCompatActivity implements Screen, OnMapReadyCallback {
+    private TextView _topText;
     private SupportMapFragment _mapFragment;
+    private Map _map;
 
     View marker_root_view;
     TextView tv_marker;
@@ -24,10 +25,11 @@ public class AssembleActivity extends AppCompatActivity implements Screen, OnMap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_assemble);
+        setContentView(R.layout.activity_match);
         _mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         _mapFragment.getMapAsync(this);
+        _topText = findViewById(R.id.topText);
     }
 
     @Override
@@ -44,9 +46,27 @@ public class AssembleActivity extends AppCompatActivity implements Screen, OnMap
 
     @Override
     public void switchTo(ScreenType type) {
-        Intent selection_intent = new Intent(AssembleActivity.this, SelectCharacterActivity.class);
-        startActivity(selection_intent);
-        finish();
+        FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+        switch (type){
+            case CHARACTERSELECT:
+                trans.add(R.id.map, new SelectCharacterFragment());
+                break;
+
+            case GETREADY:
+                trans.replace(R.id.map, _mapFragment);
+                break;
+
+            case INGAME:
+                trans.add(R.id.map, new InGameFragment());
+                break;
+        }
+
+        trans.commit();
+    }
+
+    @Override
+    public void setText(String text) {
+        _topText.setText(text);
     }
 
     @Override

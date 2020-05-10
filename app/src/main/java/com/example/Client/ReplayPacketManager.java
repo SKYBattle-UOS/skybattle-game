@@ -139,7 +139,7 @@ public class ReplayPacketManager implements PacketManager {
     }
 
     public void update(long ms){
-        if (_packetNum > 29)
+        if (_packetNum >= _packets.length)
             return;
 
         // TODO

@@ -14,6 +14,7 @@ public class UIManager {
     private Map<Integer, Runnable> _callbackMapping = new HashMap<>();
     private Queue<ScreenType> _toSwitch = new LinkedList<>();
     private Handler _mainHandler = new Handler(Looper.getMainLooper());
+    private String _topText = null;
 
     public void switchScreen(ScreenType type){
         _toSwitch.add(type);
@@ -25,9 +26,11 @@ public class UIManager {
     public void setCurrentScreen(Screen screen){
         _currentScreen = screen;
 
-        if (!_toSwitch.isEmpty()){
+        if (!_toSwitch.isEmpty())
             _currentScreen.switchTo(_toSwitch.remove());
-        }
+
+        if (_topText != null)
+            setText(_topText);
     }
 
     public void invoke(int port){
@@ -40,5 +43,12 @@ public class UIManager {
     public void registerCallback(int port, Runnable func){
         Objects.requireNonNull(func);
         _callbackMapping.put(port, func);
+    }
+
+    public void setText(String text){
+        _topText = text;
+
+        if (_currentScreen != null)
+            _mainHandler.post(()->_currentScreen.setText(_topText));
     }
 }
