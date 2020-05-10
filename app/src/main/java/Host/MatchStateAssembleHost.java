@@ -47,8 +47,9 @@ class MatchStateAssembleHost implements GameState {
             return;
         }
 
-        Collection<GameObject> gos = CoreHost.getInstance().getGameObjects();
+        Collection<GameObject> gos = _match.getGameObjects();
         for (GameObject go : gos){
+            // TODO
             // check if assembled
             // if otherwise return
             return;

@@ -4,7 +4,7 @@ import android.util.Log;
 import java.io.InputStream;
 import Common.BitInputStream;
 import Common.InputBitStream;
-import Common.TempOutputBitStream;
+import Common.OutputBitStream;
 
 public class ReplayPacketManager implements PacketManager {
     private InputStream _inputStream;
@@ -14,10 +14,8 @@ public class ReplayPacketManager implements PacketManager {
     private int _elapsed;
     private int _packetNum;
     private BitInputStream _packet;
-    private TempOutputBitStream _outputStream;
 
     ReplayPacketManager()  {
-        _outputStream = new TempOutputBitStream();
         _packetNum = 0;
         _packets = new BitInputStream[30];
         _packetArrivalTime = new int[30];
@@ -136,6 +134,12 @@ public class ReplayPacketManager implements PacketManager {
     public InputBitStream getPacketStream() {
         // TODO
         return _packet;
+    }
+
+    @Override
+    public OutputBitStream getPacketToSend() {
+        // TODO: fake sending
+        return null;
     }
 
     public void update(long ms){

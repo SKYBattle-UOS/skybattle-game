@@ -15,7 +15,6 @@ public class CoreHost {
     private boolean _isInitialized;
     private NetworkManager _networkManager;
     private GameStateContextHost _gameStateContext;
-    private ArrayList<GameObject> _gameObjects;
 
     private CoreHost(){
         _isInitialized = false;
@@ -70,9 +69,5 @@ public class CoreHost {
 
     public NetworkManager getNetworkManager(){
         return _networkManager;
-    }
-
-    public Collection<GameObject> getGameObjects(){
-        return _gameObjects;
     }
 }

@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import Common.InputBitStream;
+import Common.OutputBitStream;
 
 public class NetworkPacketManager implements PacketManager {
     private Socket _socket;
@@ -22,6 +23,12 @@ public class NetworkPacketManager implements PacketManager {
 
     @Override
     public InputBitStream getPacketStream() {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public OutputBitStream getPacketToSend() {
         // TODO
         return null;
     }

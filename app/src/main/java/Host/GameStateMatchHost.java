@@ -16,7 +16,7 @@ import Common.MoveList;
 public class GameStateMatchHost implements GameState {
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
-    private ArrayList<GameObject> _world;
+    private ArrayList<GameObject> _gameObjects;
 
     // TODO
     private int _numPlayers;
@@ -25,7 +25,7 @@ public class GameStateMatchHost implements GameState {
 
     public GameStateMatchHost(){
         _worldSetter = new WorldSetterHost();
-        _world = new ArrayList<>();
+        _gameObjects = new ArrayList<>();
 
         _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
         GET_READY_COUNT = 10000;
@@ -83,5 +83,9 @@ public class GameStateMatchHost implements GameState {
                 break;
         }
         _currentState.start();
+    }
+
+    public Collection<GameObject> getGameObjects(){
+        return _gameObjects;
     }
 }
