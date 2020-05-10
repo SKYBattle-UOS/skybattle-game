@@ -51,7 +51,7 @@ public class MatchStateAssemble implements GameState {
         if (_isInitialized) {
             Collection<GameObject> gameObjects = _parent.getGameObjects();
             for (GameObject go : gameObjects){
-                go.render(renderer, ms);
+                go.render(renderer);
             }
         }
     }
