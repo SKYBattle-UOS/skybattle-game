@@ -12,9 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name="com.example.Client.GetReadyActivity"></activity>
-        <activity android:name="com.example.Client.SelectCharacterActivity" />
-        <activity android:name="com.example.Client.AssembleActivity" />
+        <activity android:name="com.example.Client.SelectCharacterFragment" />
+        <activity android:name="com.example.Client.MatchActivity" />
         <activity android:name="com.example.Client.RoomActivity" />
         <activity android:name="com.example.Client.SplashActivity">
             <intent-filter>

@@ -18,6 +18,7 @@ public class MatchStateSelectCharacter implements GameState {
     MatchStateSelectCharacter(GameStateMatch match){
         _match = match;
         _ioManager = Core.getInstance().getIOManager();
+        Core.getInstance().getUIManager().setText("집합 완료 : 캐릭터를 선택하세요");
     }
 
     @Override

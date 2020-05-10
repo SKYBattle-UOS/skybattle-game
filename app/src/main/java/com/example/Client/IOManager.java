@@ -42,12 +42,10 @@ public class IOManager {
     }
 
     public boolean isAssembleComplete() {
-//        return _elapsed > 15000;
-        return false;
+        return _elapsed > 15000;
     }
 
-
     public boolean isCharacterSelectComplete(){
-        return _elapsed > 25000;
+        return _elapsed > 20000;
     }
 }
