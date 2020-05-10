@@ -19,7 +19,6 @@ public class Core {
 
     private boolean _isInitialized;
     private Context _context;
-    private IOManager _IOManager;
     private Renderer _renderer;
     private GameStateContext _stateContext;
     private PacketManager _packetManager;
@@ -31,7 +30,6 @@ public class Core {
         _context = context;
         _stateContext = new GameStateContext();
         _packetManager = new ReplayPacketManager();
-        _IOManager = new IOManager(_packetManager);
         _gameObjectFactory = new GameObjectFactory();
         _uiManager = new UIManager();
 
@@ -92,7 +90,6 @@ public class Core {
         if (_renderer != null)
             _renderer.render(ms);
 
-        _IOManager.update(ms);
     }
     // endregion
 
@@ -103,8 +100,6 @@ public class Core {
     public GameObjectFactory getGameObjectFactory(){
         return _gameObjectFactory;
     }
-
-    public IOManager getIOManager() { return _IOManager; }
 
     public UIManager getUIManager() { return _uiManager; }
 

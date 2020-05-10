@@ -16,6 +16,11 @@ public class TempOutputBitStream implements OutputBitStream {
     }
 
     @Override
+    public int availableBits() {
+        return 0;
+    }
+
+    @Override
     public boolean isBufferOwner() {
         // TODO
         return true;

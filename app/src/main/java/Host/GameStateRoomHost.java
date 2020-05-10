@@ -1,5 +1,7 @@
 package Host;
 
+import java.io.IOException;
+
 import Common.GameState;
 import Common.GameStateType;
 import Common.InputBitStream;
@@ -23,7 +25,13 @@ public class GameStateRoomHost implements GameState {
             // 방장이 보냄
             if (_buffer[0] == 'a'){
                 net.closeAccept();
-                net.broadCastToClients(_buffer);
+
+                try {
+                    net.getPacketToSend().write(1, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 _parent.switchState(GameStateType.MATCH);
             }
         }

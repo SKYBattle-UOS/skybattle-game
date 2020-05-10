@@ -24,4 +24,11 @@ public class GameStateRoom implements GameState {
             Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE);
         }
     }
+
+    private boolean didHostPressStart(){
+        InputBitStream packetStream = Core.getInstance().getPakcetManager().getPacketStream();
+        if (packetStream.availableBits() > 0)
+            return packetStream.read(1) == 1;
+        return false;
+    }
 }

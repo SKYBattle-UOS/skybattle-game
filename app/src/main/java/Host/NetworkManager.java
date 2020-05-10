@@ -10,6 +10,7 @@ import java.util.Map;
 
 import Common.BitInputStream;
 import Common.InputBitStream;
+import Common.OutputBitStream;
 
 public class NetworkManager {
     private int _newPlayerId;
@@ -70,7 +71,8 @@ public class NetworkManager {
             }
         } catch (IOException e) {
             // socket closed; thread exit
-            _mappingAddr2Proxy.remove(socket.getInetAddress());
+            ClientProxy disconnected = _mappingAddr2Proxy.get(socket.getInetAddress());
+            disconnected.setDisconnected(true);
         }
     }
 
@@ -79,6 +81,10 @@ public class NetworkManager {
     }
 
     public void broadCastToClients(byte[] buffer) {
+    }
+
+    public OutputBitStream getPacketToSend(){
+        return null;
     }
 
     public int getNumConnections(){

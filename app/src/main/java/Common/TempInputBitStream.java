@@ -15,6 +15,11 @@ public class TempInputBitStream implements InputBitStream {
     }
 
     @Override
+    public int availableBits() {
+        return 0;
+    }
+
+    @Override
     public boolean isBufferOwner() {
         // TODO
         return true;

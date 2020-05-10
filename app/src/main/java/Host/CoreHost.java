@@ -2,6 +2,10 @@ package Host;
 
 import android.os.SystemClock;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import Common.GameObject;
 import Common.GameStateType;
 
 public class CoreHost {
@@ -11,6 +15,7 @@ public class CoreHost {
     private boolean _isInitialized;
     private NetworkManager _networkManager;
     private GameStateContextHost _gameStateContext;
+    private ArrayList<GameObject> _gameObjects;
 
     private CoreHost(){
         _isInitialized = false;
@@ -65,5 +70,9 @@ public class CoreHost {
 
     public NetworkManager getNetworkManager(){
         return _networkManager;
+    }
+
+    public Collection<GameObject> getGameObjects(){
+        return _gameObjects;
     }
 }

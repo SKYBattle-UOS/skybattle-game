@@ -8,17 +8,16 @@ import Common.InputBitStream;
 import Common.MoveList;
 
 public class ClientProxy {
-    private WorldSetterHost _worldSetter;
     private MoveList _unprocessedMoves;
     private int _playerId;
     private boolean _shouldSendLastTimeStamp;
     private ConcurrentLinkedQueue<InputBitStream> _rawPackets;
     private LinkedList<InputBitStream> _packets;
+    private boolean _isDisconnected;
 
     public ClientProxy(int playerId){
         _playerId = playerId;
         _shouldSendLastTimeStamp = false;
-        _worldSetter = new WorldSetterHost();
         _unprocessedMoves = new MoveList();
         _rawPackets = new ConcurrentLinkedQueue<>();
         _packets = new LinkedList<>();
@@ -38,5 +37,13 @@ public class ClientProxy {
 
     public Queue<InputBitStream> getPacketQueue(){
         return _packets;
+    }
+
+    public void setDisconnected(boolean disconnected){
+        _isDisconnected = disconnected;
+    }
+
+    public boolean isDisconnected(){
+        return _isDisconnected;
     }
 }

@@ -80,6 +80,11 @@ public class BitOutputStream implements OutputBitStream {
         }
     }
 
+    @Override
+    public int availableBits() {
+        return 0;
+    }
+
     /**
      * 비트들을 쓴다.
      * @param data   쓰여질 바이트들
