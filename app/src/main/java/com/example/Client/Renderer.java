@@ -1,5 +1,16 @@
 package com.example.Client;
 
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 그리기 연산을 하고 싶을 때 사용하는 클래스.
  *
@@ -15,12 +26,28 @@ public class Renderer {
      * @param color 채우기 색
      * @param size 크기
      */
+    private GoogleMap googlemap;
+    private GoogleMapAdapter mapAdapter=new GoogleMapAdapter();;
+    private Handler _mainHandler = new Handler(Looper.getMainLooper());
+    private Context mContext;
+
+    public void drawFilledCircle(GoogleMap map,double latitude, double longitude, int color, float size) {
+        mapAdapter.onAddMarker(map, latitude,  longitude, color,  size );
+    }
     public void drawFilledCircle(double latitude, double longitude, int color, float size){
-        // TODO: DEBUG EDIT
-//        Log.i("Stub",
-//                String.format(
-//                        "Renderer: batched filled #%X circle at %f, %f with size %f",
-//                        color, latitude, longitude, size));
+        //TODO: DEBUG EDIT
+        Log.i("Stub",
+                String.format(
+                        "Renderer: batched filled #%X circle at %f, %f with size %f",
+                        color, latitude, longitude, size));
+        Runnable func = () -> {
+            //mapAdapter.onAddMarker(googlemap, latitude,  longitude, color,  size );
+            mapAdapter.onAddMarker(mContext,googlemap, latitude,  longitude, color,  size );
+        };
+        if (func != null) {
+            _mainHandler.post(func);
+        }
+
     }
 
     /**
@@ -42,5 +69,11 @@ public class Renderer {
     public void render(long ms){
         // TODO: DEBUG EDIT
 //        Log.i("Stub", "Renderer: Rendered batched render calls");
+    }
+    public void setMap(GoogleMap map){
+        googlemap=map;
+    }
+    public void getActivity(Context activity){
+        mContext=activity;
     }
 }
