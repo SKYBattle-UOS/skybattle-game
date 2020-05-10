@@ -3,6 +3,7 @@ package com.example.Client;
 import android.util.Log;
 
 import java.util.Collection;
+import java.util.Locale;
 
 import Common.GameObject;
 import Common.GameState;
@@ -17,12 +18,16 @@ import Common.MatchStateType;
  * @since 2020-04-21a
  */
 public class MatchStateGetReady implements GameState {
+    private final String TOP_TEXT = "도망가세요. 남은시간 : %d초";
     private int _countDown;
+    private int _prevCount;
     private GameStateMatch _match;
 
     MatchStateGetReady(GameStateMatch parent, int countInMS){
         _match = parent;
         _countDown = countInMS;
+        _prevCount = _countDown / 1000;
+        Core.getInstance().getUIManager().setText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
     }
 
     @Override
@@ -30,15 +35,20 @@ public class MatchStateGetReady implements GameState {
         _countDown -= ms;
         if (_countDown < 0){
             _match.switchState(MatchStateType.INGAME);
+            Core.getInstance().getUIManager().switchScreen(ScreenType.INGAME);
         }
     }
 
     @Override
     public void render(Renderer renderer, long ms) {
-        Log.i("Stub", String.format("MatchStateGetReady: Showing Get Ready Screen; %d seconds left", _countDown / 1000));
+        if (_prevCount != _countDown / 1000){
+            _prevCount = _countDown / 1000;
+            Core.getInstance().getUIManager().setText(String.format(Locale.getDefault(), TOP_TEXT, _countDown / 1000));
+        }
+
         Collection<GameObject> gameObjects = _match.getGameObjects();
         for (GameObject go : gameObjects){
-            go.render(renderer, ms);
+            go.render(renderer);
         }
     }
 }

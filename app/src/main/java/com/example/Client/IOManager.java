@@ -46,6 +46,6 @@ public class IOManager {
     }
 
     public boolean isCharacterSelectComplete(){
-        return _elapsed > 25000;
+        return _elapsed > 20000;
     }
 }

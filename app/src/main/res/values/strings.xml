@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="red_fill">#88FF0000</string>
+    <string name="red_stroke">#FFFF0000</string>
+    <string name="orange_fill">#88FFA500</string>
+    <string name="orange_stroke">#FFFFA500</string>
+    <string name="blue_fill">#880000FF</string>
+    <string name="blue_stroke">#FF0000FF</string>
+    <string name="black_fill">#88000000</string>
+    <string name="black_stroke">#FF000000</string>
+    <string name="gray_fill">#88808080</string>
+    <string name="gray_stroke">#FF808080</string>
+    <string name="yellow_fill">#88FFFF00</string>
+    <string name="yellow_stroke">#FFFFFF00</string>
+    <string name="green_fill">#88008000</string>
+    <string name="green_stroke">#FF008000</string>
+    <string name="violet_fill">#888A2BE2</string>
+    <string name="violet_stroke">#FF8A2BE2</string>
+    <string name="skyblue_fill">#8887CEFA</string>
+    <string name="skyblue_stroke">#FF87CEFA</string>
 </resources>

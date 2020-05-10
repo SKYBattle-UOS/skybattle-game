@@ -26,6 +26,7 @@ public class MatchStateAssemble implements GameState {
         _sentConfirm = false;
         _numPlayers = numPlayers;
         _ioManager = Core.getInstance().getIOManager();
+        Core.getInstance().getUIManager().setText("다른 플레이어를 기다리는중...");
     }
 
     @Override
@@ -38,7 +39,10 @@ public class MatchStateAssemble implements GameState {
             }
         }
 
-        _isInitialized = _ioManager.isEverybodyInitializedForAssemble();
+        if (_ioManager.isEverybodyInitializedForAssemble()){
+            _isInitialized = true;
+            Core.getInstance().getUIManager().setText("집합하세요");
+        }
 
         if (_ioManager.isAssembleComplete()){
             _parent.switchState(MatchStateType.SELECT_CHARACTER);
@@ -51,7 +55,7 @@ public class MatchStateAssemble implements GameState {
         if (_isInitialized) {
             Collection<GameObject> gameObjects = _parent.getGameObjects();
             for (GameObject go : gameObjects){
-                go.render(renderer, ms);
+                go.render(renderer);
             }
         }
     }

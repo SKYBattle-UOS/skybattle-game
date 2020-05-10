@@ -44,6 +44,11 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
     }
 
     @Override
+    public void setText(String text) {
+        // nothing
+    }
+
+    @Override
     public void onDenied(int i, String[] strings) {
     }
 

@@ -3,6 +3,8 @@ package Common;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.example.Client.Core;
+import com.example.Client.ImageType;
 import com.example.Client.Renderer;
 
 /**
@@ -13,20 +15,14 @@ import com.example.Client.Renderer;
  * @since 2020-04-21
  */
 public class TempPlayer extends GameObject {
-
     TempPlayer(String name) {
         super(0f, 0f, name);
+        setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
     }
 
     @Override
     public void update(long ms) {
 
-    }
-
-    @Override
-    public void render(Renderer renderer, long ms) {
-        double[] position = getPosition();
-        renderer.drawFilledCircle(position[0], position[1], Color.YELLOW, 10f);
     }
 
     public static GameObject createInstance() {
