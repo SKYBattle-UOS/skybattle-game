@@ -103,6 +103,17 @@ public class AssembleActivity extends AppCompatActivity implements Screen, OnMap
         Marker marker=googleMap.addMarker(markerOptions);
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        /*
+        if(marker == null){
+            marker = googleMap.addMarker(markerOptions);
+        }
+        else {
+            LatLng position_ = new LatLng(37.66,126.77);
+            marker.setPosition(position_);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(position_));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        }*/
+
         //marker.setPosition(new LatLng(37.56+10,126.97+10));
         //marker.setVisible(true);
 
