@@ -1,9 +1,11 @@
 package Common;
 
-import java.util.Vector;
+import java.util.Deque;
 
 public class MoveList {
-    private Vector<Move> _moves;
+    private Deque<Move> _moves;
 
-
+    public void append(Move move){
+        _moves.addLast(move);
+    }
 }

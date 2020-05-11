@@ -1,10 +1,11 @@
-package com.example.Client;
+package Common;
 
 import android.graphics.Color;
 import android.util.Log;
 
-import Common.InputBitStream;
-import Common.OutputBitStream;
+import com.example.Client.Core;
+import com.example.Client.ImageType;
+import com.example.Client.Renderer;
 
 /**
  * 임시 캐릭터 클래스. 볼품없는 스킬을 넣을 예정.
@@ -14,20 +15,14 @@ import Common.OutputBitStream;
  * @since 2020-04-21
  */
 public class TempPlayer extends GameObject {
-
     TempPlayer(String name) {
         super(0f, 0f, name);
+        setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
     }
 
     @Override
     public void update(long ms) {
 
-    }
-
-    @Override
-    public void render(Renderer renderer, long ms) {
-        double[] position = getPosition();
-        renderer.drawFilledCircle(position[0], position[1], Color.YELLOW, 10f);
     }
 
     public static GameObject createInstance() {
@@ -43,10 +38,10 @@ public class TempPlayer extends GameObject {
     public void readFromStream(InputBitStream stream) {
         // TODO
         byte[] b = new byte[2];
-        stream.readBytes(b, 8);
+        stream.read(b, 8);
 
         if (b[0] == 1){
-            stream.readBytes(b, 16);
+            stream.read(b, 16);
             setPosition(b[0], b[1]);
         }
     }

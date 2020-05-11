@@ -2,6 +2,9 @@ package com.example.Client;
 
 import android.util.Log;
 
+import java.util.Collection;
+
+import Common.GameObject;
 import Common.GameState;
 
 /**
@@ -16,7 +19,7 @@ public class MatchStateInGame implements GameState {
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
-        Log.i("Stub", "MatchStateInGame: Game is Playing");
+        Core.getInstance().getUIManager().setText("게임시작이 시작되었습니다");
     }
 
     @Override
@@ -26,9 +29,9 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void render(Renderer renderer, long ms) {
-//        Collection<GameObject> gameObjects = _match.getGameObjects();
-//        for (GameObject go : gameObjects){
-//            go.render(renderer, ms);
-//        }
+        Collection<GameObject> gameObjects = _match.getGameObjects();
+        for (GameObject go : gameObjects){
+            go.render(renderer);
+        }
     }
 }

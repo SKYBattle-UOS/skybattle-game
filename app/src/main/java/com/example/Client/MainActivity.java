@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements Screen {
+import com.pedro.library.AutoPermissions;
+import com.pedro.library.AutoPermissionsListener;
+
+public class MainActivity extends AppCompatActivity implements Screen, AutoPermissionsListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Core.createInstance(getApplicationContext());
 
         Button btn_entrance = findViewById(R.id.btn_entrance);
@@ -39,5 +41,25 @@ public class MainActivity extends AppCompatActivity implements Screen {
             startActivity(entrance_intent);
             finish();
         }
+    }
+
+    @Override
+    public void setText(String text) {
+        // nothing
+    }
+
+    @Override
+    public void onDenied(int i, String[] strings) {
+    }
+
+    @Override
+    public void onGranted(int i, String[] strings) {
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
+        Toast.makeText(this, "requestCode : "+requestCode+"  permissions : "+permissions+"  grantResults :"+grantResults, Toast.LENGTH_SHORT).show();
     }
 }

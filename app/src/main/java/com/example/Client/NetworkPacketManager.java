@@ -1,25 +1,13 @@
 package com.example.Client;
 
-import android.content.Context;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
 import Common.InputBitStream;
 
-public class NetworkInstructionManager extends InstructionManager {
+public class NetworkPacketManager implements PacketManager {
     private Socket _socket;
-
-    NetworkInstructionManager(Context context, InputManager inputManager){
-        super(context);
-        // TODO
-    }
-
-    // TODO: DELETE
-    public NetworkInstructionManager() {
-        super(null);
-    }
 
     public void init(){
         // TODO

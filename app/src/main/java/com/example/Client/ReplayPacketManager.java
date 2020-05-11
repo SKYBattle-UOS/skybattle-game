@@ -1,43 +1,38 @@
 package com.example.Client;
 
-import android.content.Context;
 import android.util.Log;
-
 import java.io.InputStream;
-
+import Common.BitInputStream;
 import Common.InputBitStream;
-import Common.TempInputBitStream;
 import Common.TempOutputBitStream;
 
-public class ReplayInstructionManager extends InstructionManager {
+public class ReplayPacketManager implements PacketManager {
     private InputStream _inputStream;
     // TODO
-    private TempInputBitStream[] _packets;
+    private BitInputStream[] _packets;
     private int[] _packetArrivalTime;
     private int _elapsed;
     private int _packetNum;
-    private TempInputBitStream _packet;
+    private BitInputStream _packet;
     private TempOutputBitStream _outputStream;
 
-    ReplayInstructionManager(Context context)  {
-        super(context);
-
+    ReplayPacketManager()  {
         _outputStream = new TempOutputBitStream();
         _packetNum = 0;
-        _packets = new TempInputBitStream[30];
+        _packets = new BitInputStream[30];
         _packetArrivalTime = new int[30];
         for (int i = 0; i < _packets.length; i++)
-            _packets[i] = new TempInputBitStream();
+            _packets[i] = new BitInputStream();
 
         _elapsed = 0;
 
         int i = 0;
         int p = 0;
 
-        _packetArrivalTime[p] = 5000;
-        _packets[p].getBuffer()[i++] = 'a'; // start button pressed by host
-        p++;
-        i = 0;
+//        _packetArrivalTime[p] = 5000;
+//        _packets[p].getBuffer()[i++] = 'a'; // start button pressed by host
+//        p++;
+//        i = 0;
 
         _packetArrivalTime[p] = 9000;
         _packets[p].getBuffer()[i++] = 'r'; // replication
@@ -68,29 +63,29 @@ public class ReplayInstructionManager extends InstructionManager {
         _packets[p].getBuffer()[i++] = 9; // lon
         p++;
         i = 0;
-
-        _packetArrivalTime[p] = 10000;
-        _packets[p].getBuffer()[i++] = 'z'; // not replication
-        _packets[p].getBuffer()[i++] = 'i'; // every client has completed initialization of assemble
-        p++;
-        i = 0;
-
+//
+//        _packetArrivalTime[p] = 10000;
+//        _packets[p].getBuffer()[i++] = 'z'; // not replication
+//        _packets[p].getBuffer()[i++] = 'i'; // every client has completed initialization of assemble
+//        p++;
+//        i = 0;
+//
         _packetArrivalTime[p] = 13000;
         _packets[p].getBuffer()[i++] = 'z'; // not replication
         p++;
         i = 0;
-
-        _packetArrivalTime[p] = 15000;
-        _packets[p].getBuffer()[i++] = 'z'; // not replication
-        _packets[p].getBuffer()[i++] = 's'; // assemble complete
-        p++;
-        i = 0;
-
-        _packetArrivalTime[p] = 25000;
-        _packets[p].getBuffer()[i++] = 'z'; // not replication
-        _packets[p].getBuffer()[i++] = 'c'; // character select complete
-        p++;
-        i = 0;
+//
+//        _packetArrivalTime[p] = 15000;
+//        _packets[p].getBuffer()[i++] = 'z'; // not replication
+//        _packets[p].getBuffer()[i++] = 's'; // assemble complete
+//        p++;
+//        i = 0;
+//
+//        _packetArrivalTime[p] = 25000;
+//        _packets[p].getBuffer()[i++] = 'z'; // not replication
+//        _packets[p].getBuffer()[i++] = 'c'; // character select complete
+//        p++;
+//        i = 0;
 
         _packetArrivalTime[p] = 40000;
         _packets[p].getBuffer()[i++] = 'r'; // replication
@@ -135,14 +130,6 @@ public class ReplayInstructionManager extends InstructionManager {
 
         p++;
         i = 0;
-
-//        // TODO
-//        try {
-//            _inputStream = _context.getAssets().open("saveFile.sav");
-//            _inputStream.read(_tempBit2.getBuffer());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
@@ -152,7 +139,7 @@ public class ReplayInstructionManager extends InstructionManager {
     }
 
     public void update(long ms){
-        if (_packetNum > 29)
+        if (_packetNum >= _packets.length)
             return;
 
         // TODO

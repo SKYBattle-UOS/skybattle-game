@@ -1,7 +1,7 @@
-package com.example.Client;
+package Common;
 
-import Common.InputBitStream;
-import Common.OutputBitStream;
+import com.example.Client.RenderComponent;
+import com.example.Client.Renderer;
 
 /**
  * 매 프레임 Update 될 필요가 있는 객체들의 base abstract class 입니다.
@@ -11,12 +11,13 @@ import Common.OutputBitStream;
  * @since 2020-04-21
  */
 public abstract class GameObject implements com.example.Client.Serializable {
-    static int classId;
+    public static int classId;
 
     private double[] _position;
     private String _name;
     private boolean _wantsToDie;
     private int _indexInWorld;
+    private RenderComponent _renderComponent;
 
     /**
      * 간단한 constructor.
@@ -73,9 +74,7 @@ public abstract class GameObject implements com.example.Client.Serializable {
      */
     public abstract void readFromStream(InputBitStream stream);
 
-    public void faceDeath(){
-        // by default nothing
-    }
+    public void faceDeath(){}
 
     /**
      * 매 프레임 호출되는 함수.
@@ -86,11 +85,22 @@ public abstract class GameObject implements com.example.Client.Serializable {
     /**
      * 그래픽 렌더 시에 호출되는 함수.
      * @param renderer Renderer 객체 인스턴스.
-     * @param ms
+     *
      */
-    public abstract void render(Renderer renderer, long ms);
+    public void render(Renderer renderer){
+        if (_renderComponent != null)
+            renderer.batch(_renderComponent);
+    }
 
     public static GameObject createInstance(){
         return null;
     };
+
+    public RenderComponent getRenderComponent() {
+        return _renderComponent;
+    }
+
+    public void setRenderComponent(RenderComponent renderComponent) {
+        this._renderComponent = renderComponent;
+    }
 }

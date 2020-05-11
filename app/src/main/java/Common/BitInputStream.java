@@ -1,113 +1,103 @@
 package Common;
 
-import java.io.ByteArrayInputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-
 /**
- * Base class of bit input streams. *
+ * Base class of bit input streams.
  * 플랫폼마다 바이트를 어떤 순서로 저장하는지 다름. -> 리틀 엔디언 ->  가장 작은 자리의 바이트부터 먼저 기재
  * @author HyungJoon
  */
 
 public class BitInputStream implements InputBitStream {
 
-    private static final int BITS_PER_BYTE = 8;
-    private InputStream in;
-    private int buffer;
-    private int bufferBitCount;
-
-    private int markedBuffer = 0;
-    private int markedBufferBitCount = 0;
     private boolean bufferOwner = false;
+    private byte[] data;
+
+    private int byteOffset;
+    private int bitOffset;
+    private int byteLimit;
 
     // 버퍼 오너면 비트스트림
-
     public BitInputStream() {
-        this.in = new ByteArrayInputStream(new byte[1300]);
-        this.bufferBitCount = 0;
+        this.data = new byte[1300];
         bufferOwner = true;
     }
 
     /**
-     * Initializes a bit input stream from an InputStream.
-     * @param  buffer input
+     * 매개변수로 바이트 배열 받을 시 내부 바이트 배열에 할당
+     * @param  buffer input buffer
      */
     public BitInputStream(byte[] buffer) {
-        this.in = new ByteArrayInputStream(buffer);
-        this.bufferBitCount = 0;
+        this.data = buffer;
+        byteLimit = buffer.length;
         bufferOwner = false;
     }
 
-    //리틀엔디안
-    private static final int[] MASKS = new int[] {
-            0, 1, 3, 7, 0xf, 0x1f, 0x3f, 0x7f
-    };
-
+    /**
+     * 32비트까지 읽을 수 있다.
+     *
+     * @param numBits 비트를 읽을 개수
+     * @return 정수 반환 whose bottom n bits hold the read data.
+     */
     @Override
-    public void readBytes(byte[] buffer, int numBits) {
+    public int read(int numBits) {
+        if (numBits == 0) {
+            return 0;
+        }
 
+        int returnValue = 0;
+        bitOffset += numBits;
+        while (bitOffset > 8) {
+            bitOffset -= 8;
+            returnValue |= (data[byteOffset++] & 0xFF) << bitOffset;
+        }
+        returnValue |= (data[byteOffset] & 0xFF) >> (8 - bitOffset);
+        returnValue &= 0xFFFFFFFF >>> (32 - numBits);
+        if (bitOffset == 8) {
+            bitOffset = 0;
+            byteOffset++;
+        }
+        return returnValue;
     }
 
     /**
-     * 비트들을 읽는다.
-     *
-     * If available bits are not zero but less than numBits, this method will
-     * return only available bits. No EOFException are thrown.
-     *
-     * @param numBits       bits count to be read. Must not larger than 32.
-     * @return              an integer whose lower bits are bits read from stream.
-     * @throws EOFException if no data available from the InputStream.
-     * @throws IOException  if I/O error occurs.
+     * Reads {@code numBits} bits into {@code buffer}.
+     *  @param buffer The array into which the read data should be written. The trailing
+     *     {@code numBits % 8} bits are written into the most significant bits of the last modified
+     *     {@code buffer} byte. The remaining ones are unmodified.
+     * @param numBits The number of bits to read.
+     * @return
      */
-    public int read(int numBits) throws IOException {
-        int result = 0;
-        int resultBits = 0;
-        boolean resultContainData = false;
-
-        while (numBits > 0) {
-            if (bufferBitCount == 0) {
-                buffer = in.read();
-                if (buffer < 0) {
-                    if (!resultContainData) {
-                        throw new EOFException();
-                    }
-                    return result;
-                }
-                bufferBitCount = BITS_PER_BYTE;
-            }
-
-            if (bufferBitCount > numBits) { //읽을 비트가 bit카운트 보다 적은경우
-                result = ((buffer & MASKS[numBits]) << resultBits) | result;
-                resultBits += numBits;
-                bufferBitCount -= numBits;
-                buffer >>= numBits;
-                numBits = 0;
-            } else {    //읽을 비트가 bit 카운트 보다 많음.
-                result = (buffer << resultBits) | result;
-                resultBits += bufferBitCount;
-                numBits -= bufferBitCount;
-                bufferBitCount = 0;
-            }
-            resultContainData = true;
+    @Override
+    public int read(byte[] buffer, int numBits) {
+        // Whole bytes.
+        int to = (numBits >> 3) /* numBits / 8 */;
+        for (int i = 0; i < to; i++) {
+            buffer[i] = (byte) (data[byteOffset++] << bitOffset);
+            buffer[i] = (byte) (buffer[i] | ((data[byteOffset] & 0xFF) >> (8 - bitOffset)));
         }
-        return result;
+        // Trailing bits.
+        int bitsLeft = numBits & 7 /* numBits % 8 */;
+        if (bitsLeft == 0) {
+            return to;
+        }
+        // Set bits that are going to be overwritten to 0.
+        buffer[to] = (byte) (buffer[to] & (0xFF >> bitsLeft));
+        if (bitOffset + bitsLeft > 8) {
+            // We read the rest of data[byteOffset] and increase byteOffset.
+            buffer[to] = (byte) (buffer[to] | ((data[byteOffset++] & 0xFF) << bitOffset));
+            bitOffset -= 8;
+        }
+        bitOffset += bitsLeft;
+        int lastDataByteTrailingBits = (data[byteOffset] & 0xFF) >> (8 - bitOffset);
+        buffer[to] |= (byte) (lastDataByteTrailingBits << (8 - bitsLeft));
+        if (bitOffset == 8) {
+            bitOffset = 0;
+            byteOffset++;
+        }
+        return to;
     }
 
-    public int read(byte[] data, int numBits) throws IOException {
-        this.in = new ByteArrayInputStream(data);
-        int result = 0;
-
-        while (numBits > 8) {
-            result += read(8);
-            numBits -=8;
-        }
-
-        if(numBits > 0) //남은 비트들 읽기
-            result +=read(numBits);
-
-        return result;
+    public byte[] getBuffer(){
+        return data;
     }
 
     @Override
@@ -120,64 +110,12 @@ public class BitInputStream implements InputBitStream {
 
     }
 
-    public byte[] getBuffer() {
-        //todo
-        //return 0;
-        return null;
-    }
-
-    /**
-     * @return if this bit input stream supports mark and reset.
-     */
-    public boolean markSupported() {
-        return in.markSupported();
-    }
-
-    /**
-     * bit input stream 현재 위치를 저장 한다.
-     * @param readLimit     the maximum limit of bits that can read before the mark
-     *                      position become invalid.
-     * @see   java.io.InputStream#mark(int)
-     */
-    public void mark(int readLimit) {
-        in.mark((readLimit + BITS_PER_BYTE - 1) / BITS_PER_BYTE);
-        markedBuffer = buffer;
-        markedBufferBitCount = bufferBitCount;
-    }
-
-    /**
-     * 현재 위치를 지정된 위치로 변경
-     * If this method is called without calling mark, an IOException is thrown or
-     * current position is set to start of the stream, which depends on behaviors of
-     * the InputStream.
-     *
-     * @throws IOException   if this stream has not been marked or if the
-     *                       mark has been invalidated.
-     * @see    java.io.InputStream#reset()
-     */
-    public void reset() throws IOException {
-        in.reset();
-        buffer = markedBuffer;
-        bufferBitCount = markedBufferBitCount;
-    }
-
     public boolean isBufferOwner(){
         return bufferOwner;
     }
 
-    /**
-     * @return available bits in the stream.
-     * @throws IOException if I/O error occurs.
-     */
-    public int availableBits() throws IOException {
-        return (in.available() * BITS_PER_BYTE) + bufferBitCount;
-    }
-
-    /**
-     * InputStream 닫는다.
-     */
-    public void close() throws IOException {
+    public void close(){
         if(bufferOwner)
-            in.close();
+            data = null;
     }
 }

@@ -2,16 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/text_character"
-        android:layout_width="match_parent"
-        android:layout_height="57dp"
-        android:gravity="center_horizontal"
-        android:padding="1dp"
-        android:text="캐릭터를 선택하세요"
-        android:textSize="30sp" />
+    android:orientation="vertical"
+    android:background="@drawable/sky"
+    android:clickable="true"
+    android:focusable="true">
 
     <Button
         android:id="@+id/btn_character1"

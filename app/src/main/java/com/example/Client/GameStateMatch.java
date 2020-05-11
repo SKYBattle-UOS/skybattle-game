@@ -3,6 +3,7 @@ package com.example.Client;
 import java.util.Collection;
 import java.util.Vector;
 
+import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
@@ -37,7 +38,7 @@ public class GameStateMatch implements GameState {
 
     @Override
     public void update(long ms) {
-        InputBitStream packetStream = Core.getInstance().getInstructionManager().getPacketStream();
+        InputBitStream packetStream = Core.getInstance().getPakcetManager().getPacketStream();
         if (packetStream != null)
             _worldSetter.processInstructions(packetStream);
 
