@@ -18,16 +18,14 @@ public class Core {
     private static Core _coreInstance;
 
     private boolean _isInitialized;
-    private Context _context;
     private Renderer _renderer;
     private GameStateContext _stateContext;
     private PacketManager _packetManager;
     private GameObjectFactory _gameObjectFactory;
     private UIManager _uiManager;
 
-    private Core(Context context){
+    private Core(){
         _isInitialized = false;
-        _context = context;
         _stateContext = new GameStateContext();
         _packetManager = new ReplayPacketManager();
         _gameObjectFactory = new GameObjectFactory();
@@ -43,21 +41,15 @@ public class Core {
         }
     }
 
-    static void createInstance(Context context){
+    public static Core getInstance(){
         if (_coreInstance == null){
-            _coreInstance = new Core(context);
+            _coreInstance = new Core();
             _coreInstance.init();
             (new Thread(() -> _coreInstance.run())).start();
         }
-    }
-
-    public static Core getInstance(){
         return _coreInstance;
     }
 
-    /**
-     * 애플리케이션 로직의 시작점.
-     */
     private void run(){
         long prev = SystemClock.uptimeMillis();
         long ms;
@@ -79,19 +71,16 @@ public class Core {
         }
     }
 
-    // TODO: DEBUG DELETE
-    // region DEBUG
     private void run(long ms){
-        _packetManager.update(ms);
-
         _stateContext.update(ms);
+        _packetManager.send();
+
         _stateContext.render(_renderer, ms);
 
         if (_renderer != null)
             _renderer.render(ms);
 
     }
-    // endregion
 
     public PacketManager getPakcetManager(){
         return _packetManager;

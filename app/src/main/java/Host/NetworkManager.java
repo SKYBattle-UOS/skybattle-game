@@ -2,13 +2,17 @@ package Host;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import Common.BitInputStream;
+import Common.BitOutputStream;
 import Common.InputBitStream;
 import Common.OutputBitStream;
 
@@ -17,11 +21,16 @@ public class NetworkManager {
     private int _port;
     private ServerSocket _socket;
     private Map<InetAddress, ClientProxy> _mappingAddr2Proxy;
+    private ArrayList<Socket> _clientSockets;
     private ClientProxy _hostClient;
+    private OutputBitStream _sendThisFrame;
 
     public NetworkManager(int port){
         _newPlayerId = 0;
         _port = port;
+        _sendThisFrame = new BitOutputStream();
+        _mappingAddr2Proxy = new HashMap<>();
+        _clientSockets = new ArrayList<>();
     }
 
     public void open(){
@@ -43,6 +52,16 @@ public class NetworkManager {
     }
 
     public void update(long ms){
+        for (Socket socket : _clientSockets){
+            try {
+                OutputStream stream = socket.getOutputStream();
+                stream.write(_sendThisFrame.getBuffer(), 0, _sendThisFrame.getBufferByteLength());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        _sendThisFrame.resetPos();
     }
 
     private void acceptor(){
@@ -51,6 +70,7 @@ public class NetworkManager {
                 Socket newSocket = _socket.accept();
                 ClientProxy client = new ClientProxy(_newPlayerId++);
                 _mappingAddr2Proxy.put(newSocket.getInetAddress(), client);
+                _clientSockets.add(newSocket);
                 (new Thread(()->reader(newSocket, client))).start();
             } catch (IOException e) {
                 // socket closed; thread exit
@@ -80,11 +100,8 @@ public class NetworkManager {
         return _hostClient;
     }
 
-    public void broadCastToClients(byte[] buffer) {
-    }
-
     public OutputBitStream getPacketToSend(){
-        return null;
+        return _sendThisFrame;
     }
 
     public int getNumConnections(){

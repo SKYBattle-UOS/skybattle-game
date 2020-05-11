@@ -7,4 +7,7 @@ public interface OutputBitStream {
     void write(int data, int numBits) throws IOException;
     int availableBits();
     boolean isBufferOwner();
+    byte[] getBuffer();
+    int getBufferByteLength();
+    void resetPos();
 }

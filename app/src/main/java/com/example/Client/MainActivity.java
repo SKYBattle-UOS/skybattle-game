@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Core.createInstance(getApplicationContext());
 
         Button btn_entrance = findViewById(R.id.btn_entrance);
         btn_entrance.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(GameStateMain.switchScreenPort));

@@ -21,13 +21,15 @@ public class MatchStateSelectCharacter implements GameState {
 
     @Override
     public void update(long ms) {
-        if (isCharacterSelectComplete()){
+        InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+
+        if (isCharacterSelectComplete(packet)){
             Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY);
             _match.switchState(MatchStateType.GET_READY);
         }
     }
 
-    private boolean isCharacterSelectComplete(){
-        return false;
+    private boolean isCharacterSelectComplete(InputBitStream packet){
+        return packet.read(1) == 1;
     }
 }
