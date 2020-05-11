@@ -8,16 +8,14 @@ import Common.InputBitStream;
 
 public class GameStateRoom implements GameState {
     private GameStateContext _parent;
-    private IOManager _ioManager;
 
     GameStateRoom(GameStateContext stateContext){
         _parent = stateContext;
-        _ioManager = Core.getInstance().getIOManager();
     }
 
     @Override
     public void update(long ms) {
-        if (_ioManager.didHostPressStart()) {
+        if (didHostPressStart()) {
             // assemble
             Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
             _parent.switchState(GameStateType.MATCH);
@@ -27,7 +25,7 @@ public class GameStateRoom implements GameState {
 
     private boolean didHostPressStart(){
         InputBitStream packetStream = Core.getInstance().getPakcetManager().getPacketStream();
-        if (packetStream.availableBits() > 0)
+        if (packetStream != null && packetStream.availableBits() > 0)
             return packetStream.read(1) == 1;
         return false;
     }

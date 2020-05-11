@@ -3,6 +3,7 @@ package com.example.Client;
 import android.util.Log;
 import java.io.InputStream;
 import Common.BitInputStream;
+import Common.BitOutputStream;
 import Common.InputBitStream;
 import Common.OutputBitStream;
 
@@ -140,6 +141,11 @@ public class ReplayPacketManager implements PacketManager {
     public OutputBitStream getPacketToSend() {
         // TODO: fake sending
         return null;
+    }
+
+    @Override
+    public void send() {
+        // TODO
     }
 
     public void update(long ms){

@@ -15,19 +15,18 @@ import Common.BitInputStream;
 import Common.BitOutputStream;
 import Common.InputBitStream;
 import Common.OutputBitStream;
+import Common.Settings;
 
 public class NetworkManager {
     private int _newPlayerId;
-    private int _port;
     private ServerSocket _socket;
     private Map<InetAddress, ClientProxy> _mappingAddr2Proxy;
     private ArrayList<Socket> _clientSockets;
     private ClientProxy _hostClient;
     private OutputBitStream _sendThisFrame;
 
-    public NetworkManager(int port){
+    public NetworkManager(){
         _newPlayerId = 0;
-        _port = port;
         _sendThisFrame = new BitOutputStream();
         _mappingAddr2Proxy = new HashMap<>();
         _clientSockets = new ArrayList<>();
@@ -35,7 +34,7 @@ public class NetworkManager {
 
     public void open(){
         try {
-            _socket = new ServerSocket(_port);
+            _socket = new ServerSocket(Settings.PORT);
             (new Thread(this::acceptor)).start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,12 +45,12 @@ public class NetworkManager {
         try {
             _socket.close();
         } catch (IOException e) {
-            // I don't know why this could happen
+            // I don't know how this could happen
             e.printStackTrace();
         }
     }
 
-    public void update(long ms){
+    public void send(){
         for (Socket socket : _clientSockets){
             try {
                 OutputStream stream = socket.getOutputStream();

@@ -1,9 +1,11 @@
 package com.example.Client;
 
+import android.content.Context;
 import android.os.SystemClock;
 
 import Common.GameStateType;
 import Common.TempPlayer;
+import Host.CoreHost;
 
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
@@ -14,38 +16,49 @@ import Common.TempPlayer;
  * @since 2020-04-21
  */
 public class Core {
+
     private static Core _coreInstance;
 
+    private Context _appContext;
     private boolean _isInitialized;
     private Renderer _renderer;
     private GameStateContext _stateContext;
     private PacketManager _packetManager;
     private GameObjectFactory _gameObjectFactory;
     private UIManager _uiManager;
+    private Location _location;
 
-    private Core(){
+    private Core(Context context){
+        _appContext = context;
         _isInitialized = false;
         _stateContext = new GameStateContext();
-        _packetManager = new ReplayPacketManager();
+        _packetManager = new NetworkPacketManager();
         _gameObjectFactory = new GameObjectFactory();
         _uiManager = new UIManager();
+        _location = new Location(_appContext);
 
         registerGameObjects();
     }
 
     private void init(){
+        // TODO
         if (!_isInitialized){
+            CoreHost.getInstance().getNetworkManager().open();
             _stateContext.switchState(GameStateType.MAIN);
             _isInitialized = true;
+            ((NetworkPacketManager) _packetManager).init();
+        }
+    }
+
+    public static void createInstance(Context context){
+        if (_coreInstance == null){
+            _coreInstance = new Core(context);
+            _coreInstance.init();
+            (new Thread(() -> _coreInstance.run())).start();
         }
     }
 
     public static Core getInstance(){
-        if (_coreInstance == null){
-            _coreInstance = new Core();
-            _coreInstance.init();
-            (new Thread(() -> _coreInstance.run())).start();
-        }
         return _coreInstance;
     }
 
@@ -72,7 +85,7 @@ public class Core {
 
     private void run(long ms){
         _stateContext.update(ms);
-        _packetManager.update();
+        _packetManager.send();
 
         _stateContext.render(_renderer, ms);
 
@@ -92,6 +105,8 @@ public class Core {
     public UIManager getUIManager() { return _uiManager; }
 
     public Renderer getRenderer() { return _renderer; }
+
+    public Location getLocation(){ return _location; }
 
     public void setRenderer(Renderer renderer){
         _renderer = renderer;

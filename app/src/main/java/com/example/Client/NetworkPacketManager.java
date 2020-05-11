@@ -4,34 +4,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import Common.BitInputStream;
 import Common.BitOutputStream;
 import Common.InputBitStream;
 import Common.OutputBitStream;
+import Common.Settings;
 
 public class NetworkPacketManager implements PacketManager {
     private Socket _socket;
     private OutputBitStream _sendThisFrame = new BitOutputStream();
-    private InputBitStream _gotThisFrame = new BitInputStream();
-    private final Object _updateInputMutex = new Object();
-    private boolean _isUpdated = false;
+    private Queue<InputBitStream> _rawPackets = new ConcurrentLinkedQueue<>();
 
     public void init(){
-        try {
-            _socket = new Socket("localhost", 9998);
-            (new Thread(this::receive)).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        (new Thread(this::receive)).start();
     }
 
     @Override
     public InputBitStream getPacketStream() {
-        synchronized (_updateInputMutex){
-            if (!_isUpdated) return null;
-            return _gotThisFrame;
-        }
+        return _rawPackets.poll();
     }
 
     @Override
@@ -40,8 +33,11 @@ public class NetworkPacketManager implements PacketManager {
     }
 
     @Override
-    public void update() {
+    public void send() {
+        if (_socket == null) return;
+
         try {
+            // TODO send InputState
             OutputStream outStream = _socket.getOutputStream();
             outStream.write(_sendThisFrame.getBuffer(), 0, _sendThisFrame.getBufferByteLength());
         } catch (IOException e) {
@@ -49,21 +45,23 @@ public class NetworkPacketManager implements PacketManager {
         }
 
         _sendThisFrame.resetPos();
-
-        synchronized (_updateInputMutex){
-            _isUpdated = false;
-        }
     }
 
     private void receive() {
+        try {
+            while (_socket == null)
+                _socket = new Socket(Settings.SERVER_ADDR, Settings.PORT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         while (true) {
             try {
                 InputStream inStream = _socket.getInputStream();
-                synchronized (_updateInputMutex) {
-                    int readBytes = inStream.read(_gotThisFrame.getBuffer());
-                    _gotThisFrame.setBufferLength(readBytes);
-                    _isUpdated = true;
-                }
+                InputBitStream newPacket = new BitInputStream();
+                int readBytes = inStream.read(newPacket.getBuffer());
+                newPacket.setBufferLength(readBytes);
+                _rawPackets.offer(newPacket);
             } catch (IOException e) {
                 e.printStackTrace();
             }

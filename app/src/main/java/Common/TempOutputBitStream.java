@@ -25,4 +25,19 @@ public class TempOutputBitStream implements OutputBitStream {
         // TODO
         return true;
     }
+
+    @Override
+    public byte[] getBuffer() {
+        return new byte[0];
+    }
+
+    @Override
+    public int getBufferByteLength() {
+        return 0;
+    }
+
+    @Override
+    public void resetPos() {
+
+    }
 }

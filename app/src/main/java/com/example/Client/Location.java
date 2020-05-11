@@ -14,22 +14,6 @@ public class Location {
         this.mContext = mContext;
         manager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
-        /*
-        권한 부분 어떻게 할것인지?
-        if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //권한이 없을 경우 최초 권한 요청 또는 사용자에 의한 재요청 확인
-            if (ActivityCompat.shouldShowRequestPermissionRationale(mContext.activi, android.Manifest.permission.ACCESS_FINE_LOCATION) &&
-                    ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                // 권한 재요청
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-                return;
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-                return;
-            }
-        }
-        */
         getCurrentLocation();
     }
 
@@ -48,9 +32,9 @@ public class Location {
                         String.format(
                                 "Check now Location: latitude : %f, longitude : %f",
                                 locationArray[0], locationArray[1]));
-            }else
-                Log.i("Stub",
-                        "getCurrentLocation Error");
+            }
+//                Log.i("Stub",
+//                        "getCurrentLocation Error");
         }catch (SecurityException e){
             e.printStackTrace();
         }

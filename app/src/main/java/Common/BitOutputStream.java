@@ -109,6 +109,21 @@ public class BitOutputStream implements OutputBitStream {
         return bufferOwner;
     }
 
+    @Override
+    public byte[] getBuffer() {
+        return new byte[0];
+    }
+
+    @Override
+    public int getBufferByteLength() {
+        return 0;
+    }
+
+    @Override
+    public void resetPos() {
+
+    }
+
     /**
      * 버퍼에 남은 비트들을 전부 OutputStream 에 쓰고 닫는다.
      */
