@@ -6,5 +6,5 @@ import Common.OutputBitStream;
 public interface PacketManager {
     InputBitStream getPacketStream();
     OutputBitStream getPacketToSend();
-    void send();
+    void update();
 }

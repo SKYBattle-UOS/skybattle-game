@@ -1,6 +1,5 @@
 package com.example.Client;
 
-import android.content.Context;
 import android.os.SystemClock;
 
 import Common.GameStateType;
@@ -73,7 +72,7 @@ public class Core {
 
     private void run(long ms){
         _stateContext.update(ms);
-        _packetManager.send();
+        _packetManager.update();
 
         _stateContext.render(_renderer, ms);
 

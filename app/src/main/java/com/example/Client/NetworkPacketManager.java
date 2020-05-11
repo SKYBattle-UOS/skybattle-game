@@ -15,6 +15,7 @@ public class NetworkPacketManager implements PacketManager {
     private OutputBitStream _sendThisFrame = new BitOutputStream();
     private InputBitStream _gotThisFrame = new BitInputStream();
     private final Boolean _canUpdateInput = true;
+    private final Boolean _updatedInput = false;
 
     public void init(){
         // TODO
@@ -29,8 +30,11 @@ public class NetworkPacketManager implements PacketManager {
 
     @Override
     public InputBitStream getPacketStream() {
-        if (_canUpdateInput) return null;
-        return _gotThisFrame;
+        // TODO
+        synchronized (_updatedInput){
+            if (!_updatedInput) return null;
+            return _gotThisFrame;
+        }
     }
 
     @Override
@@ -38,7 +42,8 @@ public class NetworkPacketManager implements PacketManager {
         return _sendThisFrame;
     }
 
-    public void send() {
+    @Override
+    public void update() {
         // TODO
         try {
             OutputStream outStream = _socket.getOutputStream();
