@@ -14,15 +14,13 @@ public class NetworkPacketManager implements PacketManager {
     private Socket _socket;
     private OutputBitStream _sendThisFrame = new BitOutputStream();
     private InputBitStream _gotThisFrame = new BitInputStream();
-    private final Boolean _canUpdateInput = true;
-    private final Boolean _updatedInput = false;
+    private final Object _updateInputMutex = new Object();
+    private boolean _isUpdated = false;
 
     public void init(){
-        // TODO
         try {
             _socket = new Socket("localhost", 9998);
-            OutputStream stream = _socket.getOutputStream();
-            stream.write(new byte[]{'a', 'b', 'c', 'd', 'x'});
+            (new Thread(this::receive)).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,9 +28,8 @@ public class NetworkPacketManager implements PacketManager {
 
     @Override
     public InputBitStream getPacketStream() {
-        // TODO
-        synchronized (_updatedInput){
-            if (!_updatedInput) return null;
+        synchronized (_updateInputMutex){
+            if (!_isUpdated) return null;
             return _gotThisFrame;
         }
     }
@@ -44,7 +41,6 @@ public class NetworkPacketManager implements PacketManager {
 
     @Override
     public void update() {
-        // TODO
         try {
             OutputStream outStream = _socket.getOutputStream();
             outStream.write(_sendThisFrame.getBuffer(), 0, _sendThisFrame.getBufferByteLength());
@@ -53,19 +49,23 @@ public class NetworkPacketManager implements PacketManager {
         }
 
         _sendThisFrame.resetPos();
+
+        synchronized (_updateInputMutex){
+            _isUpdated = false;
+        }
     }
 
-    // TODO: Synchronize
     private void receive() {
         while (true) {
-            synchronized (_canUpdateInput){
-                try {
-                    InputStream inStream = _socket.getInputStream();
+            try {
+                InputStream inStream = _socket.getInputStream();
+                synchronized (_updateInputMutex) {
                     int readBytes = inStream.read(_gotThisFrame.getBuffer());
                     _gotThisFrame.setBufferLength(readBytes);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    _isUpdated = true;
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
