@@ -48,4 +48,20 @@ public class IOManager {
     public boolean isCharacterSelectComplete(){
         return _elapsed > 20000;
     }
+
+    public boolean roomIsAbleToStart() {
+        return true;
+    }
+
+    public boolean roomPlayersInfoChanged() {
+        return true;
+    }
+
+    public boolean roomModeChanged() {
+        return true;
+    }
+
+    public boolean roomTitleChanged() {
+        return true;
+    }
 }
