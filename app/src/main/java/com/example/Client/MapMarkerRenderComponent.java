@@ -17,8 +17,10 @@ class MapMarkerRenderComponent implements MapRenderComponent {
     @Override
     public void render(Map map, long ms) {
         double[] position = _parent.getPosition();
-        if (_marker == null)
+        if (_marker == null) {
             _marker = map.addMarker(position[0], position[1], Color.YELLOW, 10);
+            _prevPosition = position;
+        }
 
         if (_prevPosition[0] != position[0] || _prevPosition[1] != position[1]) {
             map.setMarkerPosition(_marker, position[0], position[1]);
