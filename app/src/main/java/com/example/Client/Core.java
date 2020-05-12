@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.SystemClock;
 
 import Common.GameStateType;
+import Common.Settings;
 import Common.TempPlayer;
 import Host.CoreHost;
 
@@ -26,7 +27,7 @@ public class Core {
     private PacketManager _packetManager;
     private GameObjectFactory _gameObjectFactory;
     private UIManager _uiManager;
-    private Location _location;
+    private InputManager _inputManager;
 
     private Core(Context context){
         _appContext = context;
@@ -35,9 +36,9 @@ public class Core {
         _packetManager = new NetworkPacketManager();
         _gameObjectFactory = new GameObjectFactory();
         _uiManager = new UIManager();
-        _location = new Location(_appContext);
+        _inputManager = new InputManager(context);
 
-        registerGameObjects();
+        Settings.registerGameObjects(_gameObjectFactory);
     }
 
     private void init(){
@@ -46,7 +47,7 @@ public class Core {
             CoreHost.getInstance().getNetworkManager().open();
             _stateContext.switchState(GameStateType.MAIN);
             _isInitialized = true;
-            ((NetworkPacketManager) _packetManager).init();
+            ((NetworkPacketManager) _packetManager).init("localhost");
         }
     }
 
@@ -84,8 +85,9 @@ public class Core {
     }
 
     private void run(long ms){
+        _inputManager.update(ms);
         _stateContext.update(ms);
-        _packetManager.send();
+        _packetManager.update();
 
         _stateContext.render(_renderer, ms);
 
@@ -106,14 +108,9 @@ public class Core {
 
     public Renderer getRenderer() { return _renderer; }
 
-    public Location getLocation(){ return _location; }
-
     public void setRenderer(Renderer renderer){
         _renderer = renderer;
     }
 
-    private void registerGameObjects(){
-        // WARNING: should be listed in the same order as that in the server
-        TempPlayer.classId = _gameObjectFactory.registerCreateMethod(TempPlayer::createInstance);
-    }
+    public InputManager getInputManager() { return _inputManager; }
 }

@@ -5,30 +5,32 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import Common.InputBitStream;
-import Common.MoveList;
+import Common.InputState;
 
 public class ClientProxy {
-    private MoveList _unprocessedMoves;
+    private Queue<InputState> _unprocessedInputs;
     private int _playerId;
     private boolean _shouldSendLastTimeStamp;
     private ConcurrentLinkedQueue<InputBitStream> _rawPackets;
     private LinkedList<InputBitStream> _packets;
     private boolean _isDisconnected;
+    private WorldSetterHost _worldSetter;
 
     public ClientProxy(int playerId){
         _playerId = playerId;
         _shouldSendLastTimeStamp = false;
-        _unprocessedMoves = new MoveList();
+        _unprocessedInputs = new LinkedList<>();
         _rawPackets = new ConcurrentLinkedQueue<>();
         _packets = new LinkedList<>();
+        _worldSetter = new WorldSetterHost();
     }
 
     public int getPlayerId(){
         return _playerId;
     }
 
-    public MoveList getUnprocessedMoves(){
-        return _unprocessedMoves;
+    public Queue<InputState> getUnprocessedInputs(){
+        return _unprocessedInputs;
     }
 
     public Queue<InputBitStream> getRawPacketQueue(){
@@ -45,5 +47,9 @@ public class ClientProxy {
 
     public boolean isDisconnected(){
         return _isDisconnected;
+    }
+
+    public WorldSetterHost getWorldSetterHost(){
+        return _worldSetter;
     }
 }

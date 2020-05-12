@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import Common.BitInputStream;
 import Common.BitOutputStream;
 import Common.InputBitStream;
+import Common.InputState;
 import Common.OutputBitStream;
 import Common.Settings;
 
@@ -18,13 +19,13 @@ public class NetworkPacketManager implements PacketManager {
     private OutputBitStream _sendThisFrame = new BitOutputStream();
     private Queue<InputBitStream> _rawPackets = new ConcurrentLinkedQueue<>();
 
-    public void init(){
-        (new Thread(this::receive)).start();
+    public void init(String host){
+        (new Thread(()->receive(host))).start();
     }
 
     @Override
     public InputBitStream getPacketStream() {
-        return _rawPackets.poll();
+        return _rawPackets.peek();
     }
 
     @Override
@@ -33,11 +34,15 @@ public class NetworkPacketManager implements PacketManager {
     }
 
     @Override
-    public void send() {
+    public void update() {
+        _rawPackets.poll();
+        send();
+    }
+
+    private void send(){
         if (_socket == null) return;
 
         try {
-            // TODO send InputState
             OutputStream outStream = _socket.getOutputStream();
             outStream.write(_sendThisFrame.getBuffer(), 0, _sendThisFrame.getBufferByteLength());
         } catch (IOException e) {
@@ -47,10 +52,10 @@ public class NetworkPacketManager implements PacketManager {
         _sendThisFrame.resetPos();
     }
 
-    private void receive() {
+    private void receive(String host) {
         try {
             while (_socket == null)
-                _socket = new Socket(Settings.SERVER_ADDR, Settings.PORT);
+                _socket = new Socket(host, Settings.PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }

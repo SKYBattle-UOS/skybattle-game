@@ -15,9 +15,15 @@ import com.example.Client.Renderer;
  * @since 2020-04-21
  */
 public class TempPlayer extends GameObject {
-    TempPlayer(String name) {
+    private int _playerId;
+
+    public TempPlayer(String name) {
         super(0f, 0f, name);
         setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
+    }
+
+    public void setPlayerId(int playerId){
+        _playerId = playerId;
     }
 
     @Override
@@ -26,7 +32,7 @@ public class TempPlayer extends GameObject {
     }
 
     public static GameObject createInstance() {
-        return new TempPlayer("Temp Player");
+        return new TempPlayer("TempPlayer");
     }
 
     @Override

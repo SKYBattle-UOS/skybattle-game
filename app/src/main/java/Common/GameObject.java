@@ -10,7 +10,7 @@ import com.example.Client.Renderer;
  * @version 0.0
  * @since 2020-04-21
  */
-public abstract class GameObject implements com.example.Client.Serializable {
+public abstract class GameObject {
     public static int classId;
 
     private double[] _position;
@@ -18,18 +18,15 @@ public abstract class GameObject implements com.example.Client.Serializable {
     private boolean _wantsToDie;
     private int _indexInWorld;
     private RenderComponent _renderComponent;
+    private int _networkId;
+    private int _dirtyFlag;
 
-    /**
-     * 간단한 constructor.
-     * @param latitude 초기위치 : 위도
-     * @param longitude 초기위치 : 경도
-     * @param name 오브젝트 이름
-     */
     GameObject(float latitude, float longitude, String name){
         _position = new double[]{ latitude, longitude };
         _name = name;
     }
 
+    // region Getters and Setters
     public double[] getPosition(){
         return _position.clone();
     }
@@ -55,6 +52,27 @@ public abstract class GameObject implements com.example.Client.Serializable {
         return _indexInWorld;
     }
 
+    public RenderComponent getRenderComponent() {
+        return _renderComponent;
+    }
+
+    public void setRenderComponent(RenderComponent renderComponent) {
+        this._renderComponent = renderComponent;
+    }
+
+    public int getNetworkId(){
+        return _networkId;
+    }
+
+    public void setNetworkId(int networkId){
+        _networkId = networkId;
+    }
+    // endregion
+
+    public abstract void writeToStream(OutputBitStream stream);
+    public abstract void readFromStream(InputBitStream stream);
+    public abstract void update(long ms);
+
     public void scheduleDeath(){
         _wantsToDie = true;
     }
@@ -63,30 +81,8 @@ public abstract class GameObject implements com.example.Client.Serializable {
         return _wantsToDie;
     }
 
-    /**
-     * 스트림에 해당 객체를 Serialize 합니다.
-     * @param stream OutStream 인터페이스를 만족하는 모든 스트림
-     */
-    public abstract void writeToStream(OutputBitStream stream);
-    /**
-     * 스트림에서 읽어서 해당 객체를 업데이트 합니다.
-     * @param stream InStream 인터페이스를 만족하는 모든 스트림
-     */
-    public abstract void readFromStream(InputBitStream stream);
-
     public void faceDeath(){}
 
-    /**
-     * 매 프레임 호출되는 함수.
-     * @param ms 지난 프레임부터 경과한 밀리세컨드.
-     */
-    public abstract void update(long ms);
-
-    /**
-     * 그래픽 렌더 시에 호출되는 함수.
-     * @param renderer Renderer 객체 인스턴스.
-     *
-     */
     public void render(Renderer renderer){
         if (_renderComponent != null)
             renderer.batch(_renderComponent);
@@ -96,11 +92,4 @@ public abstract class GameObject implements com.example.Client.Serializable {
         return null;
     };
 
-    public RenderComponent getRenderComponent() {
-        return _renderComponent;
-    }
-
-    public void setRenderComponent(RenderComponent renderComponent) {
-        this._renderComponent = renderComponent;
-    }
 }

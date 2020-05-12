@@ -55,6 +55,7 @@ public class CoreHost {
     }
 
     private void run(long ms){
+        _gameStateContext.update(ms);
         _networkManager.send();
     }
 

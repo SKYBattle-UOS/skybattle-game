@@ -144,7 +144,7 @@ public class ReplayPacketManager implements PacketManager {
     }
 
     @Override
-    public void send() {
+    public void update() {
         // TODO
     }
 

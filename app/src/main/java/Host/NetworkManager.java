@@ -70,7 +70,7 @@ public class NetworkManager {
                 ClientProxy client = new ClientProxy(_newPlayerId++);
                 _mappingAddr2Proxy.put(newSocket.getInetAddress(), client);
                 _clientSockets.add(newSocket);
-                (new Thread(()->reader(newSocket, client))).start();
+                (new Thread(() -> receive(newSocket, client))).start();
             } catch (IOException e) {
                 // socket closed; thread exit
                 e.printStackTrace();
@@ -78,7 +78,7 @@ public class NetworkManager {
         }
     }
 
-    private void reader(Socket socket, ClientProxy client){
+    private void receive(Socket socket, ClientProxy client){
         int numBytes;
         try {
             InputStream stream = socket.getInputStream();

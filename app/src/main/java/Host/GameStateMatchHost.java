@@ -1,22 +1,26 @@
 package Host;
 
+import com.example.Client.Core;
+import com.example.Client.GameObjectRegistry;
+
 import Common.GameObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
 
 import Common.GameState;
 import Common.InputBitStream;
+import Common.InputState;
 import Common.MatchStateType;
-import Common.Move;
-import Common.MoveList;
+import Common.TempPlayer;
 
 public class GameStateMatchHost implements GameState {
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
     private ArrayList<GameObject> _gameObjects;
+    private GameObjectRegistry _registry;
+    private int nextNetworkId;
 
     // TODO
     private int _numPlayers;
@@ -26,6 +30,7 @@ public class GameStateMatchHost implements GameState {
     public GameStateMatchHost(){
         _worldSetter = new WorldSetterHost();
         _gameObjects = new ArrayList<>();
+        _registry = new GameObjectRegistry();
 
         _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
         GET_READY_COUNT = 10000;
@@ -36,8 +41,35 @@ public class GameStateMatchHost implements GameState {
     }
 
     @Override
+    public void start() {
+        createTempPlayers();
+    }
+
+    private void createTempPlayers() {
+        Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
+        for (ClientProxy client : clients){
+            int networkId = nextNetworkId++;
+
+            TempPlayer newPlayer = (TempPlayer) Core.getInstance().getGameObjectFactory().createGameObject(TempPlayer.classId);
+            newPlayer.setNetworkId(networkId);
+            newPlayer.setPlayerId(client.getPlayerId());
+
+            _registry.add(networkId, newPlayer);
+            _gameObjects.add(newPlayer);
+
+            for (ClientProxy client2 : clients)
+                client2.getWorldSetterHost().generateCreateInstruction(networkId, -1);
+        }
+    }
+
+    @Override
     public void update(long ms) {
         handleInputFromClients();
+        _worldSetter.writeInstructionToStream(CoreHost.getInstance().getNetworkManager().getPacketToSend());
+
+        for (GameObject go : _gameObjects){
+            go.update(ms);
+        }
 
         _currentState.update(ms);
     }
@@ -58,12 +90,12 @@ public class GameStateMatchHost implements GameState {
     }
 
     private void handleInputPacket(ClientProxy client, InputBitStream packet) {
-        MoveList moveList = client.getUnprocessedMoves();
-        int numMoves = packet.read(2);
-        for (int i = 0; i < numMoves; i++){
-            Move newMove = new Move();
-            newMove.readFromStream(packet);
-            moveList.append(newMove);
+        Queue<InputState> inputList = client.getUnprocessedInputs();
+        int numInputs = packet.read(2);
+        for (int i = 0; i < numInputs; i++){
+            InputState newInput = new InputState();
+            newInput.readFromStream(packet);
+            inputList.offer(newInput);
         }
     }
 

@@ -32,7 +32,7 @@ public class SocketTest {
             e.printStackTrace();
         }
 
-        client.send();
+        client.update();
 
         while (true){
             for (ClientProxy client : server.getClientProxies()){
