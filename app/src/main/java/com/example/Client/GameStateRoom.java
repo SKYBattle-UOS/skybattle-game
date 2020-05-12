@@ -2,7 +2,6 @@ package com.example.Client;
 
 import android.util.Log;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import Common.GameState;
