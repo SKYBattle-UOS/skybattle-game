@@ -3,6 +3,7 @@ package com.example.Client;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -48,7 +49,18 @@ public class GoogleMapAdapter implements Map {
 
     @Override
     public void setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
-        // TODO
+        _mainHandler.post(()->_setMarkerPosition(marker,lat,lon));
+    }
+
+    private void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
+        Log.i("Stub",
+                String.format(
+                        "Check now Location: latitude : %f, longitude : %f",
+                        lat, lon));
+        int index=((GoogleMarkerHandle) marker).index;
+        Marker cur_marker=_markers.get(index);
+        cur_marker.setPosition(new LatLng(lat,lon));
+        cur_marker.showInfoWindow();
     }
 
     @Override
