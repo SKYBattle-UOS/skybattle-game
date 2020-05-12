@@ -52,7 +52,7 @@ public class GoogleMapAdapter implements Map {
         _mainHandler.post(()->_setMarkerPosition(marker,lat,lon));
     }
 
-    private void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
+    private synchronized void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
         Log.i("Stub",
                 String.format(
                         "Check now Location: latitude : %f, longitude : %f",
