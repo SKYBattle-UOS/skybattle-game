@@ -48,6 +48,11 @@ public class BitInputStream implements InputBitStream {
         while (bitOffset > 8) {
             bitOffset -= 8;
             returnValue |= (data[byteOffset++] & 0xFF) << bitOffset;
+            if(byteLimit != 0 && byteOffset == byteLimit )
+            {
+                returnValue &= 0xFFFFFFFF >>> (32 - numBits);
+                return returnValue; //limit 값 넘은경우
+            }
         }
         returnValue |= (data[byteOffset] & 0xFF) >> (8 - bitOffset);
         returnValue &= 0xFFFFFFFF >>> (32 - numBits);
@@ -69,10 +74,14 @@ public class BitInputStream implements InputBitStream {
     @Override
     public int read(byte[] buffer, int numBits) {
         // Whole bytes.
-        int to = (numBits >> 3) /* numBits / 8 */;
+        int to = (numBits >> 3) /* numBits / 8 바이트 인덱스 얻음*/ ;
         for (int i = 0; i < to; i++) {
             buffer[i] = (byte) (data[byteOffset++] << bitOffset);
             buffer[i] = (byte) (buffer[i] | ((data[byteOffset] & 0xFF) >> (8 - bitOffset)));
+
+            if(byteLimit != 0 && byteOffset == byteLimit ) {
+                break;
+            }
         }
         // Trailing bits.
         int bitsLeft = numBits & 7 /* numBits % 8 */;
@@ -108,7 +117,7 @@ public class BitInputStream implements InputBitStream {
 
     @Override
     public void setBufferLength(int numBytes) {
-
+        byteLimit = numBytes;
     }
 
     public boolean isBufferOwner(){
