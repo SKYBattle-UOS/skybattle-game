@@ -102,6 +102,7 @@ public class BitOutputStream implements OutputBitStream {
             write(data[byteCount],numBits);
     }
 
+    @Override
     public int availableBits(){
         ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
         byte[] data = buffer.toByteArray();
@@ -112,16 +113,25 @@ public class BitOutputStream implements OutputBitStream {
         return availableBit;
     }
 
+    @Override
     public int getBufferByteLength(){
         ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
         byte[] data = buffer.toByteArray();
-
         return data.length;
     }
 
-    public   byte[] getBuffer(){
+    @Override
+    public byte[] getBuffer(){
         ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
         return buffer.toByteArray();
+    }
+
+    @Override
+    public void resetPos() {
+        try{
+            out.flush(); //이 부분은 이렇게 해도 되는지 조금 생각 필요해보임
+        }catch (Exception e){}
+
     }
 
     public boolean isBufferOwner(){
