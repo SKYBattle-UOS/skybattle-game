@@ -1,6 +1,8 @@
 package Common;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -101,17 +103,25 @@ public class BitOutputStream implements OutputBitStream {
     }
 
     public int availableBits(){
+        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
+        byte[] data = buffer.toByteArray();
+
         int availableBit = 0;
         int maxSize = data.length;
-        availableBit = (maxSize - byteOffset) * 8;
-        availableBit += (8 - bitOffset);
+        availableBit = maxSize * 8;
         return availableBit;
     }
 
     public int getBufferByteLength(){
-        out.
-        ByteArrayOutputStream getBufferSize = out;
-        return availableBit;
+        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
+        byte[] data = buffer.toByteArray();
+
+        return data.length;
+    }
+
+    public   byte[] getBuffer(){
+        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
+        return buffer.toByteArray();
     }
 
     public boolean isBufferOwner(){
