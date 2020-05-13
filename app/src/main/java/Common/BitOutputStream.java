@@ -57,7 +57,7 @@ public class BitOutputStream implements OutputBitStream {
 
     /**
      * 비트들을 쓴다.
-     * @param data          bits to be written, which are stored in low bits.
+     * @param data          비트값인 data 를 저장한다..
      * @param numBits       쓰여질 비트 개수
      * @throws IOException  if an I/O error occurs.
      */
@@ -98,6 +98,20 @@ public class BitOutputStream implements OutputBitStream {
 
         if(numBits > 0) //남은 비트들 기록
             write(data[byteCount],numBits);
+    }
+
+    public int availableBits(){
+        int availableBit = 0;
+        int maxSize = data.length;
+        availableBit = (maxSize - byteOffset) * 8;
+        availableBit += (8 - bitOffset);
+        return availableBit;
+    }
+
+    public int getBufferByteLength(){
+        out.
+        ByteArrayOutputStream getBufferSize = out;
+        return availableBit;
     }
 
     public boolean isBufferOwner(){
