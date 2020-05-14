@@ -4,8 +4,7 @@ import android.content.Context;
 import android.os.SystemClock;
 
 import Common.GameStateType;
-import Common.Settings;
-import Common.TempPlayer;
+import Common.Util;
 import Host.CoreHost;
 
 /**
@@ -38,7 +37,7 @@ public class Core {
         _uiManager = new UIManager();
         _inputManager = new InputManager(context);
 
-        Settings.registerGameObjects(_gameObjectFactory);
+        Util.registerGameObjects(_gameObjectFactory);
     }
 
     private void init(){

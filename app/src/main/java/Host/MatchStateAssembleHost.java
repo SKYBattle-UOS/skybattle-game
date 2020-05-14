@@ -1,11 +1,12 @@
 package Host;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.Util;
 import Common.InputBitStream;
+import Common.MatchStateType;
 import Common.OutputBitStream;
 
 class MatchStateAssembleHost implements GameState {
@@ -13,7 +14,7 @@ class MatchStateAssembleHost implements GameState {
     private int _numPlayers;
     private boolean[] _assembleInit;
     private Collection<ClientProxy> _clients;
-    private boolean _hasSentEverybodyInit;
+    private boolean _shouldSendAllInit;
 
 
     public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost, int numPlayers) {
@@ -31,62 +32,43 @@ class MatchStateAssembleHost implements GameState {
             if (packet == null)
                 continue;
 
-            _assembleInit[i] = isAssembleInit(packet);
+            _assembleInit[i] = Util.hasMessage(packet);
             i++;
         }
 
-        OutputBitStream outPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
-
-        if (!_hasSentEverybodyInit){
+        if (!_shouldSendAllInit) {
+            _shouldSendAllInit = true;
             for (boolean b : _assembleInit)
-                if (!b) return;
-
-            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
-            sendHasCustomMessage(outPacket);
-            sendEverybodyInitialized(outPacket);
-            _hasSentEverybodyInit = true;
-            return;
+                if (!b) {
+                    _shouldSendAllInit = false;
+                    break;
+                }
         }
 
         Collection<GameObject> gos = _match.getGameObjects();
+        boolean assembled = false;
         for (GameObject go : gos){
             // TODO
             // check if assembled
             // if otherwise return
-            return;
+            double[] pos = go.getPosition();
+            if (pos[0] > 20)
+                assembled = true;
+                break;
         }
 
-        CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
-        sendHasCustomMessage(outPacket);
-        sendAssembleComplete(outPacket);
-    }
+        OutputBitStream outPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
 
-    private void sendAssembleComplete(OutputBitStream outPacket) {
-        try {
-            outPacket.write(1, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Util.sendHas(outPacket, _shouldSendAllInit);
+        if (_shouldSendAllInit){
+            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+            _shouldSendAllInit = true;
         }
-    }
 
-    private void sendHasCustomMessage(OutputBitStream outPacket) {
-        try {
-            outPacket.write(1, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Util.sendHas(outPacket, assembled);
+        if (assembled){
+            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+            _match.switchState(MatchStateType.SELECT_CHARACTER);
         }
-    }
-
-    private void sendEverybodyInitialized(OutputBitStream outPacket) {
-        try {
-            outPacket.write(1, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private boolean isAssembleInit(InputBitStream packet){
-        int received = packet.read(1);
-        return received == 1;
     }
 }

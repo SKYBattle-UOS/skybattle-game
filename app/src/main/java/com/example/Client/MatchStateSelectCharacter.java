@@ -1,8 +1,11 @@
 package com.example.Client;
 
+import java.io.IOException;
+
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
+import Common.OutputBitStream;
 
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 캐릭터 선택 화면.
@@ -13,19 +16,46 @@ import Common.MatchStateType;
  */
 public class MatchStateSelectCharacter implements GameState {
     private GameStateMatch _match;
+    private boolean _selectedCharacter;
+    private boolean _sentSelected;
 
     MatchStateSelectCharacter(GameStateMatch match){
         _match = match;
         Core.getInstance().getUIManager().setText("집합 완료 : 캐릭터를 선택하세요");
+        _selectedCharacter = false;
+        _sentSelected = false;
     }
 
     @Override
     public void update(long ms) {
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+        if (packet == null) return;
+
+        if (_selectedCharacter && !_sentSelected){
+            OutputBitStream packetToSend = Core.getInstance().getPakcetManager().getPacketToSend();
+            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+            sendSelectedCharacter(packetToSend);
+            _sentSelected = true;
+            return;
+        }
+
+        if (!hasCustomMessage(packet)) return;
 
         if (isCharacterSelectComplete(packet)){
             Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY);
             _match.switchState(MatchStateType.GET_READY);
+        }
+    }
+
+    private boolean hasCustomMessage(InputBitStream packet) {
+        return packet.read(1) == 1;
+    }
+
+    private void sendSelectedCharacter(OutputBitStream packetToSend) {
+        try {
+            packetToSend.write(1, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

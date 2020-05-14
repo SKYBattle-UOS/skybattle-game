@@ -1,12 +1,10 @@
 package com.example.Client;
 
-import android.util.Log;
-
-import java.io.IOException;
 import java.util.Collection;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.Util;
 import Common.InputBitStream;
 import Common.MatchStateType;
 import Common.OutputBitStream;
@@ -21,13 +19,13 @@ import Common.OutputBitStream;
 public class MatchStateAssemble implements GameState {
     private GameStateMatch _parent;
     private boolean _isInitialized;
-    private boolean _sentConfirm;
+    private boolean sentInitComplete;
     private int _numPlayers;
 
     public MatchStateAssemble(GameStateMatch parentMatch, int numPlayers) {
         _parent = parentMatch;
         _isInitialized = false;
-        _sentConfirm = false;
+        sentInitComplete = false;
         _numPlayers = numPlayers;
         Core.getInstance().getUIManager().setText("다른 플레이어를 기다리는중...");
     }
@@ -35,26 +33,28 @@ public class MatchStateAssemble implements GameState {
     @Override
     public void update(long ms) {
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+        OutputBitStream outPacket = Core.getInstance().getPakcetManager().getPacketToSend();
+
         if (packet == null) return;
 
-        if (!_sentConfirm){
+        if (!sentInitComplete) {
             Collection<GameObject> gos = _parent.getGameObjects();
-            if (gos.size() >= _numPlayers){
-                _sentConfirm = true;
+            if (gos.size() >= _numPlayers) {
+                sentInitComplete = true;
+                Core.getInstance().getPakcetManager().shouldSendThisFrame();
             }
-            confirmPlayerInit(_sentConfirm);
+
+            Util.sendHas(outPacket, sentInitComplete);
         }
+        else
+            Util.sendHas(outPacket, sentInitComplete);
 
-        if (!hasCustomMessage(packet)) return;
-
-        if (isEverybodyInitializedForAssemble(packet)){
+        if (Util.hasMessage(packet)) {
             _isInitialized = true;
             Core.getInstance().getUIManager().setText("집합하세요");
         }
 
-        if (!hasCustomMessage(packet)) return;
-
-        if (isAssembleComplete(packet)){
+        if (Util.hasMessage(packet)) {
             _parent.switchState(MatchStateType.SELECT_CHARACTER);
             Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT);
         }
@@ -64,36 +64,9 @@ public class MatchStateAssemble implements GameState {
     public void render(Renderer renderer, long ms) {
         if (_isInitialized) {
             Collection<GameObject> gameObjects = _parent.getGameObjects();
-            for (GameObject go : gameObjects){
+            for (GameObject go : gameObjects) {
                 go.render(renderer);
             }
         }
-    }
-
-    private boolean hasCustomMessage(InputBitStream packet) {
-        return packet.read(1) == 1;
-    }
-
-    private void confirmPlayerInit(boolean confirm){
-        OutputBitStream packet = Core.getInstance().getPakcetManager().getPacketToSend();
-
-        if (confirm)
-            Core.getInstance().getPakcetManager().shouldSendThisFrame();
-
-        int data = confirm ? 1 : 0;
-
-        try {
-            packet.write(data, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private  boolean isEverybodyInitializedForAssemble(InputBitStream packet){
-        return packet.read(1) == 1;
-    }
-
-    private boolean isAssembleComplete(InputBitStream packet){
-        return packet.read(1) == 1;
     }
 }

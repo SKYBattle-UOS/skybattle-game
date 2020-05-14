@@ -30,20 +30,17 @@ class MatchStateSelectCharacterHost implements GameState {
             i++;
         }
 
-        boolean hasEverybodySelectedCharacter = true;
         for (boolean b : _characterSelected)
-            if (!b){
-                hasEverybodySelectedCharacter = false;
-                break;
-            }
+            if (!b) return;
 
         OutputBitStream outputPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
-        sendEverybodySelectedCharacter(outputPacket, hasEverybodySelectedCharacter);
+        sendHasCustomMessage(outputPacket);
+        sendEverybodySelectedCharacter(outputPacket);
     }
 
-    private void sendEverybodySelectedCharacter(OutputBitStream outputPacket, boolean hasEverybodySelectedCharacter) {
+    private void sendEverybodySelectedCharacter(OutputBitStream outputPacket) {
         try {
-            outputPacket.write(hasEverybodySelectedCharacter ? 1 : 0, 1);
+            outputPacket.write(1, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,5 +48,13 @@ class MatchStateSelectCharacterHost implements GameState {
 
     private boolean hasSelectedCharacter(InputBitStream packet) {
         return packet.read(1) == 1;
+    }
+
+    private void sendHasCustomMessage(OutputBitStream outPacket) {
+        try {
+            outPacket.write(1, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
