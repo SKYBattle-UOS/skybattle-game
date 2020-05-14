@@ -54,7 +54,7 @@ public class GameStateRoom implements GameState {
 
     // returns if room host started game
     private boolean hostStartedGame(InputBitStream packet) {
-        return packet.read(8) == 1;
+        return packet.read(1) == 1;
     }
 
     // returns if game is able to start; checks the number of players

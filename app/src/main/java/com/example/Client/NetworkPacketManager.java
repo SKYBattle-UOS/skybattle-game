@@ -18,6 +18,7 @@ public class NetworkPacketManager implements PacketManager {
     private Socket _socket;
     private OutputBitStream _sendThisFrame = new BitOutputStream();
     private Queue<InputBitStream> _rawPackets = new ConcurrentLinkedQueue<>();
+    private boolean _shouldSendThisFrame = false;
 
     public void init(String host){
         (new Thread(()->receive(host))).start();
@@ -34,6 +35,11 @@ public class NetworkPacketManager implements PacketManager {
     }
 
     @Override
+    public void shouldSendThisFrame() {
+        _shouldSendThisFrame = true;
+    }
+
+    @Override
     public void update() {
         _rawPackets.poll();
         send();
@@ -41,6 +47,8 @@ public class NetworkPacketManager implements PacketManager {
 
     private void send(){
         if (_socket == null) return;
+
+        if (!_shouldSendThisFrame) return;
 
         try {
             OutputStream outStream = _socket.getOutputStream();
@@ -50,6 +58,8 @@ public class NetworkPacketManager implements PacketManager {
         }
 
         _sendThisFrame.resetPos();
+
+        _shouldSendThisFrame = false;
     }
 
     private void receive(String host) {

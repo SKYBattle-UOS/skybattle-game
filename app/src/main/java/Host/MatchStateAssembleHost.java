@@ -18,9 +18,9 @@ class MatchStateAssembleHost implements GameState {
 
     public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost, int numPlayers) {
         _match = gameStateMatchHost;
+        _numPlayers = numPlayers;
         _assembleInit = new boolean[_numPlayers];
         _clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
-        _numPlayers = numPlayers;
     }
 
     @Override
@@ -41,6 +41,7 @@ class MatchStateAssembleHost implements GameState {
             for (boolean b : _assembleInit)
                 if (!b) return;
 
+            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
             sendHasCustomMessage(outPacket);
             sendEverybodyInitialized(outPacket);
             _hasSentEverybodyInit = true;
@@ -55,6 +56,7 @@ class MatchStateAssembleHost implements GameState {
             return;
         }
 
+        CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
         sendHasCustomMessage(outPacket);
         sendAssembleComplete(outPacket);
     }

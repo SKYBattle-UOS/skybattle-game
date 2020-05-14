@@ -19,6 +19,7 @@ public class BitOutputStream implements OutputBitStream {
     private int buffer;
     private int bufferBitCount;
     private  boolean bufferOwner = false;
+    private int byteSize;
 
     private static final int[] MASKS = new int[] {
             0, 1, 3, 7, 0xf, 0x1f, 0x3f, 0x7f, 0xff
@@ -74,6 +75,7 @@ public class BitOutputStream implements OutputBitStream {
             } else {    //여유공간이 없는 경우
                 buffer = ((data & MASKS[rest]) << bufferBitCount) | buffer;
                 out.write(buffer);  // 쓸 수 있는 공간이 없기에 꽉찬 버퍼를 씀.
+                byteSize++;
                 numBits -= rest;    //쓴 만큼 개수를 감소.
                 data >>>= rest;
                 bufferBitCount = 0; //초기화
@@ -115,21 +117,32 @@ public class BitOutputStream implements OutputBitStream {
 
     @Override
     public int getBufferByteLength(){
-        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
-        byte[] data = buffer.toByteArray();
-        return data.length;
+        return byteSize;
     }
 
     @Override
     public byte[] getBuffer(){
-        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
-        return buffer.toByteArray();
+        if (byteSize <= 0 && bufferBitCount == 0)
+            return null;
+
+        ByteArrayOutputStream ret = new ByteArrayOutputStream();
+        try {
+            ((ByteArrayOutputStream) out).writeTo(ret);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (bufferBitCount > 0)
+            ret.write(buffer);
+        return ret.toByteArray();
     }
 
     @Override
     public void resetPos() {
         try{
-            out.flush(); //이 부분은 이렇게 해도 되는지 조금 생각 필요해보임
+            out = new ByteArrayOutputStream(byteArrayToInt(new byte[1500]));
+//            out.flush(); //이 부분은 이렇게 해도 되는지 조금 생각 필요해보임
+            bufferBitCount = 0;
+            byteSize = 0;
         } catch (Exception e){}
 
     }

@@ -1,6 +1,7 @@
 package Host;
 
 
+import com.example.Client.Core;
 import com.example.Client.GameObjectRegistry;
 
 import java.io.IOException;
@@ -24,12 +25,13 @@ public class WorldSetterHost {
         for (Map.Entry<Integer, WorldSetterHeader> entry : _mappingN2I.entrySet()){
             WorldSetterHeader header = entry.getValue();
             if (header.dirtyFlag != 0){
+                CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
                 try {
                     packetToSend.write(1, 8);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                header.wrtieToStream(packetToSend);
+                header.writeToStream(packetToSend);
                 _registry.getGameObject(header.networkId).writeToStream(packetToSend, header.dirtyFlag);
 
                 header.dirtyFlag = 0;

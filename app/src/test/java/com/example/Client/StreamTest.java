@@ -11,19 +11,65 @@ public class StreamTest {
     @Test
     public void stream(){
         BitOutputStream bitOut = new BitOutputStream();
-        BitInputStream bitIn = new BitInputStream();
 
         try {
-            bitOut.write(3, 3);
-            bitOut.write(7, 3);
+            bitOut.write(-1, 32);
+
             bitOut.write(1, 3);
+            bitOut.write(2, 3);
+            bitOut.write(3, 3);
+            bitOut.write(4, 3);
             bitOut.write(5, 3);
+
+            bitOut.write(1, 12);
+            bitOut.write(2, 12);
+            bitOut.write(3, 12);
+            bitOut.write(4, 12);
+            bitOut.write(5, 12);
+
+            bitOut.write(1, 1);
+            bitOut.write(2, 2);
+            bitOut.write(3, 2);
+            bitOut.write(4, 3);
+            bitOut.write(5, 3);
+
+            bitOut.write(1, 8);
+            bitOut.write(2, 8);
+            bitOut.write(3, 8);
+            bitOut.write(4, 8);
+            bitOut.write(5, 8);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         byte[] buffer = bitOut.getBuffer();
-        for (int i = 0; i < buffer.length; i++)
-            System.out.println(buffer[i]);
+        BitInputStream bitIn = new BitInputStream(buffer);
+
+        System.out.println(bitIn.read(32));
+
+        for (int i = 0; i < 5; i++)
+            System.out.println(bitIn.read(3));
+
+        System.out.println();
+
+        for (int i = 0; i < 5; i++)
+            System.out.println(bitIn.read(12));
+
+        System.out.println();
+
+        System.out.println(bitIn.read(1));
+        System.out.println(bitIn.read(2));
+        System.out.println(bitIn.read(2));
+        System.out.println(bitIn.read(3));
+        System.out.println(bitIn.read(3));
+
+        System.out.println();
+
+        for (int i = 0; i < 5; i++)
+            System.out.println(bitIn.read(8));
+
+        System.out.println();
+
     }
 }

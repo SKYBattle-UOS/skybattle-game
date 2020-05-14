@@ -144,6 +144,11 @@ public class ReplayPacketManager implements PacketManager {
     }
 
     @Override
+    public void shouldSendThisFrame() {
+
+    }
+
+    @Override
     public void update() {
         // TODO
     }

@@ -27,11 +27,12 @@ public class GameStateRoomHost implements GameState {
 
         // host sent start
         if (_elapsed > 7000){
-            Log.i("Stub", "host pressed start");
+            Log.i("Stub", "RoomHost: start button press received");
             net.closeAccept();
 
             try {
-                net.getPacketToSend().write(1, 8);
+                net.getPacketToSend().write(1, 1);
+                net.shouldSendThisFrame();
             } catch (IOException e) {
                 e.printStackTrace();
             }

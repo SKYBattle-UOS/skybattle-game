@@ -27,6 +27,8 @@ public class NetworkManager {
     private ArrayList<Socket> _clientSockets;
     private ClientProxy _hostClient;
     private OutputBitStream _sendThisFrame;
+    private boolean _shoudSendThisFrame;
+
 
     public NetworkManager(){
         _newPlayerId = 0;
@@ -34,6 +36,7 @@ public class NetworkManager {
         _mappingAddr2Proxy = new HashMap<>();
         _mappingPlayer2Proxy = new HashMap<>();
         _clientSockets = new ArrayList<>();
+        _shoudSendThisFrame = false;
     }
 
     public void open(){
@@ -55,16 +58,20 @@ public class NetworkManager {
     }
 
     public void send(){
+        if (!_shoudSendThisFrame) return;
+
         for (Socket socket : _clientSockets){
             try {
                 OutputStream stream = socket.getOutputStream();
-                stream.write(_sendThisFrame.getBuffer(), 0, _sendThisFrame.getBufferByteLength());
+                if (_sendThisFrame.getBufferByteLength() > 0)
+                    stream.write(_sendThisFrame.getBuffer(), 0, _sendThisFrame.getBufferByteLength());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         _sendThisFrame.resetPos();
+        _shoudSendThisFrame = false;
     }
 
     private void acceptor(){
@@ -99,6 +106,10 @@ public class NetworkManager {
             ClientProxy disconnected = _mappingAddr2Proxy.get(socket.getInetAddress());
             disconnected.setDisconnected(true);
         }
+    }
+
+    public void shouldSendThisFrame(){
+        _shoudSendThisFrame = true;
     }
 
     public ClientProxy getHostClientProxy() {

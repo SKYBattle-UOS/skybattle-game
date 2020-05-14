@@ -1,5 +1,7 @@
 package Common;
 
+import java.io.IOException;
+
 /**
  * Base class of bit input streams.
  * 플랫폼마다 바이트를 어떤 순서로 저장하는지 다름. -> 리틀 엔디언 ->  가장 작은 자리의 바이트부터 먼저 기재
@@ -46,22 +48,28 @@ public class BitInputStream implements InputBitStream {
         }
 
         int returnValue = 0;
+        int originalBitOffset = bitOffset;
+        int numBitsInLastByte = Math.min(8 - bitOffset, numBits);
         bitOffset += numBits;
-        while (bitOffset > 8) {
+        while (bitOffset >= 8) {
+            returnValue = returnValue << (bitOffset / 8) * 8;
+            returnValue |= data[byteOffset + bitOffset / 8];
             bitOffset -= 8;
-            returnValue |= (data[byteOffset++] & 0xFF) << bitOffset;
             if(byteLimit != 0 && byteOffset == byteLimit )
             {
-                returnValue &= 0xFFFFFFFF >>> (32 - numBits);
-                return returnValue; //limit 값 넘은경우
+                return 42;
             }
         }
-        returnValue |= (data[byteOffset] & 0xFF) >> (8 - bitOffset);
-        returnValue &= 0xFFFFFFFF >>> (32 - numBits);
-        if (bitOffset == 8) {
-            bitOffset = 0;
-            byteOffset++;
-        }
+
+        returnValue = returnValue << numBitsInLastByte;
+//        int shiftLastByte = numBitsInLastByte - bitOffset > 0 ? numBitsInLastByte - bitOffset : bitOffset;
+        returnValue |= (data[byteOffset] >>> originalBitOffset) & ~(-1 << numBitsInLastByte);
+
+        if (numBits < 32)
+            returnValue &= ~(-1 << numBits);
+
+        byteOffset += (originalBitOffset + numBits) / 8;
+
         return returnValue;
     }
 

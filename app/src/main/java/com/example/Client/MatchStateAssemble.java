@@ -78,6 +78,8 @@ public class MatchStateAssemble implements GameState {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (confirm)
+            Core.getInstance().getPakcetManager().shouldSendThisFrame();
     }
 
     private  boolean isEverybodyInitializedForAssemble(InputBitStream packet){

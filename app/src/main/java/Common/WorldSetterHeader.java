@@ -21,7 +21,7 @@ public class WorldSetterHeader {
         dirtyFlag = stream.read(32);
     }
 
-    public void wrtieToStream(OutputBitStream stream){
+    public void writeToStream(OutputBitStream stream){
         try {
             stream.write(actionToInt(action), 2);
             if (action == WorldSetterAction.CREATE)
