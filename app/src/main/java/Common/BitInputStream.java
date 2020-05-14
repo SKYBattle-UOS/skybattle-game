@@ -15,7 +15,9 @@ public class BitInputStream implements InputBitStream {
     private int bitOffset;
     private int byteLimit;
 
-    // 버퍼 오너면 비트스트림
+    /**
+     * 인자 없는 경우 1300 바이트 배열 자체 생성 + 버퍼오너
+     */
     public BitInputStream() {
         this.data = new byte[1300];
         bufferOwner = true;
@@ -65,10 +67,8 @@ public class BitInputStream implements InputBitStream {
 
     /**
      * Reads {@code numBits} bits into {@code buffer}.
-     *  @param buffer The array into which the read data should be written. The trailing
-     *     {@code numBits % 8} bits are written into the most significant bits of the last modified
-     *     {@code buffer} byte. The remaining ones are unmodified.
-     * @param numBits The number of bits to read.
+     *  @param buffer 읽은 데이터들이 저장됨.
+     * @param numBits 읽을 비트 개수.
      * @return
      */
     @Override
@@ -112,6 +112,14 @@ public class BitInputStream implements InputBitStream {
 
     public byte[] getBuffer(){
         return data;
+    }
+
+    public int availableBits(){
+        int availableBitNum = 0;
+       int maxSize = data.length;
+        availableBitNum = (maxSize - byteOffset) * 8;
+        availableBitNum += (8 - bitOffset);
+        return availableBitNum;
     }
 
     @Override

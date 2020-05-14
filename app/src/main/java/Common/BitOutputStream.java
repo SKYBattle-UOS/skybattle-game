@@ -1,6 +1,8 @@
 package Common;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -57,7 +59,7 @@ public class BitOutputStream implements OutputBitStream {
 
     /**
      * 비트들을 쓴다.
-     * @param data          bits to be written, which are stored in low bits.
+     * @param data          비트값인 data 를 저장한다..
      * @param numBits       쓰여질 비트 개수
      * @throws IOException  if an I/O error occurs.
      */
@@ -103,6 +105,38 @@ public class BitOutputStream implements OutputBitStream {
 
         if(numBits > 0) //남은 비트들 기록
             write(data[byteCount],numBits);
+    }
+
+    @Override
+    public int availableBits(){
+        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
+        byte[] data = buffer.toByteArray();
+
+        int availableBit = 0;
+        int maxSize = data.length;
+        availableBit = maxSize * 8;
+        return availableBit;
+    }
+
+    @Override
+    public int getBufferByteLength(){
+        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
+        byte[] data = buffer.toByteArray();
+        return data.length;
+    }
+
+    @Override
+    public byte[] getBuffer(){
+        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
+        return buffer.toByteArray();
+    }
+
+    @Override
+    public void resetPos() {
+        try{
+            out.flush(); //이 부분은 이렇게 해도 되는지 조금 생각 필요해보임
+        }catch (Exception e){}
+
     }
 
     public boolean isBufferOwner(){
