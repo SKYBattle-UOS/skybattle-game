@@ -62,7 +62,6 @@ public class BitInputStream implements InputBitStream {
         }
 
         returnValue = returnValue << numBitsInLastByte;
-//        int shiftLastByte = numBitsInLastByte - bitOffset > 0 ? numBitsInLastByte - bitOffset : bitOffset;
         returnValue |= (data[byteOffset] >>> originalBitOffset) & ~(-1 << numBitsInLastByte);
 
         if (numBits < 32)
@@ -111,11 +110,6 @@ public class BitInputStream implements InputBitStream {
             byteOffset++;
         }
         return to;
-    }
-
-    @Override
-    public int availableBits() {
-        return 0;
     }
 
     public byte[] getBuffer(){

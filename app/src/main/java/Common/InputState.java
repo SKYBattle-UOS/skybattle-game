@@ -1,5 +1,7 @@
 package Common;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 public class InputState {
@@ -21,5 +23,6 @@ public class InputState {
         // TODO
         lat = stream.read(8);
         lon = stream.read(8);
+        Log.i("Stub", String.format("received %d", (int) lat));
     }
 }

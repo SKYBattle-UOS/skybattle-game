@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.Collection;
 
@@ -50,6 +52,8 @@ public class MatchStateAssemble implements GameState {
             Core.getInstance().getUIManager().setText("집합하세요");
         }
 
+        if (!hasCustomMessage(packet)) return;
+
         if (isAssembleComplete(packet)){
             _parent.switchState(MatchStateType.SELECT_CHARACTER);
             Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT);
@@ -72,18 +76,21 @@ public class MatchStateAssemble implements GameState {
 
     private void confirmPlayerInit(boolean confirm){
         OutputBitStream packet = Core.getInstance().getPakcetManager().getPacketToSend();
+
+        if (confirm)
+            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+
         int data = confirm ? 1 : 0;
+
         try {
             packet.write(data, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (confirm)
-            Core.getInstance().getPakcetManager().shouldSendThisFrame();
     }
 
     private  boolean isEverybodyInitializedForAssemble(InputBitStream packet){
-        return packet.read(1) == 0;
+        return packet.read(1) == 1;
     }
 
     private boolean isAssembleComplete(InputBitStream packet){

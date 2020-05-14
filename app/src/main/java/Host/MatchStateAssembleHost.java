@@ -79,7 +79,7 @@ class MatchStateAssembleHost implements GameState {
 
     private void sendEverybodyInitialized(OutputBitStream outPacket) {
         try {
-            outPacket.write(0, 1);
+            outPacket.write(1, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
