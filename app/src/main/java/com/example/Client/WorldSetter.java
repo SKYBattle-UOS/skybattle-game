@@ -21,7 +21,7 @@ public class WorldSetter {
 
     public void processInstructions(InputBitStream stream){
         while (true){
-            if (stream.read(1) == 0) return;
+            if (stream.read(8) == 0) return;
 
             _header.readFromStream(stream);
 

@@ -58,8 +58,7 @@ public class GameStateMatchHost implements GameState {
             _registry.add(networkId, newPlayer);
             _gameObjects.add(newPlayer);
 
-            for (ClientProxy client2 : clients)
-                client2.getWorldSetterHost().generateCreateInstruction(TempPlayer.classId, networkId, -1);
+            _worldSetter.generateCreateInstruction(TempPlayer.classId, networkId, -1);
         }
     }
 

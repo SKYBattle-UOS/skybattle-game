@@ -1,5 +1,7 @@
 package Host;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -77,6 +79,7 @@ public class NetworkManager {
             } catch (IOException e) {
                 // socket closed; thread exit
                 e.printStackTrace();
+                break;
             }
         }
     }

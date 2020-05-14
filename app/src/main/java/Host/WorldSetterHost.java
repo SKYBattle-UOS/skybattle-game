@@ -21,31 +21,27 @@ public class WorldSetterHost {
     }
 
     public void writeInstructionToStream(OutputBitStream packetToSend) {
-        boolean wasFirst = true;
         for (Map.Entry<Integer, WorldSetterHeader> entry : _mappingN2I.entrySet()){
             WorldSetterHeader header = entry.getValue();
             if (header.dirtyFlag != 0){
-                if (wasFirst) {
-                    try {
-                        packetToSend.write(1, 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    wasFirst = false;
+                try {
+                    packetToSend.write(1, 8);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 header.wrtieToStream(packetToSend);
                 _registry.getGameObject(header.networkId).writeToStream(packetToSend, header.dirtyFlag);
 
                 header.dirtyFlag = 0;
             }
-            entry.getValue().action = WorldSetterAction.UPDATE;
-        }
-        if (wasFirst) {
-            try {
-                packetToSend.write(0, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
+            else {
+                try {
+                    packetToSend.write(0, 8);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            entry.getValue().action = WorldSetterAction.UPDATE;
         }
     }
 

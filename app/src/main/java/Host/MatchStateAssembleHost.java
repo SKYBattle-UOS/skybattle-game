@@ -61,7 +61,7 @@ class MatchStateAssembleHost implements GameState {
 
     private void sendAssembleComplete(OutputBitStream outPacket) {
         try {
-            outPacket.write(1, 1);
+            outPacket.write(1, 8);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,7 +69,7 @@ class MatchStateAssembleHost implements GameState {
 
     private void sendHasCustomMessage(OutputBitStream outPacket) {
         try {
-            outPacket.write(1, 1);
+            outPacket.write(1, 8);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,13 +77,13 @@ class MatchStateAssembleHost implements GameState {
 
     private void sendEverybodyInitialized(OutputBitStream outPacket) {
         try {
-            outPacket.write(0, 1);
+            outPacket.write(0, 8);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private boolean isAssembleInit(InputBitStream packet){
-        return packet.read(1) == 1;
+        return packet.read(8) == 1;
     }
 }

@@ -24,7 +24,8 @@ public class TempPlayer extends GameObject {
 
     public TempPlayer(String name) {
         super(0f, 0f, name);
-        setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
+        if (Core.getInstance().getRenderer() != null)
+            setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
         isHost = false;
     }
 

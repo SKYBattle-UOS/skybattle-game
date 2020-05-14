@@ -33,6 +33,7 @@ public class MatchStateAssemble implements GameState {
     @Override
     public void update(long ms) {
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+        if (packet == null) return;
 
         if (!_sentConfirm){
             Collection<GameObject> gos = _parent.getGameObjects();
@@ -66,24 +67,24 @@ public class MatchStateAssemble implements GameState {
     }
 
     private boolean hasCustomMessage(InputBitStream packet) {
-        return packet.read(1) == 1;
+        return packet.read(8) == 1;
     }
 
     private void confirmPlayerInit(boolean confirm){
         OutputBitStream packet = Core.getInstance().getPakcetManager().getPacketToSend();
         int data = confirm ? 1 : 0;
         try {
-            packet.write(data, 1);
+            packet.write(data, 8);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private  boolean isEverybodyInitializedForAssemble(InputBitStream packet){
-        return packet.read(1) == 0;
+        return packet.read(8) == 0;
     }
 
     private boolean isAssembleComplete(InputBitStream packet){
-        return packet.read(1) == 1;
+        return packet.read(8) == 1;
     }
 }

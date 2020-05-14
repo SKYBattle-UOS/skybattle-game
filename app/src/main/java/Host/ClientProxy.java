@@ -1,5 +1,7 @@
 package Host;
 
+import com.example.Client.GameObjectRegistry;
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -14,7 +16,7 @@ public class ClientProxy {
     private ConcurrentLinkedQueue<InputBitStream> _rawPackets;
     private LinkedList<InputBitStream> _packets;
     private boolean _isDisconnected;
-    private WorldSetterHost _worldSetter;
+//    private WorldSetterHost _worldSetter;
 
     public ClientProxy(int playerId){
         _playerId = playerId;
@@ -22,7 +24,7 @@ public class ClientProxy {
         _unprocessedInputs = new LinkedList<>();
         _rawPackets = new ConcurrentLinkedQueue<>();
         _packets = new LinkedList<>();
-        _worldSetter = new WorldSetterHost();
+//        _worldSetter = new WorldSetterHost(CoreHost.getInstance().getGameObjectRegistry());
     }
 
     public int getPlayerId(){
@@ -49,7 +51,7 @@ public class ClientProxy {
         return _isDisconnected;
     }
 
-    public WorldSetterHost getWorldSetterHost(){
-        return _worldSetter;
-    }
+//    public WorldSetterHost getWorldSetterHost(){
+//        return _worldSetter;
+//    }
 }

@@ -21,6 +21,7 @@ public class CoreHost {
         if (_instance == null){
             _instance = new CoreHost();
             _instance.init();
+            (new Thread(()->_instance.run())).start();
         }
 
         return _instance;
