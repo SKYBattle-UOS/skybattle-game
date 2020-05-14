@@ -68,9 +68,17 @@ public class ReplayPacketManager implements PacketManager {
 //        _packets[p].getBuffer()[i++] = 'i'; // every client has completed initialization of assemble
 //        p++;
 //        i = 0;
-//
+
         _packetArrivalTime[p] = 13000;
-        _packets[p].getBuffer()[i++] = 'z'; // not replication
+        _packets[p].getBuffer()[i++] = 'r'; // replication
+        _packets[p].getBuffer()[i++] = 1; // UPDATE
+        _packets[p].getBuffer()[i++] = 2; // network Id 2
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 0; //
+        _packets[p].getBuffer()[i++] = 1; // position is dirty
+        _packets[p].getBuffer()[i++] = 11; // lat
+        _packets[p].getBuffer()[i++] = 11; // lon
         p++;
         i = 0;
 //
@@ -115,17 +123,6 @@ public class ReplayPacketManager implements PacketManager {
         _packets[p].getBuffer()[i++] = 'z'; // not replication
         p++;
         i = 0;
-
-        _packetArrivalTime[p] = _packetArrivalTime[p - 1] + 1000;
-        _packets[p].getBuffer()[i++] = 'r'; // replication
-        _packets[p].getBuffer()[i++] = 1; // UPDATE
-        _packets[p].getBuffer()[i++] = 2; // network Id 2
-        _packets[p].getBuffer()[i++] = 0; //
-        _packets[p].getBuffer()[i++] = 0; //
-        _packets[p].getBuffer()[i++] = 0; //
-        _packets[p].getBuffer()[i++] = 1; // position is dirty
-        _packets[p].getBuffer()[i++] = 42; // lat
-        _packets[p].getBuffer()[i++] = 42; // lon
 
         p++;
         i = 0;

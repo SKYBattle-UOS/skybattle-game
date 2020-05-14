@@ -113,6 +113,11 @@ public class BitInputStream implements InputBitStream {
         return to;
     }
 
+    @Override
+    public int availableBits() {
+        return 0;
+    }
+
     public byte[] getBuffer(){
         return data;
     }
