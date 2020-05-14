@@ -28,9 +28,9 @@ public class GameStateMatchHost implements GameState {
     private final int NUM_PACKET_PER_FRAME;
 
     public GameStateMatchHost(){
-        _worldSetter = new WorldSetterHost();
-        _gameObjects = new ArrayList<>();
         _registry = new GameObjectRegistry();
+        _worldSetter = new WorldSetterHost(_registry);
+        _gameObjects = new ArrayList<>();
 
         _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
         GET_READY_COUNT = 10000;
@@ -53,12 +53,13 @@ public class GameStateMatchHost implements GameState {
             TempPlayer newPlayer = (TempPlayer) Core.getInstance().getGameObjectFactory().createGameObject(TempPlayer.classId);
             newPlayer.setNetworkId(networkId);
             newPlayer.setPlayerId(client.getPlayerId());
+            newPlayer.isHost = true;
 
             _registry.add(networkId, newPlayer);
             _gameObjects.add(newPlayer);
 
             for (ClientProxy client2 : clients)
-                client2.getWorldSetterHost().generateCreateInstruction(networkId, -1);
+                client2.getWorldSetterHost().generateCreateInstruction(TempPlayer.classId, networkId, -1);
         }
     }
 

@@ -82,11 +82,6 @@ public class BitOutputStream implements OutputBitStream {
         }
     }
 
-    @Override
-    public int availableBits() {
-        return 0;
-    }
-
     /**
      * 비트들을 쓴다.
      * @param data   쓰여질 바이트들
@@ -135,27 +130,12 @@ public class BitOutputStream implements OutputBitStream {
     public void resetPos() {
         try{
             out.flush(); //이 부분은 이렇게 해도 되는지 조금 생각 필요해보임
-        }catch (Exception e){}
+        } catch (Exception e){}
 
     }
 
     public boolean isBufferOwner(){
         return bufferOwner;
-    }
-
-    @Override
-    public byte[] getBuffer() {
-        return new byte[0];
-    }
-
-    @Override
-    public int getBufferByteLength() {
-        return 0;
-    }
-
-    @Override
-    public void resetPos() {
-
     }
 
     /**

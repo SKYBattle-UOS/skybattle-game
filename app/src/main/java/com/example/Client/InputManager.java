@@ -10,31 +10,44 @@ import Common.InputState;
 import Common.OutputBitStream;
 
 public class InputManager {
-    private Location _location;
+//    private Location _location;
+//    private double[] _prevLatlon;
     private Queue<InputState> _inputStates;
-    private double[] _prevLatlon;
+
+    // TODO
+    private long _elapsed;
 
     public InputManager(Context context){
-        _location = new Location(context);
+//        _location = new Location(context);
+//        _prevLatlon = new double[2];
         _inputStates = new LinkedList<>();
-        _prevLatlon = new double[2];
     }
 
     public void update(long ms){
         sendInput();
         updateInputState();
+
+        // TODO
+        _elapsed += ms;
     }
 
     private void updateInputState() {
-        double[] latlon = _location.getCurrentLocation();
-        if (isPosDirty(latlon)){
-            // TODO: if qwer dirty
+//        double[] latlon = _location.getCurrentLocation();
+//        if (isPosDirty(latlon)){
+//            // TODO: if qwer dirty
+//            InputState newState = new InputState();
+//            newState.lat = latlon[0];
+//            newState.lon = latlon[1];
+//            _prevLatlon = latlon;
+//
+//            _inputStates.offer(newState);
+//        }
+        if (_elapsed > 1000){
             InputState newState = new InputState();
-            newState.lat = latlon[0];
-            newState.lon = latlon[1];
-            _prevLatlon = latlon;
-
+            newState.lat = 3;
+            newState.lon = 3;
             _inputStates.offer(newState);
+            _elapsed = 0;
         }
     }
 
@@ -61,8 +74,8 @@ public class InputManager {
         }
     }
 
-    private boolean isPosDirty(double[] latlon) {
-        // TODO: only dirty if position changed by a significant amount
-        return (latlon[0] * latlon[1]) != 0 && (latlon[0] != _prevLatlon[0] && latlon[1] != _prevLatlon[1]);
-    }
+//    private boolean isPosDirty(double[] latlon) {
+//        // TODO: only dirty if position changed by a significant amount
+//        return (latlon[0] * latlon[1]) != 0 && (latlon[0] != _prevLatlon[0] && latlon[1] != _prevLatlon[1]);
+//    }
 }

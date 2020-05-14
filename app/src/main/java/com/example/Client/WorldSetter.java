@@ -20,13 +20,10 @@ public class WorldSetter {
     }
 
     public void processInstructions(InputBitStream stream){
-        // TODO: check remaining bits in the stream
         while (true){
-            stream.read(_buffer, 8);
-            if (_buffer[0] != 'r')
-                return;
+            if (stream.read(1) == 0) return;
 
-            _header.setMembers(stream);
+            _header.readFromStream(stream);
 
             switch (_header.action){
                 case CREATE:
@@ -49,7 +46,7 @@ public class WorldSetter {
         if (_registry.getGameObject(_header.networkId) == null){
             GameObject newGO = Core.getInstance().getGameObjectFactory().createGameObject(_header.classId);
             newGO.setNetworkId(_header.networkId);
-            newGO.readFromStream(stream);
+            newGO.readFromStream(stream, _header.dirtyFlag);
             _registry.add(_header.networkId, newGO);
             newGO.setIndexInWorld(_world.size());
             _world.add(newGO);
@@ -60,7 +57,7 @@ public class WorldSetter {
         GameObject goToUpdate = _registry.getGameObject(_header.networkId);
         if (goToUpdate == null) return;
 
-        goToUpdate.readFromStream(stream);
+        goToUpdate.readFromStream(stream, _header.dirtyFlag);
     }
 
     private void destroyGO(){

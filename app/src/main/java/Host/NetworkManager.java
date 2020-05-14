@@ -21,6 +21,7 @@ public class NetworkManager {
     private int _newPlayerId;
     private ServerSocket _socket;
     private Map<InetAddress, ClientProxy> _mappingAddr2Proxy;
+    private Map<Integer, ClientProxy> _mappingPlayer2Proxy;
     private ArrayList<Socket> _clientSockets;
     private ClientProxy _hostClient;
     private OutputBitStream _sendThisFrame;
@@ -29,6 +30,7 @@ public class NetworkManager {
         _newPlayerId = 0;
         _sendThisFrame = new BitOutputStream();
         _mappingAddr2Proxy = new HashMap<>();
+        _mappingPlayer2Proxy = new HashMap<>();
         _clientSockets = new ArrayList<>();
     }
 
@@ -67,8 +69,9 @@ public class NetworkManager {
         while (true) {
             try {
                 Socket newSocket = _socket.accept();
-                ClientProxy client = new ClientProxy(_newPlayerId++);
+                ClientProxy client = new ClientProxy(_newPlayerId);
                 _mappingAddr2Proxy.put(newSocket.getInetAddress(), client);
+                _mappingPlayer2Proxy.put(_newPlayerId++, client);
                 _clientSockets.add(newSocket);
                 (new Thread(() -> receive(newSocket, client))).start();
             } catch (IOException e) {
@@ -109,5 +112,9 @@ public class NetworkManager {
 
     public Collection<ClientProxy> getClientProxies(){
         return _mappingAddr2Proxy.values();
+    }
+
+    public ClientProxy getClientById(int id){
+        return _mappingPlayer2Proxy.get(id);
     }
 }

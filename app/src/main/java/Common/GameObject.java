@@ -69,8 +69,8 @@ public abstract class GameObject {
     }
     // endregion
 
-    public abstract void writeToStream(OutputBitStream stream);
-    public abstract void readFromStream(InputBitStream stream);
+    public abstract void writeToStream(OutputBitStream stream, int dirtyFlag);
+    public abstract void readFromStream(InputBitStream stream, int dirtyFlag);
     public abstract void update(long ms);
 
     public void scheduleDeath(){

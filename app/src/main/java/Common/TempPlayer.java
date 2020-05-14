@@ -1,11 +1,15 @@
 package Common;
 
-import android.graphics.Color;
 import android.util.Log;
 
 import com.example.Client.Core;
 import com.example.Client.ImageType;
-import com.example.Client.Renderer;
+
+import java.io.IOException;
+import java.util.Queue;
+
+import Host.ClientProxy;
+import Host.CoreHost;
 
 /**
  * 임시 캐릭터 클래스. 볼품없는 스킬을 넣을 예정.
@@ -16,10 +20,12 @@ import com.example.Client.Renderer;
  */
 public class TempPlayer extends GameObject {
     private int _playerId;
+    public boolean isHost;
 
     public TempPlayer(String name) {
         super(0f, 0f, name);
         setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
+        isHost = false;
     }
 
     public void setPlayerId(int playerId){
@@ -28,7 +34,16 @@ public class TempPlayer extends GameObject {
 
     @Override
     public void update(long ms) {
+        if (isHost) {
+            ClientProxy client = CoreHost.getInstance().getNetworkManager().getClientById(_playerId);
+            Queue<InputState> inputs = client.getUnprocessedInputs();
+            while (true){
+                InputState input = inputs.poll();
+                if (input == null) break;
 
+                setPosition(input.lat, input.lon);
+            }
+        }
     }
 
     public static GameObject createInstance() {
@@ -36,19 +51,26 @@ public class TempPlayer extends GameObject {
     }
 
     @Override
-    public void writeToStream(OutputBitStream stream) {
-        // TODO
+    public void writeToStream(OutputBitStream stream, int dirtyFlag) {
+        if ((dirtyFlag & 1) != 0) {
+            double[] pos = getPosition();
+            int lat = (byte) pos[0];
+            int lon = (byte) pos[1];
+            try {
+                stream.write(lat, 8);
+                stream.write(lon, 8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
-    public void readFromStream(InputBitStream stream) {
-        // TODO
-        byte[] b = new byte[2];
-        stream.read(b, 8);
-
-        if (b[0] == 1){
-            stream.read(b, 16);
-            setPosition(b[0], b[1]);
+    public void readFromStream(InputBitStream stream, int dirtyFlag) {
+        if ((dirtyFlag & 1) != 0){
+            int lat = stream.read(8);
+            int lon = stream.read(8);
+            setPosition(lat, lon);
         }
     }
 
