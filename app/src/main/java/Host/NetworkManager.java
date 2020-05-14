@@ -39,6 +39,11 @@ public class NetworkManager {
         _shoudSendThisFrame = false;
     }
 
+    public void update(){
+        send();
+        _sendThisFrame.resetPos();
+    }
+
     public void open(){
         try {
             _socket = new ServerSocket(Settings.PORT);
@@ -70,7 +75,6 @@ public class NetworkManager {
             }
         }
 
-        _sendThisFrame.resetPos();
         _shoudSendThisFrame = false;
     }
 

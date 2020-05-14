@@ -10,6 +10,7 @@ import java.util.Queue;
 
 import Host.ClientProxy;
 import Host.CoreHost;
+import Host.WorldSetterHost;
 
 /**
  * 임시 캐릭터 클래스. 볼품없는 스킬을 넣을 예정.
@@ -21,11 +22,10 @@ import Host.CoreHost;
 public class TempPlayer extends GameObject {
     private int _playerId;
     public boolean isHost;
+    public WorldSetterHost worldSetterHost;
 
     public TempPlayer(String name) {
         super(0f, 0f, name);
-        if (Core.getInstance().getRenderer() != null)
-            setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
         isHost = false;
     }
 
@@ -42,9 +42,15 @@ public class TempPlayer extends GameObject {
                 InputState input = inputs.poll();
                 if (input == null) break;
 
-                setPosition(input.lat, input.lon);
+                double[] prevPos = getPosition();
+                if (prevPos[0] != input.lat || prevPos[1] != input.lon){
+                    setPosition(input.lat, input.lon);
+                    worldSetterHost.generateUpdateInstruction(getNetworkId(), -1);
+                }
             }
         }
+        else if (Core.getInstance().getRenderer() != null && getRenderComponent() == null)
+            setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
     }
 
     public static GameObject createInstance() {

@@ -54,6 +54,7 @@ public class GameStateMatchHost implements GameState {
             newPlayer.setNetworkId(networkId);
             newPlayer.setPlayerId(client.getPlayerId());
             newPlayer.isHost = true;
+            newPlayer.worldSetterHost = _worldSetter;
 
             _registry.add(networkId, newPlayer);
             _gameObjects.add(newPlayer);
@@ -79,12 +80,14 @@ public class GameStateMatchHost implements GameState {
         Collection<ClientProxy> clients = net.getClientProxies();
 
         for (ClientProxy client : clients){
-            Queue<InputBitStream> packetQueue = client.getRawPacketQueue();
+            Queue<InputBitStream> rawPacketQueue = client.getRawPacketQueue();
+            Queue<InputBitStream> packetQueue = client.getPacketQueue();
             for (int i = 0; i < NUM_PACKET_PER_FRAME; i++){
-                InputBitStream packet = packetQueue.poll();
-                if (packet == null)
+                InputBitStream rawPacket = rawPacketQueue.poll();
+                if (rawPacket == null)
                     break;
-                handleInputPacket(client, packet);
+                handleInputPacket(client, rawPacket);
+                packetQueue.offer(rawPacket);
             }
         }
     }

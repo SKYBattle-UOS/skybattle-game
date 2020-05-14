@@ -117,7 +117,7 @@ public class BitOutputStream implements OutputBitStream {
 
     @Override
     public int getBufferByteLength(){
-        return byteSize;
+        return bufferBitCount > 0 ? byteSize + 1 : byteSize;
     }
 
     @Override

@@ -39,6 +39,7 @@ public class GameStateRoom implements GameState {
             Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
             _parent.switchState(GameStateType.MATCH);
             Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE);
+            Core.getInstance().getPakcetManager().shouldSendThisFrame();
 //            }
         }
     }

@@ -16,6 +16,7 @@ public class InputManager {
 
     // TODO
     private long _elapsed;
+    private int latlon = 3;
 
     public InputManager(Context context){
 //        _location = new Location(context);
@@ -44,10 +45,11 @@ public class InputManager {
 //        }
         if (_elapsed > 1000){
             InputState newState = new InputState();
-            newState.lat = 3;
-            newState.lon = 3;
+            newState.lat = latlon;
+            newState.lon = latlon;
             _inputStates.offer(newState);
             _elapsed = 0;
+            latlon++;
         }
     }
 
@@ -64,13 +66,15 @@ public class InputManager {
             }
 
             input.writeToStream(stream);
+            Core.getInstance().getPakcetManager().shouldSendThisFrame();
         }
-
-        // sending 0 input in the packet
-        try {
-            stream.write(0, 2);
-        } catch (IOException e) {
-            e.printStackTrace();
+        else {
+            // sending 0 input in the packet
+            try {
+                stream.write(0, 2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

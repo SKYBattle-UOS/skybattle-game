@@ -26,7 +26,7 @@ public class GameStateRoomHost implements GameState {
         NetworkManager net = CoreHost.getInstance().getNetworkManager();
 
         // host sent start
-        if (_elapsed > 7000){
+        if (_elapsed > 5000){
             Log.i("Stub", "RoomHost: start button press received");
             net.closeAccept();
 

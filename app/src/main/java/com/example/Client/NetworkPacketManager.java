@@ -43,6 +43,7 @@ public class NetworkPacketManager implements PacketManager {
     public void update() {
         _rawPackets.poll();
         send();
+        _sendThisFrame.resetPos();
     }
 
     private void send(){
@@ -56,8 +57,6 @@ public class NetworkPacketManager implements PacketManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        _sendThisFrame.resetPos();
 
         _shouldSendThisFrame = false;
     }

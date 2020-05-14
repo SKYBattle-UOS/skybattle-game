@@ -27,7 +27,7 @@ public class WorldSetterHost {
             if (header.dirtyFlag != 0){
                 CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
                 try {
-                    packetToSend.write(1, 8);
+                    packetToSend.write(1, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -38,7 +38,7 @@ public class WorldSetterHost {
             }
             else {
                 try {
-                    packetToSend.write(0, 8);
+                    packetToSend.write(0, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
