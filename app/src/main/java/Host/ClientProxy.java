@@ -1,35 +1,38 @@
 package Host;
 
+import com.example.Client.GameObjectRegistry;
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import Common.InputBitStream;
-import Common.MoveList;
+import Common.InputState;
 
 public class ClientProxy {
-    private WorldSetterHost _worldSetter;
-    private MoveList _unprocessedMoves;
+    private Queue<InputState> _unprocessedInputs;
     private int _playerId;
     private boolean _shouldSendLastTimeStamp;
     private ConcurrentLinkedQueue<InputBitStream> _rawPackets;
     private LinkedList<InputBitStream> _packets;
+    private boolean _isDisconnected;
+//    private WorldSetterHost _worldSetter;
 
     public ClientProxy(int playerId){
         _playerId = playerId;
         _shouldSendLastTimeStamp = false;
-        _worldSetter = new WorldSetterHost();
-        _unprocessedMoves = new MoveList();
+        _unprocessedInputs = new LinkedList<>();
         _rawPackets = new ConcurrentLinkedQueue<>();
         _packets = new LinkedList<>();
+//        _worldSetter = new WorldSetterHost(CoreHost.getInstance().getGameObjectRegistry());
     }
 
     public int getPlayerId(){
         return _playerId;
     }
 
-    public MoveList getUnprocessedMoves(){
-        return _unprocessedMoves;
+    public Queue<InputState> getUnprocessedInputs(){
+        return _unprocessedInputs;
     }
 
     public Queue<InputBitStream> getRawPacketQueue(){
@@ -39,4 +42,16 @@ public class ClientProxy {
     public Queue<InputBitStream> getPacketQueue(){
         return _packets;
     }
+
+    public void setDisconnected(boolean disconnected){
+        _isDisconnected = disconnected;
+    }
+
+    public boolean isDisconnected(){
+        return _isDisconnected;
+    }
+
+//    public WorldSetterHost getWorldSetterHost(){
+//        return _worldSetter;
+//    }
 }

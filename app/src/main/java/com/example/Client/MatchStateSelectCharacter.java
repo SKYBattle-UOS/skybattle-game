@@ -13,19 +13,23 @@ import Common.MatchStateType;
  */
 public class MatchStateSelectCharacter implements GameState {
     private GameStateMatch _match;
-    private IOManager _ioManager;
 
     MatchStateSelectCharacter(GameStateMatch match){
         _match = match;
-        _ioManager = Core.getInstance().getIOManager();
         Core.getInstance().getUIManager().setText("집합 완료 : 캐릭터를 선택하세요");
     }
 
     @Override
     public void update(long ms) {
-        if (_ioManager.isCharacterSelectComplete()){
+        InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+
+        if (isCharacterSelectComplete(packet)){
             Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY);
             _match.switchState(MatchStateType.GET_READY);
         }
+    }
+
+    private boolean isCharacterSelectComplete(InputBitStream packet){
+        return packet.read(1) == 1;
     }
 }

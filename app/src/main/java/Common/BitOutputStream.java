@@ -1,6 +1,8 @@
 package Common;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -17,6 +19,7 @@ public class BitOutputStream implements OutputBitStream {
     private int buffer;
     private int bufferBitCount;
     private  boolean bufferOwner = false;
+    private int byteSize;
 
     private static final int[] MASKS = new int[] {
             0, 1, 3, 7, 0xf, 0x1f, 0x3f, 0x7f, 0xff
@@ -57,7 +60,7 @@ public class BitOutputStream implements OutputBitStream {
 
     /**
      * 비트들을 쓴다.
-     * @param data          bits to be written, which are stored in low bits.
+     * @param data          비트값인 data 를 저장한다..
      * @param numBits       쓰여질 비트 개수
      * @throws IOException  if an I/O error occurs.
      */
@@ -72,17 +75,13 @@ public class BitOutputStream implements OutputBitStream {
             } else {    //여유공간이 없는 경우
                 buffer = ((data & MASKS[rest]) << bufferBitCount) | buffer;
                 out.write(buffer);  // 쓸 수 있는 공간이 없기에 꽉찬 버퍼를 씀.
+                byteSize++;
                 numBits -= rest;    //쓴 만큼 개수를 감소.
                 data >>>= rest;
                 bufferBitCount = 0; //초기화
                 buffer = 0;
             }
         }
-    }
-
-    @Override
-    public int availableBits() {
-        return 0;
     }
 
     /**
@@ -105,23 +104,51 @@ public class BitOutputStream implements OutputBitStream {
             write(data[byteCount],numBits);
     }
 
-    public boolean isBufferOwner(){
-        return bufferOwner;
+    @Override
+    public int availableBits(){
+        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
+        byte[] data = buffer.toByteArray();
+
+        int availableBit = 0;
+        int maxSize = data.length;
+        availableBit = maxSize * 8;
+        return availableBit;
     }
 
     @Override
-    public byte[] getBuffer() {
-        return new byte[0];
+    public int getBufferByteLength(){
+        return bufferBitCount > 0 ? byteSize + 1 : byteSize;
     }
 
     @Override
-    public int getBufferByteLength() {
-        return 0;
+    public byte[] getBuffer(){
+        if (byteSize <= 0 && bufferBitCount == 0)
+            return null;
+
+        ByteArrayOutputStream ret = new ByteArrayOutputStream();
+        try {
+            ((ByteArrayOutputStream) out).writeTo(ret);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (bufferBitCount > 0)
+            ret.write(buffer);
+        return ret.toByteArray();
     }
 
     @Override
     public void resetPos() {
+        try{
+            out = new ByteArrayOutputStream(byteArrayToInt(new byte[1500]));
+//            out.flush(); //이 부분은 이렇게 해도 되는지 조금 생각 필요해보임
+            bufferBitCount = 0;
+            byteSize = 0;
+        } catch (Exception e){}
 
+    }
+
+    public boolean isBufferOwner(){
+        return bufferOwner;
     }
 
     /**

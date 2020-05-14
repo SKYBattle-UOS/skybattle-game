@@ -1,22 +1,26 @@
 package Host;
 
+import com.example.Client.Core;
+import com.example.Client.GameObjectRegistry;
+
 import Common.GameObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
 
 import Common.GameState;
 import Common.InputBitStream;
+import Common.InputState;
 import Common.MatchStateType;
-import Common.Move;
-import Common.MoveList;
+import Common.TempPlayer;
 
 public class GameStateMatchHost implements GameState {
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
-    private ArrayList<GameObject> _world;
+    private ArrayList<GameObject> _gameObjects;
+    private GameObjectRegistry _registry;
+    private int nextNetworkId;
 
     // TODO
     private int _numPlayers;
@@ -24,8 +28,9 @@ public class GameStateMatchHost implements GameState {
     private final int NUM_PACKET_PER_FRAME;
 
     public GameStateMatchHost(){
-        _worldSetter = new WorldSetterHost();
-        _world = new ArrayList<>();
+        _registry = new GameObjectRegistry();
+        _worldSetter = new WorldSetterHost(_registry);
+        _gameObjects = new ArrayList<>();
 
         _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
         GET_READY_COUNT = 10000;
@@ -36,8 +41,36 @@ public class GameStateMatchHost implements GameState {
     }
 
     @Override
+    public void start() {
+        createTempPlayers();
+    }
+
+    private void createTempPlayers() {
+        Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
+        for (ClientProxy client : clients){
+            int networkId = nextNetworkId++;
+
+            TempPlayer newPlayer = (TempPlayer) Core.getInstance().getGameObjectFactory().createGameObject(TempPlayer.classId);
+            newPlayer.setNetworkId(networkId);
+            newPlayer.setPlayerId(client.getPlayerId());
+            newPlayer.isHost = true;
+            newPlayer.worldSetterHost = _worldSetter;
+
+            _registry.add(networkId, newPlayer);
+            _gameObjects.add(newPlayer);
+
+            _worldSetter.generateCreateInstruction(TempPlayer.classId, networkId, -1);
+        }
+    }
+
+    @Override
     public void update(long ms) {
         handleInputFromClients();
+        _worldSetter.writeInstructionToStream(CoreHost.getInstance().getNetworkManager().getPacketToSend());
+
+        for (GameObject go : _gameObjects){
+            go.update(ms);
+        }
 
         _currentState.update(ms);
     }
@@ -47,23 +80,25 @@ public class GameStateMatchHost implements GameState {
         Collection<ClientProxy> clients = net.getClientProxies();
 
         for (ClientProxy client : clients){
-            Queue<InputBitStream> packetQueue = client.getRawPacketQueue();
+            Queue<InputBitStream> rawPacketQueue = client.getRawPacketQueue();
+            Queue<InputBitStream> packetQueue = client.getPacketQueue();
             for (int i = 0; i < NUM_PACKET_PER_FRAME; i++){
-                InputBitStream packet = packetQueue.poll();
-                if (packet == null)
+                InputBitStream rawPacket = rawPacketQueue.poll();
+                if (rawPacket == null)
                     break;
-                handleInputPacket(client, packet);
+                handleInputPacket(client, rawPacket);
+                packetQueue.offer(rawPacket);
             }
         }
     }
 
     private void handleInputPacket(ClientProxy client, InputBitStream packet) {
-        MoveList moveList = client.getUnprocessedMoves();
-        int numMoves = packet.read(2);
-        for (int i = 0; i < numMoves; i++){
-            Move newMove = new Move();
-            newMove.readFromStream(packet);
-            moveList.append(newMove);
+        Queue<InputState> inputList = client.getUnprocessedInputs();
+        int numInputs = packet.read(2);
+        for (int i = 0; i < numInputs; i++){
+            InputState newInput = new InputState();
+            newInput.readFromStream(packet);
+            inputList.offer(newInput);
         }
     }
 
@@ -83,5 +118,9 @@ public class GameStateMatchHost implements GameState {
                 break;
         }
         _currentState.start();
+    }
+
+    public Collection<GameObject> getGameObjects(){
+        return _gameObjects;
     }
 }

@@ -12,35 +12,35 @@ public class GameStateRoom implements GameState {
     private final int MAX_TITLE_LENGTH = 10;
     private final int MAX_NUM_PLAYERS = 6;
     private GameStateContext _parent;
-    private IOManager _ioManager;
 
     GameStateRoom(GameStateContext stateContext){
         _parent = stateContext;
-        _ioManager = Core.getInstance().getIOManager();
     }
 
     @Override
     public void update(long ms) {
         // TODO: might be better if packet is fetched only once
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+        if (packet == null) return;
 
-        if (roomTitleChanged(packet)) {
-            Log.i("Stub", "GameStateRoom: Room Title Changed - " +
-                    getRoomTitle(packet));
-        }
-
-        if (playersInfoChanged(packet)) {
-            Log.i("Stub", "GameStateRoom: Room Title Changed - " +
-                    getPlayersInfo(packet));
-        }
+//        if (roomTitleChanged(packet)) {
+//            Log.i("Stub", "GameStateRoom: Room Title Changed - " +
+//                    getRoomTitle(packet));
+//        }
+//
+//        if (playersInfoChanged(packet)) {
+//            Log.i("Stub", "GameStateRoom: Room Title Changed - " +
+//                    getPlayersInfo(packet));
+//        }
 
         if (hostStartedGame(packet)) {
             // assemble
-            if (isAbleToStart(packet)) {
-                Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
-                _parent.switchState(GameStateType.MATCH);
-                Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE);
-            }
+//            if (isAbleToStart(packet)) {
+            Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
+            _parent.switchState(GameStateType.MATCH);
+            Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE);
+            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+//            }
         }
     }
 

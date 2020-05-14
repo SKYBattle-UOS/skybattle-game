@@ -28,8 +28,8 @@ public class GameStateMatch implements GameState {
     private GameState _currentState;
 
     GameStateMatch(){
-        // TODO: for now, only 2 players
-        _numPlayers = 2;
+        // TODO: for now, only 1 player
+        _numPlayers = 1;
         _currentState = new MatchStateAssemble(this, _numPlayers);
         _gameObjectRegistry = new GameObjectRegistry();
         _gameObjects = new Vector<>();

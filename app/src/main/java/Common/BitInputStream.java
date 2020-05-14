@@ -1,5 +1,7 @@
 package Common;
 
+import java.io.IOException;
+
 /**
  * Base class of bit input streams.
  * 플랫폼마다 바이트를 어떤 순서로 저장하는지 다름. -> 리틀 엔디언 ->  가장 작은 자리의 바이트부터 먼저 기재
@@ -15,7 +17,9 @@ public class BitInputStream implements InputBitStream {
     private int bitOffset;
     private int byteLimit;
 
-    // 버퍼 오너면 비트스트림
+    /**
+     * 인자 없는 경우 1300 바이트 배열 자체 생성 + 버퍼오너
+     */
     public BitInputStream() {
         this.data = new byte[1300];
         bufferOwner = true;
@@ -44,31 +48,34 @@ public class BitInputStream implements InputBitStream {
         }
 
         int returnValue = 0;
+        int originalBitOffset = bitOffset;
+        int numBitsInLastByte = Math.min(8 - bitOffset, numBits);
         bitOffset += numBits;
-        while (bitOffset > 8) {
+        while (bitOffset >= 8) {
+            returnValue = returnValue << (bitOffset / 8) * 8;
+            returnValue |= data[byteOffset + bitOffset / 8];
             bitOffset -= 8;
-            returnValue |= (data[byteOffset++] & 0xFF) << bitOffset;
             if(byteLimit != 0 && byteOffset == byteLimit )
             {
-                returnValue &= 0xFFFFFFFF >>> (32 - numBits);
-                return returnValue; //limit 값 넘은경우
+                return 42;
             }
         }
-        returnValue |= (data[byteOffset] & 0xFF) >> (8 - bitOffset);
-        returnValue &= 0xFFFFFFFF >>> (32 - numBits);
-        if (bitOffset == 8) {
-            bitOffset = 0;
-            byteOffset++;
-        }
+
+        returnValue = returnValue << numBitsInLastByte;
+        returnValue |= (data[byteOffset] >>> originalBitOffset) & ~(-1 << numBitsInLastByte);
+
+        if (numBits < 32)
+            returnValue &= ~(-1 << numBits);
+
+        byteOffset += (originalBitOffset + numBits) / 8;
+
         return returnValue;
     }
 
     /**
      * Reads {@code numBits} bits into {@code buffer}.
-     *  @param buffer The array into which the read data should be written. The trailing
-     *     {@code numBits % 8} bits are written into the most significant bits of the last modified
-     *     {@code buffer} byte. The remaining ones are unmodified.
-     * @param numBits The number of bits to read.
+     *  @param buffer 읽은 데이터들이 저장됨.
+     * @param numBits 읽을 비트 개수.
      * @return
      */
     @Override
@@ -105,13 +112,16 @@ public class BitInputStream implements InputBitStream {
         return to;
     }
 
-    @Override
-    public int availableBits() {
-        return 0;
-    }
-
     public byte[] getBuffer(){
         return data;
+    }
+
+    public int availableBits(){
+        int availableBitNum = 0;
+       int maxSize = data.length;
+        availableBitNum = (maxSize - byteOffset) * 8;
+        availableBitNum += (8 - bitOffset);
+        return availableBitNum;
     }
 
     @Override
