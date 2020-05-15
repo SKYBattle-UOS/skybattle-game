@@ -52,12 +52,14 @@ public class GoogleMapAdapter implements Map {
         _mainHandler.post(()->_setMarkerPosition(marker,lat,lon));
     }
 
+    @Override
+    public void removeMarker(MapMarkerHandle marker){
+        _mainHandler.post(()->_removeMarker(marker));
+    }
+
     private synchronized void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
-        Log.i("Stub",
-                String.format(
-                        "Check now Location: latitude : %f, longitude : %f",
-                        lat, lon));
-        int index=((GoogleMarkerHandle) marker).index;
+
+        int index=((GoogleMarkerHandle)marker).index;
         Marker cur_marker=_markers.get(index);
         cur_marker.setPosition(new LatLng(lat,lon));
         cur_marker.showInfoWindow();
@@ -82,6 +84,13 @@ public class GoogleMapAdapter implements Map {
 
     private void _moveCamera(double lat, double lon){
         _googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat, lon)));
+    }
+
+    private synchronized void _removeMarker(MapMarkerHandle marker){
+        int index=((GoogleMarkerHandle)marker).index;
+        Marker cur_marker=_markers.get(index);
+        _markers.remove(index);
+        cur_marker.remove();
     }
 
     private void _animateCamera(){
