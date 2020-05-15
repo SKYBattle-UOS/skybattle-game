@@ -10,9 +10,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import Common.BitInputStream;
 import Common.BitOutputStream;
 import Common.InputBitStream;
-import Common.InputState;
 import Common.OutputBitStream;
-import Common.Settings;
+import Common.Util;
 
 public class NetworkPacketManager implements PacketManager {
     private Socket _socket;
@@ -64,7 +63,7 @@ public class NetworkPacketManager implements PacketManager {
     private void receive(String host) {
         try {
             while (_socket == null)
-                _socket = new Socket(host, Settings.PORT);
+                _socket = new Socket(host, Util.PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,7 +1,5 @@
 package Host;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,7 +15,7 @@ import Common.BitInputStream;
 import Common.BitOutputStream;
 import Common.InputBitStream;
 import Common.OutputBitStream;
-import Common.Settings;
+import Common.Util;
 
 public class NetworkManager {
     private int _newPlayerId;
@@ -46,7 +44,7 @@ public class NetworkManager {
 
     public void open(){
         try {
-            _socket = new ServerSocket(Settings.PORT);
+            _socket = new ServerSocket(Util.PORT);
             (new Thread(this::acceptor)).start();
         } catch (IOException e) {
             e.printStackTrace();

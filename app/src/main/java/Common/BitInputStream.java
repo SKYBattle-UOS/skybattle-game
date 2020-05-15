@@ -53,7 +53,8 @@ public class BitInputStream implements InputBitStream {
         bitOffset += numBits;
         while (bitOffset >= 8) {
             returnValue = returnValue << (bitOffset / 8) * 8;
-            returnValue |= data[byteOffset + bitOffset / 8];
+            if (byteOffset + bitOffset / 8 < data.length)
+                returnValue |= data[byteOffset + bitOffset / 8];
             bitOffset -= 8;
             if(byteLimit != 0 && byteOffset == byteLimit )
             {

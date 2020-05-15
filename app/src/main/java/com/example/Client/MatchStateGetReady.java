@@ -7,7 +7,9 @@ import java.util.Locale;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.InputBitStream;
 import Common.MatchStateType;
+import Common.Util;
 
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 준비화면.
@@ -19,21 +21,25 @@ import Common.MatchStateType;
  */
 public class MatchStateGetReady implements GameState {
     private final String TOP_TEXT = "도망가세요. 남은시간 : %d초";
-    private int _countDown;
+    private int _count;
     private int _prevCount;
     private GameStateMatch _match;
 
     MatchStateGetReady(GameStateMatch parent, int countInMS){
         _match = parent;
-        _countDown = countInMS;
-        _prevCount = _countDown / 1000;
         Core.getInstance().getUIManager().setText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
     }
 
     @Override
     public void update(long ms) {
-        _countDown -= ms;
-        if (_countDown < 0){
+        InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+        if (packet == null) return;
+
+        if (Util.hasMessage(packet)){
+            _count = packet.read(8);
+        }
+
+        if (Util.hasMessage(packet)){
             _match.switchState(MatchStateType.INGAME);
             Core.getInstance().getUIManager().switchScreen(ScreenType.INGAME);
         }
@@ -41,9 +47,9 @@ public class MatchStateGetReady implements GameState {
 
     @Override
     public void render(Renderer renderer, long ms) {
-        if (_prevCount != _countDown / 1000){
-            _prevCount = _countDown / 1000;
-            Core.getInstance().getUIManager().setText(String.format(Locale.getDefault(), TOP_TEXT, _countDown / 1000));
+        if (_prevCount != _count){
+            _prevCount = _count;
+            Core.getInstance().getUIManager().setText(String.format(Locale.getDefault(), TOP_TEXT, _count));
         }
 
         Collection<GameObject> gameObjects = _match.getGameObjects();
