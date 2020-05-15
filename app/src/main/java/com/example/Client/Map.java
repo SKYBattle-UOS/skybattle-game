@@ -11,4 +11,5 @@ public interface Map {
     void moveCamera(double latitude, double longitude);
     MapMarkerHandle addMarker(double latitude, double longitude, int color, float size);
     void setMarkerPosition(MapMarkerHandle marker, double lat, double lon);
+    void removeMarker(MapMarkerHandle marker);
 }
