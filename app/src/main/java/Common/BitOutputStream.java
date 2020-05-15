@@ -143,6 +143,7 @@ public class BitOutputStream implements OutputBitStream {
 //            out.flush(); //이 부분은 이렇게 해도 되는지 조금 생각 필요해보임
             bufferBitCount = 0;
             byteSize = 0;
+            buffer = 0;
         } catch (Exception e){}
 
     }
