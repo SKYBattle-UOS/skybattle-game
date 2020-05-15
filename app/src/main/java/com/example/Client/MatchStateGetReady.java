@@ -25,7 +25,7 @@ public class MatchStateGetReady implements GameState {
     private int _prevCount;
     private GameStateMatch _match;
 
-    MatchStateGetReady(GameStateMatch parent, int countInMS){
+    MatchStateGetReady(GameStateMatch parent){
         _match = parent;
         Core.getInstance().getUIManager().setText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
     }

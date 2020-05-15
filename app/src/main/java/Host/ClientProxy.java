@@ -12,18 +12,18 @@ import Common.InputState;
 public class ClientProxy {
     private Queue<InputState> _unprocessedInputs;
     private int _playerId;
-    private boolean _shouldSendLastTimeStamp;
     private ConcurrentLinkedQueue<InputBitStream> _rawPackets;
     private LinkedList<InputBitStream> _packets;
     private boolean _isDisconnected;
+//    private boolean _shouldSendLastTimeStamp;
 //    private WorldSetterHost _worldSetter;
 
     public ClientProxy(int playerId){
         _playerId = playerId;
-        _shouldSendLastTimeStamp = false;
         _unprocessedInputs = new LinkedList<>();
         _rawPackets = new ConcurrentLinkedQueue<>();
         _packets = new LinkedList<>();
+//        _shouldSendLastTimeStamp = false;
 //        _worldSetter = new WorldSetterHost(CoreHost.getInstance().getGameObjectRegistry());
     }
 

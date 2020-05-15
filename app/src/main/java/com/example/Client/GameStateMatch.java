@@ -23,8 +23,6 @@ public class GameStateMatch implements GameState {
     private Vector<GameObject> _gameObjects;
     private int _numPlayers;
 
-    // TODO: DEBUG EDIT
-    final int GETREADYCOUNT = 10000; // 10 seconds
     private GameState _currentState;
 
     GameStateMatch(){
@@ -76,7 +74,7 @@ public class GameStateMatch implements GameState {
                 _currentState = new MatchStateSelectCharacter(this);
                 break;
             case GET_READY:
-                _currentState = new MatchStateGetReady(this, GETREADYCOUNT);
+                _currentState = new MatchStateGetReady(this);
                 break;
             case INGAME:
                 _currentState = new MatchStateInGame(this);
