@@ -5,12 +5,17 @@ import java.util.Collection;
 
 import Common.GameState;
 import Common.InputBitStream;
+import Common.MatchStateType;
 import Common.OutputBitStream;
+import Common.Util;
 
 class MatchStateSelectCharacterHost implements GameState {
     private GameStateMatchHost _match;
     private boolean[] _characterSelected;
     private Collection<ClientProxy> _clients;
+
+    // TODO
+    private long elapsed;
 
     public MatchStateSelectCharacterHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
@@ -26,35 +31,27 @@ class MatchStateSelectCharacterHost implements GameState {
             if (packet == null)
                 continue;
 
-            _characterSelected[i] = hasSelectedCharacter(packet);
+            _characterSelected[i] = Util.hasMessage(packet);
             i++;
         }
 
-        for (boolean b : _characterSelected)
-            if (!b) return;
+        boolean allset = true;
+        for (boolean b : _characterSelected) {
+            if (!b) {
+                allset = false;
+                break;
+            }
+        }
+
+        elapsed += ms;
+        if (elapsed > 5000)
+            allset = true;
 
         OutputBitStream outputPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
-        sendHasCustomMessage(outputPacket);
-        sendEverybodySelectedCharacter(outputPacket);
-    }
-
-    private void sendEverybodySelectedCharacter(OutputBitStream outputPacket) {
-        try {
-            outputPacket.write(1, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private boolean hasSelectedCharacter(InputBitStream packet) {
-        return packet.read(1) == 1;
-    }
-
-    private void sendHasCustomMessage(OutputBitStream outPacket) {
-        try {
-            outPacket.write(1, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Util.sendHas(outputPacket, allset);
+        if (allset) {
+            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+            _match.switchState(MatchStateType.GET_READY);
         }
     }
 }

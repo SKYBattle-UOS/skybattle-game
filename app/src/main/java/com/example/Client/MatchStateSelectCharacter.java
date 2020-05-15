@@ -6,6 +6,7 @@ import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
 import Common.OutputBitStream;
+import Common.Util;
 
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 캐릭터 선택 화면.
@@ -32,34 +33,17 @@ public class MatchStateSelectCharacter implements GameState {
         if (packet == null) return;
 
         if (_selectedCharacter && !_sentSelected){
-            OutputBitStream packetToSend = Core.getInstance().getPakcetManager().getPacketToSend();
             Core.getInstance().getPakcetManager().shouldSendThisFrame();
-            sendSelectedCharacter(packetToSend);
             _sentSelected = true;
             return;
         }
 
-        if (!hasCustomMessage(packet)) return;
+        OutputBitStream packetToSend = Core.getInstance().getPakcetManager().getPacketToSend();
+        Util.sendHas(packetToSend, _selectedCharacter);
 
-        if (isCharacterSelectComplete(packet)){
+        if (Util.hasMessage(packet)){
             Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY);
             _match.switchState(MatchStateType.GET_READY);
         }
-    }
-
-    private boolean hasCustomMessage(InputBitStream packet) {
-        return packet.read(1) == 1;
-    }
-
-    private void sendSelectedCharacter(OutputBitStream packetToSend) {
-        try {
-            packetToSend.write(1, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private boolean isCharacterSelectComplete(InputBitStream packet){
-        return packet.read(1) == 1;
     }
 }
