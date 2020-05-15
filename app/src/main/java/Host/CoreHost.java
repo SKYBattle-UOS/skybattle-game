@@ -6,7 +6,6 @@ import Common.GameStateType;
 
 public class CoreHost {
     private static CoreHost _instance;
-    private static final int _port = 9998;
 
     private boolean _isInitialized;
     private NetworkManager _networkManager;
@@ -14,7 +13,7 @@ public class CoreHost {
 
     private CoreHost(){
         _isInitialized = false;
-        _networkManager = new NetworkManager(_port);
+        _networkManager = new NetworkManager();
         _gameStateContext = new GameStateContextHost();
     }
 
@@ -22,12 +21,13 @@ public class CoreHost {
         if (_instance == null){
             _instance = new CoreHost();
             _instance.init();
+            (new Thread(()->_instance.run())).start();
         }
 
         return _instance;
     }
 
-    public void init(){
+    private void init(){
         if (!_isInitialized){
             _gameStateContext.switchState(GameStateType.ROOM);
             _isInitialized = true;
@@ -56,7 +56,8 @@ public class CoreHost {
     }
 
     private void run(long ms){
-        _networkManager.update(ms);
+        _gameStateContext.update(ms);
+        _networkManager.update();
     }
 
     public void destroy(){

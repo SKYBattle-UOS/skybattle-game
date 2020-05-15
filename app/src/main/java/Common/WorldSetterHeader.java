@@ -1,5 +1,6 @@
 package Common;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -8,27 +9,49 @@ public class WorldSetterHeader {
     static final WorldSetterAction[] actionValues = WorldSetterAction.values();
 
     public WorldSetterAction action;
-    public int networkId;
     public int classId;
+    public int networkId;
+    public int dirtyFlag;
 
-    public void setMembers(InputBitStream stream){
-        byte[] bytes = new byte[4];
-        stream.read(bytes, 8);
-        if (bytes[0] >= actionLen)
-            action = WorldSetterAction.UNKNOWN;
-        else
-            action = actionValues[bytes[0]];
+    public void readFromStream(InputBitStream stream){
+        action = intToAction(stream.read(2));
+        if (action == WorldSetterAction.CREATE)
+            classId = stream.read(32);
+        networkId = stream.read(32);
+        dirtyFlag = stream.read(32);
+    }
 
-        stream.read(bytes, 32);
-        ByteBuffer bb = ByteBuffer.wrap(bytes, 0, 4);
-        bb.order(ByteOrder.LITTLE_ENDIAN);
-        networkId = bb.getInt();
-
-        if (action == WorldSetterAction.CREATE){
-            stream.read(bytes, 32);
-            bb = ByteBuffer.wrap(bytes, 0, 4);
-            bb.order(ByteOrder.LITTLE_ENDIAN);
-            classId = bb.getInt();
+    public void writeToStream(OutputBitStream stream){
+        try {
+            stream.write(actionToInt(action), 2);
+            if (action == WorldSetterAction.CREATE)
+                stream.write(classId, 32);
+            stream.write(networkId, 32);
+            stream.write(dirtyFlag, 32);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    private int actionToInt(WorldSetterAction action){
+        int actionInt = 3;
+        switch (action){
+            case CREATE:
+                actionInt = 0;
+                break;
+
+            case UPDATE:
+                actionInt = 1;
+                break;
+
+            case DESTROY:
+                actionInt = 2;
+                break;
+        }
+        return actionInt;
+    }
+
+    private WorldSetterAction intToAction(int i){
+        return actionValues[i];
     }
 }

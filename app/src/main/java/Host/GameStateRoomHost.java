@@ -1,5 +1,9 @@
 package Host;
 
+import android.util.Log;
+
+import java.io.IOException;
+
 import Common.GameState;
 import Common.GameStateType;
 import Common.InputBitStream;
@@ -8,6 +12,9 @@ public class GameStateRoomHost implements GameState {
     private GameStateContextHost _parent;
     private byte[] _buffer;
 
+    // TODO
+    private long _elapsed;
+
     public GameStateRoomHost(GameStateContextHost parent){
         _parent = parent;
         _buffer = new byte[1];
@@ -15,17 +22,22 @@ public class GameStateRoomHost implements GameState {
 
     @Override
     public void update(long ms) {
+        _elapsed += ms;
         NetworkManager net = CoreHost.getInstance().getNetworkManager();
-        InputBitStream packetStream = net.getHostClientProxy().getRawPacketQueue().poll();
-        if (packetStream != null){
-            packetStream.read(_buffer, 8);
 
-            // 방장이 보냄
-            if (_buffer[0] == 'a'){
-                net.closeAccept();
-                net.broadCastToClients(_buffer);
-                _parent.switchState(GameStateType.MATCH);
+        // host sent start
+        if (_elapsed > 5000){
+            Log.i("Stub", "RoomHost: start button press received");
+            net.closeAccept();
+
+            try {
+                net.getPacketToSend().write(1, 1);
+                net.shouldSendThisFrame();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+            _parent.switchState(GameStateType.MATCH);
         }
     }
 }
