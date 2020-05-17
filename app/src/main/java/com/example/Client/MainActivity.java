@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,11 +28,10 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
             @Override
             public void onClick (View v){
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                alert.setTitle("IP주소 입력");
-                alert.setMessage("IP주소를 입력하시오.");
-
-                final EditText ip_addr = new EditText(MainActivity.this);
-                alert.setView(ip_addr);
+                View dialogView = LayoutInflater.from(MainActivity.this).inflate(R.layout.input_dialog, null);
+                alert.setView(dialogView);
+                alert.setTitle("IP주소 및 닉네임 입력");
+                alert.setMessage("IP주소와 닉네임을 입력하시오.");
 
                 alert.setPositiveButton("입력", new DialogInterface.OnClickListener() {
                     @Override
@@ -45,7 +45,25 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         });
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
-        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(GameStateMain.switchScreenPort));
+        btn_makeroom.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick (View v){
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                View dialogView = LayoutInflater.from(MainActivity.this).inflate(R.layout.room_dialog, null);
+                alert.setView(dialogView);
+                alert.setTitle("방 제목 입력");
+                alert.setMessage("방 제목을 입력하시오.");
+
+                alert.setPositiveButton("입력", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        /*"입력" 버튼 클릭 시 실행하는 메소드*/
+                        Core.getInstance().getUIManager().invoke(GameStateMain.switchScreenPort);
+                    }
+                });
+                alert.show();
+            }
+        });
     }
 
     @Override
