@@ -64,8 +64,8 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
         trans.commit();
     }
 
-    @Override
-    public void setText(String text) {
+   @Override
+   public void setTopText(String text) {
         _topText.setText(text);
     }
 

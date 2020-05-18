@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RoomActivity extends AppCompatActivity implements Screen {
     private TextView _roomTitle;
@@ -29,17 +32,17 @@ public class RoomActivity extends AppCompatActivity implements Screen {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
-        // _roomTitle = findViewById(R.id.roomTitle);
+        _roomTitle = findViewById(R.id.roomTitle);
 
-        listView = (ListView)this.findViewById(R.id.playerlist);
+        listView = (ListView) this.findViewById(R.id.playerlist);
 
-        ArrayList<String> items = new ArrayList<>(); //플레이어 닉네임으로 변경할 것
+        ArrayList<String> items = new ArrayList<>();
         items.add("닉1");
         items.add("닉2");
         items.add("닉3");
         items.add("닉4");
 
-        CustomAdapter adapter = new CustomAdapter(this,0,items);
+        CustomAdapter adapter = new CustomAdapter(this, 0, items);
         listView.setAdapter((adapter));
     }
 
@@ -57,23 +60,23 @@ public class RoomActivity extends AppCompatActivity implements Screen {
                 LayoutInflater v1 = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = v1.inflate(R.layout.listview_player, null);
             }
-            TextView textView = (TextView) v.findViewById(R.id.textView2);
-            textView.setText(items.get(position));
+            final TextView textView = (TextView) v.findViewById(R.id.textView2);
+            //textView.setText(items.get(position)); 플레이어 목록 저위의 닉1,2,3..보여주는거
 
             final String text = items.get(position);
-            Button button1 = (Button) v.findViewById(R.id.button1);
-            button1.setOnClickListener(new View.OnClickListener() {
+            Button btn_runner = (Button) v.findViewById(R.id.btn_runner);
+            btn_runner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(RoomActivity.this, text, Toast.LENGTH_SHORT).show();
+                    textView.setText("러너");
                 }
             });
 
-            Button button2 = (Button) v.findViewById(R.id.button2);
-            button2.setOnClickListener(new View.OnClickListener() {
+            Button btn_tagger = (Button) v.findViewById(R.id.btn_tagger);
+            btn_tagger.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(RoomActivity.this, text, Toast.LENGTH_SHORT).show();
+                    textView.setText("술래");
                 }
             });
 
@@ -102,9 +105,9 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         }
     }
 
+
     @Override
-    public void setText(String text) {
+    public void setTopText(String text) {
         _roomTitle.setText(text);
     }
-
 }

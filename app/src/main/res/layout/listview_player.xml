@@ -28,14 +28,14 @@
         android:textSize="16dp" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/btn_runner"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="러너" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_tagger"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"

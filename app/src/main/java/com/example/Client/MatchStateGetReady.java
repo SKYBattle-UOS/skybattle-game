@@ -27,7 +27,7 @@ public class MatchStateGetReady implements GameState {
 
     MatchStateGetReady(GameStateMatch parent, int countInMS){
         _match = parent;
-        Core.getInstance().getUIManager().setText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
+       Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class MatchStateGetReady implements GameState {
     public void render(Renderer renderer, long ms) {
         if (_prevCount != _count){
             _prevCount = _count;
-            Core.getInstance().getUIManager().setText(String.format(Locale.getDefault(), TOP_TEXT, _count));
+            Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _count));
         }
 
         Collection<GameObject> gameObjects = _match.getGameObjects();

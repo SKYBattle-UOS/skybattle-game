@@ -19,7 +19,7 @@ public class MatchStateInGame implements GameState {
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
-        Core.getInstance().getUIManager().setText("게임시작이 시작되었습니다");
+        Core.getInstance().getUIManager().setTopText("게임시작이 시작되었습니다");
     }
 
     @Override
@@ -30,7 +30,7 @@ public class MatchStateInGame implements GameState {
     @Override
     public void render(Renderer renderer, long ms) {
         Collection<GameObject> gameObjects = _match.getGameObjects();
-        for (GameObject go : gameObjects){
+        for (GameObject go : gameObjects) {
             go.render(renderer);
         }
     }

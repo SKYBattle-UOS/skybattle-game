@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
     }
 
     @Override
-    public void setText(String text) {
+    public void setTopText(String text){
         // nothing
     }
 

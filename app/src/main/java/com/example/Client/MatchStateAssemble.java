@@ -27,7 +27,7 @@ public class MatchStateAssemble implements GameState {
         _isInitialized = false;
         sentInitComplete = false;
         _numPlayers = numPlayers;
-        Core.getInstance().getUIManager().setText("다른 플레이어를 기다리는중...");
+        Core.getInstance().getUIManager().setTopText("다른 플레이어를 기다리는중...");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class MatchStateAssemble implements GameState {
 
         if (Util.hasMessage(packet)) {
             _isInitialized = true;
-            Core.getInstance().getUIManager().setText("집합하세요");
+            Core.getInstance().getUIManager().setTopText("집합하세요");
         }
 
         if (Util.hasMessage(packet)) {

@@ -23,14 +23,14 @@ public class UIManager {
             _currentScreen.switchTo(_toSwitch.remove());
     }
 
-    public void setCurrentScreen(Screen screen){
+    public void setCurrentScreen(Screen screen) {
         _currentScreen = screen;
 
         if (!_toSwitch.isEmpty())
             _currentScreen.switchTo(_toSwitch.remove());
 
         if (_topText != null)
-            setText(_topText);
+            setTopText(_topText);
     }
 
     public void invoke(int port){
@@ -45,10 +45,11 @@ public class UIManager {
         _callbackMapping.put(port, func);
     }
 
-    public void setText(String text){
+    /*topText외에 리스트뷰같은 곳에 텍스트 설정 시, 내장함수 setText와 이름 겹치므로 setTopText로 변경*/
+    public void setTopText(String text){
         _topText = text;
 
         if (_currentScreen != null)
-            _mainHandler.post(()->_currentScreen.setText(_topText));
+            _mainHandler.post(()->_currentScreen.setTopText(_topText));
     }
 }

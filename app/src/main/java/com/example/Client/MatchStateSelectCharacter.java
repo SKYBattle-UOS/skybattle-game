@@ -20,9 +20,9 @@ public class MatchStateSelectCharacter implements GameState {
     private boolean _selectedCharacter;
     private boolean _sentSelected;
 
-    MatchStateSelectCharacter(GameStateMatch match){
+    MatchStateSelectCharacter(GameStateMatch match) {
         _match = match;
-        Core.getInstance().getUIManager().setText("집합 완료 : 캐릭터를 선택하세요");
+        Core.getInstance().getUIManager().setTopText("집합 완료 : 캐릭터를 선택하세요");
         _selectedCharacter = false;
         _sentSelected = false;
     }
@@ -32,7 +32,7 @@ public class MatchStateSelectCharacter implements GameState {
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
-        if (_selectedCharacter && !_sentSelected){
+        if (_selectedCharacter && !_sentSelected) {
             Core.getInstance().getPakcetManager().shouldSendThisFrame();
             _sentSelected = true;
             return;
@@ -41,7 +41,7 @@ public class MatchStateSelectCharacter implements GameState {
         OutputBitStream packetToSend = Core.getInstance().getPakcetManager().getPacketToSend();
         Util.sendHas(packetToSend, _selectedCharacter);
 
-        if (Util.hasMessage(packet)){
+        if (Util.hasMessage(packet)) {
             Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY);
             _match.switchState(MatchStateType.GET_READY);
         }
