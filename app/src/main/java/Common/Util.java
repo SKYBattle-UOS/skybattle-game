@@ -4,11 +4,17 @@ import com.example.Client.GameObjectFactory;
 
 import java.io.IOException;
 
+import Host.TempPlayerHost;
+
 public class Util {
     public static final int PORT = 9998;
 
     public static void registerGameObjects(GameObjectFactory factory){
         TempPlayer.classId = factory.registerCreateMethod(TempPlayer::createInstance);
+    }
+
+    public static void registerGameObjectsHost(GameObjectFactory factory){
+        TempPlayerHost.classId = factory.registerCreateMethod(TempPlayerHost::createInstance);
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {

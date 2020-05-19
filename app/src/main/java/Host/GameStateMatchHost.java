@@ -1,6 +1,7 @@
 package Host;
 
 import com.example.Client.Core;
+import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
 
 import Common.GameObject;
@@ -14,12 +15,14 @@ import Common.InputBitStream;
 import Common.InputState;
 import Common.MatchStateType;
 import Common.TempPlayer;
+import Common.Util;
 
 public class GameStateMatchHost implements GameState {
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
     private ArrayList<GameObject> _gameObjects;
     private GameObjectRegistry _registry;
+    private GameObjectFactory _factory;
     private int nextNetworkId;
     private boolean _worldSetterActive = false;
 
@@ -31,6 +34,7 @@ public class GameStateMatchHost implements GameState {
     public GameStateMatchHost(){
         _registry = new GameObjectRegistry();
         _worldSetter = new WorldSetterHost(_registry);
+        _factory = new GameObjectFactory();
         _gameObjects = new ArrayList<>();
 
         _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
@@ -38,6 +42,7 @@ public class GameStateMatchHost implements GameState {
         NUM_PACKET_PER_FRAME = 3;
 
         // TODO
+        Util.registerGameObjectsHost(_factory);
         switchState(MatchStateType.ASSEMBLE);
     }
 
@@ -46,11 +51,10 @@ public class GameStateMatchHost implements GameState {
         for (ClientProxy client : clients){
             int networkId = nextNetworkId++;
 
-            TempPlayer newPlayer = (TempPlayer) Core.getInstance().getGameObjectFactory().createGameObject(TempPlayer.classId);
+            TempPlayerHost newPlayer = (TempPlayerHost) _factory.createGameObject(TempPlayerHost.classId);
             newPlayer.setNetworkId(networkId);
             newPlayer.setPlayerId(client.getPlayerId());
-            newPlayer.isHost = true;
-            newPlayer.worldSetterHost = _worldSetter;
+            newPlayer.setWorldSetterHost(_worldSetter);
 
             _registry.add(networkId, newPlayer);
             _gameObjects.add(newPlayer);
