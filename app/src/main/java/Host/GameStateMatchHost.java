@@ -14,6 +14,7 @@ import Common.GameState;
 import Common.InputBitStream;
 import Common.InputState;
 import Common.MatchStateType;
+import Common.Player;
 import Common.TempPlayer;
 import Common.Util;
 
@@ -21,6 +22,7 @@ public class GameStateMatchHost implements GameState {
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
     private ArrayList<GameObject> _gameObjects;
+    private ArrayList<Player> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
     private int nextNetworkId;
@@ -36,6 +38,7 @@ public class GameStateMatchHost implements GameState {
         _worldSetter = new WorldSetterHost(_registry);
         _factory = new GameObjectFactory();
         _gameObjects = new ArrayList<>();
+        _players = new ArrayList<>();
 
         _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
         GET_READY_COUNT = 10000;
@@ -44,6 +47,21 @@ public class GameStateMatchHost implements GameState {
         // TODO
         Util.registerGameObjectsHost(_factory);
         switchState(MatchStateType.ASSEMBLE);
+    }
+
+    public GameObject createGameObject(int classId){
+        GameObject ret =  _factory.createGameObject(classId);
+        int networkId = nextNetworkId++;
+
+        ret.setNetworkId(networkId);
+        ret.setWorldSetterHost(_worldSetter);
+        ret.setIndexInWorld(_gameObjects.size());
+
+        _registry.add(networkId, ret);
+        _gameObjects.add(ret);
+        _worldSetter.generateCreateInstruction(classId, networkId, -1);
+
+        return ret;
     }
 
     public void createTempPlayers() {
@@ -55,11 +73,13 @@ public class GameStateMatchHost implements GameState {
             newPlayer.setNetworkId(networkId);
             newPlayer.setPlayerId(client.getPlayerId());
             newPlayer.setWorldSetterHost(_worldSetter);
+            newPlayer.setIndexInWorld(_gameObjects.size());
 
             _registry.add(networkId, newPlayer);
             _gameObjects.add(newPlayer);
+            _players.add(newPlayer);
 
-            _worldSetter.generateCreateInstruction(TempPlayer.classId, networkId, -1);
+            _worldSetter.generateCreateInstruction(TempPlayerHost.classId, networkId, -1);
         }
     }
 
@@ -129,6 +149,7 @@ public class GameStateMatchHost implements GameState {
     public Collection<GameObject> getGameObjects(){
         return _gameObjects;
     }
+    public Collection<Player> getPlayers() { return _players; }
 
     public boolean isWorldSetterActive() {
         return _worldSetterActive;

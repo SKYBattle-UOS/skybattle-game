@@ -17,6 +17,8 @@ public class TempPlayerHost extends Player {
 
     @Override
     public void update(long ms) {
+        int dirtyFlag = 0;
+
         ClientProxy client = CoreHost.getInstance().getNetworkManager().getClientById(getPlayerId());
         Queue<InputState> inputs = client.getUnprocessedInputs();
         while (true) {
@@ -26,8 +28,10 @@ public class TempPlayerHost extends Player {
             double[] prevPos = getPosition();
             if (prevPos[0] != input.lat || prevPos[1] != input.lon) {
                 setPosition(input.lat, input.lon);
-                _worldSetterHost.generateUpdateInstruction(getNetworkId(), -1);
+                dirtyFlag |= 1;
             }
         }
+
+        _worldSetterHost.generateUpdateInstruction(getNetworkId(), dirtyFlag);
     }
 }

@@ -30,7 +30,52 @@ public abstract class GameObject {
         _name = name;
     }
 
+    public static GameObject createInstance(){ return null; };
+
+    public void collisionEnter(GameObject other){}
+    public void collisionExit(GameObject other){}
+
+    public void writeToStream(OutputBitStream stream, int dirtyFlag){
+        if ((dirtyFlag & 1) != 0) {
+            double[] pos = getPosition();
+            int lat = (byte) pos[0];
+            int lon = (byte) pos[1];
+            try {
+                stream.write(lat, 8);
+                stream.write(lon, 8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void readFromStream(InputBitStream stream, int dirtyFlag){
+        if ((dirtyFlag & 1) != 0){
+            int lat = stream.read(8);
+            int lon = stream.read(8);
+            setPosition(lat, lon);
+        }
+    }
+
+    public abstract void update(long ms);
+
+    public void faceDeath(){}
+
+    public void render(Renderer renderer){
+        if (_renderComponent != null)
+            renderer.batch(_renderComponent);
+    }
+
+
     // region Getters and Setters
+    public void scheduleDeath(){
+        _wantsToDie = true;
+    }
+
+    public boolean doesWantToDie(){
+        return _wantsToDie;
+    }
+
     public void setWorldSetterHost(WorldSetterHost wsh){
         _worldSetterHost = wsh;
     }
@@ -76,48 +121,4 @@ public abstract class GameObject {
         _networkId = networkId;
     }
     // endregion
-
-    public void writeToStream(OutputBitStream stream, int dirtyFlag){
-        if ((dirtyFlag & 1) != 0) {
-            double[] pos = getPosition();
-            int lat = (byte) pos[0];
-            int lon = (byte) pos[1];
-            try {
-                stream.write(lat, 8);
-                stream.write(lon, 8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void readFromStream(InputBitStream stream, int dirtyFlag){
-        if ((dirtyFlag & 1) != 0){
-            int lat = stream.read(8);
-            int lon = stream.read(8);
-            setPosition(lat, lon);
-        }
-    }
-
-    public abstract void update(long ms);
-
-    public void scheduleDeath(){
-        _wantsToDie = true;
-    }
-
-    public boolean doesWantToDie(){
-        return _wantsToDie;
-    }
-
-    public void faceDeath(){}
-
-    public void render(Renderer renderer){
-        if (_renderComponent != null)
-            renderer.batch(_renderComponent);
-    }
-
-    public static GameObject createInstance(){
-        return null;
-    };
-
 }
