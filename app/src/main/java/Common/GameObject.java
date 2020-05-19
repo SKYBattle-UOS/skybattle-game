@@ -3,6 +3,10 @@ package Common;
 import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
+import java.io.IOException;
+
+import Host.WorldSetterHost;
+
 /**
  * 매 프레임 Update 될 필요가 있는 객체들의 base abstract class 입니다.
  *
@@ -13,13 +17,13 @@ import com.example.Client.Renderer;
 public abstract class GameObject {
     public static int classId;
 
-    private double[] _position;
     private String _name;
-    private boolean _wantsToDie;
-    private int _indexInWorld;
-    private RenderComponent _renderComponent;
     private int _networkId;
-    private int _dirtyFlag;
+    private int _indexInWorld;
+    private double[] _position;
+    private boolean _wantsToDie;
+    private RenderComponent _renderComponent;
+    protected WorldSetterHost _worldSetterHost;
 
     GameObject(float latitude, float longitude, String name){
         _position = new double[]{ latitude, longitude };
@@ -27,6 +31,10 @@ public abstract class GameObject {
     }
 
     // region Getters and Setters
+    public void setWorldSetterHost(WorldSetterHost wsh){
+        _worldSetterHost = wsh;
+    }
+
     public double[] getPosition(){
         return _position.clone();
     }
@@ -69,8 +77,28 @@ public abstract class GameObject {
     }
     // endregion
 
-    public abstract void writeToStream(OutputBitStream stream, int dirtyFlag);
-    public abstract void readFromStream(InputBitStream stream, int dirtyFlag);
+    public void writeToStream(OutputBitStream stream, int dirtyFlag){
+        if ((dirtyFlag & 1) != 0) {
+            double[] pos = getPosition();
+            int lat = (byte) pos[0];
+            int lon = (byte) pos[1];
+            try {
+                stream.write(lat, 8);
+                stream.write(lon, 8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void readFromStream(InputBitStream stream, int dirtyFlag){
+        if ((dirtyFlag & 1) != 0){
+            int lat = stream.read(8);
+            int lon = stream.read(8);
+            setPosition(lat, lon);
+        }
+    }
+
     public abstract void update(long ms);
 
     public void scheduleDeath(){

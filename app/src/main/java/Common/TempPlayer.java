@@ -19,66 +19,17 @@ import Host.WorldSetterHost;
  * @version 0.0
  * @since 2020-04-21
  */
-public class TempPlayer extends GameObject {
-    private int _playerId;
-    public boolean isHost;
-    public WorldSetterHost worldSetterHost;
-
+public class TempPlayer extends Player {
     public TempPlayer(String name) {
         super(0f, 0f, name);
-        isHost = false;
-    }
-
-    public void setPlayerId(int playerId){
-        _playerId = playerId;
+        setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
     }
 
     @Override
-    public void update(long ms) {
-        if (isHost) {
-            ClientProxy client = CoreHost.getInstance().getNetworkManager().getClientById(_playerId);
-            Queue<InputState> inputs = client.getUnprocessedInputs();
-            while (true){
-                InputState input = inputs.poll();
-                if (input == null) break;
-
-                double[] prevPos = getPosition();
-                if (prevPos[0] != input.lat || prevPos[1] != input.lon){
-                    setPosition(input.lat, input.lon);
-                    worldSetterHost.generateUpdateInstruction(getNetworkId(), -1);
-                }
-            }
-        }
-        else if (Core.getInstance().getRenderer() != null && getRenderComponent() == null)
-            setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
-    }
+    public void update(long ms) {}
 
     public static GameObject createInstance() {
         return new TempPlayer("TempPlayer");
-    }
-
-    @Override
-    public void writeToStream(OutputBitStream stream, int dirtyFlag) {
-        if ((dirtyFlag & 1) != 0) {
-            double[] pos = getPosition();
-            int lat = (byte) pos[0];
-            int lon = (byte) pos[1];
-            try {
-                stream.write(lat, 8);
-                stream.write(lon, 8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void readFromStream(InputBitStream stream, int dirtyFlag) {
-        if ((dirtyFlag & 1) != 0){
-            int lat = stream.read(8);
-            int lon = stream.read(8);
-            setPosition(lat, lon);
-        }
     }
 
     @Override
