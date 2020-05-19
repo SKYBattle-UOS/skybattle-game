@@ -12,8 +12,6 @@ import Common.GameStateType;
  * @see GameStateContext
  */
 public class GameStateMain implements GameState {
-    static final int switchScreenPort = 0;
-
     private GameStateContext _parent;
 
     GameStateMain(GameStateContext parent){
@@ -22,9 +20,8 @@ public class GameStateMain implements GameState {
 
     @Override
     public void start() {
-        Core.getInstance().getUIManager().registerCallback(switchScreenPort, () -> {
-            _parent.switchState(GameStateType.ROOM);
-            Core.getInstance().getUIManager().switchScreen(ScreenType.ROOM);
+        Core.getInstance().getUIManager().registerCallback(UIManager.SWITCH_SCREEN_PORT, () -> {
+            Core.getInstance().getUIManager().switchScreen(ScreenType.ROOM, () -> _parent.switchState(GameStateType.ROOM));
         } );
     }
 

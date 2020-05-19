@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         /*"입력" 버튼 클릭 시 실행하는 메소드*/
-                        Core.getInstance().getUIManager().invoke(GameStateMain.switchScreenPort);
+                        Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT);
                     }
                 });
                 alert.show();
@@ -45,19 +45,19 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         });
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
-        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(GameStateMain.switchScreenPort));
+        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Core.getInstance().getUIManager().setCurrentScreen(this);
+        Core.getInstance().getUIManager().setCurrentScreen(this, ScreenType.MAIN);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Core.getInstance().getUIManager().setCurrentScreen(null);
+        Core.getInstance().getUIManager().setCurrentScreen(null, ScreenType.MAIN);
     }
 
     @Override
@@ -68,11 +68,6 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
             startActivity(entrance_intent);
             finish();
         }
-    }
-
-    @Override
-    public void setText(String text) {
-        // nothing
     }
 
     @Override

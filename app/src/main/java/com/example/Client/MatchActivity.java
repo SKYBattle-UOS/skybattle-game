@@ -14,10 +14,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-public class MatchActivity extends AppCompatActivity implements Screen, OnMapReadyCallback {
+public class MatchActivity extends AppCompatActivity implements MatchScreen, OnMapReadyCallback {
     private TextView _topText;
     private SupportMapFragment _mapFragment;
     private Map _map;
+    private ScreenType _currentScreenType = ScreenType.ASSEMBLE;
 
     View marker_root_view;
     TextView tv_marker;
@@ -35,17 +36,19 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     @Override
     protected void onResume() {
         super.onResume();
-        Core.getInstance().getUIManager().setCurrentScreen(this);
+        Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Core.getInstance().getUIManager().setCurrentScreen(null);
+        Core.getInstance().getUIManager().setCurrentScreen(null, _currentScreenType);
     }
 
     @Override
     public void switchTo(ScreenType type) {
+        _currentScreenType = type;
+
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         switch (type){
             case CHARACTERSELECT:
@@ -62,11 +65,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
         }
 
         trans.commit();
-    }
-
-    @Override
-    public void setText(String text) {
-        _topText.setText(text);
+        Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     @Override
@@ -85,5 +84,10 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     private void setCustomMarkerView() {
         marker_root_view = LayoutInflater.from(this).inflate(R.layout.marker_layout, null);
         tv_marker = (TextView) marker_root_view.findViewById(R.id.tv_marker);
+    }
+
+    @Override
+    public void setTopText(String text) {
+        _topText.setText(text);
     }
 }

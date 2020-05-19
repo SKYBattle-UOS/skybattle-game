@@ -16,7 +16,6 @@ class MatchStateAssembleHost implements GameState {
     private Collection<ClientProxy> _clients;
     private boolean _shouldSendAllInit;
 
-
     public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost, int numPlayers) {
         _match = gameStateMatchHost;
         _numPlayers = numPlayers;
@@ -63,6 +62,11 @@ class MatchStateAssembleHost implements GameState {
         if (_shouldSendAllInit){
             CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
             _shouldSendAllInit = true;
+
+            if (!_match.isWorldSetterActive()){
+                _match.createTempPlayers();
+                _match.setWorldSetterActive();
+            }
         }
 
         Util.sendHas(outPacket, assembled);

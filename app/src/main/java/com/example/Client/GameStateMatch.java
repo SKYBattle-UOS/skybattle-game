@@ -22,6 +22,7 @@ public class GameStateMatch implements GameState {
     private GameObjectRegistry _gameObjectRegistry;
     private Vector<GameObject> _gameObjects;
     private int _numPlayers;
+    private boolean _worldSetterActive = false;
 
     private GameState _currentState;
 
@@ -37,7 +38,7 @@ public class GameStateMatch implements GameState {
     @Override
     public void update(long ms) {
         InputBitStream packetStream = Core.getInstance().getPakcetManager().getPacketStream();
-        if (packetStream != null)
+        if (packetStream != null && _worldSetterActive)
             _worldSetter.processInstructions(packetStream);
 
         for (GameObject go : _gameObjects){
@@ -99,5 +100,9 @@ public class GameStateMatch implements GameState {
         gameObject.faceDeath();
         _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
         _gameObjects.remove(_gameObjects.size() - 1);
+    }
+
+    public void activateWorldSetter(){
+        _worldSetterActive = true;
     }
 }

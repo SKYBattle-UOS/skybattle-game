@@ -21,6 +21,7 @@ public class GameStateMatchHost implements GameState {
     private ArrayList<GameObject> _gameObjects;
     private GameObjectRegistry _registry;
     private int nextNetworkId;
+    private boolean _worldSetterActive = false;
 
     // TODO
     private int _numPlayers;
@@ -40,12 +41,7 @@ public class GameStateMatchHost implements GameState {
         switchState(MatchStateType.ASSEMBLE);
     }
 
-    @Override
-    public void start() {
-        createTempPlayers();
-    }
-
-    private void createTempPlayers() {
+    public void createTempPlayers() {
         Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
         for (ClientProxy client : clients){
             int networkId = nextNetworkId++;
@@ -63,10 +59,16 @@ public class GameStateMatchHost implements GameState {
         }
     }
 
+    public void setWorldSetterActive(){
+        _worldSetterActive = true;
+    }
+
     @Override
     public void update(long ms) {
         handleInputFromClients();
-        _worldSetter.writeInstructionToStream(CoreHost.getInstance().getNetworkManager().getPacketToSend());
+
+        if (_worldSetterActive)
+            _worldSetter.writeInstructionToStream(CoreHost.getInstance().getNetworkManager().getPacketToSend());
 
         for (GameObject go : _gameObjects){
             go.update(ms);
@@ -122,5 +124,9 @@ public class GameStateMatchHost implements GameState {
 
     public Collection<GameObject> getGameObjects(){
         return _gameObjects;
+    }
+
+    public boolean isWorldSetterActive() {
+        return _worldSetterActive;
     }
 }

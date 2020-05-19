@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class RoomActivity extends AppCompatActivity implements Screen {
+public class RoomActivity extends AppCompatActivity implements RoomScreen {
     private TextView _roomTitle;
 
     @Override
@@ -19,13 +19,13 @@ public class RoomActivity extends AppCompatActivity implements Screen {
     @Override
     protected void onResume() {
         super.onResume();
-        Core.getInstance().getUIManager().setCurrentScreen(this);
+        Core.getInstance().getUIManager().setCurrentScreen(this, ScreenType.ROOM);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Core.getInstance().getUIManager().setCurrentScreen(null);
+        Core.getInstance().getUIManager().setCurrentScreen(null, ScreenType.ROOM);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
     }
 
     @Override
-    public void setText(String text) {
-        _roomTitle.setText(text);
+    public void setTitle(String title) {
+        _roomTitle.setText(title);
     }
 }

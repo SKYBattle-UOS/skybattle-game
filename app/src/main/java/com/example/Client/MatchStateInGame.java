@@ -19,7 +19,7 @@ public class MatchStateInGame implements GameState {
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
-        Core.getInstance().getUIManager().setText("게임시작이 시작되었습니다");
+        Core.getInstance().getUIManager().setTopText("게임이 시작되었습니다");
     }
 
     @Override
