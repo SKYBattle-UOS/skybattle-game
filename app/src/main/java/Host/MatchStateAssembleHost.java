@@ -46,15 +46,15 @@ class MatchStateAssembleHost implements GameState {
 
         Collection<GameObjectHost> gos = _match.getGameObjects();
         boolean assembled = false;
-        for (GameObject go : gos){
-            // TODO
-            // check if assembled
-            // if otherwise return
-            double[] pos = go.getPosition();
-            if (pos[0] > 20)
-                assembled = true;
-                break;
-        }
+//        for (GameObject go : gos){
+//            // TODO
+//            // check if assembled
+//            // if otherwise return
+//            double[] pos = go.getPosition();
+//            if (pos[0] > 20)
+//                assembled = true;
+//                break;
+//        }
 
         OutputBitStream outPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
 

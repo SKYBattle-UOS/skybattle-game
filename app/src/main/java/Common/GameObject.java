@@ -2,6 +2,7 @@ package Common;
 
 import androidx.annotation.Nullable;
 
+import com.example.Client.Core;
 import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
@@ -24,6 +25,10 @@ public abstract class GameObject {
     private double[] _position;
     private boolean _wantsToDie;
     private RenderComponent _renderComponent;
+    private LatLonByteConverter _converter;
+
+    private double[] _restoreTemp = new double[2];
+    private int[] _convertTemp = new int[2];
 
     protected GameObject(float latitude, float longitude, String name){
         _position = new double[]{ latitude, longitude };
@@ -33,8 +38,9 @@ public abstract class GameObject {
     public void writeToStream(OutputBitStream stream, int dirtyFlag){
         if ((dirtyFlag & 1) != 0) {
             double[] pos = getPosition();
-            int lat = (byte) pos[0];
-            int lon = (byte) pos[1];
+            _converter.convertLatLon(pos[0], pos[1], _convertTemp);
+            int lat = _convertTemp[0];
+            int lon = _convertTemp[1];
             try {
                 stream.write(lat, 8);
                 stream.write(lon, 8);
@@ -48,7 +54,8 @@ public abstract class GameObject {
         if ((dirtyFlag & 1) != 0){
             int lat = stream.read(8);
             int lon = stream.read(8);
-            setPosition(lat, lon);
+            _converter.restoreLatLon(lat, lon, _restoreTemp);
+            setPosition(_restoreTemp[0], _restoreTemp[1]);
         }
     }
 
@@ -90,6 +97,10 @@ public abstract class GameObject {
     public void setPosition(double latitude, double longitude){
         _position[0] = latitude;
         _position[1] = longitude;
+    }
+
+    public void setLatLonByteConverter(LatLonByteConverter converter){
+        _converter = converter;
     }
 
     public void setName(String name){

@@ -39,11 +39,8 @@ public class MatchStateAssemble implements GameState {
         OutputBitStream outPacket = Core.getInstance().getPakcetManager().getPacketToSend();
 
         if (!sentInitComplete) {
-//            Collection<GameObject> gos = _parent.getGameObjects();
-//            if (gos.size() >= _numPlayers) {
-                sentInitComplete = true;
-                Core.getInstance().getPakcetManager().shouldSendThisFrame();
-//            }
+            sentInitComplete = true;
+            Core.getInstance().getPakcetManager().shouldSendThisFrame();
 
             Util.sendHas(outPacket, sentInitComplete);
         }
@@ -54,8 +51,12 @@ public class MatchStateAssemble implements GameState {
 
         if (Util.hasMessage(packet)) {
             _match.activateWorldSetter();
+            if (!_isInitialized){
+                Core.getInstance().getUIManager().setTopText("집합하세요");
+                Core.getInstance().getCamera().move(37.714617, 127.045170);
+                Core.getInstance().getCamera().zoom(18);
+            }
             _isInitialized = true;
-            Core.getInstance().getUIManager().setTopText("집합하세요");
         }
 
         if (Util.hasMessage(packet)) {

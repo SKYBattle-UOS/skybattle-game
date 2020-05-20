@@ -78,7 +78,9 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(3));
 
         _map = new GoogleMapAdapter(googleMap);
-        Core.getInstance().setRenderer(new MapRenderer(_map));
+        MapRenderer mapRenderer = new MapRenderer(_map);
+        Core.getInstance().setRenderer(mapRenderer);
+        Core.getInstance().setCamera(mapRenderer);
     }
 
     private void setCustomMarkerView() {

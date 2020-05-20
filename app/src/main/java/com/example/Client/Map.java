@@ -9,6 +9,7 @@ package com.example.Client;
  */
 public interface Map {
     void moveCamera(double latitude, double longitude);
+    void zoomCamera(float zoom);
     MapMarkerHandle addMarker(double latitude, double longitude, int color, float size);
     void setMarkerPosition(MapMarkerHandle marker, double lat, double lon);
     void removeMarker(MapMarkerHandle marker);

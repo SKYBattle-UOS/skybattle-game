@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import Common.GameObject;
 import Common.InputBitStream;
+import Common.LatLonByteConverter;
 import Common.WorldSetterHeader;
 
 public class WorldSetter {
@@ -11,12 +12,14 @@ public class WorldSetter {
     private WorldSetterHeader _header;
     private byte[] _buffer;
     private Vector<GameObject> _world;
+    LatLonByteConverter _converter;
 
-    public WorldSetter(Vector<GameObject> world, GameObjectRegistry registry){
+    public WorldSetter(Vector<GameObject> world, GameObjectRegistry registry, LatLonByteConverter converter){
         _registry = registry;
         _header = new WorldSetterHeader();
         _buffer = new byte[1];
         _world = world;
+        _converter = converter;
     }
 
     public void processInstructions(InputBitStream stream){
@@ -45,6 +48,7 @@ public class WorldSetter {
     private void createGO(InputBitStream stream){
         if (_registry.getGameObject(_header.networkId) == null){
             GameObject newGO = Core.getInstance().getGameObjectFactory().createGameObject(_header.classId);
+            newGO.setLatLonByteConverter(_converter);
             newGO.setNetworkId(_header.networkId);
             newGO.readFromStream(stream, _header.dirtyFlag);
             _registry.add(_header.networkId, newGO);

@@ -3,7 +3,9 @@ package com.example.Client;
 import android.content.Context;
 import android.os.SystemClock;
 
+import Common.Camera;
 import Common.GameStateType;
+import Common.LatLonByteConverter;
 import Common.Util;
 import Host.CoreHost;
 
@@ -22,20 +24,23 @@ public class Core {
     private Context _appContext;
     private boolean _isInitialized;
     private Renderer _renderer;
+    private Camera _camera;
     private GameStateContext _stateContext;
     private PacketManager _packetManager;
     private GameObjectFactory _gameObjectFactory;
     private UIManager _uiManager;
     private InputManager _inputManager;
+    private LatLonByteConverter _converter;
 
     private Core(Context context){
         _appContext = context;
         _isInitialized = false;
-        _stateContext = new GameStateContext();
         _packetManager = new NetworkPacketManager();
         _gameObjectFactory = new GameObjectFactory();
         _uiManager = new UIManager();
-        _inputManager = new InputManager(context);
+        _converter = new LatLonByteConverter();
+        _inputManager = new InputManager(context, _converter);
+        _stateContext = new GameStateContext(_converter);
 
         Util.registerGameObjects(_gameObjectFactory);
     }
@@ -109,6 +114,12 @@ public class Core {
 
     public void setRenderer(Renderer renderer){
         _renderer = renderer;
+    }
+
+    public Camera getCamera() { return _camera; }
+
+    public void setCamera(Camera camera){
+        _camera = camera;
     }
 
     public InputManager getInputManager() { return _inputManager; }

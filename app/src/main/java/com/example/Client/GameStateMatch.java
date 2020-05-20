@@ -6,6 +6,7 @@ import java.util.Vector;
 import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
+import Common.LatLonByteConverter;
 import Common.MatchStateType;
 
 /**
@@ -18,21 +19,26 @@ import Common.MatchStateType;
  * @see GameStateContext
  */
 public class GameStateMatch implements GameState {
+    private GameStateContext _parent;
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
     private Vector<GameObject> _gameObjects;
     private int _numPlayers;
     private boolean _worldSetterActive = false;
+    private double[] _battleGroundLatLon;
 
     private GameState _currentState;
 
-    GameStateMatch(){
+    GameStateMatch(GameStateContext parent){
         // TODO: for now, only 1 player
         _numPlayers = 1;
+
+        _parent = parent;
         _currentState = new MatchStateAssemble(this, _numPlayers);
         _gameObjectRegistry = new GameObjectRegistry();
         _gameObjects = new Vector<>();
-        _worldSetter = new WorldSetter(_gameObjects, _gameObjectRegistry);
+        _worldSetter = new WorldSetter(_gameObjects, _gameObjectRegistry, _parent.getConverter());
+        _battleGroundLatLon = new double[2];
     }
 
     @Override
@@ -109,5 +115,13 @@ public class GameStateMatch implements GameState {
 
     public void activateWorldSetter(){
         _worldSetterActive = true;
+    }
+
+    public double[] getBattleGroundLatLon() {
+        return _battleGroundLatLon;
+    }
+
+    public void setBattleGroundLatLon(double[] battleGroundLatLon) {
+        this._battleGroundLatLon = battleGroundLatLon;
     }
 }

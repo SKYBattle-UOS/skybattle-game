@@ -70,7 +70,7 @@ public class Collider {
         double[] pos0 = go0.getPosition();
         double[] pos1 = go1.getPosition();
 
-        float dist = Location.distanceBetween(pos0[0], pos0[1], pos1[0], pos1[1]);
+        float dist = Util.distanceBetweenLatLon(pos0[0], pos0[1], pos1[0], pos1[1]);
         return dist < go0.getRadius() + go1.getRadius();
     }
 

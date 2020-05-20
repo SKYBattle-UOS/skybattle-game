@@ -2,9 +2,10 @@ package com.example.Client;
 
 import java.util.ArrayList;
 
+import Common.Camera;
 import Common.GameObject;
 
-public class MapRenderer implements Renderer {
+public class MapRenderer implements Renderer, Camera {
     private Map _map;
     private ArrayList<MapRenderComponent> _batched;
 
@@ -33,5 +34,15 @@ public class MapRenderer implements Renderer {
                 return new MapMarkerRenderComponent(parent);
         }
         return null;
+    }
+
+    @Override
+    public void move(double x, double y) {
+        _map.moveCamera(x, y);
+    }
+
+    @Override
+    public void zoom(float scale) {
+        _map.zoomCamera(scale);
     }
 }

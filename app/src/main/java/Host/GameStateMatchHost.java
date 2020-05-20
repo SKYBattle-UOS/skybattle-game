@@ -15,9 +15,11 @@ import Common.InputBitStream;
 import Common.InputState;
 import Common.MatchStateType;
 import Common.PlayerHost;
+import Common.TempPlayer;
 import Common.Util;
 
 public class GameStateMatchHost implements GameState {
+    private GameStateContextHost _parent;
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
     private ArrayList<GameObjectHost> _gameObjects;
@@ -30,10 +32,12 @@ public class GameStateMatchHost implements GameState {
 
     // TODO
     private int _numPlayers;
+    private double[] _battleGroundLatLon;
     private final int GET_READY_COUNT;
     private final int NUM_PACKET_PER_FRAME;
 
-    public GameStateMatchHost(){
+    public GameStateMatchHost(GameStateContextHost parent){
+        _parent = parent;
         _registry = new GameObjectRegistry();
         _worldSetter = new WorldSetterHost(_registry);
         _factory = new GameObjectFactory();
@@ -42,6 +46,7 @@ public class GameStateMatchHost implements GameState {
         _collider = new Collider();
 
         _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
+        _battleGroundLatLon = new double[2];
         GET_READY_COUNT = 10000;
         NUM_PACKET_PER_FRAME = 3;
 
@@ -54,10 +59,11 @@ public class GameStateMatchHost implements GameState {
         GameObjectHost ret = (GameObjectHost) _factory.createGameObject(classId);
         int networkId = nextNetworkId++;
 
+        ret.setCollider(_collider);
         ret.setNetworkId(networkId);
         ret.setWorldSetterHost(_worldSetter);
         ret.setIndexInWorld(_gameObjects.size());
-        ret.setCollider(_collider);
+        ret.setLatLonByteConverter(_parent.getConverter());
 
         _registry.add(networkId, ret);
         _gameObjects.add(ret);
@@ -69,20 +75,9 @@ public class GameStateMatchHost implements GameState {
     public void createTempPlayers() {
         Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
         for (ClientProxy client : clients){
-            int networkId = nextNetworkId++;
-
-            TempPlayerHost newPlayer = (TempPlayerHost) _factory.createGameObject(TempPlayerHost.classId);
-            newPlayer.setNetworkId(networkId);
+            TempPlayerHost newPlayer = (TempPlayerHost) createGameObject(TempPlayerHost.classId);
             newPlayer.setPlayerId(client.getPlayerId());
-            newPlayer.setWorldSetterHost(_worldSetter);
-            newPlayer.setIndexInWorld(_gameObjects.size());
-            newPlayer.setCollider(_collider);
-
-            _registry.add(networkId, newPlayer);
-            _gameObjects.add(newPlayer);
-            _players.add(newPlayer);
-
-            _worldSetter.generateCreateInstruction(TempPlayerHost.classId, networkId, -1);
+            newPlayer.setPosition(37.714580, 127.045195);
         }
     }
 
@@ -162,5 +157,14 @@ public class GameStateMatchHost implements GameState {
 
     public boolean isWorldSetterActive() {
         return _worldSetterActive;
+    }
+
+    public double[] getBattleGroundLatLon() {
+        return _battleGroundLatLon;
+    }
+
+    public void setBattleGroundLatLon(double[] battleGroundLatLon) {
+        this._battleGroundLatLon = battleGroundLatLon;
+        _parent.getConverter().setOffset(battleGroundLatLon[0], battleGroundLatLon[1]);
     }
 }

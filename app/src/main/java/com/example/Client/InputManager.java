@@ -7,21 +7,25 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import Common.InputState;
+import Common.LatLonByteConverter;
 import Common.OutputBitStream;
 
 public class InputManager {
 //    private Location _location;
 //    private double[] _prevLatlon;
     private Queue<InputState> _inputStates;
+    private LatLonByteConverter _converter;
 
     // TODO
     private long _elapsed;
-    private int latlon = 3;
+    private double latlon = 3;
+    private int[] _convertTemp = new int[2];
 
-    public InputManager(Context context){
+    public InputManager(Context context, LatLonByteConverter converter){
 //        _location = new Location(context);
 //        _prevLatlon = new double[2];
         _inputStates = new LinkedList<>();
+        _converter = converter;
     }
 
     public void update(long ms){
@@ -45,8 +49,9 @@ public class InputManager {
 //        }
         if (_elapsed > 1000){
             InputState newState = new InputState();
-            newState.lat = latlon;
-            newState.lon = latlon;
+            _converter.convertLatLon(latlon, latlon, _convertTemp);
+            newState.lat = _convertTemp[0];
+            newState.lon = _convertTemp[1];
             _inputStates.offer(newState);
             _elapsed = 0;
             latlon++;

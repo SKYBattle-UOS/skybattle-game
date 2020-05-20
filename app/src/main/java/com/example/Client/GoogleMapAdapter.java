@@ -70,6 +70,11 @@ public class GoogleMapAdapter implements Map {
         _mainHandler.post(()->_moveCamera(latitude, longitude));
     }
 
+    @Override
+    public void zoomCamera(float zoom) {
+        _mainHandler.post(()->_animateCamera(zoom));
+    }
+
     private synchronized void _addMarker(double latitude, double longitude, int color, float size){
 //        LatLng position = new LatLng(37.56 , 126.97);
         LatLng position = new LatLng(latitude, longitude);
@@ -93,8 +98,8 @@ public class GoogleMapAdapter implements Map {
         cur_marker.remove();
     }
 
-    private void _animateCamera(){
-        _googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+    private void _animateCamera(float zoom){
+        _googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
     }
 
     private void _addCircle(){

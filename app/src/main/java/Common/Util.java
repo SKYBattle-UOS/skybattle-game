@@ -28,4 +28,10 @@ public class Util {
     public static boolean hasMessage(InputBitStream packet) {
         return packet.read(1) == 1;
     }
+
+    public static float distanceBetweenLatLon(double lat0, double lon0, double lat1, double lon1){
+        float[] results = new float[3];
+        android.location.Location.distanceBetween(lat0, lon0, lat1, lon1, results);
+        return results[0];
+    }
 }
