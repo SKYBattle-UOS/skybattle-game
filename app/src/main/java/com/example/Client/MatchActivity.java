@@ -71,14 +71,14 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-//        setCustomMarkerView();
 
+        setCustomMarkerView();
         // TODO: default camera position
         LatLng position = new LatLng(3, 3);
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(3));
 
-        _map = new GoogleMapAdapter(googleMap);
+        _map = new GoogleMapAdapter(googleMap,this,marker_root_view,tv_marker);
         MapRenderer mapRenderer = new MapRenderer(_map);
         Core.getInstance().setRenderer(mapRenderer);
         Core.getInstance().setCamera(mapRenderer);
