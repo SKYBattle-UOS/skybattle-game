@@ -2,7 +2,6 @@ package com.example.Client;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,21 +12,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 public class RoomActivity extends AppCompatActivity implements Screen {
     private TextView _roomTitle;
     ListView listView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,13 +32,30 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         listView = (ListView) this.findViewById(R.id.playerlist);
 
         ArrayList<String> items = new ArrayList<>();
-        items.add("닉1");
-        items.add("닉2");
-        items.add("닉3");
-        items.add("닉4");
+        //items.add("방장");
 
-        CustomAdapter adapter = new CustomAdapter(this, 0, items);
-        listView.setAdapter((adapter));
+        Button btn_nickname = (Button)findViewById(R.id.btn_nickname);
+        btn_nickname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomAdapter adapter = new CustomAdapter(RoomActivity.this, 0, items);
+                listView.setAdapter((adapter));
+                EditText edit_nickname = findViewById(R.id.edit_nickname);
+                items.add(edit_nickname.getText().toString());
+                edit_nickname.setText(null);
+            }
+        });
+
+
+        Button btn_exit= (Button)findViewById(R.id.btn_exit);
+        btn_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent room_intent = new Intent(RoomActivity.this, MainActivity.class);
+                startActivity(room_intent);
+                finish();
+        }
+        });
     }
 
     private class CustomAdapter extends ArrayAdapter<String> {
@@ -60,23 +72,26 @@ public class RoomActivity extends AppCompatActivity implements Screen {
                 LayoutInflater v1 = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = v1.inflate(R.layout.listview_player, null);
             }
-            final TextView textView = (TextView) v.findViewById(R.id.textView2);
-            //textView.setText(items.get(position)); 플레이어 목록 저위의 닉1,2,3..보여주는거
+
+            final TextView nicknamelist = (TextView) v.findViewById(R.id.nicknamelist);
+            nicknamelist.setText(items.get(position)); //플레이어 목록 저위의 닉1,2,3..보여주는거
+
+            final TextView roleView = (TextView) v.findViewById(R.id.rolelist);
 
             final String text = items.get(position);
-            Button btn_runner = (Button) v.findViewById(R.id.btn_runner);
+            Button btn_runner = (Button) v.findViewById(R.id.btn_teamA);
             btn_runner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    textView.setText("러너");
+                    roleView.setText("팀A");
                 }
             });
 
-            Button btn_tagger = (Button) v.findViewById(R.id.btn_tagger);
+            Button btn_tagger = (Button) v.findViewById(R.id.btn_teamB);
             btn_tagger.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    textView.setText("술래");
+                    roleView.setText("팀B");
                 }
             });
 
@@ -104,7 +119,6 @@ public class RoomActivity extends AppCompatActivity implements Screen {
             finish();
         }
     }
-
 
     @Override
     public void setTopText(String text) {

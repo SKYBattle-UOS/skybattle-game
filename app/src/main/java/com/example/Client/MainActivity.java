@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pedro.library.AutoPermissions;
@@ -28,10 +29,11 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
             @Override
             public void onClick (View v){
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                View dialogView = LayoutInflater.from(MainActivity.this).inflate(R.layout.input_dialog, null);
-                alert.setView(dialogView);
-                alert.setTitle("IP주소 및 닉네임 입력");
-                alert.setMessage("IP주소와 닉네임을 입력하시오.");
+                alert.setTitle("IP주소 입력");
+                alert.setMessage("IP주소를 입력하시오.");
+
+                final EditText ipaddr=new EditText(MainActivity.this);
+                alert.setView(ipaddr);
 
                 alert.setPositiveButton("입력", new DialogInterface.OnClickListener() {
                     @Override
@@ -49,10 +51,11 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
             @Override
             public void onClick (View v){
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                View dialogView = LayoutInflater.from(MainActivity.this).inflate(R.layout.room_dialog, null);
-                alert.setView(dialogView);
                 alert.setTitle("방 제목 입력");
                 alert.setMessage("방 제목을 입력하시오.");
+
+                EditText edit_roomtitle=new EditText(MainActivity.this);
+                alert.setView(edit_roomtitle);
 
                 alert.setPositiveButton("입력", new DialogInterface.OnClickListener() {
                     @Override
