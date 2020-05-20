@@ -1,12 +1,9 @@
 package Host;
 
-import java.util.Queue;
-
 import Common.GameObject;
-import Common.InputState;
-import Common.Player;
+import Common.PlayerHost;
 
-public class TempPlayerHost extends Player {
+public class TempPlayerHost extends PlayerHost {
     public TempPlayerHost(float latitude, float longitude, String name){
         super(latitude, longitude, name);
     }
@@ -17,21 +14,5 @@ public class TempPlayerHost extends Player {
 
     @Override
     public void update(long ms) {
-        int dirtyFlag = 0;
-
-        ClientProxy client = CoreHost.getInstance().getNetworkManager().getClientById(getPlayerId());
-        Queue<InputState> inputs = client.getUnprocessedInputs();
-        while (true) {
-            InputState input = inputs.poll();
-            if (input == null) break;
-
-            double[] prevPos = getPosition();
-            if (prevPos[0] != input.lat || prevPos[1] != input.lon) {
-                setPosition(input.lat, input.lon);
-                dirtyFlag |= 1;
-            }
-        }
-
-        _worldSetterHost.generateUpdateInstruction(getNetworkId(), dirtyFlag);
     }
 }

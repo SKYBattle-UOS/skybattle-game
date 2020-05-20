@@ -41,13 +41,6 @@ public class GameStateMatch implements GameState {
         if (packetStream != null && _worldSetterActive)
             _worldSetter.processInstructions(packetStream);
 
-        for (GameObject go : _gameObjects){
-            if (!go.doesWantToDie())
-                go.update(ms);
-        }
-
-        _currentState.update(ms);
-
         int goSize = _gameObjects.size();
         for (int i = 0; i < goSize; i++)
             if (_gameObjects.get(i).doesWantToDie()){
@@ -55,6 +48,18 @@ public class GameStateMatch implements GameState {
                 goSize--;
                 i--;
             }
+
+        for (GameObject go : _gameObjects)
+            go.before(ms);
+
+        for (GameObject go : _gameObjects)
+            go.update(ms);
+
+        for (GameObject go : _gameObjects)
+            go.after(ms);
+
+        _currentState.update(ms);
+
     }
 
     @Override

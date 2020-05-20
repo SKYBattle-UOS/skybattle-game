@@ -44,7 +44,7 @@ class MatchStateAssembleHost implements GameState {
                 }
         }
 
-        Collection<GameObject> gos = _match.getGameObjects();
+        Collection<GameObjectHost> gos = _match.getGameObjects();
         boolean assembled = false;
         for (GameObject go : gos){
             // TODO

@@ -4,13 +4,7 @@ import android.util.Log;
 
 import com.example.Client.Core;
 import com.example.Client.ImageType;
-
-import java.io.IOException;
-import java.util.Queue;
-
-import Host.ClientProxy;
-import Host.CoreHost;
-import Host.WorldSetterHost;
+import com.example.Client.Player;
 
 /**
  * 임시 캐릭터 클래스. 볼품없는 스킬을 넣을 예정.

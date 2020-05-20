@@ -1,9 +1,9 @@
 package Host;
 
-import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
 
+import Common.Collider;
 import Common.GameObject;
 
 import java.util.ArrayList;
@@ -14,17 +14,17 @@ import Common.GameState;
 import Common.InputBitStream;
 import Common.InputState;
 import Common.MatchStateType;
-import Common.Player;
-import Common.TempPlayer;
+import Common.PlayerHost;
 import Common.Util;
 
 public class GameStateMatchHost implements GameState {
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
-    private ArrayList<GameObject> _gameObjects;
-    private ArrayList<Player> _players;
+    private ArrayList<GameObjectHost> _gameObjects;
+    private ArrayList<PlayerHost> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
+    private Collider _collider;
     private int nextNetworkId;
     private boolean _worldSetterActive = false;
 
@@ -39,6 +39,7 @@ public class GameStateMatchHost implements GameState {
         _factory = new GameObjectFactory();
         _gameObjects = new ArrayList<>();
         _players = new ArrayList<>();
+        _collider = new Collider();
 
         _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
         GET_READY_COUNT = 10000;
@@ -49,13 +50,14 @@ public class GameStateMatchHost implements GameState {
         switchState(MatchStateType.ASSEMBLE);
     }
 
-    public GameObject createGameObject(int classId){
-        GameObject ret =  _factory.createGameObject(classId);
+    public GameObjectHost createGameObject(int classId){
+        GameObjectHost ret = (GameObjectHost) _factory.createGameObject(classId);
         int networkId = nextNetworkId++;
 
         ret.setNetworkId(networkId);
         ret.setWorldSetterHost(_worldSetter);
         ret.setIndexInWorld(_gameObjects.size());
+        ret.setCollider(_collider);
 
         _registry.add(networkId, ret);
         _gameObjects.add(ret);
@@ -74,6 +76,7 @@ public class GameStateMatchHost implements GameState {
             newPlayer.setPlayerId(client.getPlayerId());
             newPlayer.setWorldSetterHost(_worldSetter);
             newPlayer.setIndexInWorld(_gameObjects.size());
+            newPlayer.setCollider(_collider);
 
             _registry.add(networkId, newPlayer);
             _gameObjects.add(newPlayer);
@@ -94,10 +97,16 @@ public class GameStateMatchHost implements GameState {
         if (_worldSetterActive)
             _worldSetter.writeInstructionToStream(CoreHost.getInstance().getNetworkManager().getPacketToSend());
 
-        for (GameObject go : _gameObjects){
-            go.update(ms);
-        }
+        for (GameObject go : _gameObjects)
+            go.before(ms);
 
+        for (GameObject go : _gameObjects)
+            go.update(ms);
+
+        for (GameObject go : _gameObjects)
+            go.after(ms);
+
+        _collider.update(ms);
         _currentState.update(ms);
     }
 
@@ -146,10 +155,10 @@ public class GameStateMatchHost implements GameState {
         _currentState.start();
     }
 
-    public Collection<GameObject> getGameObjects(){
+    public Collection<GameObjectHost> getGameObjects(){
         return _gameObjects;
     }
-    public Collection<Player> getPlayers() { return _players; }
+    public Collection<PlayerHost> getPlayers() { return _players; }
 
     public boolean isWorldSetterActive() {
         return _worldSetterActive;

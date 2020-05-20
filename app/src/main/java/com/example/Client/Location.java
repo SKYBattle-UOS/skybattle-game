@@ -50,6 +50,12 @@ public class Location
         return new double[]{gpsTracker.getLatitude(), gpsTracker.getLongitude() };
     }
 
+    public static float distanceBetween(double lat0, double lon0, double lat1, double lon1){
+        float[] results = new float[3];
+        android.location.Location.distanceBetween(lat0, lon0, lat1, lon1, results);
+        return results[0];
+    }
+
     /*
      * ActivityCompat.requestPermissions를 사용한 퍼미션 요청의 결과를 리턴받는 메소드입니다.
      */

@@ -1,11 +1,11 @@
 package Common;
 
+import androidx.annotation.Nullable;
+
 import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
 import java.io.IOException;
-
-import Host.WorldSetterHost;
 
 /**
  * 매 프레임 Update 될 필요가 있는 객체들의 base abstract class 입니다.
@@ -18,22 +18,17 @@ public abstract class GameObject {
     public static int classId;
 
     private String _name;
+    private float _radius;
     private int _networkId;
     private int _indexInWorld;
     private double[] _position;
     private boolean _wantsToDie;
     private RenderComponent _renderComponent;
-    protected WorldSetterHost _worldSetterHost;
 
-    GameObject(float latitude, float longitude, String name){
+    protected GameObject(float latitude, float longitude, String name){
         _position = new double[]{ latitude, longitude };
         _name = name;
     }
-
-    public static GameObject createInstance(){ return null; };
-
-    public void collisionEnter(GameObject other){}
-    public void collisionExit(GameObject other){}
 
     public void writeToStream(OutputBitStream stream, int dirtyFlag){
         if ((dirtyFlag & 1) != 0) {
@@ -57,7 +52,9 @@ public abstract class GameObject {
         }
     }
 
+    public abstract void before(long ms);
     public abstract void update(long ms);
+    public abstract void after(long ms);
 
     public void faceDeath(){}
 
@@ -66,6 +63,12 @@ public abstract class GameObject {
             renderer.batch(_renderComponent);
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof CollisionState)
+            return this == ((CollisionState) obj).other;
+        return super.equals(obj);
+    }
 
     // region Getters and Setters
     public void scheduleDeath(){
@@ -74,10 +77,6 @@ public abstract class GameObject {
 
     public boolean doesWantToDie(){
         return _wantsToDie;
-    }
-
-    public void setWorldSetterHost(WorldSetterHost wsh){
-        _worldSetterHost = wsh;
     }
 
     public double[] getPosition(){
@@ -119,6 +118,14 @@ public abstract class GameObject {
 
     public void setNetworkId(int networkId){
         _networkId = networkId;
+    }
+
+    public float getRadius() {
+        return _radius;
+    }
+
+    public void setRadius(float radius) {
+        this._radius = radius;
     }
     // endregion
 }
