@@ -1,16 +1,16 @@
-package com.example.Client;
+package Common;
 
-import Common.GameObject;
-import Common.PlayerCommon;
+import com.example.Client.Core;
+import com.example.Client.ImageType;
 
-public class Player extends PlayerCommon {
-    protected Player(float latitude, float longitude, String name) {
+public class Item extends ItemCommon {
+    protected Item(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
         setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
     }
 
     public static GameObject createInstance() {
-        return new Player(0, 0, "Player");
+        return new Item(0, 0, "Item");
     }
 
     @Override

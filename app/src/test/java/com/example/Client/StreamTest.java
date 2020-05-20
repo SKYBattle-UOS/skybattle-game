@@ -79,6 +79,12 @@ public class StreamTest {
             bitOut.write(13, 8);
             bitOut.write(14, 8);
             bitOut.write(14, 8);
+
+            bitOut.write(-1, 8);
+            bitOut.write(-2, 8);
+            bitOut.write(-3, 8);
+            bitOut.write(-4, 8);
+            bitOut.write(-5, 8);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,5 +99,11 @@ public class StreamTest {
         System.out.println(bitIn2.read(8));
         System.out.println(bitIn2.read(8));
         System.out.println(bitIn2.read(8));
+
+        System.out.println(bitIn2.read(8) - 256);
+        System.out.println(bitIn2.read(8) - 256);
+        System.out.println(bitIn2.read(8) - 256);
+        System.out.println(bitIn2.read(8) - 256);
+        System.out.println(bitIn2.read(8) - 256);
     }
 }

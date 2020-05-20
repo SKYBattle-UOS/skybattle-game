@@ -36,14 +36,13 @@ public class WorldSetterHost {
 
                 header.dirtyFlag = 0;
             }
-            else {
-                try {
-                    packetToSend.write(0, 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
             entry.getValue().action = WorldSetterAction.UPDATE;
+        }
+
+        try {
+            packetToSend.write(0, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

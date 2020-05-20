@@ -18,7 +18,7 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
     private TextView _topText;
     private SupportMapFragment _mapFragment;
     private Map _map;
-    private ScreenType _currentScreenType = ScreenType.ASSEMBLE;
+    private ScreenType _currentScreenType = null;
 
     View marker_root_view;
     TextView tv_marker;
@@ -36,7 +36,8 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
     @Override
     protected void onResume() {
         super.onResume();
-        Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
+        if (_currentScreenType != null)
+            Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     @Override
@@ -81,6 +82,8 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         MapRenderer mapRenderer = new MapRenderer(_map);
         Core.getInstance().setRenderer(mapRenderer);
         Core.getInstance().setCamera(mapRenderer);
+        _currentScreenType = ScreenType.ASSEMBLE;
+        Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     private void setCustomMarkerView() {

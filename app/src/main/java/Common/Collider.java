@@ -1,5 +1,7 @@
 package Common;
 
+import android.util.Log;
+
 import com.example.Client.Location;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class Collider {
                         }
                     });
 
-                    _collisions.get(otherGO).add(new CollisionState(){
+                    otherList.add(new CollisionState(){
                         {
                             other = go;
                             isEnter = true;
@@ -74,7 +76,7 @@ public class Collider {
         return dist < go0.getRadius() + go1.getRadius();
     }
 
-    public Collection<CollisionState> getCollisions(){
-        return null;
+    public Collection<CollisionState> getCollisions(GameObject go){
+        return _collisions.get(go);
     }
 }

@@ -1,5 +1,7 @@
 package Common;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import com.example.Client.Core;
@@ -7,6 +9,8 @@ import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
 import java.io.IOException;
+
+import Host.WorldSetterHost;
 
 /**
  * 매 프레임 Update 될 필요가 있는 객체들의 base abstract class 입니다.
@@ -16,16 +20,16 @@ import java.io.IOException;
  * @since 2020-04-21
  */
 public abstract class GameObject {
-    public static int classId;
-
+    private float _radius = 2.5f;
     private String _name;
-    private float _radius;
     private int _networkId;
     private int _indexInWorld;
     private double[] _position;
     private boolean _wantsToDie;
     private RenderComponent _renderComponent;
-    private LatLonByteConverter _converter;
+    protected LatLonByteConverter _converter;
+    protected WorldSetterHost _worldSetterHost;
+    protected Collider _collider;
 
     private double[] _restoreTemp = new double[2];
     private int[] _convertTemp = new int[2];
@@ -42,8 +46,8 @@ public abstract class GameObject {
             int lat = _convertTemp[0];
             int lon = _convertTemp[1];
             try {
-                stream.write(lat, 8);
-                stream.write(lon, 8);
+                stream.write(lat, 32);
+                stream.write(lon, 32);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -52,8 +56,8 @@ public abstract class GameObject {
 
     public void readFromStream(InputBitStream stream, int dirtyFlag){
         if ((dirtyFlag & 1) != 0){
-            int lat = stream.read(8);
-            int lon = stream.read(8);
+            int lat = stream.read(32);
+            int lon = stream.read(32);
             _converter.restoreLatLon(lat, lon, _restoreTemp);
             setPosition(_restoreTemp[0], _restoreTemp[1]);
         }
@@ -78,6 +82,15 @@ public abstract class GameObject {
     }
 
     // region Getters and Setters
+    public void setWorldSetterHost(WorldSetterHost wsh){
+        _worldSetterHost = wsh;
+    }
+
+    public void setCollider(Collider col){
+        _collider = col;
+        _collider.registerNew(this);
+    }
+
     public void scheduleDeath(){
         _wantsToDie = true;
     }
@@ -97,6 +110,8 @@ public abstract class GameObject {
     public void setPosition(double latitude, double longitude){
         _position[0] = latitude;
         _position[1] = longitude;
+        if (_collider != null)
+            _collider.positionDirty(this);
     }
 
     public void setLatLonByteConverter(LatLonByteConverter converter){

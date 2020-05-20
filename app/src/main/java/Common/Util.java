@@ -1,20 +1,24 @@
 package Common;
 
 import com.example.Client.GameObjectFactory;
+import com.example.Client.Player;
 
 import java.io.IOException;
 
-import Host.TempPlayerHost;
-
 public class Util {
     public static final int PORT = 9998;
+    public static int PlayerClassId;
+    public static int ItemClassId;
 
     public static void registerGameObjects(GameObjectFactory factory){
-        TempPlayer.classId = factory.registerCreateMethod(TempPlayer::createInstance);
+        PlayerClassId = factory.registerCreateMethod(Player::createInstance);
+        ItemClassId = factory.registerCreateMethod(Item::createInstance);
     }
 
     public static void registerGameObjectsHost(GameObjectFactory factory){
-        TempPlayerHost.classId = factory.registerCreateMethod(TempPlayerHost::createInstance);
+        // should be same order as registerGameObjects !!!!!!!!!!
+        factory.registerCreateMethod(PlayerHost::createInstance);
+        factory.registerCreateMethod(ItemHost::createInstance);
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {

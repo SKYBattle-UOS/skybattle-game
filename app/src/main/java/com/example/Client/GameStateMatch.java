@@ -121,7 +121,9 @@ public class GameStateMatch implements GameState {
         return _battleGroundLatLon;
     }
 
-    public void setBattleGroundLatLon(double[] battleGroundLatLon) {
-        this._battleGroundLatLon = battleGroundLatLon;
+    public void setBattleGroundLatLon(double lat, double lon) {
+        _battleGroundLatLon[0] = lat;
+        _battleGroundLatLon[1] = lon;
+        _parent.getConverter().setOffset(lat, lon);
     }
 }

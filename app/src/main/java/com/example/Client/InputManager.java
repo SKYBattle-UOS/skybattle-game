@@ -1,6 +1,7 @@
 package com.example.Client;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -18,7 +19,11 @@ public class InputManager {
 
     // TODO
     private long _elapsed;
-    private double latlon = 3;
+    private double lat = 37.714775;
+    private double lon = 127.043325;
+    private double destLat = 37.715584;
+    private double destLon = 127.048616;
+    private int step = 0;
     private int[] _convertTemp = new int[2];
 
     public InputManager(Context context, LatLonByteConverter converter){
@@ -47,14 +52,14 @@ public class InputManager {
 //
 //            _inputStates.offer(newState);
 //        }
-        if (_elapsed > 1000){
+        if (_elapsed > 1000 && step <= 20){
             InputState newState = new InputState();
-            _converter.convertLatLon(latlon, latlon, _convertTemp);
+            _converter.convertLatLon(lat + (destLat - lat) / 20 * step, lon + (destLon - lon) / 20 * step, _convertTemp);
             newState.lat = _convertTemp[0];
             newState.lon = _convertTemp[1];
             _inputStates.offer(newState);
             _elapsed = 0;
-            latlon++;
+            step++;
         }
     }
 

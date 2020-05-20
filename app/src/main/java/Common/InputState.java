@@ -5,15 +5,15 @@ import android.util.Log;
 import java.io.IOException;
 
 public class InputState {
-    public double lat;
-    public double lon;
+    public int lat;
+    public int lon;
     public boolean q, w, e, r;
 
     public void writeToStream(OutputBitStream stream){
         // TODO
         try {
-            stream.write((int) lat, 8);
-            stream.write((int) lon, 8);
+            stream.write(lat, 32);
+            stream.write(lon, 32);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -21,7 +21,7 @@ public class InputState {
 
     public void readFromStream(InputBitStream stream){
         // TODO
-        lat = stream.read(8);
-        lon = stream.read(8);
+        lat = stream.read(32);
+        lon = stream.read(32);
     }
 }

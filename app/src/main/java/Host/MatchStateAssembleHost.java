@@ -44,7 +44,7 @@ class MatchStateAssembleHost implements GameState {
                 }
         }
 
-        Collection<GameObjectHost> gos = _match.getGameObjects();
+        Collection<GameObject> gos = _match.getGameObjects();
         boolean assembled = false;
 //        for (GameObject go : gos){
 //            // TODO
@@ -64,8 +64,9 @@ class MatchStateAssembleHost implements GameState {
             _shouldSendAllInit = true;
 
             if (!_match.isWorldSetterActive()){
-                _match.createTempPlayers();
+                _match.createPlayers();
                 _match.setWorldSetterActive();
+                _match.setBattleGroundLatLon(37.714617, 127.045170);
             }
         }
 

@@ -1,5 +1,7 @@
 package Common;
 
+import android.util.Log;
+
 public class LatLonByteConverter {
     private double _latOffset;
     private double _lonOffset;
@@ -15,7 +17,7 @@ public class LatLonByteConverter {
     }
 
     public void convertLatLon(double lat, double lon, int[] results){
-        results[0] = (int) (lat - _latOffset) * 100000;
-        results[1] = (int) (lon - _lonOffset) * 100000;
+        results[0] = (int) ((lat - _latOffset) * 100000);
+        results[1] = (int) ((lon - _lonOffset) * 100000);
     }
 }

@@ -15,14 +15,13 @@ import Common.InputBitStream;
 import Common.InputState;
 import Common.MatchStateType;
 import Common.PlayerHost;
-import Common.TempPlayer;
 import Common.Util;
 
 public class GameStateMatchHost implements GameState {
     private GameStateContextHost _parent;
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
-    private ArrayList<GameObjectHost> _gameObjects;
+    private ArrayList<GameObject> _gameObjects;
     private ArrayList<PlayerHost> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
@@ -55,8 +54,8 @@ public class GameStateMatchHost implements GameState {
         switchState(MatchStateType.ASSEMBLE);
     }
 
-    public GameObjectHost createGameObject(int classId){
-        GameObjectHost ret = (GameObjectHost) _factory.createGameObject(classId);
+    public GameObject createGameObject(int classId){
+        GameObject ret = _factory.createGameObject(classId);
         int networkId = nextNetworkId++;
 
         ret.setCollider(_collider);
@@ -72,13 +71,17 @@ public class GameStateMatchHost implements GameState {
         return ret;
     }
 
-    public void createTempPlayers() {
+    public void createPlayers() {
         Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
         for (ClientProxy client : clients){
-            TempPlayerHost newPlayer = (TempPlayerHost) createGameObject(TempPlayerHost.classId);
+            PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId);
             newPlayer.setPlayerId(client.getPlayerId());
             newPlayer.setPosition(37.714580, 127.045195);
         }
+
+        // create temp item
+        GameObject tempItem = createGameObject(Util.ItemClassId);
+        tempItem.setPosition(37.715584, 127.048616);
     }
 
     public void setWorldSetterActive(){
@@ -150,7 +153,7 @@ public class GameStateMatchHost implements GameState {
         _currentState.start();
     }
 
-    public Collection<GameObjectHost> getGameObjects(){
+    public Collection<GameObject> getGameObjects(){
         return _gameObjects;
     }
     public Collection<PlayerHost> getPlayers() { return _players; }
@@ -163,8 +166,9 @@ public class GameStateMatchHost implements GameState {
         return _battleGroundLatLon;
     }
 
-    public void setBattleGroundLatLon(double[] battleGroundLatLon) {
-        this._battleGroundLatLon = battleGroundLatLon;
-        _parent.getConverter().setOffset(battleGroundLatLon[0], battleGroundLatLon[1]);
+    public void setBattleGroundLatLon(double lat, double lon) {
+        _battleGroundLatLon[0] = lat;
+        _battleGroundLatLon[1] = lon;
+        _parent.getConverter().setOffset(lat, lon);
     }
 }
