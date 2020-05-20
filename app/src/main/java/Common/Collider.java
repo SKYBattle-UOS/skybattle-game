@@ -1,9 +1,5 @@
 package Common;
 
-import android.util.Log;
-
-import com.example.Client.Location;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

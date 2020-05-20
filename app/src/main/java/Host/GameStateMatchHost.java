@@ -26,7 +26,7 @@ public class GameStateMatchHost implements GameState {
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
     private Collider _collider;
-    private int nextNetworkId;
+    private int _nextNetworkId = 1;
     private boolean _worldSetterActive = false;
 
     // TODO
@@ -56,7 +56,7 @@ public class GameStateMatchHost implements GameState {
 
     public GameObject createGameObject(int classId){
         GameObject ret = _factory.createGameObject(classId);
-        int networkId = nextNetworkId++;
+        int networkId = _nextNetworkId++;
 
         ret.setCollider(_collider);
         ret.setNetworkId(networkId);
@@ -171,4 +171,6 @@ public class GameStateMatchHost implements GameState {
         _battleGroundLatLon[1] = lon;
         _parent.getConverter().setOffset(lat, lon);
     }
+
+public Collider getCollider(){ return _collider; }
 }

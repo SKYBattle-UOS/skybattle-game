@@ -18,6 +18,7 @@ public class GameObjectRegistry {
     }
 
     public GameObject getGameObject(int networkId){
+        if (networkId == 0) return null;
         return _mappingN2G.get(networkId);
     }
 

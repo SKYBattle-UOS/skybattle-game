@@ -48,6 +48,7 @@ public class WorldSetter {
     private void createGO(InputBitStream stream){
         if (_registry.getGameObject(_header.networkId) == null){
             GameObject newGO = Core.getInstance().getGameObjectFactory().createGameObject(_header.classId);
+            newGO.setGameObjectRegistry(_registry);
             newGO.setLatLonByteConverter(_converter);
             newGO.setNetworkId(_header.networkId);
             newGO.readFromStream(stream, _header.dirtyFlag);

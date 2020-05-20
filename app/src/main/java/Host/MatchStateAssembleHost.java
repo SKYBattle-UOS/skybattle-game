@@ -2,8 +2,10 @@ package Host;
 
 import java.util.Collection;
 
+import Common.CollisionState;
 import Common.GameObject;
 import Common.GameState;
+import Common.PlayerHost;
 import Common.Util;
 import Common.InputBitStream;
 import Common.MatchStateType;
@@ -15,6 +17,9 @@ class MatchStateAssembleHost implements GameState {
     private boolean[] _assembleInit;
     private Collection<ClientProxy> _clients;
     private boolean _shouldSendAllInit;
+
+    // TODO
+    private GameObject _assemblePoint;
 
     public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost, int numPlayers) {
         _match = gameStateMatchHost;
@@ -44,17 +49,12 @@ class MatchStateAssembleHost implements GameState {
                 }
         }
 
-        Collection<GameObject> gos = _match.getGameObjects();
-        boolean assembled = false;
-//        for (GameObject go : gos){
-//            // TODO
-//            // check if assembled
-//            // if otherwise return
-//            double[] pos = go.getPosition();
-//            if (pos[0] > 20)
-//                assembled = true;
-//                break;
-//        }
+        boolean assembled;
+        Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
+        if (collisions == null)
+            assembled = false;
+        else
+            assembled = _match.getCollider().getCollisions(_assemblePoint).size() == _numPlayers;
 
         OutputBitStream outPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
 
@@ -67,6 +67,13 @@ class MatchStateAssembleHost implements GameState {
                 _match.createPlayers();
                 _match.setWorldSetterActive();
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
+
+                for (GameObject go : _match.getGameObjects()){
+                    if (!(go instanceof PlayerHost)) {
+                        _assemblePoint = go;
+                        return;
+                    }
+                }
             }
         }
 

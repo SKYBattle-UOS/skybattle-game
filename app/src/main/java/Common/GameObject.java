@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.example.Client.Core;
+import com.example.Client.GameObjectRegistry;
 import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
@@ -30,6 +31,7 @@ public abstract class GameObject {
     protected LatLonByteConverter _converter;
     protected WorldSetterHost _worldSetterHost;
     protected Collider _collider;
+    protected GameObjectRegistry _registry;
 
     private double[] _restoreTemp = new double[2];
     private int[] _convertTemp = new int[2];
@@ -82,6 +84,10 @@ public abstract class GameObject {
     }
 
     // region Getters and Setters
+    public void setGameObjectRegistry(GameObjectRegistry registry){
+        _registry = registry;
+    }
+
     public void setWorldSetterHost(WorldSetterHost wsh){
         _worldSetterHost = wsh;
     }
