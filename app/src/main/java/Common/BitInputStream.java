@@ -84,8 +84,9 @@ public class BitInputStream implements InputBitStream {
         // Whole bytes.
         int to = (numBits >> 3) /* numBits / 8 바이트 인덱스 얻음*/ ;
         for (int i = 0; i < to; i++) {
-            buffer[i] = (byte) (data[byteOffset++] << bitOffset);
-            buffer[i] = (byte) (buffer[i] | ((data[byteOffset] & 0xFF) >> (8 - bitOffset)));
+            buffer[i] = (byte) ((data[byteOffset++] & 0xFF) >>> bitOffset);
+            if (byteOffset < byteLimit)
+                buffer[i] = (byte) ((buffer[i] | (data[byteOffset] << (8 - bitOffset))) & 0xFF);
 
             if(byteLimit != 0 && byteOffset == byteLimit ) {
                 break;

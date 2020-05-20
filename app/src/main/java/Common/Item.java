@@ -17,7 +17,7 @@ public class Item extends ItemCommon {
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
         super.readFromStream(stream, dirtyFlag);
 
-        if ((dirtyFlag & 4) != 0){
+        if ((dirtyFlag & 8) != 0){
             _owner = _registry.getGameObject(stream.read(32));
         }
     }

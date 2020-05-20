@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,7 +25,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 
 /** google 지도 마커 추가및 반경 그리기등 지도에 기능을 추가하는 클래스
@@ -61,9 +59,9 @@ public class GoogleMapAdapter implements Map {
     }
 
     @Override
-    public synchronized MapMarkerHandle addMarker(double latitude, double longitude, int color, float size) {
+    public synchronized MapMarkerHandle addMarker(double latitude, double longitude, int color, float size, String name) {
         GoogleMarkerHandle ret = new GoogleMarkerHandle(_markers.size());
-        _mainHandler.post(() -> _addMarker(latitude, longitude, color, size));
+        _mainHandler.post(() -> _addMarker(latitude, longitude, color, size, name));
         return ret;
     }
 
@@ -78,7 +76,6 @@ public class GoogleMapAdapter implements Map {
     }
 
     private synchronized void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
-
         int index = ((GoogleMarkerHandle) marker).index;
         Marker cur_marker = _markers.get(index);
         cur_marker.setPosition(new LatLng(lat, lon));
@@ -95,20 +92,8 @@ public class GoogleMapAdapter implements Map {
         _mainHandler.post(()->_animateCamera(zoom));
     }
 
-    private synchronized void _addMarker(double latitude, double longitude, int color, float size){
-//        LatLng position = new LatLng(37.56 , 126.97);
-        /*
-        LatLng position = new LatLng(latitude, longitude);
-
-        Marker marker = _googleMap.addMarker(new MarkerOptions()
-                .position(position)
-                .icon(BitmapDescriptorFactory.defaultMarker(hue_color)));
-
-        marker.showInfoWindow();
-        _markers.add(marker);*/
-        //_drawImage(latitude,longitude);
-        //_drawText(latitude, longitude);
-        _drawText2(latitude,longitude);
+    private synchronized void _addMarker(double latitude, double longitude, int color, float size, String name){
+        _drawText(latitude, longitude, name);
     }
 
     private void _moveCamera(double lat, double lon) {
@@ -126,27 +111,25 @@ public class GoogleMapAdapter implements Map {
         _googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
     }
 
-    private synchronized void _drawText(double latitude, double longitude) {//textview를 marker로 띄움
-        LatLng position = new LatLng(37.56, 126.97);
-        int price=100;
-        String formatted = NumberFormat.getCurrencyInstance().format((price));
+    private synchronized void _drawText(double latitude, double longitude, String name) {
+        //textview를 marker로 띄움
+        LatLng position = new LatLng(latitude, longitude);
 
-        _tv_marker.setText(formatted);
+        _tv_marker.setText(name);
         _tv_marker.setBackgroundResource(R.drawable.marker_mask);
         _tv_marker.setTextColor(Color.WHITE);
 
         Marker marker = _googleMap.addMarker(new MarkerOptions()
                 .position(position)
-                //.title(Integer.toString(price))
                 .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(_matchActivity, _marker_root_view))));
 
-        marker.showInfoWindow();
         _markers.add(marker);
     }
 
-    private synchronized void _drawText2(double latitude, double longitude) { //marker를 custom marker로 바꿔줌
-        LatLng position = new LatLng(37.56, 126.97);
-        Bitmap custom_marker=getBitmap(_matchActivity,R.drawable.ic_priority_high_black_24dp);
+    private synchronized void _drawText2(double latitude, double longitude) {
+        //marker를 custom marker로 바꿔줌
+        LatLng position = new LatLng(latitude, longitude);
+        Bitmap custom_marker = getBitmap(_matchActivity,R.drawable.ic_priority_high_black_24dp);
 
         Marker marker = _googleMap.addMarker(new MarkerOptions()
                 .position(position)
@@ -168,10 +151,6 @@ public class GoogleMapAdapter implements Map {
 
         marker.showInfoWindow();
         _markers.add(marker);
-    }
-
-    private void _animateCamera() {
-        _googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
     }
 
     private void _addCircle() {
@@ -200,31 +179,6 @@ public class GoogleMapAdapter implements Map {
         Bitmap resized = Bitmap.createScaledBitmap(src, width, height, true);
         return resized;
     }
-
-
-//    public void addMarker(Context mContext, GoogleMap activityMap, double latitude, double longitude, int color, float size ){
-//
-//        Bitmap drawableBitmap = getBitmap(mContext,R.drawable.ic_arrow_drop_down_black_24dp);
-//
-//        LatLng position = new LatLng(37.56 , 126.97);
-//        //System.out.println(locationArray[0]);
-//        //나의위치 마커
-//
-//        Marker marker = activityMap.addMarker(new MarkerOptions()
-//                .position(position)
-//                .title("한국의 수도")
-//                .icon(BitmapDescriptorFactory.fromBitmap(drawableBitmap)));
-//
-//        marker.showInfoWindow();
-//
-//
-//
-//        //마커추가
-//
-//        activityMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-//        activityMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-//
-//    }
 
     private Bitmap getBitmap(Context mContext,int drawableRes) {
         Drawable drawable = ContextCompat.getDrawable(mContext, drawableRes);

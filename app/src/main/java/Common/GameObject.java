@@ -10,6 +10,7 @@ import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import Host.WorldSetterHost;
 
@@ -54,6 +55,16 @@ public abstract class GameObject {
                 e.printStackTrace();
             }
         }
+
+        if ((dirtyFlag & 2) != 0){
+            byte[] b = _name.getBytes(StandardCharsets.UTF_8);
+            try {
+                stream.write(b.length, 8);
+                stream.write(b, b.length * 8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void readFromStream(InputBitStream stream, int dirtyFlag){
@@ -62,6 +73,13 @@ public abstract class GameObject {
             int lon = stream.read(32);
             _converter.restoreLatLon(lat, lon, _restoreTemp);
             setPosition(_restoreTemp[0], _restoreTemp[1]);
+        }
+
+        if ((dirtyFlag & 2) != 0){
+            int len = stream.read(8);
+            byte[] b = new byte[len];
+            stream.read(b, len * 8);
+            _name = new String(b, StandardCharsets.UTF_8);
         }
     }
 

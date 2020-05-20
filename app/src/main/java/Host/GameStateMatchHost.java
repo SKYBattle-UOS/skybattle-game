@@ -82,6 +82,7 @@ public class GameStateMatchHost implements GameState {
         // create temp item
         GameObject tempItem = createGameObject(Util.ItemClassId);
         tempItem.setPosition(37.715584, 127.048616);
+        tempItem.setName("여기여기 모여라");
     }
 
     public void setWorldSetterActive(){
