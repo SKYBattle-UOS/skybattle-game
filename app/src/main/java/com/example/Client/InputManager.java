@@ -52,9 +52,9 @@ public class InputManager {
 //
 //            _inputStates.offer(newState);
 //        }
-        if (_elapsed > 1000 && step <= 20){
+        if (_elapsed > 500 && step <= 100){
             InputState newState = new InputState();
-            _converter.convertLatLon(lat + (destLat - lat) / 20 * step, lon + (destLon - lon) / 20 * step, _convertTemp);
+            _converter.convertLatLon(lat + (destLat - lat) / 100 * step, lon + (destLon - lon) / 100 * step, _convertTemp);
             newState.lat = _convertTemp[0];
             newState.lon = _convertTemp[1];
             _inputStates.offer(newState);
