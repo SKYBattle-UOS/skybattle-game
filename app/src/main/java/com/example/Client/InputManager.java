@@ -98,7 +98,7 @@ public class InputManager {
     }
 
     private void debugMoveToAssemblePoint(){
-        if (_elapsed > 125 && step <= 100){
+        if (_elapsed > 100 && step <= 100){
             InputState newState = new InputState();
             _converter.convertLatLon(lat + (destLat - lat) / 100 * step, lon + (destLon - lon) / 100 * step, _convertTemp);
             newState.lat = _convertTemp[0];
