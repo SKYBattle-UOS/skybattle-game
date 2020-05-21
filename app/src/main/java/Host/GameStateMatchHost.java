@@ -192,7 +192,7 @@ public class GameStateMatchHost implements GameState, Match {
         _currentState.start();
     }
 
-    public Collection<PlayerHost> getPlayers() { return _players; }
+    public List<PlayerHost> getPlayers() { return _players; }
 
     public boolean isWorldSetterActive() {
         return _worldSetterActive;
