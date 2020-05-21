@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class RoomActivity extends AppCompatActivity implements RoomScreen {
@@ -14,6 +15,9 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         _roomTitle = findViewById(R.id.roomTitle);
+
+        Button btn_start = findViewById(R.id.startButton);
+        btn_start.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.ROOM_START_PORT));
     }
 
     @Override

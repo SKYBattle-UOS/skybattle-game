@@ -30,6 +30,7 @@ public class InputManager {
     private int step = 0;
     private int[] _convertTemp = new int[2];
     private Player _player;
+    private boolean _sendDebugMove;
 
     public InputManager(Context context, LatLonByteConverter converter){
         _inputStates = new ConcurrentLinkedQueue<>();
@@ -37,6 +38,7 @@ public class InputManager {
     }
 
     public void update(long ms){
+        if (!_sendDebugMove) return;
         debugMoveToAssemblePoint();
         sendInput();
 
@@ -125,5 +127,9 @@ public class InputManager {
 
     public Player getThisPlayer(){
         return _player;
+    }
+
+    public void sendDebugMove(){
+        _sendDebugMove = true;
     }
 }

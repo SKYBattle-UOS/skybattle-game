@@ -19,4 +19,14 @@ public class PlaceHolderSkill implements Skill {
     public SkillTargetType getSkillTargetType() {
         return SkillTargetType.INSTANT;
     }
+
+    @Override
+    public void setTargetCoord(double lat, double lon) {
+
+    }
+
+    @Override
+    public void setTargetPlayer(int playerId) {
+
+    }
 }

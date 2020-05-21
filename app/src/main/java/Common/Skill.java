@@ -2,6 +2,8 @@ package Common;
 
 public interface Skill {
     String getName();
-    void cast(GameObject caster);
     SkillTargetType getSkillTargetType();
+    void setTargetCoord(double lat, double lon);
+    void setTargetPlayer(int playerId);
+    void cast(GameObject caster);
 }
