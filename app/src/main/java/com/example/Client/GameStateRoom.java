@@ -1,6 +1,5 @@
 package com.example.Client;
 
-import android.icu.util.Output;
 import android.util.Log;
 
 import java.io.IOException;
@@ -61,6 +60,7 @@ public class GameStateRoom implements GameState {
         if (hostStartedGame(packet)) {
             // assemble
 //            if (isAbleToStart(packet)) {
+            Core.getInstance().getInputManager().startSending();
             Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
             _waiting = true;
             Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE, ()->_parent.switchState(GameStateType.MATCH));

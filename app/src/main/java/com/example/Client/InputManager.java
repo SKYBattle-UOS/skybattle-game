@@ -1,14 +1,11 @@
 package com.example.Client;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import Common.GameObject;
 import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.OutputBitStream;
@@ -30,7 +27,7 @@ public class InputManager {
     private int step = 0;
     private int[] _convertTemp = new int[2];
     private Player _player;
-    private boolean _sendDebugMove;
+    private boolean _startSending;
 
     public InputManager(Context context, LatLonByteConverter converter){
         _inputStates = new ConcurrentLinkedQueue<>();
@@ -38,7 +35,7 @@ public class InputManager {
     }
 
     public void update(long ms){
-        if (!_sendDebugMove) return;
+        if (!_startSending) return;
         debugMoveToAssemblePoint();
         sendInput();
 
@@ -129,7 +126,7 @@ public class InputManager {
         return _player;
     }
 
-    public void sendDebugMove(){
-        _sendDebugMove = true;
+    public void startSending(){
+        _startSending = true;
     }
 }
