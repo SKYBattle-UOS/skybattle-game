@@ -8,8 +8,11 @@ package com.example.Client;
  * @since 2020-04-28
  */
 public interface Map {
+    MapCircleHandle addCircle(double lat, double lon, int color, float radius);
+    MapMarkerHandle addMarker(double latitude, double longitude, int color, float size, String name);
+
     void moveCamera(double latitude, double longitude);
-    MapMarkerHandle addMarker(double latitude, double longitude, int color, float size);
+    void zoomCamera(float zoom);
     void setMarkerPosition(MapMarkerHandle marker, double lat, double lon);
     void removeMarker(MapMarkerHandle marker);
 }

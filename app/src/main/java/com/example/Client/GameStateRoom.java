@@ -12,6 +12,7 @@ public class GameStateRoom implements GameState {
     private final int MAX_TITLE_LENGTH = 10;
     private final int MAX_NUM_PLAYERS = 6;
     private GameStateContext _parent;
+    private boolean _waiting = false;
 
     GameStateRoom(GameStateContext stateContext){
         _parent = stateContext;
@@ -19,6 +20,8 @@ public class GameStateRoom implements GameState {
 
     @Override
     public void update(long ms) {
+        if (_waiting) return;
+
         // TODO: might be better if packet is fetched only once
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
         if (packet == null) return;
@@ -37,8 +40,8 @@ public class GameStateRoom implements GameState {
             // assemble
 //            if (isAbleToStart(packet)) {
             Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
-            _parent.switchState(GameStateType.MATCH);
-            Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE);
+            _waiting = true;
+            Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE, ()->_parent.switchState(GameStateType.MATCH));
             Core.getInstance().getPakcetManager().shouldSendThisFrame();
 //            }
         }

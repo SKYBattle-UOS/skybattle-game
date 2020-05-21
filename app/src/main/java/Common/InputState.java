@@ -1,21 +1,25 @@
 package Common;
 
-import android.util.Log;
-
 import java.io.IOException;
 
 public class InputState {
-    public double lat;
-    public double lon;
-    public boolean q, w, e, r;
+    public int qwer;
+    public int playerId = -1;
+    public int lat;
+    public int lon;
 
     public void writeToStream(OutputBitStream stream){
         // TODO
         try {
-            stream.write((int) lat, 8);
-            stream.write((int) lon, 8);
-            Log.i("Stub", String.format("sent lat %d", (int) lat));
-            Log.i("Stub", String.format("sent lon %d", (int) lon));
+            stream.write(qwer, 3);
+            stream.write(lat * lon != 0 ? 1 : 0, 1);
+            if (lat * lon != 0){
+                stream.write(lat, 32);
+                stream.write(lon, 32);
+            }
+            stream.write(playerId >= 0 ? 1 : 0, 1);
+            if (playerId >= 0)
+                stream.write(playerId, 8);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -23,9 +27,14 @@ public class InputState {
 
     public void readFromStream(InputBitStream stream){
         // TODO
-        lat = stream.read(8);
-        lon = stream.read(8);
-        Log.i("Stub", String.format("received lat %d", (int) lat));
-        Log.i("Stub", String.format("received lon %d", (int) lon));
+        qwer = stream.read(3);
+        if (stream.read(1) == 1){
+            lat = stream.read(32);
+            lon = stream.read(32);
+        }
+
+        if (stream.read(1) == 1){
+            playerId = stream.read(8);
+        }
     }
 }

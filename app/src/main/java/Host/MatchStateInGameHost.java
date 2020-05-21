@@ -3,10 +3,10 @@ package Host;
 import Common.GameState;
 
 class MatchStateInGameHost implements GameState {
-    private GameStateMatchHost _gameStateMatchHost;
+    private GameStateMatchHost _match;
 
     public MatchStateInGameHost(GameStateMatchHost gameStateMatchHost) {
-        _gameStateMatchHost = gameStateMatchHost;
+        _match = gameStateMatchHost;
     }
 
     @Override

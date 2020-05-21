@@ -17,53 +17,59 @@ import Common.OutputBitStream;
  * @since 2020-04-21
  */
 public class MatchStateAssemble implements GameState {
-    private GameStateMatch _parent;
+    private GameStateMatch _match;
     private boolean _isInitialized;
     private boolean sentInitComplete;
     private int _numPlayers;
+    private boolean _waiting = false;
 
     public MatchStateAssemble(GameStateMatch parentMatch, int numPlayers) {
-        _parent = parentMatch;
+        _match = parentMatch;
         _isInitialized = false;
         sentInitComplete = false;
         _numPlayers = numPlayers;
-        Core.getInstance().getUIManager().setText("다른 플레이어를 기다리는중...");
+        Core.getInstance().getUIManager().setTopText("다른 플레이어를 기다리는중...");
     }
 
     @Override
     public void update(long ms) {
+        if (_waiting) return;
+
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
         OutputBitStream outPacket = Core.getInstance().getPakcetManager().getPacketToSend();
 
-        if (packet == null) return;
-
         if (!sentInitComplete) {
-            Collection<GameObject> gos = _parent.getGameObjects();
-            if (gos.size() >= _numPlayers) {
-                sentInitComplete = true;
-                Core.getInstance().getPakcetManager().shouldSendThisFrame();
-            }
+            sentInitComplete = true;
+            Core.getInstance().getPakcetManager().shouldSendThisFrame();
 
             Util.sendHas(outPacket, sentInitComplete);
         }
         else
             Util.sendHas(outPacket, sentInitComplete);
 
+        if (packet == null) return;
+
         if (Util.hasMessage(packet)) {
+            _match.activateWorldSetter();
+            if (!_isInitialized){
+                Core.getInstance().getUIManager().setTopText("집합하세요");
+                _match.setBattleGroundLatLon(37.714617, 127.045170);
+                Core.getInstance().getCamera().move(37.714617, 127.045170);
+                Core.getInstance().getCamera().zoom(17);
+            }
             _isInitialized = true;
-            Core.getInstance().getUIManager().setText("집합하세요");
         }
 
         if (Util.hasMessage(packet)) {
-            _parent.switchState(MatchStateType.SELECT_CHARACTER);
-            Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT);
+            _waiting = true;
+            Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT, ()-> _match.switchState(MatchStateType.SELECT_CHARACTER));
         }
     }
 
     @Override
     public void render(Renderer renderer, long ms) {
         if (_isInitialized) {
-            Collection<GameObject> gameObjects = _parent.getGameObjects();
+            Collection<GameObject> gameObjects = _match.getWorld();
             for (GameObject go : gameObjects) {
                 go.render(renderer);
             }

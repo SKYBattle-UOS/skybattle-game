@@ -1,7 +1,5 @@
 package Host;
 
-
-import com.example.Client.Core;
 import com.example.Client.GameObjectRegistry;
 
 import java.io.IOException;
@@ -36,14 +34,17 @@ public class WorldSetterHost {
 
                 header.dirtyFlag = 0;
             }
-            else {
-                try {
-                    packetToSend.write(0, 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            entry.getValue().action = WorldSetterAction.UPDATE;
+
+            if (entry.getValue().action == WorldSetterAction.DESTROY)
+                _mappingN2I.remove(header.networkId);
+            else
+                entry.getValue().action = WorldSetterAction.UPDATE;
+        }
+
+        try {
+            packetToSend.write(0, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -62,5 +63,14 @@ public class WorldSetterHost {
         if (header == null || header.action != WorldSetterAction.UPDATE) return;
 
         header.dirtyFlag = dirtyFlag;
+    }
+
+    public void generateDestroyInstruction(int networkId){
+        WorldSetterHeader header = _mappingN2I.get(networkId);
+        if (header == null || header.action != WorldSetterAction.UPDATE) return;
+
+        header.action = WorldSetterAction.DESTROY;
+        header.networkId = networkId;
+        header.dirtyFlag = -1;
     }
 }

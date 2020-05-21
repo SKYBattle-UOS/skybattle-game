@@ -16,8 +16,8 @@ public class WorldSetterHeader {
     public void readFromStream(InputBitStream stream){
         action = intToAction(stream.read(2));
         if (action == WorldSetterAction.CREATE)
-            classId = stream.read(32);
-        networkId = stream.read(32);
+            classId = stream.read(8);
+        networkId = stream.read(8);
         dirtyFlag = stream.read(32);
     }
 
@@ -25,8 +25,8 @@ public class WorldSetterHeader {
         try {
             stream.write(actionToInt(action), 2);
             if (action == WorldSetterAction.CREATE)
-                stream.write(classId, 32);
-            stream.write(networkId, 32);
+                stream.write(classId, 8);
+            stream.write(networkId, 8);
             stream.write(dirtyFlag, 32);
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.example.Client;
 
 import android.os.Bundle;
+import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -14,10 +15,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-public class MatchActivity extends AppCompatActivity implements Screen, OnMapReadyCallback {
+public class MatchActivity extends AppCompatActivity implements MatchScreen, OnMapReadyCallback {
     private TextView _topText;
     private SupportMapFragment _mapFragment;
     private Map _map;
+    private ScreenType _currentScreenType = null;
 
     View marker_root_view;
     TextView tv_marker;
@@ -27,7 +29,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
         _mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.frag);
         _mapFragment.getMapAsync(this);
         _topText = findViewById(R.id.topText);
     }
@@ -35,55 +37,71 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     @Override
     protected void onResume() {
         super.onResume();
-        Core.getInstance().getUIManager().setCurrentScreen(this);
+        if (_currentScreenType != null)
+            Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Core.getInstance().getUIManager().setCurrentScreen(null);
+        Core.getInstance().getUIManager().setCurrentScreen(null, _currentScreenType);
     }
 
     @Override
     public void switchTo(ScreenType type) {
+        _currentScreenType = type;
+
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         switch (type){
             case CHARACTERSELECT:
-                trans.add(R.id.map, new SelectCharacterFragment());
+                trans.add(R.id.frag, new SelectCharacterFragment());
                 break;
 
             case GETREADY:
-                trans.replace(R.id.map, _mapFragment);
+                trans.replace(R.id.frag, _mapFragment);
                 break;
 
             case INGAME:
-                trans.add(R.id.map, new InGameFragment());
+                trans.add(R.id.frag, new InGameFragment());
                 break;
         }
 
         trans.commit();
-    }
-
-    @Override
-    public void setText(String text) {
-        _topText.setText(text);
+        Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-//        setCustomMarkerView();
 
+        setCustomMarkerView();
         // TODO: default camera position
         LatLng position = new LatLng(3, 3);
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(3));
 
-        _map = new GoogleMapAdapter(googleMap);
-        Core.getInstance().setRenderer(new MapRenderer(_map));
+        _map = new GoogleMapAdapter(googleMap,this,marker_root_view,tv_marker);
+        MapRenderer mapRenderer = new MapRenderer(_map);
+        Core.getInstance().setRenderer(mapRenderer);
+        Core.getInstance().setCamera(mapRenderer);
+        _currentScreenType = ScreenType.ASSEMBLE;
+        Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     private void setCustomMarkerView() {
         marker_root_view = LayoutInflater.from(this).inflate(R.layout.marker_layout, null);
-        tv_marker = (TextView) marker_root_view.findViewById(R.id.tv_marker);
+        tv_marker = marker_root_view.findViewById(R.id.tv_marker);
+    }
+
+    @Override
+    public void setTopText(String text) {
+        _topText.setText(text);
+    }
+
+    public void showDebugMap(){
+        getSupportFragmentManager().beginTransaction()
+        .replace(R.id.frag, _mapFragment)
+        .add(R.id.frag, new DebugMapFragment())
+        .addToBackStack(null)
+        .commit();
     }
 }

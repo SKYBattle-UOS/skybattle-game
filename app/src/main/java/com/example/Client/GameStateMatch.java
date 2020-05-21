@@ -1,12 +1,17 @@
 package com.example.Client;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Vector;
 
+import Common.Collider;
 import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
+import Common.LatLonByteConverter;
+import Common.Match;
 import Common.MatchStateType;
+import Host.WorldSetterHost;
 
 /**
  * 앱의 각 화면에 대한 상태패턴의 상태 객체 중 매치화면.
@@ -17,45 +22,48 @@ import Common.MatchStateType;
  * @since 2020-04-21
  * @see GameStateContext
  */
-public class GameStateMatch implements GameState {
+public class GameStateMatch implements GameState, Match {
+    private GameStateContext _parent;
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
     private Vector<GameObject> _gameObjects;
     private int _numPlayers;
+    private boolean _worldSetterActive = false;
+    private double[] _battleGroundLatLon;
 
-    // TODO: DEBUG EDIT
-    final int GETREADYCOUNT = 10000; // 10 seconds
     private GameState _currentState;
 
-    GameStateMatch(){
+    GameStateMatch(GameStateContext parent){
         // TODO: for now, only 1 player
         _numPlayers = 1;
+
+        _parent = parent;
         _currentState = new MatchStateAssemble(this, _numPlayers);
         _gameObjectRegistry = new GameObjectRegistry();
         _gameObjects = new Vector<>();
-        _worldSetter = new WorldSetter(_gameObjects, _gameObjectRegistry);
+        _worldSetter = new WorldSetter(this);
+        _battleGroundLatLon = new double[2];
     }
 
     @Override
     public void update(long ms) {
         InputBitStream packetStream = Core.getInstance().getPakcetManager().getPacketStream();
-        if (packetStream != null)
+        if (packetStream != null && _worldSetterActive)
             _worldSetter.processInstructions(packetStream);
 
-        for (GameObject go : _gameObjects){
-            if (!go.doesWantToDie())
-                go.update(ms);
-        }
+        killGameObjects();
+
+        for (GameObject go : _gameObjects)
+            go.before(ms);
+
+        for (GameObject go : _gameObjects)
+            go.update(ms);
+
+        for (GameObject go : _gameObjects)
+            go.after(ms);
 
         _currentState.update(ms);
 
-        int goSize = _gameObjects.size();
-        for (int i = 0; i < goSize; i++)
-            if (_gameObjects.get(i).doesWantToDie()){
-                killGameObject(_gameObjects.get(i));
-                goSize--;
-                i--;
-            }
     }
 
     @Override
@@ -76,7 +84,7 @@ public class GameStateMatch implements GameState {
                 _currentState = new MatchStateSelectCharacter(this);
                 break;
             case GET_READY:
-                _currentState = new MatchStateGetReady(this, GETREADYCOUNT);
+                _currentState = new MatchStateGetReady(this);
                 break;
             case INGAME:
                 _currentState = new MatchStateInGame(this);
@@ -85,21 +93,57 @@ public class GameStateMatch implements GameState {
         _currentState.start();
     }
 
-    /**
-     * @return 현재 매치에 존재한는 모든 GameObject의 Array
-     */
-    public Collection<GameObject> getGameObjects(){
-        // TODO: DEBUG EDIT
-        return _gameObjects;
+    @Override
+    public LatLonByteConverter getConverter() {
+        return _parent.getConverter();
     }
 
-    public WorldSetter getWorldSetter(){
-        return _worldSetter;
+    @Override
+    public Collider getCollider() {
+        return null;
     }
 
-    private void killGameObject(GameObject gameObject){
-        gameObject.faceDeath();
-        _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
-        _gameObjects.remove(_gameObjects.size() - 1);
+    @Override
+    public WorldSetterHost getWorldSetterHost() {
+        return null;
+    }
+
+    @Override
+    public GameObjectRegistry getRegistry() { return _gameObjectRegistry; }
+
+    @Override
+    public List<GameObject> getWorld() { return _gameObjects; }
+
+    @Override
+    public GameObject createGameObject(int classId) {
+        return null;
+    }
+
+    private void killGameObjects(){
+        int goSize = _gameObjects.size();
+        for (int i = 0; i < goSize; i++) {
+            GameObject gameObject = _gameObjects.get(i);
+            if (gameObject.wantsToDie()) {
+                gameObject.faceDeath();
+                _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
+                _gameObjects.remove(_gameObjects.size() - 1);
+                goSize--;
+                i--;
+            }
+        }
+    }
+
+    public void activateWorldSetter(){
+        _worldSetterActive = true;
+    }
+
+    public double[] getBattleGroundLatLon() {
+        return _battleGroundLatLon;
+    }
+
+    public void setBattleGroundLatLon(double lat, double lon) {
+        _battleGroundLatLon[0] = lat;
+        _battleGroundLatLon[1] = lon;
+        _parent.getConverter().setOffset(lat, lon);
     }
 }

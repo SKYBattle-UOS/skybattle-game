@@ -44,7 +44,7 @@ class MatchStateSelectCharacterHost implements GameState {
         }
 
         elapsed += ms;
-        if (elapsed > 5000)
+        if (elapsed > 1000)
             allset = true;
 
         OutputBitStream outputPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
