@@ -34,7 +34,7 @@ public class GameStateRoom implements GameState {
 
         OutputBitStream outPacket = Core.getInstance().getPakcetManager().getPacketToSend();
         try {
-            outPacket.write(_buttonPressed ? 77 : 0, 8);
+            outPacket.write(_buttonPressed ? 1 : 0, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }

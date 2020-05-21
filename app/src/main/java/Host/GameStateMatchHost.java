@@ -140,6 +140,7 @@ public class GameStateMatchHost implements GameState, Match {
                 _worldSetter.generateDestroyInstruction(gameObject.getNetworkId());
                 gameObject.faceDeath();
                 _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
+                _gameObjects.get(gameObject.getIndexInWorld()).setIndexInWorld(gameObject.getIndexInWorld());
                 _gameObjects.remove(_gameObjects.size() - 1);
                 goSize--;
                 i--;
