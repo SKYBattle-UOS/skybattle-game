@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import Common.GameObject;
 import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.OutputBitStream;
@@ -16,6 +17,11 @@ public class InputManager {
 //    private double[] _prevLatlon;
     private Queue<InputState> _inputStates;
     private LatLonByteConverter _converter;
+    private boolean _q;
+    private boolean _w;
+    private boolean _e;
+    private boolean _r;
+    private boolean _dirty;
 
     // TODO
     private long _elapsed;
@@ -25,10 +31,11 @@ public class InputManager {
     private double destLon = 127.048616;
     private int step = 0;
     private int[] _convertTemp = new int[2];
+    private GameObject _player;
+    private int _direction;
+    private double[] _newPos;
 
     public InputManager(Context context, LatLonByteConverter converter){
-//        _location = new Location(context);
-//        _prevLatlon = new double[2];
         _inputStates = new LinkedList<>();
         _converter = converter;
     }
@@ -41,25 +48,73 @@ public class InputManager {
         _elapsed += ms;
     }
 
-    private void updateInputState() {
-//        double[] latlon = _location.getCurrentLocation();
-//        if (isPosDirty(latlon)){
-//            // TODO: if qwer dirty
-//            InputState newState = new InputState();
-//            newState.lat = latlon[0];
-//            newState.lon = latlon[1];
-//            _prevLatlon = latlon;
-//
-//            _inputStates.offer(newState);
-//        }
-        if (_elapsed > 250 && step <= 100){
+    private synchronized void updateInputState() {
+        debugMoveToAssemblePoint();
+
+        if (_dirty){
+            addInput();
+            _dirty = false;
+        }
+    }
+
+    private void addInput() {
+        InputState newState = new InputState();
+        _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
+        newState.lat = _convertTemp[0];
+        newState.lon = _convertTemp[1];
+        newState.q = _q;
+        newState.w = _w;
+        newState.e = _e;
+        newState.r = _r;
+        _inputStates.offer(newState);
+
+        _q = false;
+        _w = false;
+        _e = false;
+        _r = false;
+    }
+
+    public void setDebugPlayer(GameObject player){
+        _player = player;
+    }
+
+    public void debugMove(int direction) {
+        _newPos = _player.getPosition();
+        switch (direction){
+            case 0:
+                _newPos[0] += 0.00005;
+                break;
+            case 1:
+                _newPos[0] -= 0.00005;
+                break;
+            case 2:
+                _newPos[1] += 0.00005;
+                break;
+            case 3:
+                _newPos[1] -= 0.00005;
+                break;
+        }
+        _dirty = true;
+    }
+
+    private void debugMoveToAssemblePoint(){
+        if (_elapsed > 125 && step <= 100){
             InputState newState = new InputState();
             _converter.convertLatLon(lat + (destLat - lat) / 100 * step, lon + (destLon - lon) / 100 * step, _convertTemp);
             newState.lat = _convertTemp[0];
             newState.lon = _convertTemp[1];
+            newState.q = _q;
+            newState.w = _w;
+            newState.e = _e;
+            newState.r = _r;
             _inputStates.offer(newState);
             _elapsed = 0;
             step++;
+
+            _q = false;
+            _w = false;
+            _e = false;
+            _r = false;
         }
     }
 
@@ -88,8 +143,23 @@ public class InputManager {
         }
     }
 
-//    private boolean isPosDirty(double[] latlon) {
-//        // TODO: only dirty if position changed by a significant amount
-//        return (latlon[0] * latlon[1]) != 0 && (latlon[0] != _prevLatlon[0] && latlon[1] != _prevLatlon[1]);
-//    }
+    public synchronized void q(){
+        _q = true;
+        _dirty = true;
+    }
+
+    public synchronized void w(){
+        _w = true;
+        _dirty = true;
+    }
+
+    public synchronized void e(){
+        _e = true;
+        _dirty = true;
+    }
+
+    public synchronized void r(){
+        _r = true;
+        _dirty = true;
+    }
 }

@@ -46,7 +46,7 @@ public class GameStateMatchHost implements GameState {
 
         _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
         _battleGroundLatLon = new double[2];
-        GET_READY_COUNT = 10000;
+        GET_READY_COUNT = 1000;
         NUM_PACKET_PER_FRAME = 3;
 
         // TODO

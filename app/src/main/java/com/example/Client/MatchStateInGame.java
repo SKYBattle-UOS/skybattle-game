@@ -23,6 +23,17 @@ public class MatchStateInGame implements GameState {
     }
 
     @Override
+    public void start() {
+        Collection<GameObject> gos = _match.getGameObjects();
+        for (GameObject go : gos){
+            if (go instanceof Player) {
+                Core.getInstance().getInputManager().setDebugPlayer(go);
+                return;
+            }
+        }
+    }
+
+    @Override
     public void update(long ms) {
         // TODO
     }

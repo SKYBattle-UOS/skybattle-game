@@ -1,6 +1,7 @@
 package com.example.Client;
 
 import android.os.Bundle;
+import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -28,7 +29,7 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
         _mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.frag);
         _mapFragment.getMapAsync(this);
         _topText = findViewById(R.id.topText);
     }
@@ -53,15 +54,15 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         switch (type){
             case CHARACTERSELECT:
-                trans.add(R.id.map, new SelectCharacterFragment());
+                trans.add(R.id.frag, new SelectCharacterFragment());
                 break;
 
             case GETREADY:
-                trans.replace(R.id.map, _mapFragment);
+                trans.replace(R.id.frag, _mapFragment);
                 break;
 
             case INGAME:
-                trans.add(R.id.map, new InGameFragment());
+                trans.add(R.id.frag, new InGameFragment());
                 break;
         }
 
@@ -88,11 +89,19 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
 
     private void setCustomMarkerView() {
         marker_root_view = LayoutInflater.from(this).inflate(R.layout.marker_layout, null);
-        tv_marker = (TextView) marker_root_view.findViewById(R.id.tv_marker);
+        tv_marker = marker_root_view.findViewById(R.id.tv_marker);
     }
 
     @Override
     public void setTopText(String text) {
         _topText.setText(text);
+    }
+
+    public void showDebugMap(){
+        getSupportFragmentManager().beginTransaction()
+        .replace(R.id.frag, _mapFragment)
+        .add(R.id.frag, new DebugMapFragment())
+        .addToBackStack(null)
+        .commit();
     }
 }

@@ -15,10 +15,17 @@
         android:textSize="25sp" />
 
     <fragment
-        android:id="@+id/map"
+        android:id="@+id/frag"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="700dp"
         tools:context=".MapsActivity" />
+
+    <Button
+        android:id="@+id/btn_character1"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="멋쟁이"
+        android:textSize="20sp" />
 
 </LinearLayout>
