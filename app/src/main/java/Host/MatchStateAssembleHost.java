@@ -79,6 +79,12 @@ class MatchStateAssembleHost implements GameState {
 
         Util.sendHas(outPacket, assembled);
         if (assembled){
+            Collection<GameObject> gos = _match.getGameObjects();
+            for (GameObject go : gos){
+                if (!(go instanceof PlayerHost))
+                    go.scheduleDeath();
+            }
+
             CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
         }

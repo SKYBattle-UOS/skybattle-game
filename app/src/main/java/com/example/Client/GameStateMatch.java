@@ -6,7 +6,6 @@ import java.util.Vector;
 import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
-import Common.LatLonByteConverter;
 import Common.MatchStateType;
 
 /**
@@ -47,13 +46,7 @@ public class GameStateMatch implements GameState {
         if (packetStream != null && _worldSetterActive)
             _worldSetter.processInstructions(packetStream);
 
-        int goSize = _gameObjects.size();
-        for (int i = 0; i < goSize; i++)
-            if (_gameObjects.get(i).doesWantToDie()){
-                killGameObject(_gameObjects.get(i));
-                goSize--;
-                i--;
-            }
+        killGameObjects();
 
         for (GameObject go : _gameObjects)
             go.before(ms);
@@ -107,10 +100,18 @@ public class GameStateMatch implements GameState {
         return _worldSetter;
     }
 
-    private void killGameObject(GameObject gameObject){
-        gameObject.faceDeath();
-        _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
-        _gameObjects.remove(_gameObjects.size() - 1);
+    private void killGameObjects(){
+        int goSize = _gameObjects.size();
+        for (int i = 0; i < goSize; i++) {
+            GameObject gameObject = _gameObjects.get(i);
+            if (gameObject.wantsToDie()) {
+                gameObject.faceDeath();
+                _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
+                _gameObjects.remove(_gameObjects.size() - 1);
+                goSize--;
+                i--;
+            }
+        }
     }
 
     public void activateWorldSetter(){

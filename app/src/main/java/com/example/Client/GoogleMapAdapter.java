@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /** google 지도 마커 추가및 반경 그리기등 지도에 기능을 추가하는 클래스
  *float	HUE_AZURE 210 .0
@@ -44,15 +46,17 @@ public class GoogleMapAdapter implements Map {
 
     private GoogleMap _googleMap;
     private Handler _mainHandler;
-    private ArrayList<Marker> _markers;
     private Context _matchActivity;
     private View _marker_root_view; //text 띄우기 위해
     private TextView _tv_marker; //textview
 
+    private HashMap<Integer, Marker> _markers;
+    private int _nextMarkerNumber;
+
     public GoogleMapAdapter(GoogleMap googleMap, Context mContext, View marker_root_view, TextView tv_marker) {
         _googleMap = googleMap;
         _mainHandler = new Handler(Looper.getMainLooper());
-        _markers = new ArrayList<>();
+        _markers = new HashMap<>();
         _matchActivity = mContext;
         _marker_root_view = marker_root_view;
         _tv_marker = tv_marker;
@@ -60,8 +64,9 @@ public class GoogleMapAdapter implements Map {
 
     @Override
     public synchronized MapMarkerHandle addMarker(double latitude, double longitude, int color, float size, String name) {
-        GoogleMarkerHandle ret = new GoogleMarkerHandle(_markers.size());
-        _mainHandler.post(() -> _addMarker(latitude, longitude, color, size, name));
+        int number = _nextMarkerNumber++;
+        GoogleMarkerHandle ret = new GoogleMarkerHandle(number);
+        _mainHandler.post(() -> _addMarker(number, latitude, longitude, color, size, name));
         return ret;
     }
 
@@ -92,8 +97,8 @@ public class GoogleMapAdapter implements Map {
         _mainHandler.post(()->_animateCamera(zoom));
     }
 
-    private synchronized void _addMarker(double latitude, double longitude, int color, float size, String name){
-        _drawText(latitude, longitude, name);
+    private synchronized void _addMarker(int number, double latitude, double longitude, int color, float size, String name){
+        _drawText(number, latitude, longitude, name);
     }
 
     private void _moveCamera(double lat, double lon) {
@@ -111,7 +116,7 @@ public class GoogleMapAdapter implements Map {
         _googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
     }
 
-    private synchronized void _drawText(double latitude, double longitude, String name) {
+    private synchronized void _drawText(int number, double latitude, double longitude, String name) {
         //textview를 marker로 띄움
         LatLng position = new LatLng(latitude, longitude);
 
@@ -123,35 +128,35 @@ public class GoogleMapAdapter implements Map {
                 .position(position)
                 .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(_matchActivity, _marker_root_view))));
 
-        _markers.add(marker);
+        _markers.put(number, marker);
     }
 
-    private synchronized void _drawText2(double latitude, double longitude) {
-        //marker를 custom marker로 바꿔줌
-        LatLng position = new LatLng(latitude, longitude);
-        Bitmap custom_marker = getBitmap(_matchActivity,R.drawable.ic_priority_high_black_24dp);
+//    private synchronized void _drawText2(double latitude, double longitude) {
+//        //marker를 custom marker로 바꿔줌
+//        LatLng position = new LatLng(latitude, longitude);
+//        Bitmap custom_marker = getBitmap(_matchActivity,R.drawable.ic_priority_high_black_24dp);
+//
+//        Marker marker = _googleMap.addMarker(new MarkerOptions()
+//                .position(position)
+//                .title("신난다")
+//                .icon(BitmapDescriptorFactory.fromBitmap(custom_marker)));
+//
+//        marker.showInfoWindow();
+//        _markers.add(marker);
+//    }
 
-        Marker marker = _googleMap.addMarker(new MarkerOptions()
-                .position(position)
-                .title("신난다")
-                .icon(BitmapDescriptorFactory.fromBitmap(custom_marker)));
-
-        marker.showInfoWindow();
-        _markers.add(marker);
-    }
-
-    private synchronized void _drawImage(double latitude, double longitude) { //marker를 image로 만듬
-        LatLng position = new LatLng(latitude, longitude);
-        //Bitmap resized=getResizedBitmap(_matchActivity.getResources(),R.drawable.hp_portion,30,30,30); size 줄이기 위해
-
-        Marker marker = _googleMap.addMarker(new MarkerOptions()
-                .position(position)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.hp_portion)));
-        //.icon(BitmapDescriptorFactory.fromBitmap(resized)));
-
-        marker.showInfoWindow();
-        _markers.add(marker);
-    }
+//    private synchronized void _drawImage(double latitude, double longitude) { //marker를 image로 만듬
+//        LatLng position = new LatLng(latitude, longitude);
+//        //Bitmap resized=getResizedBitmap(_matchActivity.getResources(),R.drawable.hp_portion,30,30,30); size 줄이기 위해
+//
+//        Marker marker = _googleMap.addMarker(new MarkerOptions()
+//                .position(position)
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.hp_portion)));
+//        //.icon(BitmapDescriptorFactory.fromBitmap(resized)));
+//
+//        marker.showInfoWindow();
+//        _markers.add(marker);
+//    }
 
     private void _addCircle() {
         // 반경 1KM원

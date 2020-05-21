@@ -29,6 +29,8 @@ public abstract class GameObject {
     private double[] _position;
     private boolean _wantsToDie;
     private RenderComponent _renderComponent;
+
+    protected int _dirtyPos = 0;
     protected LatLonByteConverter _converter;
     protected WorldSetterHost _worldSetterHost;
     protected Collider _collider;
@@ -43,7 +45,8 @@ public abstract class GameObject {
     }
 
     public void writeToStream(OutputBitStream stream, int dirtyFlag){
-        if ((dirtyFlag & 1) != 0) {
+        _dirtyPos = 0;
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
             double[] pos = getPosition();
             _converter.convertLatLon(pos[0], pos[1], _convertTemp);
             int lat = _convertTemp[0];
@@ -56,7 +59,7 @@ public abstract class GameObject {
             }
         }
 
-        if ((dirtyFlag & 2) != 0){
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
             byte[] b = _name.getBytes(StandardCharsets.UTF_8);
             try {
                 stream.write(b.length, 8);
@@ -68,14 +71,15 @@ public abstract class GameObject {
     }
 
     public void readFromStream(InputBitStream stream, int dirtyFlag){
-        if ((dirtyFlag & 1) != 0){
+        _dirtyPos = 0;
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
             int lat = stream.read(32);
             int lon = stream.read(32);
             _converter.restoreLatLon(lat, lon, _restoreTemp);
             setPosition(_restoreTemp[0], _restoreTemp[1]);
         }
 
-        if ((dirtyFlag & 2) != 0){
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
             int len = stream.read(8);
             byte[] b = new byte[len];
             stream.read(b, len * 8);
@@ -87,7 +91,10 @@ public abstract class GameObject {
     public abstract void update(long ms);
     public abstract void after(long ms);
 
-    public void faceDeath(){}
+    public void faceDeath(){
+        if (_renderComponent != null)
+            _renderComponent.destroy();
+    }
 
     public void render(Renderer renderer){
         if (_renderComponent != null)
@@ -119,7 +126,7 @@ public abstract class GameObject {
         _wantsToDie = true;
     }
 
-    public boolean doesWantToDie(){
+    public boolean wantsToDie(){
         return _wantsToDie;
     }
 

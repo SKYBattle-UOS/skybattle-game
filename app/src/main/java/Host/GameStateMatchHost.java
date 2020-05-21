@@ -105,8 +105,25 @@ public class GameStateMatchHost implements GameState {
         for (GameObject go : _gameObjects)
             go.after(ms);
 
+        killGameObjects();
+
         _collider.update(ms);
         _currentState.update(ms);
+    }
+
+    private void killGameObjects(){
+        int goSize = _gameObjects.size();
+        for (int i = 0; i < goSize; i++) {
+            GameObject gameObject = _gameObjects.get(i);
+            if (gameObject.wantsToDie()) {
+                _worldSetter.generateDestroyInstruction(gameObject.getNetworkId());
+                gameObject.faceDeath();
+                _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
+                _gameObjects.remove(_gameObjects.size() - 1);
+                goSize--;
+                i--;
+            }
+        }
     }
 
     private void handleInputFromClients() {

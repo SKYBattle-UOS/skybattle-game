@@ -14,7 +14,7 @@ public abstract class ItemCommon extends GameObject implements Pickable {
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
         super.writeToStream(stream, dirtyFlag);
 
-        if ((dirtyFlag & 4) != 0){
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
             try {
                 stream.write(_isPickedUp ? 1 : 0, 1);
             } catch (IOException e) {
@@ -27,7 +27,7 @@ public abstract class ItemCommon extends GameObject implements Pickable {
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
         super.readFromStream(stream, dirtyFlag);
 
-        if ((dirtyFlag & 4) != 0){
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
             _isPickedUp = stream.read(1) == 1;
         }
     }

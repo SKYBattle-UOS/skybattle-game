@@ -7,7 +7,7 @@ import Common.GameObject;
 
 public class MapRenderer implements Renderer, Camera {
     private Map _map;
-    private ArrayList<MapRenderComponent> _batched;
+    private ArrayList<RenderComponent> _batched;
 
     MapRenderer(Map map){
         _map = map;
@@ -16,22 +16,22 @@ public class MapRenderer implements Renderer, Camera {
 
     @Override
     public void render(long ms) {
-        for (MapRenderComponent comp : _batched)
-            comp.render(_map, ms);
+        for (RenderComponent comp : _batched)
+            comp.render(ms);
 
         _batched.clear();
     }
 
     @Override
     public void batch(RenderComponent component) {
-        _batched.add((MapRenderComponent) component);
+        _batched.add(component);
     }
 
     @Override
     public RenderComponent createRenderComponent(GameObject parent, ImageType type) {
         switch (type){
             case FILLED_CIRCLE:
-                return new MapMarkerRenderComponent(parent);
+                return new MapMarkerRenderComponent(_map, parent);
         }
         return null;
     }

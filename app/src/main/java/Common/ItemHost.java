@@ -15,7 +15,7 @@ public class ItemHost extends ItemCommon {
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
         super.writeToStream(stream, dirtyFlag);
 
-        if ((dirtyFlag & 8) != 0){
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
             try {
                 if (_owner == null)
                     stream.write(0, 32);
