@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -48,14 +49,16 @@ public class GoogleMapAdapter implements Map {
     private View _marker_root_view; //text 띄우기 위해
     private TextView _tv_marker; //textview
 
-    private HashMap<Integer, CircleOptions> _circles;
+    private HashMap<Integer, Circle> _circles;
     private HashMap<Integer, Marker> _markers;
     private int _nextMarkerNumber;
+    private int _nextCircleNumber;
 
     public GoogleMapAdapter(GoogleMap googleMap, Context mContext, View marker_root_view, TextView tv_marker) {
         _googleMap = googleMap;
         _mainHandler = new Handler(Looper.getMainLooper());
         _markers = new HashMap<>();
+        _circles= new HashMap<>();
         _matchActivity = mContext;
         _marker_root_view = marker_root_view;
         _tv_marker = tv_marker;
@@ -63,8 +66,10 @@ public class GoogleMapAdapter implements Map {
 
     @Override
     public MapCircleHandle addCircle(double lat, double lon, int color, float radius) {
-        int number = _nextMarkerNumber;
-        return null;
+        int number = _nextCircleNumber++;
+        GoogleCircleHandle ret = new GoogleCircleHandle(number);
+        _mainHandler.post(() -> _addCircle(number,lat, lon, color, radius));
+        return ret;
     }
 
     @Override
@@ -81,8 +86,22 @@ public class GoogleMapAdapter implements Map {
     }
 
     @Override
+    public void setCirclePosition(MapCircleHandle circle, double lat, double lon){
+        _mainHandler.post(() -> _setCirclePosition(circle, lat, lon));
+    }
+
+    @Override
+    public void setCircleRadius(MapCircleHandle circle, float radius){
+        _mainHandler.post(() -> _setCircleRadius(circle, radius));
+    }
+
+    @Override
     public void removeMarker(MapMarkerHandle marker) {
         _mainHandler.post(() -> _removeMarker(marker));
+    }
+    @Override
+    public void removeCircle(MapCircleHandle circle){
+        _mainHandler.post(() -> _removeCircle(circle));
     }
 
     @Override
@@ -101,6 +120,19 @@ public class GoogleMapAdapter implements Map {
         cur_marker.setPosition(new LatLng(lat, lon));
         cur_marker.showInfoWindow();
     }
+    private synchronized void _setCirclePosition(MapCircleHandle circle, double lat, double lon){
+        int index = ((GoogleCircleHandle) circle).index;
+        Circle cur_circle = _circles.get(index);
+        cur_circle.setCenter(new LatLng(lat,lon));
+        //cur_circle.setVisible(true);
+    }
+
+    private synchronized void _setCircleRadius(MapCircleHandle circle, float radius){
+        int index = ((GoogleCircleHandle) circle).index;
+        Circle cur_circle = _circles.get(index);
+        cur_circle.setRadius((double)radius);
+        //cur_circle.setVisible(true);
+    }
 
     private synchronized void _addMarker(int number, double latitude, double longitude, int color, float size, String name){
         _drawText(number, latitude, longitude, name);
@@ -115,6 +147,13 @@ public class GoogleMapAdapter implements Map {
         Marker cur_marker = _markers.get(index);
         _markers.remove(index);
         cur_marker.remove();
+    }
+
+    private synchronized void _removeCircle(MapCircleHandle circle) {
+        int index = ((GoogleCircleHandle) circle).index;
+        Circle cur_circle = _circles.get(index);
+        _circles.remove(index);
+        cur_circle.remove();
     }
 
     private void _animateCamera(float zoom) {
@@ -163,23 +202,24 @@ public class GoogleMapAdapter implements Map {
 //        _markers.add(marker);
 //    }
 
-    private void _addCircle() {
+    private void _addCircle(int number,double lat, double lon, int color, float radius_) {
         // 반경 1KM원
-        LatLng position = new LatLng(37.56, 126.97);
+        LatLng position = new LatLng(lat, lon);
         String color_stroke = "#FF0000ff";
         String color_fill = "#880000ff";
 
-        CircleOptions circle1KM = new CircleOptions()
+        Circle circle = _googleMap.addCircle(new CircleOptions()
                 .center(position) //원점
-                .radius(1000)      //반지름 단위 : 1000m
+                .radius(radius_)      //반지름 단위 : 1000m
                 .strokeWidth(3f)  //선너비 0f : 선없음,default=10
                 .strokeColor(Color.parseColor(color_stroke))
-                .fillColor(Color.parseColor(color_fill));
+                .fillColor(color));
         //.fillColor(Color.parseColor("#880000ff")); //배경색
+                // .fillColor(Color.parseColor(color_fill)));
         //.fillColor((Color.RED));
 
-        //원추가
-        _googleMap.addCircle(circle1KM);
+        //해시맵에 원추가
+        _circles.put(number, circle);
     }
 
     public static Bitmap getResizedBitmap(Resources resources, int id, int size, int width, int height) {
