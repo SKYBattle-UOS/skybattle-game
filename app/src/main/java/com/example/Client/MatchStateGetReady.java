@@ -1,7 +1,5 @@
 package com.example.Client;
 
-import android.util.Log;
-
 import java.util.Collection;
 import java.util.Locale;
 
@@ -55,7 +53,7 @@ public class MatchStateGetReady implements GameState {
             Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _count));
         }
 
-        Collection<GameObject> gameObjects = _match.getGameObjects();
+        Collection<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
             go.render(renderer);
         }

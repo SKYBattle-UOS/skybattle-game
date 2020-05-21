@@ -8,16 +8,19 @@ import Common.GameObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Queue;
 
 import Common.GameState;
 import Common.InputBitStream;
 import Common.InputState;
+import Common.LatLonByteConverter;
+import Common.Match;
 import Common.MatchStateType;
 import Common.PlayerHost;
 import Common.Util;
 
-public class GameStateMatchHost implements GameState {
+public class GameStateMatchHost implements GameState, Match {
     private GameStateContextHost _parent;
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
@@ -58,15 +61,14 @@ public class GameStateMatchHost implements GameState {
         switchState(MatchStateType.ASSEMBLE);
     }
 
+    @Override
     public GameObject createGameObject(int classId){
         GameObject ret = _factory.createGameObject(classId);
         int networkId = _nextNetworkId++;
 
         ret.setMatch(this);
-        ret.setCollider(_collider);
         ret.setNetworkId(networkId);
-        ret.setWorldSetterHost(_worldSetter);
-        ret.setLatLonByteConverter(_parent.getConverter());
+        _collider.registerNew(ret);
 
         _newGameObjects.add(ret);
         _newGOClassId.add(classId);
@@ -190,9 +192,6 @@ public class GameStateMatchHost implements GameState {
         _currentState.start();
     }
 
-    public Collection<GameObject> getGameObjects(){
-        return _gameObjects;
-    }
     public Collection<PlayerHost> getPlayers() { return _players; }
 
     public boolean isWorldSetterActive() {
@@ -209,5 +208,22 @@ public class GameStateMatchHost implements GameState {
         _parent.getConverter().setOffset(lat, lon);
     }
 
-public Collider getCollider(){ return _collider; }
+    @Override
+    public Collider getCollider(){ return _collider; }
+
+    @Override
+    public WorldSetterHost getWorldSetterHost() {
+        return _worldSetter;
+    }
+
+    @Override
+    public LatLonByteConverter getConverter(){ return _parent.getConverter(); }
+
+    @Override
+    public GameObjectRegistry getRegistry(){ return _registry; }
+
+    @Override
+    public List<GameObject> getWorld() {
+        return _gameObjects;
+    }
 }

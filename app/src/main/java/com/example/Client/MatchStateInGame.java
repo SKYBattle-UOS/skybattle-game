@@ -22,7 +22,7 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void start() {
-        Collection<GameObject> gos = _match.getGameObjects();
+        Collection<GameObject> gos = _match.getWorld();
         for (GameObject go : gos){
             if (go instanceof Player) {
                 Core.getInstance().getInputManager().setThisPlayer((Player) go);
@@ -38,7 +38,7 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void render(Renderer renderer, long ms) {
-        Collection<GameObject> gameObjects = _match.getGameObjects();
+        Collection<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
             go.render(renderer);
         }

@@ -68,7 +68,7 @@ class MatchStateAssembleHost implements GameState {
                 _match.setWorldSetterActive();
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
 
-                for (GameObject go : _match.getGameObjects()){
+                for (GameObject go : _match.getWorld()){
                     if (!(go instanceof PlayerHost)) {
                         _assemblePoint = go;
                         return;
@@ -79,7 +79,7 @@ class MatchStateAssembleHost implements GameState {
 
         Util.sendHas(outPacket, assembled);
         if (assembled){
-            Collection<GameObject> gos = _match.getGameObjects();
+            Collection<GameObject> gos = _match.getWorld();
             for (GameObject go : gos){
                 if (!(go instanceof PlayerHost))
                     go.scheduleDeath();

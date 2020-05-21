@@ -1,12 +1,17 @@
 package com.example.Client;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Vector;
 
+import Common.Collider;
 import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
+import Common.LatLonByteConverter;
+import Common.Match;
 import Common.MatchStateType;
+import Host.WorldSetterHost;
 
 /**
  * 앱의 각 화면에 대한 상태패턴의 상태 객체 중 매치화면.
@@ -17,7 +22,7 @@ import Common.MatchStateType;
  * @since 2020-04-21
  * @see GameStateContext
  */
-public class GameStateMatch implements GameState {
+public class GameStateMatch implements GameState, Match {
     private GameStateContext _parent;
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
@@ -36,7 +41,7 @@ public class GameStateMatch implements GameState {
         _currentState = new MatchStateAssemble(this, _numPlayers);
         _gameObjectRegistry = new GameObjectRegistry();
         _gameObjects = new Vector<>();
-        _worldSetter = new WorldSetter(_gameObjects, _gameObjectRegistry, _parent.getConverter());
+        _worldSetter = new WorldSetter(this);
         _battleGroundLatLon = new double[2];
     }
 
@@ -88,16 +93,30 @@ public class GameStateMatch implements GameState {
         _currentState.start();
     }
 
-    /**
-     * @return 현재 매치에 존재한는 모든 GameObject의 Array
-     */
-    public Collection<GameObject> getGameObjects(){
-        // TODO: DEBUG EDIT
-        return _gameObjects;
+    @Override
+    public LatLonByteConverter getConverter() {
+        return _parent.getConverter();
     }
 
-    public WorldSetter getWorldSetter(){
-        return _worldSetter;
+    @Override
+    public Collider getCollider() {
+        return null;
+    }
+
+    @Override
+    public WorldSetterHost getWorldSetterHost() {
+        return null;
+    }
+
+    @Override
+    public GameObjectRegistry getRegistry() { return _gameObjectRegistry; }
+
+    @Override
+    public List<GameObject> getWorld() { return _gameObjects; }
+
+    @Override
+    public GameObject createGameObject(int classId) {
+        return null;
     }
 
     private void killGameObjects(){

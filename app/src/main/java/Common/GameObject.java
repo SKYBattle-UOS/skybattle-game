@@ -32,11 +32,7 @@ public abstract class GameObject {
     private RenderComponent _renderComponent;
 
     protected int _dirtyPos = 0;
-    protected LatLonByteConverter _converter;
-    protected WorldSetterHost _worldSetterHost;
-    protected GameObjectRegistry _registry;
-    protected Collider _collider;
-    protected GameStateMatchHost _match;
+    protected Match _match;
 
     private double[] _restoreTemp = new double[2];
     private int[] _convertTemp = new int[2];
@@ -50,7 +46,7 @@ public abstract class GameObject {
         _dirtyPos = 0;
         if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
             double[] pos = getPosition();
-            _converter.convertLatLon(pos[0], pos[1], _convertTemp);
+            _match.getConverter().convertLatLon(pos[0], pos[1], _convertTemp);
             int lat = _convertTemp[0];
             int lon = _convertTemp[1];
             try {
@@ -77,7 +73,7 @@ public abstract class GameObject {
         if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
             int lat = stream.read(32);
             int lon = stream.read(32);
-            _converter.restoreLatLon(lat, lon, _restoreTemp);
+            _match.getConverter().restoreLatLon(lat, lon, _restoreTemp);
             setPosition(_restoreTemp[0], _restoreTemp[1]);
         }
 
@@ -111,29 +107,12 @@ public abstract class GameObject {
     }
 
     // region Getters and Setters
-    public GameStateMatchHost getMatch(){
+    public Match getMatch(){
         return _match;
     }
 
-    public void setMatch(GameStateMatchHost match){
+    public void setMatch(Match match){
         _match = match;
-    }
-
-    public void setGameObjectRegistry(GameObjectRegistry registry){
-        _registry = registry;
-    }
-
-    public void setWorldSetterHost(WorldSetterHost wsh){
-        _worldSetterHost = wsh;
-    }
-
-    public WorldSetterHost getWorldSetterHost(){
-        return _worldSetterHost;
-    }
-
-    public void setCollider(Collider col){
-        _collider = col;
-        _collider.registerNew(this);
     }
 
     public void scheduleDeath(){
@@ -155,12 +134,9 @@ public abstract class GameObject {
     public void setPosition(double latitude, double longitude){
         _position[0] = latitude;
         _position[1] = longitude;
-        if (_collider != null)
-            _collider.positionDirty(this);
-    }
 
-    public void setLatLonByteConverter(LatLonByteConverter converter){
-        _converter = converter;
+        if (_match.getCollider() != null)
+            _match.getCollider().positionDirty(this);
     }
 
     public void setName(String name){

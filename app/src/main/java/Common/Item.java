@@ -18,7 +18,7 @@ public class Item extends ItemCommon {
         super.readFromStream(stream, dirtyFlag);
 
         if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
-            _owner = _registry.getGameObject(stream.read(32));
+            _owner = _match.getRegistry().getGameObject(stream.read(32));
         }
     }
 

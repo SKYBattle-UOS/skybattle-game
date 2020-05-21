@@ -31,7 +31,7 @@ public class PlayerHost extends PlayerCommon {
     @Override
     public void update(long ms) {
         // passive
-        Collection<CollisionState> collisions = _collider.getCollisions(this);
+        Collection<CollisionState> collisions = _match.getCollider().getCollisions(this);
         for (CollisionState collision : collisions){
             processColiision(collision, ms);
         }
@@ -94,13 +94,13 @@ public class PlayerHost extends PlayerCommon {
 
                 // just new position
                 case 4:
-                    _converter.restoreLatLon(input.lat, input.lon, _newPosTemp);
+                    _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
                     setPosition(_newPosTemp[0], _newPosTemp[1]);
                     dirtyFlag |= 1;
                     break;
             }
         }
 
-        _worldSetterHost.generateUpdateInstruction(getNetworkId(), dirtyFlag);
+        _match.getWorldSetterHost().generateUpdateInstruction(getNetworkId(), dirtyFlag);
     }
 }

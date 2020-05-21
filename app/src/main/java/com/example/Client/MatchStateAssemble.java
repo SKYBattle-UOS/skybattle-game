@@ -69,7 +69,7 @@ public class MatchStateAssemble implements GameState {
     @Override
     public void render(Renderer renderer, long ms) {
         if (_isInitialized) {
-            Collection<GameObject> gameObjects = _match.getGameObjects();
+            Collection<GameObject> gameObjects = _match.getWorld();
             for (GameObject go : gameObjects) {
                 go.render(renderer);
             }
