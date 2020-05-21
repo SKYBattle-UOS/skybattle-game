@@ -8,10 +8,38 @@
     android:focusable="true">
 
     <Button
-        android:id="@+id/btn_character1"
+        android:id="@+id/btn_q"
         android:layout_width="match_parent"
         android:layout_height="95dp"
-        android:text="화내기"
+        android:text="Q"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_w"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="W"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_e"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="E"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_r"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="R"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_map"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:text="DEBUG: 지도보기"
         android:textSize="20sp" />
 
 </LinearLayout>

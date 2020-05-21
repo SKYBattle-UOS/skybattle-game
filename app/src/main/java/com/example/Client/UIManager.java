@@ -10,33 +10,51 @@ import java.util.Objects;
 import java.util.Queue;
 
 public class UIManager {
+    public static final int SWITCH_SCREEN_PORT = 0;
+
     private Screen _currentScreen = null;
+    private ScreenType _nextScreen = null;
+    private Runnable _onComplete = null;
+    private boolean _shouldSendSwitch = false;
+    private final Object _mutex = new Object();
+
     private Map<Integer, Runnable> _callbackMapping = new HashMap<>();
-    private Queue<ScreenType> _toSwitch = new LinkedList<>();
     private Handler _mainHandler = new Handler(Looper.getMainLooper());
-    private String _topText = null;
 
-    public void switchScreen(ScreenType type){
-        _toSwitch.add(type);
+    public void switchScreen(ScreenType type, Runnable onComplete){
+        _nextScreen = type;
+        _onComplete = onComplete;
+        _shouldSendSwitch = true;
 
-        if (_currentScreen != null)
-            _currentScreen.switchTo(_toSwitch.remove());
+        synchronized (_mutex) {
+            if (_currentScreen != null) {
+                _mainHandler.post(()->_currentScreen.switchTo(type));
+                _shouldSendSwitch = false;
+            }
+        }
     }
 
-    public void setCurrentScreen(Screen screen){
-        _currentScreen = screen;
+    public void setCurrentScreen(Screen screen, ScreenType type){
+        synchronized (_mutex){
+            _currentScreen = screen;
+            if (_currentScreen == null) return;
 
-        if (!_toSwitch.isEmpty())
-            _currentScreen.switchTo(_toSwitch.remove());
-
-        if (_topText != null)
-            setText(_topText);
+            if (_shouldSendSwitch) {
+                _mainHandler.post(()->_currentScreen.switchTo(_nextScreen));
+                _shouldSendSwitch = false;
+            }
+            else if (type == _nextScreen){
+                _onComplete.run();
+                _nextScreen = null;
+                _onComplete = null;
+            }
+        }
     }
 
     public void invoke(int port){
         Runnable func = _callbackMapping.get(port);
         if (func != null) {
-            _mainHandler.post(func);
+            func.run();
         }
     }
 
@@ -45,10 +63,13 @@ public class UIManager {
         _callbackMapping.put(port, func);
     }
 
-    public void setText(String text){
-        _topText = text;
+    public void setTitle(String title){
+        if (_currentScreen instanceof RoomScreen)
+            _mainHandler.post(()->((RoomScreen) _currentScreen).setTitle(title));
+    }
 
-        if (_currentScreen != null)
-            _mainHandler.post(()->_currentScreen.setText(_topText));
+    public void setTopText(String text){
+        if (_currentScreen instanceof MatchScreen)
+            _mainHandler.post(()->((MatchScreen) _currentScreen).setTopText(text));
     }
 }
