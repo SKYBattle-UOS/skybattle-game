@@ -32,6 +32,8 @@ public class MapRenderer implements Renderer, Camera {
         switch (type){
             case FILLED_CIRCLE:
                 return new MapMarkerRenderComponent(_map, parent);
+            case HOLLOW_CIRCLE:
+                return new MapCircleRenderComponent(_map, parent);
         }
         return null;
     }

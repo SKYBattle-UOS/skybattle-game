@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,7 +25,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /** google 지도 마커 추가및 반경 그리기등 지도에 기능을 추가하는 클래스
@@ -50,6 +48,7 @@ public class GoogleMapAdapter implements Map {
     private View _marker_root_view; //text 띄우기 위해
     private TextView _tv_marker; //textview
 
+    private HashMap<Integer, CircleOptions> _circles;
     private HashMap<Integer, Marker> _markers;
     private int _nextMarkerNumber;
 
@@ -60,6 +59,12 @@ public class GoogleMapAdapter implements Map {
         _matchActivity = mContext;
         _marker_root_view = marker_root_view;
         _tv_marker = tv_marker;
+    }
+
+    @Override
+    public MapCircleHandle addCircle(double lat, double lon, int color, float radius) {
+        int number = _nextMarkerNumber;
+        return null;
     }
 
     @Override
@@ -80,13 +85,6 @@ public class GoogleMapAdapter implements Map {
         _mainHandler.post(() -> _removeMarker(marker));
     }
 
-    private synchronized void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
-        int index = ((GoogleMarkerHandle) marker).index;
-        Marker cur_marker = _markers.get(index);
-        cur_marker.setPosition(new LatLng(lat, lon));
-        cur_marker.showInfoWindow();
-    }
-
     @Override
     public void moveCamera(double latitude, double longitude) {
         _mainHandler.post(() -> _moveCamera(latitude, longitude));
@@ -95,6 +93,13 @@ public class GoogleMapAdapter implements Map {
     @Override
     public void zoomCamera(float zoom) {
         _mainHandler.post(()->_animateCamera(zoom));
+    }
+
+    private synchronized void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
+        int index = ((GoogleMarkerHandle) marker).index;
+        Marker cur_marker = _markers.get(index);
+        cur_marker.setPosition(new LatLng(lat, lon));
+        cur_marker.showInfoWindow();
     }
 
     private synchronized void _addMarker(int number, double latitude, double longitude, int color, float size, String name){
