@@ -74,7 +74,7 @@ public class PlayerHost extends PlayerCommon {
 
             switch (input.qwer){
                 case 0: case 1: case 2: case 3:
-                    _shouldCast |= (1 + input.qwer);
+                    _shouldCast |= (1 << input.qwer);
 
                     // target is coordinate
                     if (input.lat * input.lon != 0){
