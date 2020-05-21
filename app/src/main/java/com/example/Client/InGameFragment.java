@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import Common.Skill;
 import Host.SkillTarget;
 
 public class InGameFragment extends Fragment {
@@ -22,17 +23,27 @@ public class InGameFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button btn_q = view.findViewById(R.id.btn_q);
-        btn_q.setOnClickListener(v -> Core.getInstance().getInputManager().qwer(new SkillTarget(0)));
+        Button[] buttons = new Button[4];
+        buttons[0] = view.findViewById(R.id.btn_q);
+        buttons[1] = view.findViewById(R.id.btn_w);
+        buttons[2] = view.findViewById(R.id.btn_e);
+        buttons[3] = view.findViewById(R.id.btn_r);
 
-        Button btn_w = view.findViewById(R.id.btn_w);
-        btn_w.setOnClickListener(v -> Core.getInstance().getInputManager().qwer(new SkillTarget(1)));
+        Skill[] skills = Core.getInstance().getInputManager().getThisPlayer().getSkills();
+        for (int i = 0 ; i < 4; i++){
+            buttons[i].setText(skills[i].getName());
+            switch (skills[i].getSkillTargetType()){
+                case PLAYER:
+                    break;
+                case COORDINATE:
+                    break;
+                case INSTANT:
+                    int finalI = i;
+                    buttons[i].setOnClickListener(v -> Core.getInstance().getInputManager().qwer(new SkillTarget(finalI)));
+                    break;
+            }
 
-        Button btn_e = view.findViewById(R.id.btn_e);
-        btn_e.setOnClickListener(v -> Core.getInstance().getInputManager().qwer(new SkillTarget(2)));
-
-        Button btn_r = view.findViewById(R.id.btn_r);
-        btn_r.setOnClickListener(v -> Core.getInstance().getInputManager().qwer(new SkillTarget(3)));
+        }
 
         Button btn_map = view.findViewById(R.id.btn_map);
         btn_map.setOnClickListener(v -> ((MatchActivity) getActivity()).showDebugMap());

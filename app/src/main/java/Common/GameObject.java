@@ -12,6 +12,7 @@ import com.example.Client.Renderer;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import Host.GameStateMatchHost;
 import Host.WorldSetterHost;
 
 /**
@@ -33,8 +34,9 @@ public abstract class GameObject {
     protected int _dirtyPos = 0;
     protected LatLonByteConverter _converter;
     protected WorldSetterHost _worldSetterHost;
-    protected Collider _collider;
     protected GameObjectRegistry _registry;
+    protected Collider _collider;
+    protected GameStateMatchHost _match;
 
     private double[] _restoreTemp = new double[2];
     private int[] _convertTemp = new int[2];
@@ -109,12 +111,24 @@ public abstract class GameObject {
     }
 
     // region Getters and Setters
+    public GameStateMatchHost getMatch(){
+        return _match;
+    }
+
+    public void setMatch(GameStateMatchHost match){
+        _match = match;
+    }
+
     public void setGameObjectRegistry(GameObjectRegistry registry){
         _registry = registry;
     }
 
     public void setWorldSetterHost(WorldSetterHost wsh){
         _worldSetterHost = wsh;
+    }
+
+    public WorldSetterHost getWorldSetterHost(){
+        return _worldSetterHost;
     }
 
     public void setCollider(Collider col){

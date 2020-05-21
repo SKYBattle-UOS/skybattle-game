@@ -22,6 +22,8 @@ public class GameStateMatchHost implements GameState {
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
     private ArrayList<GameObject> _gameObjects;
+    private ArrayList<GameObject> _newGameObjects;
+    private ArrayList<Integer> _newGOClassId;
     private ArrayList<PlayerHost> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
@@ -41,6 +43,8 @@ public class GameStateMatchHost implements GameState {
         _worldSetter = new WorldSetterHost(_registry);
         _factory = new GameObjectFactory();
         _gameObjects = new ArrayList<>();
+        _newGameObjects = new ArrayList<>();
+        _newGOClassId = new ArrayList<>();
         _players = new ArrayList<>();
         _collider = new Collider();
 
@@ -58,17 +62,29 @@ public class GameStateMatchHost implements GameState {
         GameObject ret = _factory.createGameObject(classId);
         int networkId = _nextNetworkId++;
 
+        ret.setMatch(this);
         ret.setCollider(_collider);
         ret.setNetworkId(networkId);
         ret.setWorldSetterHost(_worldSetter);
-        ret.setIndexInWorld(_gameObjects.size());
         ret.setLatLonByteConverter(_parent.getConverter());
 
-        _registry.add(networkId, ret);
-        _gameObjects.add(ret);
-        _worldSetter.generateCreateInstruction(classId, networkId, -1);
+        _newGameObjects.add(ret);
+        _newGOClassId.add(classId);
 
         return ret;
+    }
+
+    private void addNewGameObjectsToWorld(){
+        int i = 0;
+        for (GameObject go : _newGameObjects){
+            _registry.add(go.getNetworkId(), go);
+            go.setIndexInWorld(_gameObjects.size());
+            _gameObjects.add(go);
+            _worldSetter.generateCreateInstruction(_newGOClassId.get(i++), go.getNetworkId(), -1);
+        }
+
+        _newGameObjects.clear();
+        _newGOClassId.clear();
     }
 
     public void createPlayers() {
@@ -83,6 +99,8 @@ public class GameStateMatchHost implements GameState {
         GameObject tempItem = createGameObject(Util.ItemClassId);
         tempItem.setPosition(37.715584, 127.048616);
         tempItem.setName("여기여기 모여라");
+
+        addNewGameObjectsToWorld();
     }
 
     public void setWorldSetterActive(){
@@ -105,6 +123,7 @@ public class GameStateMatchHost implements GameState {
         for (GameObject go : _gameObjects)
             go.after(ms);
 
+        addNewGameObjectsToWorld();
         killGameObjects();
 
         _collider.update(ms);
