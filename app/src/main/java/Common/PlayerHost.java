@@ -5,16 +5,17 @@ import java.util.Queue;
 
 import Host.ClientProxy;
 import Host.CoreHost;
+import Host.GlobalWazakWazakHost;
 import Host.PlaceHolderSkill;
-import Host.TempSkillHost;
+import Host.WazakWazakHost;
 
 public class PlayerHost extends PlayerCommon {
     private double[] _newPosTemp = new double[2];
 
     public PlayerHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skills[0] = new TempSkillHost();
-        _skills[1] = new PlaceHolderSkill();
+        _skills[0] = new WazakWazakHost();
+        _skills[1] = new GlobalWazakWazakHost();
         _skills[2] = new PlaceHolderSkill();
         _skills[3] = new PlaceHolderSkill();
     }
@@ -72,24 +73,18 @@ public class PlayerHost extends PlayerCommon {
             if (input == null) break;
 
             switch (input.qwer){
-                // q
-                case 0:
-                    _shouldCast |= 1;
-                    break;
+                case 0: case 1: case 2: case 3:
+                    _shouldCast |= (1 + input.qwer);
 
-                // w
-                case 1:
-                    _shouldCast |= 2;
-                    break;
-
-                // e
-                case 2:
-                    _shouldCast |= 4;
-                    break;
-
-                // r
-                case 3:
-                    _shouldCast |= 8;
+                    // target is coordinate
+                    if (input.lat * input.lon != 0){
+                        _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
+                        _skills[input.qwer].setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
+                    }
+                    // target is player
+                    else if (input.playerId >= 0){
+                        _skills[input.qwer].setTargetPlayer(input.playerId);
+                    }
                     break;
 
                 // just new position

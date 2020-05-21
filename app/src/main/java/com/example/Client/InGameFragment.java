@@ -1,6 +1,7 @@
 package com.example.Client;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,16 @@ public class InGameFragment extends Fragment {
                 case PLAYER:
                     break;
                 case COORDINATE:
+                    int finalI1 = i;
+                    buttons[i].setOnClickListener(v -> {
+                        ((MatchActivity) getActivity()).showClickMap(
+                                (lat, lon) -> {
+                                    Core.getInstance().getInputManager().qwer(new SkillTarget(finalI1, lat, lon));
+                                    ((MatchActivity) getActivity()).setTopText("게임 진행 중");
+                                }
+                        );
+                        ((MatchActivity) getActivity()).setTopText("시전 위치를 선택하세요");
+                    });
                     break;
                 case INSTANT:
                     int finalI = i;

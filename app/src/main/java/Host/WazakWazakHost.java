@@ -1,10 +1,10 @@
 package Host;
 
 import Common.GameObject;
-import Common.TempSkillCommon;
+import Common.WazakWazakCommon;
 import Common.Util;
 
-public class TempSkillHost extends TempSkillCommon {
+public class WazakWazakHost extends WazakWazakCommon {
     @Override
     public void cast(GameObject caster){
         GameObject spawned = caster.getMatch().createGameObject(Util.ItemClassId);

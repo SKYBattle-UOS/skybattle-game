@@ -1,13 +1,12 @@
-package Host;
+package Common;
 
-import Common.GameObject;
-import Common.Skill;
-import Common.SkillTargetType;
+public abstract class GlobalWazakWazakCommon implements Skill {
+    protected double _lat;
+    protected double _lon;
 
-public class PlaceHolderSkill implements Skill {
     @Override
     public String getName() {
-        return "Place Holder";
+        return "원격 와작와작 뻥!";
     }
 
     @Override
@@ -17,12 +16,13 @@ public class PlaceHolderSkill implements Skill {
 
     @Override
     public SkillTargetType getSkillTargetType() {
-        return SkillTargetType.INSTANT;
+        return SkillTargetType.COORDINATE;
     }
 
     @Override
     public void setTargetCoord(double lat, double lon) {
-
+        _lat = lat;
+        _lon = lon;
     }
 
     @Override

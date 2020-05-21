@@ -2,11 +2,13 @@ package com.example.Client;
 
 import android.os.Bundle;
 import android.os.Debug;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -18,8 +20,18 @@ import com.google.android.gms.maps.model.LatLng;
 public class MatchActivity extends AppCompatActivity implements MatchScreen, OnMapReadyCallback {
     private TextView _topText;
     private SupportMapFragment _mapFragment;
-    private Map _map;
+    private GoogleMap _map;
     private ScreenType _currentScreenType = null;
+    private FragmentManager.OnBackStackChangedListener
+            _clickMapBackStack = new FragmentManager.OnBackStackChangedListener() {
+        @Override
+        public void onBackStackChanged() {
+            if (getSupportFragmentManager().getBackStackEntryCount() < 1){
+                _map.setOnMapClickListener(null);
+                getSupportFragmentManager().removeOnBackStackChangedListener(_clickMapBackStack);
+            }
+        }
+    };
 
     View marker_root_view;
     TextView tv_marker;
@@ -74,13 +86,9 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
     public void onMapReady(GoogleMap googleMap) {
 
         setCustomMarkerView();
-        // TODO: default camera position
-        LatLng position = new LatLng(3, 3);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(3));
 
-        _map = new GoogleMapAdapter(googleMap,this,marker_root_view,tv_marker);
-        MapRenderer mapRenderer = new MapRenderer(_map);
+        _map = googleMap;
+        MapRenderer mapRenderer = new MapRenderer(new GoogleMapAdapter(googleMap,this,marker_root_view,tv_marker));
         Core.getInstance().setRenderer(mapRenderer);
         Core.getInstance().setCamera(mapRenderer);
         _currentScreenType = ScreenType.ASSEMBLE;
@@ -98,10 +106,28 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
     }
 
     public void showDebugMap(){
-        getSupportFragmentManager().beginTransaction()
-        .replace(R.id.frag, _mapFragment)
-        .add(R.id.frag, new DebugMapFragment())
-        .addToBackStack(null)
-        .commit();
+        getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.frag, _mapFragment)
+            .add(R.id.frag, new DebugMapFragment())
+            .addToBackStack(null)
+            .commit();
+    }
+
+    public void showClickMap(ClickMapOnClickListener listener){
+        _map.setOnMapClickListener(latLng -> {
+            listener.onClick(latLng.latitude, latLng.longitude);
+            getSupportFragmentManager()
+                    .popBackStackImmediate();
+        });
+
+        getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.frag, _mapFragment)
+            .addToBackStack(null)
+            .commit();
+
+        getSupportFragmentManager()
+                .addOnBackStackChangedListener(_clickMapBackStack);
     }
 }
