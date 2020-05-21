@@ -51,10 +51,8 @@ public class PlayerHost extends PlayerCommon {
             InputState input = inputs.poll();
             if (input == null) break;
 
-            double[] prevPos = getPosition();
-            _converter.restoreLatLon(input.lat, input.lon, _newPosTemp);
-
-            if (prevPos[0] != _newPosTemp[0] || prevPos[1] != _newPosTemp[1]) {
+            if (input.qwer == 4){
+                _converter.restoreLatLon(input.lat, input.lon, _newPosTemp);
                 setPosition(_newPosTemp[0], _newPosTemp[1]);
                 dirtyFlag |= 1;
             }

@@ -1,7 +1,5 @@
 package com.example.Client;
 
-import android.util.Log;
-
 import java.util.Collection;
 
 import Common.GameObject;
@@ -27,7 +25,7 @@ public class MatchStateInGame implements GameState {
         Collection<GameObject> gos = _match.getGameObjects();
         for (GameObject go : gos){
             if (go instanceof Player) {
-                Core.getInstance().getInputManager().setDebugPlayer(go);
+                Core.getInstance().getInputManager().setThisPlayer((Player) go);
                 return;
             }
         }

@@ -20,7 +20,6 @@ public class Player extends PlayerCommon {
 
     @Override
     public void update(long ms) {
-
     }
 
     @Override

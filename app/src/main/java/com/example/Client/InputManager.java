@@ -6,21 +6,19 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import Common.GameObject;
 import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.OutputBitStream;
+import Host.SkillTarget;
 
 public class InputManager {
 //    private Location _location;
 //    private double[] _prevLatlon;
     private Queue<InputState> _inputStates;
     private LatLonByteConverter _converter;
-    private boolean _q;
-    private boolean _w;
-    private boolean _e;
-    private boolean _r;
     private boolean _dirty;
 
     // TODO
@@ -31,55 +29,27 @@ public class InputManager {
     private double destLon = 127.048616;
     private int step = 0;
     private int[] _convertTemp = new int[2];
-    private GameObject _player;
-    private int _direction;
-    private double[] _newPos;
+    private Player _player;
 
     public InputManager(Context context, LatLonByteConverter converter){
-        _inputStates = new LinkedList<>();
+        _inputStates = new ConcurrentLinkedQueue<>();
         _converter = converter;
     }
 
     public void update(long ms){
+        debugMoveToAssemblePoint();
         sendInput();
-        updateInputState();
 
         // TODO
         _elapsed += ms;
     }
 
-    private synchronized void updateInputState() {
-        debugMoveToAssemblePoint();
-
-        if (_dirty){
-            addInput();
-            _dirty = false;
-        }
-    }
-
-    private void addInput() {
-        InputState newState = new InputState();
-        _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
-        newState.lat = _convertTemp[0];
-        newState.lon = _convertTemp[1];
-        newState.q = _q;
-        newState.w = _w;
-        newState.e = _e;
-        newState.r = _r;
-        _inputStates.offer(newState);
-
-        _q = false;
-        _w = false;
-        _e = false;
-        _r = false;
-    }
-
-    public void setDebugPlayer(GameObject player){
+    public void setThisPlayer(Player player){
         _player = player;
     }
 
     public void debugMove(int direction) {
-        _newPos = _player.getPosition();
+        double[] _newPos = _player.getPosition();
         switch (direction){
             case 0:
                 _newPos[0] += 0.00005;
@@ -94,7 +64,13 @@ public class InputManager {
                 _newPos[1] -= 0.00005;
                 break;
         }
-        _dirty = true;
+
+        InputState state = new InputState();
+        state.qwer = 4;
+        _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
+        state.lat = _convertTemp[0];
+        state.lon = _convertTemp[1];
+        _inputStates.offer(state);
     }
 
     private void debugMoveToAssemblePoint(){
@@ -103,18 +79,10 @@ public class InputManager {
             _converter.convertLatLon(lat + (destLat - lat) / 100 * step, lon + (destLon - lon) / 100 * step, _convertTemp);
             newState.lat = _convertTemp[0];
             newState.lon = _convertTemp[1];
-            newState.q = _q;
-            newState.w = _w;
-            newState.e = _e;
-            newState.r = _r;
+            newState.qwer = 4;
             _inputStates.offer(newState);
             _elapsed = 0;
             step++;
-
-            _q = false;
-            _w = false;
-            _e = false;
-            _r = false;
         }
     }
 
@@ -143,23 +111,19 @@ public class InputManager {
         }
     }
 
-    public synchronized void q(){
-        _q = true;
-        _dirty = true;
+    public void qwer(SkillTarget target){
+        InputState state = new InputState();
+        state.qwer = target.qwer;
+        state.playerId = target.playerId;
+        if (target.lat * target.lon != 0){
+            _converter.convertLatLon(target.lat, target.lon, _convertTemp);
+            state.lat = _convertTemp[0];
+            state.lon = _convertTemp[1];
+        }
+        _inputStates.offer(state);
     }
 
-    public synchronized void w(){
-        _w = true;
-        _dirty = true;
-    }
-
-    public synchronized void e(){
-        _e = true;
-        _dirty = true;
-    }
-
-    public synchronized void r(){
-        _r = true;
-        _dirty = true;
+    public Player getThisPlayer(){
+        return _player;
     }
 }
