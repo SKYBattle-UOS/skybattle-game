@@ -35,22 +35,13 @@ public class InGameFragment extends Fragment {
             buttons[i].setText(skills[i].getName());
             switch (skills[i].getSkillTargetType()){
                 case PLAYER:
+                    setPlayerBtnListener(buttons[i], i);
                     break;
                 case COORDINATE:
-                    int finalI1 = i;
-                    buttons[i].setOnClickListener(v -> {
-                        ((MatchActivity) getActivity()).showClickMap(
-                                (lat, lon) -> {
-                                    Core.getInstance().getInputManager().qwer(new SkillTarget(finalI1, lat, lon));
-                                    ((MatchActivity) getActivity()).setTopText("게임 진행 중");
-                                }
-                        );
-                        ((MatchActivity) getActivity()).setTopText("시전 위치를 선택하세요");
-                    });
+                    setCoordBtnListener(buttons[i], i);
                     break;
                 case INSTANT:
-                    int finalI = i;
-                    buttons[i].setOnClickListener(v -> Core.getInstance().getInputManager().qwer(new SkillTarget(finalI)));
+                    setInsantBtnListener(buttons[i], i);
                     break;
             }
 
@@ -58,5 +49,27 @@ public class InGameFragment extends Fragment {
 
         Button btn_map = view.findViewById(R.id.btn_map);
         btn_map.setOnClickListener(v -> ((MatchActivity) getActivity()).showDebugMap());
+    }
+
+    private void setCoordBtnListener(Button btn, int i){
+        btn.setOnClickListener(v -> {
+            ((MatchActivity) getActivity()).showClickMap(
+                    (lat, lon) -> {
+                        Core.getInstance().getInputManager().qwer(new SkillTarget(i, lat, lon));
+                        ((MatchActivity) getActivity()).setTopText("게임 진행 중");
+                    }
+            );
+            ((MatchActivity) getActivity()).setTopText("시전 위치를 선택하세요");
+        });
+    }
+
+    private void setInsantBtnListener(Button btn, int i){
+        btn.setOnClickListener(v ->
+                Core.getInstance().getInputManager().qwer(new SkillTarget(i))
+        );
+    }
+
+    private void setPlayerBtnListener(Button btn, int i){
+
     }
 }

@@ -18,10 +18,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MatchActivity extends AppCompatActivity implements MatchScreen, OnMapReadyCallback {
+    private View marker_root_view;
     private TextView _topText;
-    private SupportMapFragment _mapFragment;
+    private TextView tv_marker;
     private GoogleMap _map;
+    private SupportMapFragment _mapFragment;
     private ScreenType _currentScreenType = null;
+
     private FragmentManager.OnBackStackChangedListener
             _clickMapBackStack = new FragmentManager.OnBackStackChangedListener() {
         @Override
@@ -33,8 +36,6 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         }
     };
 
-    View marker_root_view;
-    TextView tv_marker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,10 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         setCustomMarkerView();
 
         _map = googleMap;
-        MapRenderer mapRenderer = new MapRenderer(new GoogleMapAdapter(googleMap,this,marker_root_view,tv_marker));
+        MapRenderer mapRenderer = new MapRenderer(
+                new GoogleMapAdapter(googleMap,this,marker_root_view,tv_marker)
+        );
+
         Core.getInstance().setRenderer(mapRenderer);
         Core.getInstance().setCamera(mapRenderer);
         _currentScreenType = ScreenType.ASSEMBLE;
