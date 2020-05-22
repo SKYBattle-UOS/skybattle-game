@@ -6,7 +6,8 @@ import java.util.Queue;
 import Host.ClientProxy;
 import Host.CoreHost;
 import Host.GlobalWazakWazakHost;
-import Host.PlaceHolderSkill;
+import Host.HealthUpCommon;
+import Host.HealthUpHost;
 import Host.WazakWazakHost;
 
 public class PlayerHost extends PlayerCommon {
@@ -16,8 +17,8 @@ public class PlayerHost extends PlayerCommon {
         super(latitude, longitude, name);
         _skills[0] = new WazakWazakHost();
         _skills[1] = new GlobalWazakWazakHost();
-        _skills[2] = new PlaceHolderSkill();
-        _skills[3] = new PlaceHolderSkill();
+        _skills[2] = new HealthUpHost();
+        _skills[3] = new HealthUpHost();
     }
 
     public static GameObject createInstance(){

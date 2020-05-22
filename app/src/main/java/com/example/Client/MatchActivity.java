@@ -17,6 +17,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.function.Consumer;
+
 public class MatchActivity extends AppCompatActivity implements MatchScreen, OnMapReadyCallback {
     private View marker_root_view;
     private TextView _topText;
@@ -25,17 +27,30 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
     private SupportMapFragment _mapFragment;
     private ScreenType _currentScreenType = null;
 
+    private Runnable _clickMapAfter;
     private FragmentManager.OnBackStackChangedListener
             _clickMapBackStack = new FragmentManager.OnBackStackChangedListener() {
         @Override
         public void onBackStackChanged() {
             if (getSupportFragmentManager().getBackStackEntryCount() < 1){
+                _clickMapAfter.run();
                 _map.setOnMapClickListener(null);
                 getSupportFragmentManager().removeOnBackStackChangedListener(_clickMapBackStack);
             }
         }
     };
 
+    private Runnable _targetPlayerAfter;
+    private FragmentManager.OnBackStackChangedListener
+            _targetPlayerBackStack = new FragmentManager.OnBackStackChangedListener() {
+        @Override
+        public void onBackStackChanged() {
+            if (getSupportFragmentManager().getBackStackEntryCount() < 1){
+                _targetPlayerAfter.run();
+                getSupportFragmentManager().removeOnBackStackChangedListener(_targetPlayerBackStack);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +133,8 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
             .commit();
     }
 
-    public void showClickMap(ClickMapOnClickListener listener){
+    public void showClickMap(ClickMapOnClickListener listener, Runnable after){
+        _clickMapAfter = after;
         _map.setOnMapClickListener(latLng -> {
             listener.onClick(latLng.latitude, latLng.longitude);
             getSupportFragmentManager()
@@ -133,5 +149,25 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
 
         getSupportFragmentManager()
                 .addOnBackStackChangedListener(_clickMapBackStack);
+    }
+
+    public String getTopText() {
+        return (String) _topText.getText();
+    }
+
+    public void showTargetPlayers(Consumer<Integer> onButtonClick, Runnable after) {
+        _targetPlayerAfter = after;
+        getSupportFragmentManager()
+            .beginTransaction()
+            .add(R.id.frag, new TargetPlayersFragment(integer -> {
+                onButtonClick.accept(integer);
+                getSupportFragmentManager()
+                        .popBackStackImmediate();
+            }))
+            .addToBackStack(null)
+            .commit();
+
+        getSupportFragmentManager()
+                .addOnBackStackChangedListener(_targetPlayerBackStack);
     }
 }

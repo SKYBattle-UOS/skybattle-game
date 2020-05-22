@@ -1,7 +1,7 @@
 package Common;
 
 public abstract class PlayerTargetSkill implements Skill {
-    protected int _playerId;
+    protected int _networkId;
 
     @Override
     public SkillTargetType getSkillTargetType() {
@@ -9,7 +9,12 @@ public abstract class PlayerTargetSkill implements Skill {
     }
 
     @Override
-    public void setTargetPlayer(int playerId) {
-        _playerId = playerId;
+    public void setTargetPlayer(int networkId) {
+        _networkId = networkId;
+    }
+
+    @Override
+    public void setTargetCoord(double lat, double lon) {
+
     }
 }

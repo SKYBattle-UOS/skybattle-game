@@ -43,10 +43,6 @@ public class InputManager {
         _elapsed += ms;
     }
 
-    public void setThisPlayer(Player player){
-        _player = player;
-    }
-
     public void debugMove(int direction) {
         double[] _newPos = _player.getPosition();
         switch (direction){
@@ -113,13 +109,17 @@ public class InputManager {
     public void qwer(SkillTarget target){
         InputState state = new InputState();
         state.qwer = target.qwer;
-        state.playerId = target.playerId;
+        state.playerId = target.networkId;
         if (target.lat * target.lon != 0){
             _converter.convertLatLon(target.lat, target.lon, _convertTemp);
             state.lat = _convertTemp[0];
             state.lon = _convertTemp[1];
         }
         _inputStates.offer(state);
+    }
+
+    public void setThisPlayer(Player player){
+        _player = player;
     }
 
     public Player getThisPlayer(){

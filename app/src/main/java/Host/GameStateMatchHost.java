@@ -1,5 +1,6 @@
 package Host;
 
+import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
 
@@ -17,6 +18,7 @@ import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.Match;
 import Common.MatchStateType;
+import Common.PlayerCommon;
 import Common.PlayerHost;
 import Common.Util;
 
@@ -27,7 +29,7 @@ public class GameStateMatchHost implements GameState, Match {
     private ArrayList<GameObject> _gameObjects;
     private ArrayList<GameObject> _newGameObjects;
     private ArrayList<Integer> _newGOClassId;
-    private ArrayList<PlayerHost> _players;
+    private ArrayList<PlayerCommon> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
     private Collider _collider;
@@ -91,10 +93,12 @@ public class GameStateMatchHost implements GameState, Match {
 
     public void createPlayers() {
         Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
+        int i = 1;
         for (ClientProxy client : clients){
             PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId);
             newPlayer.setPlayerId(client.getPlayerId());
             newPlayer.setPosition(37.714580, 127.045195);
+            newPlayer.setName("플레이어" + i);
         }
 
         // create temp item
@@ -105,8 +109,9 @@ public class GameStateMatchHost implements GameState, Match {
         addNewGameObjectsToWorld();
     }
 
-    public void setWorldSetterActive(){
-        _worldSetterActive = true;
+    @Override
+    public void start() {
+        CoreHost.getInstance().setMatch(this);
     }
 
     @Override
@@ -193,10 +198,13 @@ public class GameStateMatchHost implements GameState, Match {
         _currentState.start();
     }
 
-    public List<PlayerHost> getPlayers() { return _players; }
 
     public boolean isWorldSetterActive() {
         return _worldSetterActive;
+    }
+
+    public void setWorldSetterActive() {
+        _worldSetterActive = true;
     }
 
     public double[] getBattleGroundLatLon() {
@@ -208,6 +216,9 @@ public class GameStateMatchHost implements GameState, Match {
         _battleGroundLatLon[1] = lon;
         _parent.getConverter().setOffset(lat, lon);
     }
+
+    @Override
+    public List<PlayerCommon> getPlayers() { return _players; }
 
     @Override
     public Collider getCollider(){ return _collider; }

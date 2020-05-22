@@ -33,14 +33,15 @@ public class GameStateRoom implements GameState {
         if (_waiting) return;
 
         OutputBitStream outPacket = Core.getInstance().getPakcetManager().getPacketToSend();
-        try {
-            outPacket.write(_buttonPressed ? 1 : 0, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         if (_buttonPressed){
+            try {
+                outPacket.write(1, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             Core.getInstance().getPakcetManager().shouldSendThisFrame();
+            _buttonPressed = false;
         }
 
         // TODO: might be better if packet is fetched only once
@@ -64,7 +65,6 @@ public class GameStateRoom implements GameState {
             Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
             _waiting = true;
             Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE, ()->_parent.switchState(GameStateType.MATCH));
-            Core.getInstance().getPakcetManager().shouldSendThisFrame();
 //            }
         }
     }

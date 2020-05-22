@@ -4,7 +4,7 @@ public class SkillTarget {
     public int qwer;
     public double lat;
     public double lon;
-    public int playerId = -1;
+    public int networkId = -1;
 
     public SkillTarget(int qwer, double lat, double lon){
         this.qwer = qwer;
@@ -12,9 +12,9 @@ public class SkillTarget {
         this.lon = lon;
     }
 
-    public SkillTarget(int qwer, int playerId){
+    public SkillTarget(int qwer, int networkId){
         this.qwer = qwer;
-        this.playerId = playerId;
+        this.networkId = networkId;
     }
 
     public SkillTarget(int qwer){

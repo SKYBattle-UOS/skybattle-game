@@ -15,6 +15,8 @@ import Common.Skill;
 import Host.SkillTarget;
 
 public class InGameFragment extends Fragment {
+    private String _topTextCache;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_ingame, container, false);
@@ -53,13 +55,13 @@ public class InGameFragment extends Fragment {
 
     private void setCoordBtnListener(Button btn, int i){
         btn.setOnClickListener(v -> {
-            ((MatchActivity) getActivity()).showClickMap(
-                    (lat, lon) -> {
-                        Core.getInstance().getInputManager().qwer(new SkillTarget(i, lat, lon));
-                        ((MatchActivity) getActivity()).setTopText("게임 진행 중");
-                    }
+            MatchActivity ma = ((MatchActivity) getActivity());
+            _topTextCache = ma.getTopText();
+            ma.showClickMap(
+                    (lat, lon) -> Core.getInstance().getInputManager().qwer(new SkillTarget(i, lat, lon)),
+                    () -> ma.setTopText(_topTextCache)
             );
-            ((MatchActivity) getActivity()).setTopText("시전 위치를 선택하세요");
+            ma.setTopText("시전 위치를 선택하세요");
         });
     }
 
@@ -70,6 +72,14 @@ public class InGameFragment extends Fragment {
     }
 
     private void setPlayerBtnListener(Button btn, int i){
-
+        btn.setOnClickListener(v -> {
+            MatchActivity ma = ((MatchActivity) getActivity());
+            _topTextCache = ma.getTopText();
+            ma.setTopText("시전 대상을 선택하세요");
+            ma.showTargetPlayers(
+                networkId -> Core.getInstance().getInputManager().qwer(new SkillTarget(i, networkId)),
+                () -> ma.setTopText(_topTextCache)
+            );
+        });
     }
 }

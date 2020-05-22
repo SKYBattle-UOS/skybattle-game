@@ -52,9 +52,9 @@ public class BitInputStream implements InputBitStream {
         int numBitsInLastByte = Math.min(8 - bitOffset, numBits);
         bitOffset += numBits;
         while (bitOffset >= 8) {
-            returnValue = returnValue << (bitOffset / 8) * 8;
+            returnValue = returnValue << 8;
             if (byteOffset + bitOffset / 8 < data.length)
-                returnValue |= data[byteOffset + bitOffset / 8];
+                returnValue |= data[byteOffset + bitOffset / 8] & 0xFF;
             bitOffset -= 8;
             if(byteLimit != 0 && byteOffset == byteLimit )
             {
@@ -63,7 +63,7 @@ public class BitInputStream implements InputBitStream {
         }
 
         returnValue = returnValue << numBitsInLastByte;
-        returnValue |= (data[byteOffset] >>> originalBitOffset) & ~(-1 << numBitsInLastByte);
+        returnValue |= ((data[byteOffset] & 0xFF) >>> originalBitOffset) & ~(-1 << numBitsInLastByte);
 
         if (numBits < 32)
             returnValue &= ~(-1 << numBits);

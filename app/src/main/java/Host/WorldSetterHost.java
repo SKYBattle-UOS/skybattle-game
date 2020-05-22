@@ -67,7 +67,7 @@ public class WorldSetterHost {
         WorldSetterHeader header = _mappingN2I.get(networkId);
         if (header == null || header.action != WorldSetterAction.UPDATE) return;
 
-        header.dirtyFlag = dirtyFlag;
+        header.dirtyFlag |= dirtyFlag;
     }
 
     public void generateDestroyInstruction(int networkId){
