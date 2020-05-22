@@ -106,7 +106,7 @@ public class GameStateMatchHost implements GameState, Match {
             newPlayer.setPlayerId(client.getPlayerId());
             newPlayer.setPosition(37.714580, 127.045195);
             newPlayer.setName("플레이어" + i);
-            _lookChanger.setLook(newPlayer.getNetworkId(), ImageType.FILLED_CIRCLE);
+            _lookChanger.setLook(newPlayer.getNetworkId(), ImageType.MARKER);
         }
 
         // create temp item
@@ -114,7 +114,7 @@ public class GameStateMatchHost implements GameState, Match {
         tempItem.setPosition(37.715584, 127.048616);
         tempItem.setName("여기여기 모여라");
         tempItem.setRadius(20);
-        _lookChanger.setLook(tempItem.getNetworkId(), ImageType.HOLLOW_CIRCLE);
+        _lookChanger.setLook(tempItem.getNetworkId(), ImageType.CIRCLE_WITH_MARKER);
 
         addNewGameObjectsToWorld();
     }
