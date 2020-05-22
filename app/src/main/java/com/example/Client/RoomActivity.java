@@ -47,8 +47,12 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
                 edit_nickname.setText(null); //닉네임 입력 후, 다음 입력 시에 리셋
             }
         });
+        
+        //시작 버튼
+        Button btn_start = findViewById(R.id.startButton);
+        btn_start.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.ROOM_START_PORT));
 
-
+        //나가기 버튼: 클릭 시, 이전 화면으로 돌아감. 닉네임 리스트에서 나가기 버튼을 클릭한 사용자가 사라지도록 해야함.(추가예정)
         Button btn_exit= (Button)findViewById(R.id.btn_exit);
         btn_exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,8 +86,9 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
             final TextView roleView = (TextView) v.findViewById(R.id.rolelist);
 
             final String text = items.get(position);
+            //팀A 또는 B 버튼 클릭 시, 닉네임 리스트 옆에 팀 표시됨
             Button btn_teamA = (Button) v.findViewById(R.id.btn_teamA);
-            btn_teamA.setOnClickListener(new View.OnClickListener() {
+            btn_teamA.setOnClickListener(new View.OnClickListener() { 
                 @Override
                 public void onClick(View v) {
                     roleView.setText("팀A");
@@ -100,9 +105,6 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
 
             return v;
         }
-
-        Button btn_start = findViewById(R.id.startButton);
-        btn_start.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.ROOM_START_PORT));
     }
 
     @Override
