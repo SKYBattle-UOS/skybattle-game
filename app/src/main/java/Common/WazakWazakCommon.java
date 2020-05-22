@@ -1,6 +1,6 @@
 package Common;
 
-public abstract class TempSkillCommon implements Skill {
+public class WazakWazakCommon extends InstantSkill {
     @Override
     public String getName() {
         return "와작와작 뻥!";
@@ -9,10 +9,5 @@ public abstract class TempSkillCommon implements Skill {
     @Override
     public void cast(GameObject caster) {
 
-    }
-
-    @Override
-    public SkillTargetType getSkillTargetType() {
-        return SkillTargetType.INSTANT;
     }
 }

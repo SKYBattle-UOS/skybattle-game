@@ -3,6 +3,7 @@ package Host;
 import java.io.IOException;
 
 import Common.GameState;
+import Common.MatchStateType;
 import Common.OutputBitStream;
 import Common.Util;
 
@@ -46,6 +47,7 @@ class MatchStateGetReadyHost implements GameState {
         Util.sendHas(packet, startMatch);
         if (startMatch){
             CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+            _match.switchState(MatchStateType.INGAME);
         }
     }
 }

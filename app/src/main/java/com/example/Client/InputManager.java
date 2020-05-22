@@ -1,14 +1,11 @@
 package com.example.Client;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import Common.GameObject;
 import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.OutputBitStream;
@@ -30,6 +27,7 @@ public class InputManager {
     private int step = 0;
     private int[] _convertTemp = new int[2];
     private Player _player;
+    private boolean _startSending;
 
     public InputManager(Context context, LatLonByteConverter converter){
         _inputStates = new ConcurrentLinkedQueue<>();
@@ -37,15 +35,12 @@ public class InputManager {
     }
 
     public void update(long ms){
+        if (!_startSending) return;
         debugMoveToAssemblePoint();
         sendInput();
 
         // TODO
         _elapsed += ms;
-    }
-
-    public void setThisPlayer(Player player){
-        _player = player;
     }
 
     public void debugMove(int direction) {
@@ -114,7 +109,7 @@ public class InputManager {
     public void qwer(SkillTarget target){
         InputState state = new InputState();
         state.qwer = target.qwer;
-        state.playerId = target.playerId;
+        state.playerId = target.networkId;
         if (target.lat * target.lon != 0){
             _converter.convertLatLon(target.lat, target.lon, _convertTemp);
             state.lat = _convertTemp[0];
@@ -123,7 +118,15 @@ public class InputManager {
         _inputStates.offer(state);
     }
 
+    public void setThisPlayer(Player player){
+        _player = player;
+    }
+
     public Player getThisPlayer(){
         return _player;
+    }
+
+    public void startSending(){
+        _startSending = true;
     }
 }

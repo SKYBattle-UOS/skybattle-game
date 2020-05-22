@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import Common.Camera;
 import Common.GameStateType;
 import Common.LatLonByteConverter;
+import Common.Match;
 import Common.Util;
 import Host.CoreHost;
 
@@ -31,6 +32,7 @@ public class Core {
     private UIManager _uiManager;
     private InputManager _inputManager;
     private LatLonByteConverter _converter;
+    private Match _match;
 
     private Core(Context context){
         _appContext = context;
@@ -123,4 +125,8 @@ public class Core {
     }
 
     public InputManager getInputManager() { return _inputManager; }
+
+    public Match getMatch(){ return _match; }
+
+    public void setMatch(Match match){ _match = match; }
 }

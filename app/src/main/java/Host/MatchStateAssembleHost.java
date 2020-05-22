@@ -1,5 +1,7 @@
 package Host;
 
+import com.example.Client.Core;
+
 import java.util.Collection;
 
 import Common.CollisionState;
@@ -13,7 +15,6 @@ import Common.OutputBitStream;
 
 class MatchStateAssembleHost implements GameState {
     private GameStateMatchHost _match;
-    private int _numPlayers;
     private boolean[] _assembleInit;
     private Collection<ClientProxy> _clients;
     private boolean _shouldSendAllInit;
@@ -21,55 +22,34 @@ class MatchStateAssembleHost implements GameState {
     // TODO
     private GameObject _assemblePoint;
 
-    public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost, int numPlayers) {
+    public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
-        _numPlayers = numPlayers;
-        _assembleInit = new boolean[_numPlayers];
         _clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
+        _assembleInit = new boolean[_clients.size()];
     }
 
     @Override
     public void update(long ms) {
-        int i = 0;
-        for (ClientProxy client : _clients){
-            InputBitStream packet = client.getPacketQueue().poll();
-            if (packet == null)
-                continue;
+        updateAssembleInit();
 
-            _assembleInit[i] = Util.hasMessage(packet);
-            i++;
-        }
+        if (!_shouldSendAllInit)
+            _shouldSendAllInit = checkIfEverybodyInit();
 
-        if (!_shouldSendAllInit) {
-            _shouldSendAllInit = true;
-            for (boolean b : _assembleInit)
-                if (!b) {
-                    _shouldSendAllInit = false;
-                    break;
-                }
-        }
-
-        boolean assembled;
-        Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
-        if (collisions == null)
-            assembled = false;
-        else
-            assembled = _match.getCollider().getCollisions(_assemblePoint).size() == _numPlayers;
+        boolean assembled = hasEverybodyAssembled();
 
         OutputBitStream outPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
 
         Util.sendHas(outPacket, _shouldSendAllInit);
         if (_shouldSendAllInit){
             CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
-            _shouldSendAllInit = true;
 
             if (!_match.isWorldSetterActive()){
-                _match.createPlayers();
                 _match.setWorldSetterActive();
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
+                _match.createPlayers();
 
                 for (GameObject go : _match.getWorld()){
-                    if (!(go instanceof PlayerHost)) {
+                    if (go.getName() == "여기여기 모여라") {
                         _assemblePoint = go;
                         return;
                     }
@@ -79,14 +59,39 @@ class MatchStateAssembleHost implements GameState {
 
         Util.sendHas(outPacket, assembled);
         if (assembled){
-            Collection<GameObject> gos = _match.getWorld();
-            for (GameObject go : gos){
-                if (!(go instanceof PlayerHost))
-                    go.scheduleDeath();
-            }
+            _assemblePoint.scheduleDeath();
 
             CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
+        }
+    }
+
+    private boolean hasEverybodyAssembled() {
+        if (_match.isWorldSetterActive()){
+            Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
+            if (Core.getInstance().getMatch().getPlayers().size() != 0)
+                return collisions.size() == Core.getInstance().getMatch().getPlayers().size();
+        }
+        return false;
+    }
+
+    private boolean checkIfEverybodyInit() {
+        for (boolean b : _assembleInit)
+            if (!b) {
+                return false;
+            }
+        return true;
+    }
+
+    private void updateAssembleInit() {
+        int i = 0;
+        for (ClientProxy client : _clients){
+            InputBitStream packet = client.getPacketQueue().poll();
+            if (packet == null)
+                continue;
+
+            _assembleInit[i] = Util.hasMessage(packet);
+            i++;
         }
     }
 }

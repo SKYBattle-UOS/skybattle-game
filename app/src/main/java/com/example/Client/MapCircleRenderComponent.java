@@ -18,20 +18,20 @@ class MapCircleRenderComponent implements RenderComponent {
 
     @Override
     public void render(long ms) {
-//        double[] position = _parent.getPosition();
-//        if (_circle == null) {
-//            _circle = _map.addMarker(position[0], position[1], Color.YELLOW, 10, _parent.getName());
-//            _prevPosition = position;
-//        }
-//
-//        if (_prevPosition[0] != position[0] || _prevPosition[1] != position[1]) {
-//            _map.setMarkerPosition(_marker, position[0], position[1]);
-//            _prevPosition = position;
-//        }
+        double[] position = _parent.getPosition();
+        if (_circle == null) {
+            _circle = _map.addCircle(position[0], position[1], Color.RED, _parent.getRadius());
+            _prevPosition = position;
+        }
+
+        if (_prevPosition[0] != position[0] || _prevPosition[1] != position[1]) {
+            _map.setCirclePosition(_circle, position[0], position[1]);
+            _prevPosition = position;
+        }
     }
 
     @Override
     public void destroy() {
-
+        _map.removeCircle(_circle);
     }
 }

@@ -93,6 +93,10 @@ public class StreamTest {
             bitOut.write(1, 3);
             bitOut.write(b.length, 8);
             bitOut.write(b, b.length * 8);
+            bitOut.write(1, 4);
+            bitOut.write(96, 32);
+            bitOut.write(344, 32);
+            bitOut.write(1, 4);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,5 +125,8 @@ public class StreamTest {
 
         String anotherString = new String(rb, StandardCharsets.UTF_8);
         System.out.println(anotherString);
+        System.out.println(bitIn2.read(4));
+        System.out.println(bitIn2.read(32));
+        System.out.println(bitIn2.read(32));
     }
 }

@@ -1,22 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/roomTitle"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:text="방제"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/edit_nickname"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:hint="닉네임을 입력하시오"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btn_nickname"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:text="등록" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:textSize="30sp" />
+
+    <ListView
+    android:id="@+id/playerlist"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".RoomActivity">
+    android:layout_height="500dp"
+    android:layout_gravity="bottom"
+    android:entries="@array/reboot_screen_items" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/roomTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="방제"
-            android:textSize="36sp"
-            android:textAlignment="center"/>
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="시작" />
+
+        <Button
+        android:id="@+id/btn_exit"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:text="나가기" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

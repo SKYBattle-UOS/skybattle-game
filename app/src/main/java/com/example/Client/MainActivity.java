@@ -33,14 +33,14 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
                 alert.setTitle("IP주소 입력");
                 alert.setMessage("IP주소를 입력하시오.");
 
-                final EditText ip_addr = new EditText(MainActivity.this);
-                alert.setView(ip_addr);
+                final EditText ipaddr=new EditText(MainActivity.this);
+                alert.setView(ipaddr);
 
                 alert.setPositiveButton("입력", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         /*"입력" 버튼 클릭 시 실행하는 메소드*/
-                        Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT);
+                        Core.getInstance().getUIManager().invoke(UIManager.ENTER_ROOM_PORT);
                     }
                 });
                 alert.show();
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         });
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
-        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT));
+        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.ENTER_ROOM_PORT));
     }
 
     @Override
