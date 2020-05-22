@@ -7,7 +7,7 @@ import Common.Util;
 public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
     @Override
     public void cast(GameObject caster) {
-        GameObject spawned = caster.getMatch().createGameObject(Util.ItemClassId);
+        GameObject spawned = caster.getMatch().createGameObject(Util.ItemClassId, true);
         spawned.setName("원격 와작와작 지뢰");
         spawned.setPosition(_lat, _lon);
     }

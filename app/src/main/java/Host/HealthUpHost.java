@@ -14,6 +14,6 @@ public class HealthUpHost extends HealthUpCommon {
         CoreHost.getInstance()
                 .getMatch()
                 .getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), 1 << 3);
+                .generateUpdateInstruction(player.getNetworkId(), 1 << 4);
     }
 }

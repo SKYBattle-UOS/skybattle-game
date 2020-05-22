@@ -6,7 +6,6 @@ import com.example.Client.ImageType;
 public class Item extends ItemCommon {
     protected Item(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
     }
 
     public static GameObject createInstance() {

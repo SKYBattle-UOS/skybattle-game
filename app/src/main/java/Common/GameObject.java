@@ -29,6 +29,7 @@ public abstract class GameObject {
     private int _indexInWorld;
     private double[] _position;
     private boolean _wantsToDie;
+    private boolean _collision;
     private RenderComponent _renderComponent;
 
     protected int _dirtyPos = 0;
@@ -66,6 +67,16 @@ public abstract class GameObject {
                 e.printStackTrace();
             }
         }
+
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
+            float r = getRadius();
+            int rInt = (int) r * 10;
+            try {
+                stream.write(rInt, 16);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void readFromStream(InputBitStream stream, int dirtyFlag){
@@ -82,6 +93,11 @@ public abstract class GameObject {
             byte[] b = new byte[len];
             stream.read(b, len * 8);
             _name = new String(b, StandardCharsets.UTF_8);
+        }
+
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
+            int rInt = stream.read(16);
+            setRadius(((float) rInt) / 10f);
         }
     }
 
@@ -107,6 +123,10 @@ public abstract class GameObject {
     }
 
     // region Getters and Setters
+    public void setCollision(){
+        _collision = true;
+    }
+
     public Match getMatch(){
         return _match;
     }
@@ -135,7 +155,7 @@ public abstract class GameObject {
         _position[0] = latitude;
         _position[1] = longitude;
 
-        if (_match.getCollider() != null)
+        if (_match.getCollider() != null && _collision)
             _match.getCollider().positionDirty(this);
     }
 

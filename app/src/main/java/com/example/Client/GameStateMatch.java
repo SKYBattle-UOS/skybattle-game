@@ -1,7 +1,6 @@
 package com.example.Client;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
@@ -129,7 +128,7 @@ public class GameStateMatch implements GameState, Match {
     }
 
     @Override
-    public GameObject createGameObject(int classId) {
+    public GameObject createGameObject(int classId, boolean addToCollider) {
         return null;
     }
 

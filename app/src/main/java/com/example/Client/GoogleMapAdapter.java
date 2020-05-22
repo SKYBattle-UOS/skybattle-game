@@ -68,7 +68,7 @@ public class GoogleMapAdapter implements Map {
     public MapCircleHandle addCircle(double lat, double lon, int color, float radius) {
         int number = _nextCircleNumber++;
         GoogleCircleHandle ret = new GoogleCircleHandle(number);
-        _mainHandler.post(() -> _addCircle(number,lat, lon, color, radius));
+        _mainHandler.post(() -> _addCircle(number, lat, lon, color, radius));
         return ret;
     }
 
@@ -202,23 +202,14 @@ public class GoogleMapAdapter implements Map {
 //        _markers.add(marker);
 //    }
 
-    private void _addCircle(int number,double lat, double lon, int color, float radius_) {
-        // 반경 1KM원
+    private void _addCircle(int number,double lat, double lon, int color, float radius) {
         LatLng position = new LatLng(lat, lon);
-        String color_stroke = "#FF0000ff";
-        String color_fill = "#880000ff";
 
         Circle circle = _googleMap.addCircle(new CircleOptions()
-                .center(position) //원점
-                .radius(radius_)      //반지름 단위 : 1000m
-                .strokeWidth(3f)  //선너비 0f : 선없음,default=10
-                .strokeColor(Color.parseColor(color_stroke))
-                .fillColor(color));
-        //.fillColor(Color.parseColor("#880000ff")); //배경색
-                // .fillColor(Color.parseColor(color_fill)));
-        //.fillColor((Color.RED));
+                .center(position)
+                .radius(radius)
+                .strokeColor(color));
 
-        //해시맵에 원추가
         _circles.put(number, circle);
     }
 
