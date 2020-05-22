@@ -53,15 +53,8 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
         btn_start.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.ROOM_START_PORT));
 
         //나가기 버튼: 클릭 시, 이전 화면으로 돌아감. 닉네임 리스트에서 나가기 버튼을 클릭한 사용자가 사라지도록 해야함.(추가예정)
-        Button btn_exit= (Button)findViewById(R.id.btn_exit);
-        btn_exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent room_intent = new Intent(RoomActivity.this, MainActivity.class);
-                startActivity(room_intent);
-                finish();
-        }
-        });
+        Button btn_exit= findViewById(R.id.btn_exit);
+        btn_exit.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.EXIT_ROOM_PORT));
     }
 
   /*한 화면에 리스트뷰, 텍스트뷰, 버튼을 표현하기 위해 커스텀 어댑터 사용*/
@@ -123,6 +116,11 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
     public void switchTo(ScreenType type) {
         if (type == ScreenType.ASSEMBLE) {
             Intent room_intent = new Intent(RoomActivity.this, MatchActivity.class);
+            startActivity(room_intent);
+            finish();
+        }
+        else if (type == ScreenType.MAIN){
+            Intent room_intent = new Intent(RoomActivity.this, MainActivity.class);
             startActivity(room_intent);
             finish();
         }

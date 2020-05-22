@@ -10,8 +10,9 @@ import java.util.Objects;
 import java.util.Queue;
 
 public class UIManager {
-    public static final int SWITCH_SCREEN_PORT = 0;
+    public static final int ENTER_ROOM_PORT = 0;
     public static final int ROOM_START_PORT = 0;
+    public static final int EXIT_ROOM_PORT = 1;
 
     private Screen _currentScreen = null;
     private ScreenType _nextScreen = null;

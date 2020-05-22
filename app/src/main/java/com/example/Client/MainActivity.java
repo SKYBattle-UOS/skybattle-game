@@ -6,11 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pedro.library.AutoPermissions;
@@ -39,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         /*"입력" 버튼 클릭 시 실행하는 메소드*/
-                        Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT);
+                        Core.getInstance().getUIManager().invoke(UIManager.ENTER_ROOM_PORT);
                     }
                 });
                 alert.show();
@@ -47,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         });
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
-        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT));
+        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.ENTER_ROOM_PORT));
     }
 
     @Override
