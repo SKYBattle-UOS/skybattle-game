@@ -37,7 +37,6 @@ public class GameStateMatchHost implements GameState, Match {
     private boolean _worldSetterActive = false;
 
     // TODO
-    private int _numPlayers;
     private double[] _battleGroundLatLon;
     private final int GET_READY_COUNT;
     private final int NUM_PACKET_PER_FRAME;
@@ -53,7 +52,6 @@ public class GameStateMatchHost implements GameState, Match {
         _players = new ArrayList<>();
         _collider = new Collider();
 
-        _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
         _battleGroundLatLon = new double[2];
         GET_READY_COUNT = 1000;
         NUM_PACKET_PER_FRAME = 3;
@@ -96,17 +94,25 @@ public class GameStateMatchHost implements GameState, Match {
     }
 
     public void createPlayers() {
-//        _lookChanger = (DynamicLookChangerHost) createGameObject(Util.DynamicLookChangerClassId, false);
         Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
 
         int i = 1;
+        int lastPlayerId = 0;
         for (ClientProxy client : clients){
             PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId, true);
+            lastPlayerId = client.getPlayerId();
             newPlayer.setPlayerId(client.getPlayerId());
             newPlayer.setPosition(37.714580, 127.045195);
-            newPlayer.setName("플레이어" + i);
+            newPlayer.setName("플레이어" + i++);
             newPlayer.setLook(ImageType.MARKER);
-//            _lookChanger.setLook(newPlayer.getNetworkId(), ImageType.MARKER);
+        }
+
+        for (int j = 0; j < 3; j++){
+            DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
+            dummy.setPlayerId(lastPlayerId + j + 1);
+            dummy.setPosition(37.714580 + 0.0005 * j, 127.045195 + 0.0005 * j);
+            dummy.setName("플레이어" + i++ + " (가짜)");
+            dummy.setLook(ImageType.MARKER);
         }
 
         // create temp item
@@ -115,7 +121,6 @@ public class GameStateMatchHost implements GameState, Match {
         tempItem.setName("여기여기 모여라");
         tempItem.setRadius(20);
         tempItem.setLook(ImageType.CIRCLE_WITH_MARKER);
-//        _lookChanger.setLook(tempItem.getNetworkId(), ImageType.CIRCLE_WITH_MARKER);
 
         addNewGameObjectsToWorld();
     }
@@ -194,7 +199,7 @@ public class GameStateMatchHost implements GameState, Match {
     public void switchState(MatchStateType matchState) {
         switch (matchState) {
             case ASSEMBLE:
-                _currentState = new MatchStateAssembleHost(this, _numPlayers);
+                _currentState = new MatchStateAssembleHost(this);
                 break;
             case SELECT_CHARACTER:
                 _currentState = new MatchStateSelectCharacterHost(this);

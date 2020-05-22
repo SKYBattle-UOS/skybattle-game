@@ -64,7 +64,7 @@ public class PlayerHost extends PlayerCommon {
         }
     }
 
-    private void networkUpdate(){
+    protected void networkUpdate(){
         int dirtyFlag = 0;
 
         ClientProxy client = CoreHost.getInstance().getNetworkManager().getClientById(getPlayerId());

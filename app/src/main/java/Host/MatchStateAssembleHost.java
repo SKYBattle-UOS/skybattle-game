@@ -1,5 +1,7 @@
 package Host;
 
+import com.example.Client.Core;
+
 import java.util.Collection;
 
 import Common.CollisionState;
@@ -13,7 +15,6 @@ import Common.OutputBitStream;
 
 class MatchStateAssembleHost implements GameState {
     private GameStateMatchHost _match;
-    private int _numPlayers;
     private boolean[] _assembleInit;
     private Collection<ClientProxy> _clients;
     private boolean _shouldSendAllInit;
@@ -21,11 +22,10 @@ class MatchStateAssembleHost implements GameState {
     // TODO
     private GameObject _assemblePoint;
 
-    public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost, int numPlayers) {
+    public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
-        _numPlayers = numPlayers;
-        _assembleInit = new boolean[_numPlayers];
         _clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
+        _assembleInit = new boolean[_clients.size()];
     }
 
     @Override
@@ -49,12 +49,12 @@ class MatchStateAssembleHost implements GameState {
                 }
         }
 
-        boolean assembled;
-        Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
-        if (collisions == null)
-            assembled = false;
-        else
-            assembled = _match.getCollider().getCollisions(_assemblePoint).size() == _numPlayers;
+        boolean assembled = false;
+        if (_match.isWorldSetterActive()){
+            Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
+            if (Core.getInstance().getMatch().getPlayers().size() != 0)
+                assembled = collisions.size() == Core.getInstance().getMatch().getPlayers().size();
+        }
 
         OutputBitStream outPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
 
