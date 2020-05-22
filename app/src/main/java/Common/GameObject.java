@@ -224,6 +224,9 @@ public abstract class GameObject {
 
     public void setRadius(float radius) {
         this._radius = radius;
+
+        if (_match.getCollider() != null && _collision)
+            _match.getCollider().positionDirty(this);
     }
 
     public void setLook(ImageType type){

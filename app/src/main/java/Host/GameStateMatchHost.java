@@ -110,16 +110,16 @@ public class GameStateMatchHost implements GameState, Match {
         for (int j = 0; j < 3; j++){
             DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
             dummy.setPlayerId(lastPlayerId + j + 1);
-            dummy.setPosition(37.714580 + 0.0005 * j, 127.045195 + 0.0005 * j);
+            dummy.setPosition(37.715583 + 0.0005 * j, 127.048421 + 0.0005 * j);
             dummy.setName("플레이어" + i++ + " (가짜)");
             dummy.setLook(ImageType.MARKER);
         }
 
         // create temp item
         GameObject tempItem = createGameObject(Util.ItemClassId, true);
-        tempItem.setPosition(37.715584, 127.048616);
+        tempItem.setPosition(37.716109, 127.048926);
         tempItem.setName("여기여기 모여라");
-        tempItem.setRadius(20);
+        tempItem.setRadius(100);
         tempItem.setLook(ImageType.CIRCLE_WITH_MARKER);
 
         addNewGameObjectsToWorld();
