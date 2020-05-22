@@ -5,6 +5,10 @@ import java.io.IOException;
 public abstract class PlayerTargetSkill extends Skill {
     protected int _networkId;
 
+    public PlayerTargetSkill(int index) {
+        super(index);
+    }
+
     public void setTargetPlayer(int networkId) {
         _networkId = networkId;
     }

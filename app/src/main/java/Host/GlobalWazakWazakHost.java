@@ -8,6 +8,10 @@ import Common.PlayerHost;
 import Common.Util;
 
 public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
+    public GlobalWazakWazakHost(int index) {
+        super(index);
+    }
+
     @Override
     public void cast(GameObject caster) {
         GameObject spawned = caster.getMatch().createGameObject(Util.ItemClassId, true);

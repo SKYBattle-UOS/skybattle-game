@@ -62,7 +62,8 @@ public class MatchStateAssemble implements GameState {
 
         if (Util.hasMessage(packet)) {
             _waiting = true;
-            Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT, ()-> _match.switchState(MatchStateType.SELECT_CHARACTER));
+            Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT,
+                    ()-> _match.switchState(MatchStateType.SELECT_CHARACTER));
         }
     }
 

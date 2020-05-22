@@ -8,6 +8,10 @@ import Common.WazakWazakCommon;
 import Common.Util;
 
 public class WazakWazakHost extends WazakWazakCommon {
+    public WazakWazakHost(int index) {
+        super(index);
+    }
+
     @Override
     public void cast(GameObject caster){
         GameObject spawned = caster.getMatch().createGameObject(Util.ItemClassId, true);

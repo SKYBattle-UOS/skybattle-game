@@ -3,6 +3,10 @@ package Common;
 import android.util.Log;
 
 public class GlobalWazakWazakCommon extends CoordinateSkill {
+    public GlobalWazakWazakCommon(int index) {
+        super(index);
+    }
+
     @Override
     public String getName() {
         return "원격 와작와작 뻥!";

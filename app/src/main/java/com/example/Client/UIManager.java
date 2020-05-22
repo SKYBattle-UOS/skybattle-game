@@ -9,10 +9,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 
-public class UIManager {
+public class UIManager implements RoomScreen, MatchScreen {
     public static final int ENTER_ROOM_PORT = 0;
     public static final int ROOM_START_PORT = 0;
     public static final int EXIT_ROOM_PORT = 1;
+    public static final int BUTTON_Q = 0;
+    public static final int BUTTON_W = 1;
+    public static final int BUTTON_E = 2;
+    public static final int BUTTON_R = 3;
 
     private Screen _currentScreen = null;
     private ScreenType _nextScreen = null;
@@ -65,13 +69,32 @@ public class UIManager {
         _callbackMapping.put(port, func);
     }
 
+    @Override
     public void setTitle(String title){
         if (_currentScreen instanceof RoomScreen)
             _mainHandler.post(()->((RoomScreen) _currentScreen).setTitle(title));
     }
 
+    @Override
     public void setTopText(String text){
         if (_currentScreen instanceof MatchScreen)
             _mainHandler.post(()->((MatchScreen) _currentScreen).setTopText(text));
+    }
+
+    @Override
+    public void setButtonText(int button, String text) {
+        if (_currentScreen instanceof MatchScreen)
+            _mainHandler.post(()->((MatchScreen) _currentScreen).setButtonText(button, text));
+    }
+
+    @Override
+    public void setButtonActive(int button, boolean active) {
+        if (_currentScreen instanceof MatchScreen)
+            _mainHandler.post(()->((MatchScreen) _currentScreen).setButtonActive(button, active));
+    }
+
+    @Override
+    public void switchTo(ScreenType type) {
+        throw new UnsupportedOperationException();
     }
 }

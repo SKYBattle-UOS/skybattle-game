@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -122,6 +123,38 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
     @Override
     public void setTopText(String text) {
         _topText.setText(text);
+    }
+
+    @Override
+    public void setButtonText(int button, String text) {
+        Fragment currFrag = getSupportFragmentManager()
+                .findFragmentById(R.id.frag);
+
+        switch (button){
+            case UIManager.BUTTON_Q:
+            case UIManager.BUTTON_W:
+            case UIManager.BUTTON_E:
+            case UIManager.BUTTON_R:
+                if (currFrag instanceof InGameFragment)
+                    ((InGameFragment) currFrag).setButtonText(button, text);
+                break;
+        }
+    }
+
+    @Override
+    public void setButtonActive(int button, boolean active) {
+        Fragment currFrag = getSupportFragmentManager()
+                .findFragmentById(R.id.frag);
+
+        switch (button){
+            case UIManager.BUTTON_Q:
+            case UIManager.BUTTON_W:
+            case UIManager.BUTTON_E:
+            case UIManager.BUTTON_R:
+                if (currFrag instanceof InGameFragment)
+                    ((InGameFragment) currFrag).setButtonActive(button, active);
+                break;
+        }
     }
 
     public void showDebugMap(){

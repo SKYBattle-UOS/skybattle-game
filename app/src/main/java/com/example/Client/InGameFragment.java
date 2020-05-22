@@ -18,6 +18,7 @@ import Host.SkillTarget;
 
 public class InGameFragment extends Fragment {
     private String _topTextCache;
+    private Button[] buttons;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -28,7 +29,7 @@ public class InGameFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button[] buttons = new Button[4];
+        buttons = new Button[4];
         buttons[0] = view.findViewById(R.id.btn_q);
         buttons[1] = view.findViewById(R.id.btn_w);
         buttons[2] = view.findViewById(R.id.btn_e);
@@ -78,5 +79,15 @@ public class InGameFragment extends Fragment {
                 () -> ma.setTopText(_topTextCache)
             );
         });
+    }
+
+    public void setButtonText(int button, String text) {
+        int btnIndex = button - UIManager.BUTTON_Q;
+        buttons[btnIndex].setText(text);
+    }
+
+    public void setButtonActive(int button, boolean active) {
+        int btnIndex = button - UIManager.BUTTON_Q;
+        buttons[btnIndex].setEnabled(active);
     }
 }
