@@ -113,6 +113,7 @@ public class GameStateMatchHost implements GameState, Match {
             dummy.setPosition(37.715583 + 0.0005 * j, 127.048421 + 0.0005 * j);
             dummy.setName("플레이어" + i++ + " (가짜)");
             dummy.setLook(ImageType.MARKER);
+            dummy.setTeam(1);
         }
 
         // create temp item

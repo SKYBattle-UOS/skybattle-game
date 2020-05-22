@@ -4,6 +4,7 @@ import com.example.Client.ImageType;
 
 import Common.GameObject;
 import Common.GlobalWazakWazakCommon;
+import Common.PlayerHost;
 import Common.Util;
 
 public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
@@ -13,5 +14,6 @@ public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
         spawned.setName("원격 와작와작 지뢰");
         spawned.setPosition(_lat, _lon);
         spawned.setLook(ImageType.MARKER);
+        spawned.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.shouldCastFlag);
     }
 }

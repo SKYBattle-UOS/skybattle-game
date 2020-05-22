@@ -40,9 +40,6 @@ public class WorldSetter {
         if (_match.getRegistry().getGameObject(_header.networkId) == null){
             GameObject newGO = Core.getInstance().getGameObjectFactory().createGameObject(_header.classId);
 
-            if (newGO == null)
-                return;
-
             newGO.setMatch(_match);
             newGO.setNetworkId(_header.networkId);
             newGO.readFromStream(stream, _header.dirtyFlag);

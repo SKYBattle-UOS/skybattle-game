@@ -3,6 +3,7 @@ package Host;
 import com.example.Client.ImageType;
 
 import Common.GameObject;
+import Common.PlayerHost;
 import Common.WazakWazakCommon;
 import Common.Util;
 
@@ -13,5 +14,7 @@ public class WazakWazakHost extends WazakWazakCommon {
         spawned.setName("와작와작 지뢰");
         spawned.setPosition(caster.getPosition()[0], caster.getPosition()[1]);
         spawned.setLook(ImageType.MARKER);
+
+        spawned.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.shouldCastFlag);
     }
 }

@@ -8,6 +8,7 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
     public static int playerIdDirtyFlag;
     public static int healthDirtyFlag;
     public static int teamDirtyFlag;
+    public static int shouldCastFlag;
     public static int startFromHereFlag;
 
     {
@@ -18,6 +19,8 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         healthDirtyFlag = i;
         i *= 2;
         teamDirtyFlag = i;
+        i *= 2;
+        shouldCastFlag = i;
         i *= 2;
         startFromHereFlag = i;
     }
@@ -47,6 +50,12 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
             if ((dirtyFlag & teamDirtyFlag) != 0)
                 stream.write(_team, 1);
 
+            if ((dirtyFlag & shouldCastFlag) != 0) {
+                stream.write(_shouldCast, 4);
+                _shouldCast = 0;
+            }
+
+
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -61,17 +70,37 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
 
         if ((dirtyFlag & healthDirtyFlag) != 0){
             _health = stream.read(32);
-            Log.i("hehe", "health Up: " + _health);
         }
 
         if ((dirtyFlag & teamDirtyFlag) != 0)
             _team = stream.read(1);
+
+        if ((dirtyFlag & shouldCastFlag) != 0){
+            _shouldCast = stream.read(4);
+            if ((_shouldCast & 1) != 0)
+                _skills[0].cast(this);
+
+            if ((_shouldCast & 2) != 0)
+                _skills[1].cast(this);
+
+            if ((_shouldCast & 4) != 0)
+                _skills[2].cast(this);
+
+            if ((_shouldCast & 8) != 0)
+                _skills[3].cast(this);
+
+            _shouldCast = 0;
+        }
     }
 
     public Skill[] getSkills() { return _skills; }
 
     public int getTeam() {
         return _team;
+    }
+
+    public void setTeam(int team){
+        _team = team;
     }
 
     public void setPlayerId(int playerId){

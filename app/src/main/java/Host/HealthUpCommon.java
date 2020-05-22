@@ -3,7 +3,7 @@ package Host;
 import Common.GameObject;
 import Common.PlayerTargetSkill;
 
-public class HealthUpCommon extends PlayerTargetSkill {
+public abstract class HealthUpCommon extends PlayerTargetSkill {
     @Override
     public String getName() {
         return "회복";

@@ -49,8 +49,6 @@ public class PlayerHost extends PlayerCommon {
 
         if ((_shouldCast & 8) != 0)
             _skills[3].cast(this);
-
-        _shouldCast = 0;
     }
 
     @Override

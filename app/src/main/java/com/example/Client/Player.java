@@ -11,8 +11,8 @@ public class Player extends PlayerCommon {
         super(latitude, longitude, name);
         _skills[0] = new WazakWazakCommon();
         _skills[1] = new GlobalWazakWazakCommon();
-        _skills[2] = new HealthUpCommon();
-        _skills[3] = new HealthUpCommon();
+        _skills[2] = new HealthUp();
+        _skills[3] = new HealthUp();
     }
 
     public static GameObject createInstance() {

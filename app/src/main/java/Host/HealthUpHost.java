@@ -15,5 +15,7 @@ public class HealthUpHost extends HealthUpCommon {
                 .getMatch()
                 .getWorldSetterHost()
                 .generateUpdateInstruction(player.getNetworkId(), PlayerHost.healthDirtyFlag);
+
+        player.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.shouldCastFlag);
     }
 }
