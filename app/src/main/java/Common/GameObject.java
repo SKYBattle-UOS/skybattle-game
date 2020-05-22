@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 
 import com.example.Client.Core;
 import com.example.Client.GameObjectRegistry;
+import com.example.Client.ImageType;
 import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
@@ -30,6 +31,7 @@ public abstract class GameObject {
     private double[] _position;
     private boolean _wantsToDie;
     private boolean _collision;
+    private ImageType _imageType;
     private RenderComponent _renderComponent;
 
     protected int _dirtyPos = 0;
@@ -77,27 +79,40 @@ public abstract class GameObject {
                 e.printStackTrace();
             }
         }
+
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
+            try {
+                stream.write(_imageType.ordinal(), 4);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void readFromStream(InputBitStream stream, int dirtyFlag){
+    public void readFromStream(InputBitStream stream, int dirtyFlag) {
         _dirtyPos = 0;
-        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
             int lat = stream.read(32);
             int lon = stream.read(32);
             _match.getConverter().restoreLatLon(lat, lon, _restoreTemp);
             setPosition(_restoreTemp[0], _restoreTemp[1]);
         }
 
-        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
             int len = stream.read(8);
             byte[] b = new byte[len];
             stream.read(b, len * 8);
             _name = new String(b, StandardCharsets.UTF_8);
         }
 
-        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
             int rInt = stream.read(16);
             setRadius(((float) rInt) / 10f);
+        }
+
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
+            ImageType type = ImageType.values()[stream.read(4)];
+            setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, type));
         }
     }
 
@@ -193,6 +208,10 @@ public abstract class GameObject {
 
     public void setRadius(float radius) {
         this._radius = radius;
+    }
+
+    public void setLook(ImageType type){
+        _imageType = type;
     }
     // endregion
 }

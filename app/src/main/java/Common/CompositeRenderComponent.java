@@ -4,7 +4,7 @@ import com.example.Client.RenderComponent;
 
 import java.util.ArrayList;
 
-public class MapCompositeRenderComponent implements RenderComponent {
+public class CompositeRenderComponent implements RenderComponent {
     private ArrayList<RenderComponent> _components = new ArrayList<>();
 
     @Override

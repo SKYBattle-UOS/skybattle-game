@@ -1,12 +1,9 @@
 package Common;
 
-import com.example.Client.DynamicLookChanger;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.Player;
 
 import java.io.IOException;
-
-import Host.DynamicLookChangerHost;
 
 public class Util {
     public static final int PORT = 9998;
@@ -17,14 +14,14 @@ public class Util {
     public static void registerGameObjects(GameObjectFactory factory){
         PlayerClassId = factory.registerCreateMethod(Player::createInstance);
         ItemClassId = factory.registerCreateMethod(Item::createInstance);
-        DynamicLookChangerClassId = factory.registerCreateMethod(DynamicLookChanger::createInstance);
+//        DynamicLookChangerClassId = factory.registerCreateMethod(DynamicLookChanger::createInstance);
     }
 
     public static void registerGameObjectsHost(GameObjectFactory factory){
         // should be same order as registerGameObjects !!!!!!!!!!
         factory.registerCreateMethod(PlayerHost::createInstance);
         factory.registerCreateMethod(ItemHost::createInstance);
-        factory.registerCreateMethod(DynamicLookChangerHost::createInstance);
+//        factory.registerCreateMethod(DynamicLookChangerHost::createInstance);
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {

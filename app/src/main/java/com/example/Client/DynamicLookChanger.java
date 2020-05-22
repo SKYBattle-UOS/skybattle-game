@@ -15,9 +15,9 @@ public class DynamicLookChanger extends GameObject {
         super(latitude, longitude, name);
     }
 
-    public static GameObject createInstance(){
-        return new DynamicLookChanger(0, 0, "DynamicLookChanger");
-    }
+//    public static GameObject createInstance(){
+////        return new DynamicLookChanger(0, 0, "DynamicLookChanger");
+//    }
 
     @Override
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
