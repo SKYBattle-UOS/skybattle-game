@@ -96,6 +96,7 @@ public class StreamTest {
             bitOut.write(1, 4);
             bitOut.write(96, 32);
             bitOut.write(344, 32);
+            bitOut.write(1, 4);
         } catch (IOException e) {
             e.printStackTrace();
         }

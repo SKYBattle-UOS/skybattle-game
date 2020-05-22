@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import Common.DynamicLookChangerCommon;
 import Common.GameObject;
+import Common.InputBitStream;
 
-public class DynamicLookChanger extends DynamicLookChangerCommon {
+public class DynamicLookChanger extends GameObject {
     private HashMap<Integer, ImageType> _tryLater = new HashMap<>();
     private ArrayList<Integer> _toRemove = new ArrayList<>();
 
@@ -20,22 +20,32 @@ public class DynamicLookChanger extends DynamicLookChangerCommon {
     }
 
     @Override
+    public void readFromStream(InputBitStream stream, int dirtyFlag) {
+        super.readFromStream(stream, dirtyFlag);
+
+        if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
+            int len = stream.read(8);
+            for (int i = 0; i < len; i++){
+                int networkId = stream.read(32);
+                int imageType = stream.read(4);
+                GameObject go = _match.getRegistry().getGameObject(networkId);
+                if (go == null){
+                    _tryLater.put(networkId, ImageType.values()[imageType]);
+                    continue;
+                }
+                go.setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(go, ImageType.values()[imageType]));
+            }
+        }
+    }
+
+    @Override
     public void before(long ms) {
 
     }
 
     @Override
     public void update(long ms) {
-        for (Map.Entry<Integer, ImageType> entry : _nid2newImageType.entrySet()){
-            GameObject go = _match.getRegistry().getGameObject(entry.getKey());
-            if (go == null){
-                _tryLater.put(entry.getKey(), entry.getValue());
-                continue;
-            }
-            go.setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(go, entry.getValue()));
-        }
-
-        _nid2newImageType.clear();
+        if (_tryLater.isEmpty()) return;
 
         for (Map.Entry<Integer, ImageType> entry : _tryLater.entrySet()){
             GameObject go = _match.getRegistry().getGameObject(entry.getKey());
