@@ -90,7 +90,7 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
                 }
             });
 
-            Button btn_btn_teamB = (Button) v.findViewById(R.id.btn_teamB);
+            Button btn_teamB = (Button) v.findViewById(R.id.btn_teamB);
             btn_teamB.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
