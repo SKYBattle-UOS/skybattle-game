@@ -30,43 +30,23 @@ class MatchStateAssembleHost implements GameState {
 
     @Override
     public void update(long ms) {
-        int i = 0;
-        for (ClientProxy client : _clients){
-            InputBitStream packet = client.getPacketQueue().poll();
-            if (packet == null)
-                continue;
+        updateAssembleInit();
 
-            _assembleInit[i] = Util.hasMessage(packet);
-            i++;
-        }
+        if (!_shouldSendAllInit)
+            _shouldSendAllInit = checkIfEverybodyInit();
 
-        if (!_shouldSendAllInit) {
-            _shouldSendAllInit = true;
-            for (boolean b : _assembleInit)
-                if (!b) {
-                    _shouldSendAllInit = false;
-                    break;
-                }
-        }
-
-        boolean assembled = false;
-        if (_match.isWorldSetterActive()){
-            Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
-            if (Core.getInstance().getMatch().getPlayers().size() != 0)
-                assembled = collisions.size() == Core.getInstance().getMatch().getPlayers().size();
-        }
+        boolean assembled = hasEverybodyAssembled();
 
         OutputBitStream outPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
 
         Util.sendHas(outPacket, _shouldSendAllInit);
         if (_shouldSendAllInit){
             CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
-            _shouldSendAllInit = true;
 
             if (!_match.isWorldSetterActive()){
-                _match.createPlayers();
                 _match.setWorldSetterActive();
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
+                _match.createPlayers();
 
                 for (GameObject go : _match.getWorld()){
                     if (go.getName() == "여기여기 모여라") {
@@ -83,6 +63,35 @@ class MatchStateAssembleHost implements GameState {
 
             CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
+        }
+    }
+
+    private boolean hasEverybodyAssembled() {
+        if (_match.isWorldSetterActive()){
+            Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
+            if (Core.getInstance().getMatch().getPlayers().size() != 0)
+                return collisions.size() == Core.getInstance().getMatch().getPlayers().size();
+        }
+        return false;
+    }
+
+    private boolean checkIfEverybodyInit() {
+        for (boolean b : _assembleInit)
+            if (!b) {
+                return false;
+            }
+        return true;
+    }
+
+    private void updateAssembleInit() {
+        int i = 0;
+        for (ClientProxy client : _clients){
+            InputBitStream packet = client.getPacketQueue().poll();
+            if (packet == null)
+                continue;
+
+            _assembleInit[i] = Util.hasMessage(packet);
+            i++;
         }
     }
 }
