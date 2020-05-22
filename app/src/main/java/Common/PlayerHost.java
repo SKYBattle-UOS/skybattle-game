@@ -92,7 +92,7 @@ public class PlayerHost extends PlayerCommon {
                 case 4:
                     _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
                     setPosition(_newPosTemp[0], _newPosTemp[1]);
-                    dirtyFlag |= 1;
+                    dirtyFlag |= PlayerHost.posDirtyFlag;
                     break;
             }
         }
