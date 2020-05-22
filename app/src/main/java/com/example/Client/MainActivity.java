@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pedro.library.AutoPermissions;
@@ -30,8 +32,8 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
                 alert.setTitle("IP주소 입력");
                 alert.setMessage("IP주소를 입력하시오.");
 
-                final EditText ip_addr = new EditText(MainActivity.this);
-                alert.setView(ip_addr);
+                final EditText ipaddr=new EditText(MainActivity.this);
+                alert.setView(ipaddr);
 
                 alert.setPositiveButton("입력", new DialogInterface.OnClickListener() {
                     @Override

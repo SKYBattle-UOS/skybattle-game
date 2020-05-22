@@ -14,7 +14,8 @@
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity android:name="com.example.Client.SelectCharacterFragment" />
         <activity android:name="com.example.Client.MatchActivity" />
-        <activity android:name="com.example.Client.RoomActivity" />
+        <activity android:name="com.example.Client.RoomActivity"
+            android:windowSoftInputMode="adjustNothing" />
         <activity android:name="com.example.Client.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
