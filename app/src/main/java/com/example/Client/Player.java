@@ -4,7 +4,6 @@ import Common.GameObject;
 import Common.GlobalWazakWazakCommon;
 import Common.PlayerCommon;
 import Common.WazakWazakCommon;
-import Host.HealthUpCommon;
 
 public class Player extends PlayerCommon {
     protected Player(float latitude, float longitude, String name) {
