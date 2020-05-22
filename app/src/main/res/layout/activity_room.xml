@@ -8,7 +8,6 @@ android:paddingRight="@dimen/activity_horizontal_margin"
 android:paddingTop="@dimen/activity_vertical_margin"
 android:layout_width="fill_parent"
 android:layout_height="fill_parent"
-    android:layout_alignParentBottom="true"
 android:orientation="vertical">
 
 <TextView
@@ -53,20 +52,24 @@ android:orientation="vertical">
     android:layout_gravity="bottom"
     android:entries="@array/reboot_screen_items" />
 
-    <Button
-        android:id="@+id/startButton"
+    <LinearLayout
         android:layout_width="150dp"
         android:layout_height="40dp"
-        android:layout_weight="1"
-        android:text="시작" />
+        android:orientation="horizontal">
 
-    <Button
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="시작" />
+
+        <Button
         android:id="@+id/btn_exit"
         android:layout_width="150dp"
         android:layout_height="40dp"
         android:layout_weight="1"
         android:text="나가기" />
 
+
 </LinearLayout>
-
-
