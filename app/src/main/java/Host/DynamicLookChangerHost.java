@@ -24,19 +24,19 @@ public class DynamicLookChangerHost extends GameObject {
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
         super.writeToStream(stream, dirtyFlag);
 
-        try {
-            if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
-                stream.write(_nid2newImageType.size(), 8);
-                for (Map.Entry<Integer, ImageType> entry : _nid2newImageType.entrySet()){
-                    stream.write(entry.getKey(), 32);
-                    stream.write(entry.getValue().ordinal(), 4);
-                }
-
-                _nid2newImageType.clear();
-            }
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+//        try {
+//            if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
+//                stream.write(_nid2newImageType.size(), 8);
+//                for (Map.Entry<Integer, ImageType> entry : _nid2newImageType.entrySet()){
+//                    stream.write(entry.getKey(), 32);
+//                    stream.write(entry.getValue().ordinal(), 4);
+//                }
+//
+//                _nid2newImageType.clear();
+//            }
+//        } catch (IOException e){
+//            e.printStackTrace();
+//        }
     }
 
     @Override
