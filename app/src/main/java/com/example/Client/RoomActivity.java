@@ -15,12 +15,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import android.widget.Button;
+
 import android.widget.TextView;
 import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 
-public class RoomActivity extends AppCompatActivity implements Screen {
+public class RoomActivity extends AppCompatActivity implements RoomScreen {
     private TextView _roomTitle;
     ListView listView;
     @Override
@@ -31,18 +34,17 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
         listView = (ListView) this.findViewById(R.id.playerlist);
 
-        ArrayList<String> items = new ArrayList<>();
-        //items.add("방장");
+        ArrayList<String> items = new ArrayList<>(); //닉네임리스트를 저장할 배열
 
         Button btn_nickname = (Button)findViewById(R.id.btn_nickname);
-        btn_nickname.setOnClickListener(new View.OnClickListener() {
+        btn_nickname.setOnClickListener(new View.OnClickListener() { //입력란에 닉네임 입력 후, '등록'버튼을 누르면 실행하는 메소드
             @Override
             public void onClick(View v) {
                 CustomAdapter adapter = new CustomAdapter(RoomActivity.this, 0, items);
                 listView.setAdapter((adapter));
                 EditText edit_nickname = findViewById(R.id.edit_nickname);
-                items.add(edit_nickname.getText().toString());
-                edit_nickname.setText(null);
+                items.add(edit_nickname.getText().toString()); //배열에 입력란에서 받은 닉네임을 추가
+                edit_nickname.setText(null); //닉네임 입력 후, 다음 입력 시에 리셋
             }
         });
 
@@ -58,6 +60,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         });
     }
 
+  /*한 화면에 리스트뷰, 텍스트뷰, 버튼을 표현하기 위해 커스텀 어댑터 사용*/
     private class CustomAdapter extends ArrayAdapter<String> {
         private ArrayList<String> items;
 
@@ -74,21 +77,21 @@ public class RoomActivity extends AppCompatActivity implements Screen {
             }
 
             final TextView nicknamelist = (TextView) v.findViewById(R.id.nicknamelist);
-            nicknamelist.setText(items.get(position)); //플레이어 목록 저위의 닉1,2,3..보여주는거
+            nicknamelist.setText(items.get(position)); //닉네임 리스트를 리스트뷰에 보여줌
 
             final TextView roleView = (TextView) v.findViewById(R.id.rolelist);
 
             final String text = items.get(position);
-            Button btn_runner = (Button) v.findViewById(R.id.btn_teamA);
-            btn_runner.setOnClickListener(new View.OnClickListener() {
+            Button btn_teamA = (Button) v.findViewById(R.id.btn_teamA);
+            btn_teamA.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     roleView.setText("팀A");
                 }
             });
 
-            Button btn_tagger = (Button) v.findViewById(R.id.btn_teamB);
-            btn_tagger.setOnClickListener(new View.OnClickListener() {
+            Button btn_btn_teamB = (Button) v.findViewById(R.id.btn_teamB);
+            btn_teamB.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     roleView.setText("팀B");
@@ -97,18 +100,21 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
             return v;
         }
+
+        Button btn_start = findViewById(R.id.startButton);
+        btn_start.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.ROOM_START_PORT));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Core.getInstance().getUIManager().setCurrentScreen(this);
+        Core.getInstance().getUIManager().setCurrentScreen(this, ScreenType.ROOM);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Core.getInstance().getUIManager().setCurrentScreen(null);
+        Core.getInstance().getUIManager().setCurrentScreen(null, ScreenType.ROOM);
     }
 
     @Override
@@ -121,7 +127,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
     }
 
     @Override
-    public void setTopText(String text) {
-        _roomTitle.setText(text);
+    public void setTitle(String title) {
+        _roomTitle.setText(title);
     }
 }

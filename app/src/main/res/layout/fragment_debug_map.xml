@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_debugUp"
+        android:layout_width="wrap_content"
+        android:layout_height="95dp"
+        android:text="위"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_debugDown"
+        android:layout_width="wrap_content"
+        android:layout_height="95dp"
+        android:text="아래"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_debugRight"
+        android:layout_width="wrap_content"
+        android:layout_height="95dp"
+        android:text="오른쪽"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_debugLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="95dp"
+        android:text="왼쪾"
+        android:textSize="20sp" />
+
+</LinearLayout>

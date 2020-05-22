@@ -19,6 +19,7 @@ public class MatchStateSelectCharacter implements GameState {
     private GameStateMatch _match;
     private boolean _selectedCharacter;
     private boolean _sentSelected;
+    private boolean _waiting;
 
     MatchStateSelectCharacter(GameStateMatch match) {
         _match = match;
@@ -29,6 +30,8 @@ public class MatchStateSelectCharacter implements GameState {
 
     @Override
     public void update(long ms) {
+        if (_waiting) return;
+
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
@@ -41,9 +44,9 @@ public class MatchStateSelectCharacter implements GameState {
         OutputBitStream packetToSend = Core.getInstance().getPakcetManager().getPacketToSend();
         Util.sendHas(packetToSend, _selectedCharacter);
 
-        if (Util.hasMessage(packet)) {
-            Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY);
-            _match.switchState(MatchStateType.GET_READY);
+        if (Util.hasMessage(packet)){
+            _waiting = true;
+            Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY, ()->_match.switchState(MatchStateType.GET_READY));
         }
     }
 }

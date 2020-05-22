@@ -1,7 +1,5 @@
 package com.example.Client;
 
-import android.util.Log;
-
 import java.util.Collection;
 import java.util.Locale;
 
@@ -24,14 +22,17 @@ public class MatchStateGetReady implements GameState {
     private int _count;
     private int _prevCount;
     private GameStateMatch _match;
+    private boolean _waiting;
 
-    MatchStateGetReady(GameStateMatch parent, int countInMS){
+    MatchStateGetReady(GameStateMatch parent){
         _match = parent;
-       Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
+        Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
     }
 
     @Override
     public void update(long ms) {
+        if (_waiting) return;
+
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
@@ -40,8 +41,8 @@ public class MatchStateGetReady implements GameState {
         }
 
         if (Util.hasMessage(packet)){
-            _match.switchState(MatchStateType.INGAME);
-            Core.getInstance().getUIManager().switchScreen(ScreenType.INGAME);
+            _waiting = true;
+            Core.getInstance().getUIManager().switchScreen(ScreenType.INGAME, ()->_match.switchState(MatchStateType.INGAME));
         }
     }
 
@@ -52,7 +53,7 @@ public class MatchStateGetReady implements GameState {
             Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _count));
         }
 
-        Collection<GameObject> gameObjects = _match.getGameObjects();
+        Collection<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
             go.render(renderer);
         }

@@ -2,23 +2,48 @@ package com.example.Client;
 
 import android.util.Log;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import Common.GameState;
 import Common.GameStateType;
 import Common.InputBitStream;
+import Common.OutputBitStream;
 
 public class GameStateRoom implements GameState {
     private final int MAX_TITLE_LENGTH = 10;
     private final int MAX_NUM_PLAYERS = 6;
     private GameStateContext _parent;
+    private boolean _waiting = false;
+    private boolean _buttonPressed;
 
     GameStateRoom(GameStateContext stateContext){
         _parent = stateContext;
     }
 
     @Override
+    public void start() {
+        Core.getInstance().getUIManager().registerCallback(UIManager.ROOM_START_PORT,
+                ()-> _buttonPressed = true
+        );
+    }
+
+    @Override
     public void update(long ms) {
+        if (_waiting) return;
+
+        OutputBitStream outPacket = Core.getInstance().getPakcetManager().getPacketToSend();
+
+        if (_buttonPressed){
+            try {
+                outPacket.write(1, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+            _buttonPressed = false;
+        }
+
         // TODO: might be better if packet is fetched only once
         InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
         if (packet == null) return;
@@ -36,10 +61,10 @@ public class GameStateRoom implements GameState {
         if (hostStartedGame(packet)) {
             // assemble
 //            if (isAbleToStart(packet)) {
+            Core.getInstance().getInputManager().startSending();
             Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
-            _parent.switchState(GameStateType.MATCH);
-            Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE);
-            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+            _waiting = true;
+            Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE, ()->_parent.switchState(GameStateType.MATCH));
 //            }
         }
     }

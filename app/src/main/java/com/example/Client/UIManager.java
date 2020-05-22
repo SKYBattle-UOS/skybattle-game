@@ -10,33 +10,52 @@ import java.util.Objects;
 import java.util.Queue;
 
 public class UIManager {
+    public static final int SWITCH_SCREEN_PORT = 0;
+    public static final int ROOM_START_PORT = 0;
+
     private Screen _currentScreen = null;
+    private ScreenType _nextScreen = null;
+    private Runnable _onComplete = null;
+    private boolean _shouldSendSwitch = false;
+    private final Object _mutex = new Object();
+
     private Map<Integer, Runnable> _callbackMapping = new HashMap<>();
-    private Queue<ScreenType> _toSwitch = new LinkedList<>();
     private Handler _mainHandler = new Handler(Looper.getMainLooper());
-    private String _topText = null;
 
-    public void switchScreen(ScreenType type){
-        _toSwitch.add(type);
+    public void switchScreen(ScreenType type, Runnable onComplete){
+        _nextScreen = type;
+        _onComplete = onComplete;
+        _shouldSendSwitch = true;
 
-        if (_currentScreen != null)
-            _currentScreen.switchTo(_toSwitch.remove());
+        synchronized (_mutex) {
+            if (_currentScreen != null) {
+                _mainHandler.post(()->_currentScreen.switchTo(type));
+                _shouldSendSwitch = false;
+            }
+        }
     }
 
-    public void setCurrentScreen(Screen screen) {
-        _currentScreen = screen;
+    public void setCurrentScreen(Screen screen, ScreenType type){
+        synchronized (_mutex){
+            _currentScreen = screen;
+            if (_currentScreen == null) return;
 
-        if (!_toSwitch.isEmpty())
-            _currentScreen.switchTo(_toSwitch.remove());
-
-        if (_topText != null)
-            setTopText(_topText);
+            if (_shouldSendSwitch) {
+                _mainHandler.post(()->_currentScreen.switchTo(_nextScreen));
+                _shouldSendSwitch = false;
+            }
+            else if (type == _nextScreen){
+                _onComplete.run();
+                _nextScreen = null;
+                _onComplete = null;
+            }
+        }
     }
 
     public void invoke(int port){
         Runnable func = _callbackMapping.get(port);
         if (func != null) {
-            _mainHandler.post(func);
+            func.run();
         }
     }
 
@@ -45,11 +64,13 @@ public class UIManager {
         _callbackMapping.put(port, func);
     }
 
-    /*topText외에 리스트뷰같은 곳에 텍스트 설정 시, 내장함수 setText와 이름 겹치므로 setTopText로 변경*/
-    public void setTopText(String text){
-        _topText = text;
+    public void setTitle(String title){
+        if (_currentScreen instanceof RoomScreen)
+            _mainHandler.post(()->((RoomScreen) _currentScreen).setTitle(title));
+    }
 
-        if (_currentScreen != null)
-            _mainHandler.post(()->_currentScreen.setTopText(_topText));
+    public void setTopText(String text){
+        if (_currentScreen instanceof MatchScreen)
+            _mainHandler.post(()->((MatchScreen) _currentScreen).setTopText(text));
     }
 }

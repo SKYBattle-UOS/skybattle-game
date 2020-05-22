@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         /*"입력" 버튼 클릭 시 실행하는 메소드*/
-                        Core.getInstance().getUIManager().invoke(GameStateMain.switchScreenPort);
+                        Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT);
                     }
                 });
                 alert.show();
@@ -47,38 +47,19 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         });
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
-        btn_makeroom.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View v){
-                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                alert.setTitle("방 제목 입력");
-                alert.setMessage("방 제목을 입력하시오.");
-
-                EditText edit_roomtitle=new EditText(MainActivity.this);
-                alert.setView(edit_roomtitle);
-
-                alert.setPositiveButton("입력", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        /*"입력" 버튼 클릭 시 실행하는 메소드*/
-                        Core.getInstance().getUIManager().invoke(GameStateMain.switchScreenPort);
-                    }
-                });
-                alert.show();
-            }
-        });
+        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Core.getInstance().getUIManager().setCurrentScreen(this);
+        Core.getInstance().getUIManager().setCurrentScreen(this, ScreenType.MAIN);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Core.getInstance().getUIManager().setCurrentScreen(null);
+        Core.getInstance().getUIManager().setCurrentScreen(null, ScreenType.MAIN);
     }
 
     @Override
@@ -89,11 +70,6 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
             startActivity(entrance_intent);
             finish();
         }
-    }
-
-    @Override
-    public void setTopText(String text){
-        // nothing
     }
 
     @Override

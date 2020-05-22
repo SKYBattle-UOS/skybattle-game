@@ -12,5 +12,4 @@ enum ScreenType {
 
 public interface Screen {
     void switchTo(ScreenType type);
-    void setTopText(String text);
 }

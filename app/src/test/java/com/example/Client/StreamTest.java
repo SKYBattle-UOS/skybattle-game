@@ -3,6 +3,7 @@ package com.example.Client;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import Common.BitInputStream;
 import Common.BitOutputStream;
@@ -72,6 +73,9 @@ public class StreamTest {
 
         bitOut.resetPos();
 
+        String testString = "꿈나무";
+        byte[] b = testString.getBytes(StandardCharsets.UTF_8);
+
         try {
             bitOut.write(12, 8);
             bitOut.write(12, 8);
@@ -79,6 +83,19 @@ public class StreamTest {
             bitOut.write(13, 8);
             bitOut.write(14, 8);
             bitOut.write(14, 8);
+
+            bitOut.write(-1, 8);
+            bitOut.write(-2, 8);
+            bitOut.write(-3, 8);
+            bitOut.write(-4, 8);
+            bitOut.write(-5, 8);
+
+            bitOut.write(1, 3);
+            bitOut.write(b.length, 8);
+            bitOut.write(b, b.length * 8);
+            bitOut.write(1, 4);
+            bitOut.write(96, 32);
+            bitOut.write(344, 32);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,5 +110,22 @@ public class StreamTest {
         System.out.println(bitIn2.read(8));
         System.out.println(bitIn2.read(8));
         System.out.println(bitIn2.read(8));
+
+        System.out.println(bitIn2.read(8) - 256);
+        System.out.println(bitIn2.read(8) - 256);
+        System.out.println(bitIn2.read(8) - 256);
+        System.out.println(bitIn2.read(8) - 256);
+        System.out.println(bitIn2.read(8) - 256);
+        System.out.println(bitIn2.read(3));
+
+        int len = bitIn2.read(8);
+        byte[] rb = new byte[len];
+        bitIn2.read(rb, len * 8);
+
+        String anotherString = new String(rb, StandardCharsets.UTF_8);
+        System.out.println(anotherString);
+        System.out.println(bitIn2.read(4));
+        System.out.println(bitIn2.read(32));
+        System.out.println(bitIn2.read(32));
     }
 }
