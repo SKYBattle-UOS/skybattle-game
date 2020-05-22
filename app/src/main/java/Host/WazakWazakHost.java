@@ -15,6 +15,6 @@ public class WazakWazakHost extends WazakWazakCommon {
         spawned.setPosition(caster.getPosition()[0], caster.getPosition()[1]);
         spawned.setLook(ImageType.MARKER);
 
-        spawned.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.shouldCastFlag);
+        spawned.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
     }
 }

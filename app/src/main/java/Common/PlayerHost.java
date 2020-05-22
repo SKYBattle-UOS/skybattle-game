@@ -38,17 +38,9 @@ public class PlayerHost extends PlayerCommon {
             processColiision(collision, ms);
         }
 
-        if ((_shouldCast & 1) != 0)
-            _skills[0].cast(this);
-
-        if ((_shouldCast & 2) != 0)
-            _skills[1].cast(this);
-
-        if ((_shouldCast & 4) != 0)
-            _skills[2].cast(this);
-
-        if ((_shouldCast & 8) != 0)
-            _skills[3].cast(this);
+        for (Skill skill : _skills)
+            if (skill.getDirty())
+                skill.cast(this);
     }
 
     @Override
@@ -73,16 +65,17 @@ public class PlayerHost extends PlayerCommon {
 
             switch (input.qwer){
                 case 0: case 1: case 2: case 3:
-                    _shouldCast |= (1 << input.qwer);
+                    _skills[input.qwer].setDirty(true);
+                    dirtyFlag |= PlayerHost.skillDirtyFlag;
 
                     // target is coordinate
                     if (input.lat * input.lon != 0){
                         _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
-                        _skills[input.qwer].setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
+                        ((CoordinateSkill) _skills[input.qwer]).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
                     }
                     // target is player
                     else if (input.playerId >= 0){
-                        _skills[input.qwer].setTargetPlayer(input.playerId);
+                        ((PlayerTargetSkill) _skills[input.qwer]).setTargetPlayer(input.playerId);
                     }
                     break;
 

@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import Common.CoordinateSkill;
+import Common.PlayerTargetSkill;
 import Common.Skill;
 import Host.SkillTarget;
 
@@ -35,18 +37,13 @@ public class InGameFragment extends Fragment {
         Skill[] skills = Core.getInstance().getInputManager().getThisPlayer().getSkills();
         for (int i = 0 ; i < 4; i++){
             buttons[i].setText(skills[i].getName());
-            switch (skills[i].getSkillTargetType()){
-                case PLAYER:
-                    setPlayerBtnListener(buttons[i], i);
-                    break;
-                case COORDINATE:
-                    setCoordBtnListener(buttons[i], i);
-                    break;
-                case INSTANT:
-                    setInsantBtnListener(buttons[i], i);
-                    break;
-            }
 
+            if (skills[i] instanceof PlayerTargetSkill)
+                setPlayerBtnListener(buttons[i], i);
+            else if (skills[i] instanceof CoordinateSkill)
+                setCoordBtnListener(buttons[i], i);
+            else
+                setInsantBtnListener(buttons[i], i);
         }
 
         Button btn_map = view.findViewById(R.id.btn_map);

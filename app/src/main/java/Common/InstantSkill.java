@@ -1,18 +1,13 @@
 package Common;
 
-public abstract class InstantSkill implements Skill {
+public abstract class InstantSkill extends Skill {
     @Override
-    public void setTargetCoord(double lat, double lon) {
+    protected void readFromStream2(InputBitStream stream) {
 
     }
 
     @Override
-    public SkillTargetType getSkillTargetType() {
-        return SkillTargetType.INSTANT;
-    }
-
-    @Override
-    public void setTargetPlayer(int playerId) {
+    protected void writeToStream2(OutputBitStream stream) {
 
     }
 }

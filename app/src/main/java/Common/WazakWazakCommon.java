@@ -8,6 +8,5 @@ public class WazakWazakCommon extends InstantSkill {
 
     @Override
     public void cast(GameObject caster) {
-
     }
 }

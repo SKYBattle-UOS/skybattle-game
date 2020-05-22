@@ -3,15 +3,17 @@ package com.example.Client;
 import Common.GameObject;
 import Common.GlobalWazakWazakCommon;
 import Common.PlayerCommon;
+import Common.Skill;
 import Common.WazakWazakCommon;
+import Host.HealthUpCommon;
 
 public class Player extends PlayerCommon {
     protected Player(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
         _skills[0] = new WazakWazakCommon();
         _skills[1] = new GlobalWazakWazakCommon();
-        _skills[2] = new HealthUp();
-        _skills[3] = new HealthUp();
+        _skills[2] = new HealthUpCommon();
+        _skills[3] = new HealthUpCommon();
     }
 
     public static GameObject createInstance() {
@@ -25,6 +27,11 @@ public class Player extends PlayerCommon {
 
     @Override
     public void update(long ms) {
+        for (Skill skill : _skills)
+            if (skill.getDirty()){
+                skill.cast(this);
+                skill.setDirty(false);
+            }
     }
 
     @Override

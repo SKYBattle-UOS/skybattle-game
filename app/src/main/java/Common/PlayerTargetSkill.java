@@ -1,20 +1,21 @@
 package Common;
 
-public abstract class PlayerTargetSkill implements Skill {
+import java.io.IOException;
+
+public abstract class PlayerTargetSkill extends Skill {
     protected int _networkId;
 
-    @Override
-    public SkillTargetType getSkillTargetType() {
-        return SkillTargetType.PLAYER;
-    }
-
-    @Override
     public void setTargetPlayer(int networkId) {
         _networkId = networkId;
     }
 
     @Override
-    public void setTargetCoord(double lat, double lon) {
+    protected void writeToStream2(OutputBitStream stream) throws IOException {
+        stream.write(_networkId, 32);
+    }
 
+    @Override
+    protected void readFromStream2(InputBitStream stream) {
+        _networkId = stream.read(32);
     }
 }

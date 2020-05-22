@@ -1,9 +1,11 @@
 package Host;
 
+import android.util.Log;
+
 import Common.GameObject;
 import Common.PlayerTargetSkill;
 
-public abstract class HealthUpCommon extends PlayerTargetSkill {
+public class HealthUpCommon extends PlayerTargetSkill {
     @Override
     public String getName() {
         return "회복";
@@ -11,6 +13,6 @@ public abstract class HealthUpCommon extends PlayerTargetSkill {
 
     @Override
     public void cast(GameObject caster) {
-
+        Log.i("hehe", "helth up networkId " + _networkId);
     }
 }
