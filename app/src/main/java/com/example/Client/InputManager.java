@@ -43,14 +43,18 @@ public class InputManager {
         debugMoveToAssemblePoint();
         sendInput();
 
-        double[] _newPos = location.getLocation();
+        boolean isTest = false; //true - 실제 디바이스 false - 테스트 -> 가상 시뮬로 테스트 사용
+        if(isTest){
+            double[] _newPos = location.getLocation();
 
-        InputState state = new InputState();
-        state.qwer = 4;
-        _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
-        state.lat = _convertTemp[0];
-        state.lon = _convertTemp[1];
-        _inputStates.offer(state);
+            InputState state = new InputState();
+            state.qwer = 4;
+            _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
+            state.lat = _convertTemp[0];
+            state.lon = _convertTemp[1];
+            _inputStates.offer(state);
+        }
+
 
         // TODO
         _elapsed += ms;
