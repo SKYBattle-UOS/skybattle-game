@@ -3,6 +3,8 @@ package com.example.Client;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.lifecycle.MutableLiveData;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -26,6 +28,20 @@ public class UIManager implements RoomScreen, MatchScreen {
 
     private Map<Integer, Runnable> _callbackMapping = new HashMap<>();
     private Handler _mainHandler = new Handler(Looper.getMainLooper());
+
+    @SuppressWarnings("unchecked")
+    private MutableLiveData<String>[] _qwerTexts = new MutableLiveData[4];
+    @SuppressWarnings("unchecked")
+    private MutableLiveData<Boolean>[] _qwerEnables = new MutableLiveData[4];
+    private MutableLiveData<String> _topText = new MutableLiveData<>();
+    private MutableLiveData<String> _titleText = new MutableLiveData<>();
+
+    public UIManager(){
+        for (int i = 0; i < 4; i++) {
+            _qwerTexts[i] = new MutableLiveData<>();
+            _qwerEnables[i] = new MutableLiveData<>();
+        }
+    }
 
     public void switchScreen(ScreenType type, Runnable onComplete){
         _nextScreen = type;
@@ -69,28 +85,54 @@ public class UIManager implements RoomScreen, MatchScreen {
         _callbackMapping.put(port, func);
     }
 
+    public MutableLiveData<String> getButtonString(int button){
+        switch (button){
+            case BUTTON_Q:
+            case BUTTON_W:
+            case BUTTON_E:
+            case BUTTON_R:
+                return _qwerTexts[button - BUTTON_Q];
+        }
+        return null;
+    }
+
+    public MutableLiveData<Boolean> getButtonEnabled(int button){
+        switch (button){
+            case BUTTON_Q:
+            case BUTTON_W:
+            case BUTTON_E:
+            case BUTTON_R:
+                return _qwerEnables[button - BUTTON_Q];
+        }
+        return null;
+    }
+
+    public MutableLiveData<String> getTopText(){
+        return _topText;
+    }
+
+    public MutableLiveData<String> getTitleText(){
+        return _titleText;
+    }
+
     @Override
     public void setTitle(String title){
-        if (_currentScreen instanceof RoomScreen)
-            _mainHandler.post(()->((RoomScreen) _currentScreen).setTitle(title));
+        _titleText.postValue(title);
     }
 
     @Override
     public void setTopText(String text){
-        if (_currentScreen instanceof MatchScreen)
-            _mainHandler.post(()->((MatchScreen) _currentScreen).setTopText(text));
+        _topText.postValue(text);
     }
 
     @Override
     public void setButtonText(int button, String text) {
-        if (_currentScreen instanceof MatchScreen)
-            _mainHandler.post(()->((MatchScreen) _currentScreen).setButtonText(button, text));
+        _qwerTexts[button - BUTTON_Q].postValue(text);
     }
 
     @Override
     public void setButtonActive(int button, boolean active) {
-        if (_currentScreen instanceof MatchScreen)
-            _mainHandler.post(()->((MatchScreen) _currentScreen).setButtonActive(button, active));
+        _qwerEnables[button - BUTTON_Q].postValue(active);
     }
 
     @Override

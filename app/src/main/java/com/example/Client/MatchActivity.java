@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.function.Consumer;
 
-public class MatchActivity extends AppCompatActivity implements MatchScreen, OnMapReadyCallback {
+public class MatchActivity extends AppCompatActivity implements Screen, OnMapReadyCallback {
     private View marker_root_view;
     private TextView _topText;
     private TextView tv_marker;
@@ -36,7 +36,8 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
             if (getSupportFragmentManager().getBackStackEntryCount() < 1){
                 _clickMapAfter.run();
                 _map.setOnMapClickListener(null);
-                getSupportFragmentManager().removeOnBackStackChangedListener(_clickMapBackStack);
+                getSupportFragmentManager()
+                        .removeOnBackStackChangedListener(_clickMapBackStack);
             }
         }
     };
@@ -48,7 +49,8 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         public void onBackStackChanged() {
             if (getSupportFragmentManager().getBackStackEntryCount() < 1){
                 _targetPlayerAfter.run();
-                getSupportFragmentManager().removeOnBackStackChangedListener(_targetPlayerBackStack);
+                getSupportFragmentManager()
+                        .removeOnBackStackChangedListener(_targetPlayerBackStack);
             }
         }
     };
@@ -61,6 +63,8 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
                 .findFragmentById(R.id.frag);
         _mapFragment.getMapAsync(this);
         _topText = findViewById(R.id.topText);
+        Core.getInstance().getUIManager()
+                .getTopText().observe(this, text -> _topText.setText(text));
     }
 
     @Override
@@ -120,43 +124,6 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         tv_marker = marker_root_view.findViewById(R.id.tv_marker);
     }
 
-    @Override
-    public void setTopText(String text) {
-        _topText.setText(text);
-    }
-
-    @Override
-    public void setButtonText(int button, String text) {
-        Fragment currFrag = getSupportFragmentManager()
-                .findFragmentById(R.id.frag);
-
-        switch (button){
-            case UIManager.BUTTON_Q:
-            case UIManager.BUTTON_W:
-            case UIManager.BUTTON_E:
-            case UIManager.BUTTON_R:
-                if (currFrag instanceof InGameFragment)
-                    ((InGameFragment) currFrag).setButtonText(button, text);
-                break;
-        }
-    }
-
-    @Override
-    public void setButtonActive(int button, boolean active) {
-        Fragment currFrag = getSupportFragmentManager()
-                .findFragmentById(R.id.frag);
-
-        switch (button){
-            case UIManager.BUTTON_Q:
-            case UIManager.BUTTON_W:
-            case UIManager.BUTTON_E:
-            case UIManager.BUTTON_R:
-                if (currFrag instanceof InGameFragment)
-                    ((InGameFragment) currFrag).setButtonActive(button, active);
-                break;
-        }
-    }
-
     public void showDebugMap(){
         getSupportFragmentManager()
             .beginTransaction()
@@ -184,10 +151,6 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
                 .addOnBackStackChangedListener(_clickMapBackStack);
     }
 
-    public String getTopText() {
-        return (String) _topText.getText();
-    }
-
     public void showTargetPlayers(Consumer<Integer> onButtonClick, Runnable after) {
         _targetPlayerAfter = after;
         getSupportFragmentManager()
@@ -202,5 +165,13 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
 
         getSupportFragmentManager()
                 .addOnBackStackChangedListener(_targetPlayerBackStack);
+    }
+
+    public String getTopText() {
+        return (String) _topText.getText();
+    }
+
+    public void setTopText(String text) {
+        _topText.setText(text);
     }
 }

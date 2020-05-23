@@ -23,7 +23,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 
-public class RoomActivity extends AppCompatActivity implements RoomScreen {
+public class RoomActivity extends AppCompatActivity implements Screen {
     private TextView _roomTitle;
     ListView listView;
     @Override
@@ -31,6 +31,8 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         _roomTitle = findViewById(R.id.roomTitle);
+
+        Core.getInstance().getUIManager().getTitleText().observe(this, text -> _roomTitle.setText(text));
 
         listView = (ListView) this.findViewById(R.id.playerlist);
 
@@ -124,10 +126,5 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
             startActivity(room_intent);
             finish();
         }
-    }
-
-    @Override
-    public void setTitle(String title) {
-        _roomTitle.setText(title);
     }
 }

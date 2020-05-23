@@ -10,6 +10,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 import Common.CoordinateSkill;
 import Common.PlayerTargetSkill;
@@ -35,10 +36,16 @@ public class InGameFragment extends Fragment {
         buttons[2] = view.findViewById(R.id.btn_e);
         buttons[3] = view.findViewById(R.id.btn_r);
 
+        for (int i = 0; i < 4; i++){
+            int finalI = i;
+            Core.getInstance().getUIManager()
+                    .getButtonString(i).observe(this, text -> buttons[finalI].setText(text));
+            Core.getInstance().getUIManager()
+                    .getButtonEnabled(i).observe(this, bool -> buttons[finalI].setEnabled(bool));
+        }
+
         Skill[] skills = Core.getInstance().getInputManager().getThisPlayer().getSkills();
         for (int i = 0 ; i < 4; i++){
-            buttons[i].setText(skills[i].getName());
-
             if (skills[i] instanceof PlayerTargetSkill)
                 setPlayerBtnListener(buttons[i], i);
             else if (skills[i] instanceof CoordinateSkill)
@@ -79,15 +86,5 @@ public class InGameFragment extends Fragment {
                 () -> ma.setTopText(_topTextCache)
             );
         });
-    }
-
-    public void setButtonText(int button, String text) {
-        int btnIndex = button - UIManager.BUTTON_Q;
-        buttons[btnIndex].setText(text);
-    }
-
-    public void setButtonActive(int button, boolean active) {
-        int btnIndex = button - UIManager.BUTTON_Q;
-        buttons[btnIndex].setEnabled(active);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import android.app.UiModeManager;
+
 import java.util.Collection;
 
 import Common.GameObject;
@@ -23,12 +25,19 @@ public class MatchStateInGame implements GameState {
     @Override
     public void start() {
         // TODO this is temp
+        Player player = null;
         Collection<GameObject> gos = _match.getWorld();
         for (GameObject go : gos){
             if (go instanceof Player) {
+                player = (Player) go;
                 Core.getInstance().getInputManager().setThisPlayer((Player) go);
-                return;
+                break;
             }
+        }
+
+        for (int i = 0; i < 4; i++){
+            Core.getInstance().getUIManager().setButtonText(UIManager.BUTTON_Q + i, player.getSkills()[i].getName());
+            Core.getInstance().getUIManager().setButtonActive(UIManager.BUTTON_Q + i, true);
         }
     }
 
