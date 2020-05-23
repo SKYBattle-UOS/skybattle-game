@@ -55,12 +55,9 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         });
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
-<<<<<<<<< Temporary merge branch 1
-        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(GameStateMain.switchScreenPort));
-
-=========
         btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT));
->>>>>>>>> Temporary merge branch 2
+
+
     }
 
     @Override
