@@ -27,9 +27,6 @@ public class SplashActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceStare);
 
         setContentView(R.layout.activity_splash);
-
-
-
     }
 
     @Override

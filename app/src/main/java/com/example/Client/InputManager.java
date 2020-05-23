@@ -28,16 +28,29 @@ public class InputManager {
     private int[] _convertTemp = new int[2];
     private Player _player;
     private boolean _startSending;
+    private Location location;
 
     public InputManager(Context context, LatLonByteConverter converter){
         _inputStates = new ConcurrentLinkedQueue<>();
         _converter = converter;
+        location = new Location(context);
     }
 
     public void update(long ms){
-        if (!_startSending) return;
+        if (!_startSending)
+            return;
+
         debugMoveToAssemblePoint();
         sendInput();
+
+        double[] _newPos = location.getLocation();
+
+        InputState state = new InputState();
+        state.qwer = 4;
+        _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
+        state.lat = _convertTemp[0];
+        state.lon = _convertTemp[1];
+        _inputStates.offer(state);
 
         // TODO
         _elapsed += ms;
