@@ -40,11 +40,10 @@ public class InputManager {
         if (!_startSending)
             return;
 
-        debugMoveToAssemblePoint();
         sendInput();
 
         boolean isTest = false; //true - 실제 디바이스 false - 테스트 -> 가상 시뮬로 테스트 사용
-        if(isTest){
+        if (isTest){
             double[] _newPos = location.getLocation();
 
             InputState state = new InputState();
@@ -54,6 +53,8 @@ public class InputManager {
             state.lon = _convertTemp[1];
             _inputStates.offer(state);
         }
+        else
+            debugMoveToAssemblePoint();
 
 
         // TODO
