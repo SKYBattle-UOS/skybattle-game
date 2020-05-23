@@ -25,12 +25,11 @@ public class SplashActivity  extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceStare) {
         super.onCreate(savedInstanceStare);
+
         setContentView(R.layout.activity_splash);
 
-        if (!checkLocationServicesStatus()) {   //gps 기능이 켜져있는지 확인
-            showDialogForLocationServiceSetting();
-        }
-        checkRunTimePermission();
+
+
     }
 
     @Override
@@ -46,6 +45,42 @@ public class SplashActivity  extends AppCompatActivity {
                 finish();
             }
         }, 500);
+/* 500 부분 말고 권한 확인 후 넘어가도록 수정 필요
+        if (!checkLocationServicesStatus()) {   //gps 기능이 켜져있는지 확인
+            showDialogForLocationServiceSetting();
+        }
+
+        checkRunTimePermission();
+        */
+
+    }
+
+
+
+    //런타임 퍼미션 처리 0
+    void checkRunTimePermission(){
+        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
+
+        ArrayList<String> targetList = new ArrayList<String>();
+
+        for (int i=0; i< REQUIRED_PERMISSIONS.length; i++ ){
+            String currentPermission = REQUIRED_PERMISSIONS[i];
+            int permissionCheck = ContextCompat.checkSelfPermission(this, currentPermission);
+
+            if(permissionCheck != PackageManager.PERMISSION_GRANTED){
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[i])) {
+                    // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있다.
+                    Toast.makeText(this, currentPermission + " 어플 사용을 위하여 위치권한이 필요합니다.",Toast.LENGTH_LONG).show();
+                }else
+                    targetList.add(currentPermission);
+            }
+        }
+
+        String[] targets = new String[targetList.size()];
+        targetList.toArray(targets);
+
+        if(targets.length > 0)
+            ActivityCompat.requestPermissions(this, targets, PERMISSIONS_REQUEST_CODE);
     }
 
     //위치 서비스 사용이 가능한지 불가능한지 0
@@ -78,31 +113,5 @@ public class SplashActivity  extends AppCompatActivity {
             }
         });
         builder.create().show();
-    }
-
-    //런타임 퍼미션 처리 0
-    void checkRunTimePermission(){
-        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
-
-        ArrayList<String> targetList = new ArrayList<String>();
-
-        for (int i=0; i< REQUIRED_PERMISSIONS.length; i++ ){
-            String currentPermission = REQUIRED_PERMISSIONS[i];
-            int permissionCheck = ContextCompat.checkSelfPermission(this, currentPermission);
-
-            if(permissionCheck != PackageManager.PERMISSION_GRANTED){
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[i])) {
-                    // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있다.
-                    Toast.makeText(this, currentPermission + " 어플 사용을 위하여 위치권한이 필요합니다.",Toast.LENGTH_LONG).show();
-                }else
-                    targetList.add(currentPermission);
-            }
-        }
-
-        String[] targets = new String[targetList.size()];
-        targetList.toArray(targets);
-
-        if(targets.length > 0)
-            ActivityCompat.requestPermissions(this, targets, PERMISSIONS_REQUEST_CODE);
     }
 }

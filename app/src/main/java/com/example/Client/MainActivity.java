@@ -3,6 +3,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -82,4 +83,6 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
         Toast.makeText(this, "requestCode : "+requestCode+"  permissions : "+permissions+"  grantResults :"+grantResults, Toast.LENGTH_SHORT).show();
     }
+
+
 }
