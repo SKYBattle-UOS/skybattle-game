@@ -11,7 +11,6 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
 
     {
         int i = GameObject.startFromHereFlag;
-        i *= 2;
         playerIdDirtyFlag = i;
         i *= 2;
         healthDirtyFlag = i;
