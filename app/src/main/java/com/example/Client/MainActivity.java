@@ -2,18 +2,21 @@ package com.example.Client;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.util.Log;
+
 import com.pedro.library.AutoPermissions;
 import com.pedro.library.AutoPermissionsListener;
+
 import static com.example.Client.Location.*;
 
 public class MainActivity extends AppCompatActivity implements Screen, AutoPermissionsListener {
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         Core.createInstance(getApplicationContext());
 
         Button btn_entrance = findViewById(R.id.btn_entrance);
+
         btn_entrance.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v){
@@ -51,7 +55,12 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         });
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
+<<<<<<<<< Temporary merge branch 1
+        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(GameStateMain.switchScreenPort));
+
+=========
         btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT));
+>>>>>>>>> Temporary merge branch 2
     }
 
     @Override
@@ -90,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
         Toast.makeText(this, "requestCode : "+requestCode+"  permissions : "+permissions+"  grantResults :"+grantResults, Toast.LENGTH_SHORT).show();
     }
-
 
     //위치 서비스 사용이 가능한지 불가능한지 0
     public boolean checkLocationServicesStatus() {

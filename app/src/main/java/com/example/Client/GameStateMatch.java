@@ -1,12 +1,18 @@
 package com.example.Client;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
+import Common.Collider;
 import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
+import Common.LatLonByteConverter;
+import Common.Match;
 import Common.MatchStateType;
+import Common.PlayerCommon;
+import Host.WorldSetterHost;
 
 /**
  * 앱의 각 화면에 대한 상태패턴의 상태 객체 중 매치화면.
@@ -17,11 +23,12 @@ import Common.MatchStateType;
  * @since 2020-04-21
  * @see GameStateContext
  */
-public class GameStateMatch implements GameState {
+public class GameStateMatch implements GameState, Match {
     private GameStateContext _parent;
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
     private Vector<GameObject> _gameObjects;
+    private ArrayList<PlayerCommon> _players;
     private int _numPlayers;
     private boolean _worldSetterActive = false;
     private double[] _battleGroundLatLon;
@@ -36,8 +43,14 @@ public class GameStateMatch implements GameState {
         _currentState = new MatchStateAssemble(this, _numPlayers);
         _gameObjectRegistry = new GameObjectRegistry();
         _gameObjects = new Vector<>();
-        _worldSetter = new WorldSetter(_gameObjects, _gameObjectRegistry, _parent.getConverter());
+        _players = new ArrayList<>();
+        _worldSetter = new WorldSetter(this);
         _battleGroundLatLon = new double[2];
+    }
+
+    @Override
+    public void start() {
+        Core.getInstance().setMatch(this);
     }
 
     @Override
@@ -88,16 +101,35 @@ public class GameStateMatch implements GameState {
         _currentState.start();
     }
 
-    /**
-     * @return 현재 매치에 존재한는 모든 GameObject의 Array
-     */
-    public Collection<GameObject> getGameObjects(){
-        // TODO: DEBUG EDIT
-        return _gameObjects;
+    @Override
+    public LatLonByteConverter getConverter() {
+        return _parent.getConverter();
     }
 
-    public WorldSetter getWorldSetter(){
-        return _worldSetter;
+    @Override
+    public Collider getCollider() {
+        return null;
+    }
+
+    @Override
+    public WorldSetterHost getWorldSetterHost() {
+        return null;
+    }
+
+    @Override
+    public GameObjectRegistry getRegistry() { return _gameObjectRegistry; }
+
+    @Override
+    public List<GameObject> getWorld() { return _gameObjects; }
+
+    @Override
+    public List<PlayerCommon> getPlayers() {
+        return _players;
+    }
+
+    @Override
+    public GameObject createGameObject(int classId, boolean addToCollider) {
+        return null;
     }
 
     private void killGameObjects(){

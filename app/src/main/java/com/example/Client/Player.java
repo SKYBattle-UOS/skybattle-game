@@ -1,12 +1,17 @@
 package com.example.Client;
 
 import Common.GameObject;
+import Common.GlobalWazakWazakCommon;
 import Common.PlayerCommon;
+import Common.WazakWazakCommon;
 
 public class Player extends PlayerCommon {
     protected Player(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, ImageType.FILLED_CIRCLE));
+        _skills[0] = new WazakWazakCommon();
+        _skills[1] = new GlobalWazakWazakCommon();
+        _skills[2] = new HealthUp();
+        _skills[3] = new HealthUp();
     }
 
     public static GameObject createInstance() {
@@ -20,7 +25,6 @@ public class Player extends PlayerCommon {
 
     @Override
     public void update(long ms) {
-
     }
 
     @Override

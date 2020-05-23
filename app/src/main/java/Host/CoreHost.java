@@ -3,6 +3,7 @@ package Host;
 import android.os.SystemClock;
 
 import Common.GameStateType;
+import Common.Match;
 
 public class CoreHost {
     private static CoreHost _instance;
@@ -10,6 +11,7 @@ public class CoreHost {
     private boolean _isInitialized;
     private NetworkManager _networkManager;
     private GameStateContextHost _gameStateContext;
+    private Match _match;
 
     private CoreHost(){
         _isInitialized = false;
@@ -66,5 +68,13 @@ public class CoreHost {
 
     public NetworkManager getNetworkManager(){
         return _networkManager;
+    }
+
+    public void setMatch(Match match) {
+        _match = match;
+    }
+    
+    public Match getMatch(){
+        return _match;
     }
 }

@@ -12,6 +12,8 @@ public class GameObjectFactory {
     private Map<Integer, Supplier<GameObject>> _mappingC2F = new HashMap<>();
 
     public GameObject createGameObject(int classId){
+        if (_mappingC2F.get(classId) == null)
+            return null;
         return Objects.requireNonNull(_mappingC2F.get(classId)).get();
     }
 

@@ -6,12 +6,14 @@ import androidx.annotation.Nullable;
 
 import com.example.Client.Core;
 import com.example.Client.GameObjectRegistry;
+import com.example.Client.ImageType;
 import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import Host.GameStateMatchHost;
 import Host.WorldSetterHost;
 
 /**
@@ -22,19 +24,36 @@ import Host.WorldSetterHost;
  * @since 2020-04-21
  */
 public abstract class GameObject {
+    public static int posDirtyFlag;
+    public static int nameDirtyFlag;
+    public static int radiusDirtyFlag;
+    public static int imageTypeDirtyFlag;
+    public static int startFromHereFlag;
+
+    {
+        int i = 1;
+        posDirtyFlag = i;
+        i *= 2;
+        nameDirtyFlag = i;
+        i *= 2;
+        radiusDirtyFlag = i;
+        i *= 2;
+        imageTypeDirtyFlag = i;
+        i *= 2;
+        startFromHereFlag = i;
+    }
+
     private float _radius = 2.5f;
     private String _name;
     private int _networkId;
     private int _indexInWorld;
     private double[] _position;
     private boolean _wantsToDie;
+    private boolean _collision;
+    private ImageType _imageType;
     private RenderComponent _renderComponent;
 
-    protected int _dirtyPos = 0;
-    protected LatLonByteConverter _converter;
-    protected WorldSetterHost _worldSetterHost;
-    protected Collider _collider;
-    protected GameObjectRegistry _registry;
+    protected Match _match;
 
     private double[] _restoreTemp = new double[2];
     private int[] _convertTemp = new int[2];
@@ -45,10 +64,9 @@ public abstract class GameObject {
     }
 
     public void writeToStream(OutputBitStream stream, int dirtyFlag){
-        _dirtyPos = 0;
-        if ((dirtyFlag & (1 << _dirtyPos++)) != 0) {
+        if ((dirtyFlag & posDirtyFlag) != 0) {
             double[] pos = getPosition();
-            _converter.convertLatLon(pos[0], pos[1], _convertTemp);
+            _match.getConverter().convertLatLon(pos[0], pos[1], _convertTemp);
             int lat = _convertTemp[0];
             int lon = _convertTemp[1];
             try {
@@ -59,7 +77,7 @@ public abstract class GameObject {
             }
         }
 
-        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
+        if ((dirtyFlag & nameDirtyFlag) != 0){
             byte[] b = _name.getBytes(StandardCharsets.UTF_8);
             try {
                 stream.write(b.length, 8);
@@ -68,22 +86,49 @@ public abstract class GameObject {
                 e.printStackTrace();
             }
         }
+
+        if ((dirtyFlag & radiusDirtyFlag) != 0){
+            float r = getRadius();
+            int rInt = (int) r * 10;
+            try {
+                stream.write(rInt, 16);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if ((dirtyFlag & imageTypeDirtyFlag) != 0){
+            try {
+                stream.write(_imageType.ordinal(), 4);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void readFromStream(InputBitStream stream, int dirtyFlag){
-        _dirtyPos = 0;
-        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
+    public void readFromStream(InputBitStream stream, int dirtyFlag) {
+        if ((dirtyFlag & posDirtyFlag) != 0) {
             int lat = stream.read(32);
             int lon = stream.read(32);
-            _converter.restoreLatLon(lat, lon, _restoreTemp);
+            _match.getConverter().restoreLatLon(lat, lon, _restoreTemp);
             setPosition(_restoreTemp[0], _restoreTemp[1]);
         }
 
-        if ((dirtyFlag & (1 << _dirtyPos++)) != 0){
+        if ((dirtyFlag & nameDirtyFlag) != 0) {
             int len = stream.read(8);
             byte[] b = new byte[len];
             stream.read(b, len * 8);
             _name = new String(b, StandardCharsets.UTF_8);
+        }
+
+        if ((dirtyFlag & radiusDirtyFlag) != 0) {
+            int rInt = stream.read(16);
+            setRadius(((float) rInt) / 10f);
+        }
+
+        if ((dirtyFlag & imageTypeDirtyFlag) != 0) {
+            ImageType type = ImageType.values()[stream.read(4)];
+            setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, type));
         }
     }
 
@@ -109,17 +154,16 @@ public abstract class GameObject {
     }
 
     // region Getters and Setters
-    public void setGameObjectRegistry(GameObjectRegistry registry){
-        _registry = registry;
+    public void setCollision(){
+        _collision = true;
     }
 
-    public void setWorldSetterHost(WorldSetterHost wsh){
-        _worldSetterHost = wsh;
+    public Match getMatch(){
+        return _match;
     }
 
-    public void setCollider(Collider col){
-        _collider = col;
-        _collider.registerNew(this);
+    public void setMatch(Match match){
+        _match = match;
     }
 
     public void scheduleDeath(){
@@ -141,12 +185,9 @@ public abstract class GameObject {
     public void setPosition(double latitude, double longitude){
         _position[0] = latitude;
         _position[1] = longitude;
-        if (_collider != null)
-            _collider.positionDirty(this);
-    }
 
-    public void setLatLonByteConverter(LatLonByteConverter converter){
-        _converter = converter;
+        if (_match.getCollider() != null && _collision)
+            _match.getCollider().positionDirty(this);
     }
 
     public void setName(String name){
@@ -183,6 +224,13 @@ public abstract class GameObject {
 
     public void setRadius(float radius) {
         this._radius = radius;
+
+        if (_match.getCollider() != null && _collision)
+            _match.getCollider().positionDirty(this);
+    }
+
+    public void setLook(ImageType type){
+        _imageType = type;
     }
     // endregion
 }
