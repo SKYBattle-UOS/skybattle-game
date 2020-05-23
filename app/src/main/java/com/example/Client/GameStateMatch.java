@@ -71,7 +71,6 @@ public class GameStateMatch implements GameState, Match {
             go.after(ms);
 
         _currentState.update(ms);
-
     }
 
     @Override
