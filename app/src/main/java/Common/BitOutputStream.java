@@ -15,35 +15,31 @@ import java.nio.ByteOrder;
 public class BitOutputStream implements OutputBitStream {
 
     private static final int BITS_PER_BYTE = 8;
-    private byte[] data;
-    private int byteOffset;
-    private int bitOffset;
+    private OutputStream out;
+    private int buffer;
+    private int bufferBitCount;
     private  boolean bufferOwner = false;
+    private int byteSize;
 
     private static final int[] MASKS = new int[] {
             0, 1, 3, 7, 0xf, 0x1f, 0x3f, 0x7f, 0xff
     };
 
     /**
-     * OutputStream 을 받아서  OutputBitStream 초기화
+     * OutputStream 을 받아서  OutputBitStream 초기화     *
+     * @param out the OutputStream.
      */
-    public BitOutputStream(byte[] data) {
-        this.data = data;
-        for (byte item:data) {
-            if(item!=0)
-                byteOffset++;
-            else
-                break;
-        }
+    public BitOutputStream(OutputStream out) {
+        this.out = out;
+        this.bufferBitCount = 0;
     }
 
     public BitOutputStream() {
-        this.data = new byte[1500];
-        this.byteOffset = 0;
-        this.bitOffset = 0;
+        this.out = new ByteArrayOutputStream(byteArrayToInt(new byte[1500]));
+        this.bufferBitCount = 0;
         bufferOwner = true;
     }
-/*
+
     private int byteArrayToInt(byte[] bytes) {
 
         final int size = Integer.SIZE / 8;
@@ -61,31 +57,29 @@ public class BitOutputStream implements OutputBitStream {
         buff.order(ByteOrder.LITTLE_ENDIAN ); //LITTLE_ENDIAN Endian에 맞게 세팅
         return buff.getInt();
     }
-*/
+
     /**
      * 비트들을 쓴다.
-     * @param dataValue          비트값인 data 를 저장한다..
+     * @param data          비트값인 data 를 저장한다..
      * @param numBits       쓰여질 비트 개수
      * @throws IOException  if an I/O error occurs.
      */
-    public void write(int dataValue, int numBits) throws IOException {
-        OutputStream out = new ByteArrayOutputStream();
-        int tempBuffer = 0;
+    public void write(int data, int numBits) throws IOException {
         while (numBits > 0) {
-            int rest = BITS_PER_BYTE - bitOffset;  //여유공간 bit
+            int rest = BITS_PER_BYTE - bufferBitCount;  //여유공간 bit
 
             if (rest > numBits) {   //들어오는 비트보다 여유공간이 큰 경우
-                tempBuffer = ((dataValue & MASKS[numBits]) << bitOffset) | tempBuffer;
-                bitOffset += numBits;
+                buffer = ((data & MASKS[numBits]) << bufferBitCount) | buffer;
+                bufferBitCount += numBits;
                 numBits = 0;
             } else {    //여유공간이 없는 경우
-                tempBuffer = ((dataValue & MASKS[rest]) << bitOffset) | tempBuffer;
-                out.write(tempBuffer);  // 쓸 수 있는 공간이 없기에 꽉찬 버퍼를 씀.
-                byteOffset++;
+                buffer = ((data & MASKS[rest]) << bufferBitCount) | buffer;
+                out.write(buffer);  // 쓸 수 있는 공간이 없기에 꽉찬 버퍼를 씀.
+                byteSize++;
                 numBits -= rest;    //쓴 만큼 개수를 감소.
-                dataValue >>>= rest;
-                bitOffset = 0; //초기화
-                tempBuffer = 0;
+                data >>>= rest;
+                bufferBitCount = 0; //초기화
+                buffer = 0;
             }
         }
     }
@@ -112,27 +106,46 @@ public class BitOutputStream implements OutputBitStream {
 
     @Override
     public int availableBits(){
-        int availableBitNum = 0;
+        ByteArrayOutputStream buffer = (ByteArrayOutputStream) out;
+        byte[] data = buffer.toByteArray();
+
+        int availableBit = 0;
         int maxSize = data.length;
-        availableBitNum = (maxSize - byteOffset) * 8;
-        availableBitNum += (8 - bitOffset);
-        return availableBitNum;
+        availableBit = maxSize * 8;
+        return availableBit;
     }
 
     @Override
     public int getBufferByteLength(){
-        return bitOffset > 0 ? byteOffset + 1 : byteOffset;
+        return bufferBitCount > 0 ? byteSize + 1 : byteSize;
     }
 
     @Override
     public byte[] getBuffer(){
-        return data;
+        if (byteSize <= 0 && bufferBitCount == 0)
+            return null;
+
+        ByteArrayOutputStream ret = new ByteArrayOutputStream();
+        try {
+            ((ByteArrayOutputStream) out).writeTo(ret);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (bufferBitCount > 0)
+            ret.write(buffer);
+        return ret.toByteArray();
     }
 
     @Override
     public void resetPos() {
-        byteOffset = 0;
-        bitOffset = 0;
+        try{
+            out = new ByteArrayOutputStream(byteArrayToInt(new byte[1500]));
+//            out.flush(); //이 부분은 이렇게 해도 되는지 조금 생각 필요해보임
+            bufferBitCount = 0;
+            byteSize = 0;
+            buffer = 0;
+        } catch (Exception e){}
+
     }
 
     public boolean isBufferOwner(){
@@ -143,9 +156,8 @@ public class BitOutputStream implements OutputBitStream {
      * 버퍼에 남은 비트들을 전부 OutputStream 에 쓰고 닫는다.
      */
     public void close() throws IOException {
-        OutputStream out = new ByteArrayOutputStream();
-        if ( byteOffset > 0 || bitOffset > 0) {
-            out.write(data);
+        if (bufferBitCount > 0) {
+            out.write(buffer);
         }
 
         if(bufferOwner)
