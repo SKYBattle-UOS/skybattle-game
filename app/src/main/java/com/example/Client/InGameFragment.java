@@ -38,10 +38,9 @@ public class InGameFragment extends Fragment {
 
         for (int i = 0; i < 4; i++){
             int finalI = i;
-            Core.getInstance().getUIManager()
-                    .getButtonString(i).observe(this, text -> buttons[finalI].setText(text));
-            Core.getInstance().getUIManager()
-                    .getButtonEnabled(i).observe(this, bool -> buttons[finalI].setEnabled(bool));
+            AndroidUIManager uiManager = (AndroidUIManager) Core.getInstance().getUIManager();
+            uiManager.getButtonString(i).observe(this, text -> buttons[finalI].setText(text));
+            uiManager.getButtonEnabled(i).observe(this, bool -> buttons[finalI].setEnabled(bool));
         }
 
         Skill[] skills = Core.getInstance().getInputManager().getThisPlayer().getSkills();

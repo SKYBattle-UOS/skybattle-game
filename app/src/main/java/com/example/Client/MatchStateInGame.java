@@ -1,7 +1,5 @@
 package com.example.Client;
 
-import android.app.UiModeManager;
-
 import java.util.Collection;
 
 import Common.GameObject;
@@ -36,8 +34,8 @@ public class MatchStateInGame implements GameState {
         }
 
         for (int i = 0; i < 4; i++){
-            Core.getInstance().getUIManager().setButtonText(UIManager.BUTTON_Q + i, player.getSkills()[i].getName());
-            Core.getInstance().getUIManager().setButtonActive(UIManager.BUTTON_Q + i, true);
+            Core.getInstance().getUIManager().setButtonText(AndroidUIManager.BUTTON_Q + i, player.getSkills()[i].getName());
+            Core.getInstance().getUIManager().setButtonActive(AndroidUIManager.BUTTON_Q + i, true);
         }
     }
 

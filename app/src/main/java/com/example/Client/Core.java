@@ -39,7 +39,7 @@ public class Core {
         _isInitialized = false;
         _packetManager = new NetworkPacketManager();
         _gameObjectFactory = new GameObjectFactory();
-        _uiManager = new UIManager();
+        _uiManager = new AndroidUIManager();
         _converter = new LatLonByteConverter();
         _inputManager = new InputManager(context, _converter);
         _stateContext = new GameStateContext(_converter);

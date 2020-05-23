@@ -20,7 +20,7 @@ public class GameStateMain implements GameState {
 
     @Override
     public void start() {
-        Core.getInstance().getUIManager().registerCallback(UIManager.ENTER_ROOM_PORT, () -> {
+        Core.getInstance().getUIManager().registerCallback(AndroidUIManager.ENTER_ROOM_PORT, () -> {
             Core.getInstance().getUIManager().switchScreen(ScreenType.ROOM, () -> _parent.switchState(GameStateType.ROOM));
         } );
     }

@@ -63,7 +63,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
                 .findFragmentById(R.id.frag);
         _mapFragment.getMapAsync(this);
         _topText = findViewById(R.id.topText);
-        Core.getInstance().getUIManager()
+        ((AndroidUIManager) Core.getInstance().getUIManager())
                 .getTopText().observe(this, text -> _topText.setText(text));
     }
 
