@@ -28,7 +28,7 @@ public class Player extends PlayerCommon {
     @Override
     public void update(long ms) {
         for (Skill skill : _skills)
-            if (skill.getDirty()){
+            if (skill.isDirty()){
                 skill.cast(this);
                 skill.setDirty(false);
             }

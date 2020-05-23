@@ -44,7 +44,7 @@ public abstract class Skill {
         _isDirty = dirty;
     }
 
-    public boolean getDirty(){
+    public boolean isDirty(){
         return _isDirty;
     };
 }

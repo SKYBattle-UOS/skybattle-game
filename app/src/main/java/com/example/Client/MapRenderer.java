@@ -31,6 +31,8 @@ public class MapRenderer implements Renderer, Camera {
     @Override
     public RenderComponent createRenderComponent(GameObject parent, ImageType type) {
         switch (type){
+            case INVISIBLE:
+                return new EmptyRenderComponent();
             case MARKER:
                 return new MapMarkerRenderComponent(_map, parent);
             case CIRCLE:

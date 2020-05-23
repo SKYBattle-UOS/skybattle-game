@@ -6,7 +6,6 @@ import java.util.Queue;
 import Host.ClientProxy;
 import Host.CoreHost;
 import Host.GlobalWazakWazakHost;
-import Host.HealthUpCommon;
 import Host.HealthUpHost;
 import Host.WazakWazakHost;
 
@@ -39,7 +38,7 @@ public class PlayerHost extends PlayerCommon {
         }
 
         for (Skill skill : _skills)
-            if (skill.getDirty())
+            if (skill.isDirty())
                 skill.cast(this);
     }
 
