@@ -166,12 +166,4 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
         getSupportFragmentManager()
                 .addOnBackStackChangedListener(_targetPlayerBackStack);
     }
-
-    public String getTopText() {
-        return (String) _topText.getText();
-    }
-
-    public void setTopText(String text) {
-        _topText.setText(text);
-    }
 }

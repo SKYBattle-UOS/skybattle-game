@@ -1,7 +1,6 @@
 package com.example.Client;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 
 import Common.CoordinateSkill;
 import Common.PlayerTargetSkill;
@@ -18,7 +16,6 @@ import Common.Skill;
 import Host.SkillTarget;
 
 public class InGameFragment extends Fragment {
-    private String _topTextCache;
     private Button[] buttons;
 
     @Override
@@ -58,14 +55,14 @@ public class InGameFragment extends Fragment {
     }
 
     private void setCoordBtnListener(Button btn, int i){
+        AndroidUIManager uiManager = (AndroidUIManager) Core.getInstance().getUIManager();
         btn.setOnClickListener(v -> {
             MatchActivity ma = ((MatchActivity) getActivity());
-            _topTextCache = ma.getTopText();
             ma.showClickMap(
                     (lat, lon) -> Core.getInstance().getInputManager().qwer(new SkillTarget(i, lat, lon)),
-                    () -> ma.setTopText(_topTextCache)
+                    () -> uiManager.setTopText(uiManager.getDefaultTopText())
             );
-            ma.setTopText("시전 위치를 선택하세요");
+            uiManager.setTopText("시전 위치를 선택하세요");
         });
     }
 
@@ -76,13 +73,13 @@ public class InGameFragment extends Fragment {
     }
 
     private void setPlayerBtnListener(Button btn, int i){
+        AndroidUIManager uiManager = (AndroidUIManager) Core.getInstance().getUIManager();
         btn.setOnClickListener(v -> {
             MatchActivity ma = ((MatchActivity) getActivity());
-            _topTextCache = ma.getTopText();
-            ma.setTopText("시전 대상을 선택하세요");
+            uiManager.setTopText("시전 대상을 선택하세요");
             ma.showTargetPlayers(
                 networkId -> Core.getInstance().getInputManager().qwer(new SkillTarget(i, networkId)),
-                () -> ma.setTopText(_topTextCache)
+                () -> uiManager.setTopText(uiManager.getDefaultTopText())
             );
         });
     }

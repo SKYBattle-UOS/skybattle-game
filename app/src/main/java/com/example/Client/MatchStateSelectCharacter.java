@@ -1,7 +1,5 @@
 package com.example.Client;
 
-import java.io.IOException;
-
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;

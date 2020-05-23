@@ -17,6 +17,9 @@ public class AndroidUIManager implements UIManager {
     private Runnable _onComplete = null;
     private boolean _shouldSendSwitch = false;
     private final Object _mutex = new Object();
+    private String _topTextCache;
+    private String _defaultTopText;
+    private long _timer;
 
     private Map<Integer, Runnable> _callbackMapping = new HashMap<>();
     private Handler _mainHandler = new Handler(Looper.getMainLooper());
@@ -32,6 +35,17 @@ public class AndroidUIManager implements UIManager {
         for (int i = 0; i < 4; i++) {
             _qwerTexts[i] = new MutableLiveData<>();
             _qwerEnables[i] = new MutableLiveData<>();
+        }
+    }
+
+    @Override
+    public void update(long ms) {
+        if (_topTextCache != null){
+            _timer -= ms;
+            if (_timer < 0){
+                _topText.postValue(_topTextCache);
+                _topTextCache = null;
+            }
         }
     }
 
@@ -87,7 +101,29 @@ public class AndroidUIManager implements UIManager {
     }
 
     @Override
+    public String getDefaultTopText() {
+        return _defaultTopText;
+    }
+
+    @Override
+    public void setDefaultTopText(String text){
+        _defaultTopText = text;
+        _topText.postValue(text);
+    }
+
+    @Override
     public void setTopText(String text){
+        if (_topTextCache != null)
+            _topTextCache = text;
+        _topText.postValue(text);
+    }
+
+    @Override
+    public void setTopText(String text, float seconds) {
+        if (_topTextCache == null)
+            _topTextCache = _topText.getValue();
+
+        _timer = (long )(seconds * 1000);
         _topText.postValue(text);
     }
 

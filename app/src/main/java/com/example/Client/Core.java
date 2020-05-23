@@ -100,6 +100,7 @@ public class Core {
         if (_renderer != null)
             _renderer.render(ms);
 
+        _uiManager.update(ms);
     }
 
     public PacketManager getPakcetManager(){
