@@ -34,7 +34,7 @@ public class PlayerHost extends PlayerCommon {
         // passive
         Collection<CollisionState> collisions = _match.getCollider().getCollisions(this);
         for (CollisionState collision : collisions){
-            processColiision(collision, ms);
+            processCollision(collision, ms);
         }
 
         for (Skill skill : _skills)
@@ -46,7 +46,7 @@ public class PlayerHost extends PlayerCommon {
     public void after(long ms) {
     }
 
-    private void processColiision(CollisionState state, long ms){
+    private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
             if (((Damageable) state.other).getTeam() != _team)
                 ((Damageable) state.other).getHurt((int) (_dps * ms / 1000));

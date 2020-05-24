@@ -30,7 +30,7 @@ public abstract class GameObject {
     public static int imageTypeDirtyFlag;
     public static int startFromHereFlag;
 
-    {
+    static {
         int i = 1;
         posDirtyFlag = i;
         i *= 2;
