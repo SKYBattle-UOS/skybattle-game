@@ -128,6 +128,7 @@ public abstract class GameObject {
 
         if ((dirtyFlag & imageTypeDirtyFlag) != 0) {
             ImageType type = ImageType.values()[stream.read(4)];
+            getRenderComponent().destroy();
             setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, type));
         }
     }
