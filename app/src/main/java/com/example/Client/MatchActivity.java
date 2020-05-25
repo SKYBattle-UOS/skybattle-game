@@ -59,9 +59,14 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
-        _mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.frag);
-        _mapFragment.getMapAsync(this);
+        if (_mapFragment == null){
+            _mapFragment = new SupportMapFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frag, _mapFragment)
+                    .commit();
+            _mapFragment.getMapAsync(this);
+        }
         _topText = findViewById(R.id.topText);
         ((AndroidUIManager) Core.getInstance().getUIManager())
                 .getTopText().observe(this, text -> _topText.setText(text));
