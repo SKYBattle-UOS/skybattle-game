@@ -14,7 +14,7 @@
         android:text="이 메시지는 보이면 안 되는데"
         android:textSize="25sp" />
 
-    <fragment
+    <FrameLayout
         android:id="@+id/frag"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"

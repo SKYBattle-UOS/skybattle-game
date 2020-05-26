@@ -9,7 +9,7 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
     public static int skillDirtyFlag;
     public static int startFromHereFlag;
 
-    {
+    static {
         int i = GameObject.startFromHereFlag;
         playerIdDirtyFlag = i;
         i *= 2;
