@@ -2,11 +2,13 @@ package com.example.Client;
 
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -25,6 +27,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     private TextView _topText;
     private TextView tv_marker;
     private GoogleMap _map;
+    private GoogleMapAdapter _adapter;
     private SupportMapFragment _mapFragment;
     private ScreenType _currentScreenType = null;
 
@@ -59,14 +62,12 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
-        if (_mapFragment == null){
-            _mapFragment = new SupportMapFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frag, _mapFragment)
-                    .commit();
-            _mapFragment.getMapAsync(this);
-        }
+        _mapFragment = new SupportMapFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frag, _mapFragment)
+                .commit();
+        _mapFragment.getMapAsync(this);
         _topText = findViewById(R.id.topText);
         ((AndroidUIManager) Core.getInstance().getUIManager())
                 .getTopText().observe(this, text -> _topText.setText(text));
@@ -83,6 +84,12 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     protected void onPause() {
         super.onPause();
         Core.getInstance().getUIManager().setCurrentScreen(null, _currentScreenType);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        _adapter.save();
     }
 
     @Override
@@ -110,16 +117,22 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         setCustomMarkerView();
 
         _map = googleMap;
-        MapRenderer mapRenderer = new MapRenderer(
-                new GoogleMapAdapter(googleMap,this,marker_root_view,tv_marker)
-        );
 
-        Core.getInstance().setRenderer(mapRenderer);
-        Core.getInstance().setCamera(mapRenderer);
+        if (Core.getInstance().getRenderer() == null){
+            _adapter = new GoogleMapAdapter(googleMap, this, marker_root_view, tv_marker);
+            MapRenderer mapRenderer = new MapRenderer(_adapter);
+            Core.getInstance().setRenderer(mapRenderer);
+            Core.getInstance().setCamera(mapRenderer);
+        }
+        else {
+            _adapter = (GoogleMapAdapter) ((MapRenderer) Core.getInstance().getRenderer()).getMap();
+            _adapter.setContext(googleMap, this, marker_root_view, tv_marker);
+            _adapter.restore();
+        }
+
         _currentScreenType = ScreenType.ASSEMBLE;
         Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }

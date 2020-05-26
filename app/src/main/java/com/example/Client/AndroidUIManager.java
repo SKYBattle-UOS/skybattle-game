@@ -166,4 +166,5 @@ public class AndroidUIManager implements UIManager {
     public MutableLiveData<String> getTitleText(){
         return _titleText;
     }
+
 }
