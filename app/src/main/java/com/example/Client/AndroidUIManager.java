@@ -12,10 +12,10 @@ import java.util.Objects;
 import java.util.Queue;
 
 public class AndroidUIManager implements UIManager {
-    private Screen _currentScreen = null;
-    private ScreenType _nextScreen = null;
-    private Runnable _onComplete = null;
-    private boolean _shouldSendSwitch = false;
+    private Screen _currentScreen;
+    private ScreenType _nextScreen;
+    private Runnable _onComplete;
+    private boolean _shouldSendSwitch;
     private final Object _mutex = new Object();
     private String _topTextCache;
     private String _defaultTopText;

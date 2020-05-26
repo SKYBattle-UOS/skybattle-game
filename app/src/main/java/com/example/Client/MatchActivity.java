@@ -29,7 +29,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     private GoogleMap _map;
     private GoogleMapAdapter _adapter;
     private SupportMapFragment _mapFragment;
-    private ScreenType _currentScreenType = null;
+    private ScreenType _currentScreenType;
 
     private Runnable _clickMapAfter;
     private FragmentManager.OnBackStackChangedListener
@@ -90,6 +90,14 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         _adapter.save();
+        outState.putInt("screenType", _currentScreenType.ordinal());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        ScreenType stype = ScreenType.values()[savedInstanceState.getInt("screenType")];
+        switchTo(stype);
     }
 
     @Override
@@ -126,6 +134,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
             MapRenderer mapRenderer = new MapRenderer(_adapter);
             Core.getInstance().setRenderer(mapRenderer);
             Core.getInstance().setCamera(mapRenderer);
+            _currentScreenType = ScreenType.ASSEMBLE;
         }
         else {
             _adapter = (GoogleMapAdapter) ((MapRenderer) Core.getInstance().getRenderer()).getMap();
@@ -133,7 +142,6 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
             _adapter.restore();
         }
 
-        _currentScreenType = ScreenType.ASSEMBLE;
         Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 

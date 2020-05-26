@@ -184,12 +184,16 @@ public class GoogleMapAdapter implements Map {
     }
 
     private synchronized void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
+        if (_googleMap == null) return;
+
         int index = ((GoogleMarkerHandle) marker).index;
         Marker cur_marker = _markers.get(index);
         cur_marker.setPosition(new LatLng(lat, lon));
         cur_marker.showInfoWindow();
     }
     private synchronized void _setCirclePosition(MapCircleHandle circle, double lat, double lon){
+        if (_googleMap == null) return;
+
         int index = ((GoogleCircleHandle) circle).index;
         Circle cur_circle = _circles.get(index);
         cur_circle.setCenter(new LatLng(lat,lon));
@@ -197,6 +201,8 @@ public class GoogleMapAdapter implements Map {
     }
 
     private synchronized void _setCircleRadius(MapCircleHandle circle, float radius){
+        if (_googleMap == null) return;
+
         int index = ((GoogleCircleHandle) circle).index;
         Circle cur_circle = _circles.get(index);
         cur_circle.setRadius((double)radius);
@@ -213,6 +219,8 @@ public class GoogleMapAdapter implements Map {
     }
 
     private synchronized void _removeMarker(MapMarkerHandle marker) {
+        if (_googleMap == null) return;
+
         int index = ((GoogleMarkerHandle) marker).index;
         Marker cur_marker = _markers.get(index);
         _markers.remove(index);
@@ -220,6 +228,8 @@ public class GoogleMapAdapter implements Map {
     }
 
     private synchronized void _removeCircle(MapCircleHandle circle) {
+        if (_googleMap == null) return;
+
         int index = ((GoogleCircleHandle) circle).index;
         Circle cur_circle = _circles.get(index);
         _circles.remove(index);
