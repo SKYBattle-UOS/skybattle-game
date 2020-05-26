@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -64,9 +65,13 @@ public class RoomActivity extends AppCompatActivity implements Screen {
                 EditText edit_nickname = findViewById(R.id.edit_nickname);
                 if (edit_nickname.getText().toString().replace(" ", "").equals("")) { }
                 else {
-                    items.add(edit_nickname.getText().toString()); //배열에 입력란에서 받은 닉네임을 추가
+                    items.add(edit_nickname.getText().toString()); //배열에 입력란에서 받은 닉네임 등록
                     adapter.notifyDataSetChanged();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); //등록 후, 키보드가 숨겨지도록 함
+                    imm.hideSoftInputFromWindow(edit_nickname.getWindowToken(), 0);
+
                     edit_nickname.setText(null); //닉네임 입력 후, 다음 입력 시에 리셋
+
                 }
             }
         });
