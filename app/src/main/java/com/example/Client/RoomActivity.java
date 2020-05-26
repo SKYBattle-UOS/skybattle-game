@@ -80,7 +80,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         Button btn_start = findViewById(R.id.startButton);
         btn_start.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(AndroidUIManager.ROOM_START_PORT));
 
-        //방 나가기 버튼: 클릭 시, 이전 화면으로 돌아감.
+        //방 나가기 버튼: 클릭 시, 이전 화면으로 돌아감. 돌아가기 전에 닉네임 삭제여부를 묻는다.
         Button btn_exit= findViewById(R.id.btn_exit);
         btn_exit.setOnClickListener(new View.OnClickListener(){
         @Override
