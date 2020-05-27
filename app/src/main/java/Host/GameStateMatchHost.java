@@ -1,5 +1,6 @@
 package Host;
 
+import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
 import com.example.Client.ImageType;
@@ -10,6 +11,7 @@ import Common.GameObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 import Common.GameState;
@@ -20,6 +22,7 @@ import Common.Match;
 import Common.MatchStateType;
 import Common.PlayerCommon;
 import Common.PlayerHost;
+import Common.TimerStruct;
 import Common.Util;
 
 public class GameStateMatchHost implements GameState, Match {
@@ -35,6 +38,7 @@ public class GameStateMatchHost implements GameState, Match {
     private Collider _collider;
     private int _nextNetworkId = 1;
     private boolean _worldSetterActive = false;
+    private PriorityQueue<TimerStruct> _timerQueue = new PriorityQueue<>();
 
     // TODO
     private double[] _battleGroundLatLon;
@@ -78,6 +82,13 @@ public class GameStateMatchHost implements GameState, Match {
         _newGOClassId.add(classId);
 
         return ret;
+    }
+
+    @Override
+    public void setTimer(Runnable callback, float seconds) {
+        long timeToBeFired = Core.getInstance().getTime().getStartOfFrame();
+        timeToBeFired += (long) seconds * 1000;
+        _timerQueue.add(new TimerStruct(callback, timeToBeFired));
     }
 
     private void addNewGameObjectsToWorld(){
@@ -144,6 +155,8 @@ public class GameStateMatchHost implements GameState, Match {
         for (GameObject go : _gameObjects)
             go.update(ms);
 
+        processTimers();
+
         for (GameObject go : _gameObjects)
             go.after(ms);
 
@@ -152,6 +165,20 @@ public class GameStateMatchHost implements GameState, Match {
 
         _collider.update(ms);
         _currentState.update(ms);
+    }
+
+    private void processTimers() {
+        while (true){
+            TimerStruct ts = _timerQueue.peek();
+            if (ts == null) return;
+
+            if (ts.timeToBeFired < Core.getInstance().getTime().getStartOfFrame()){
+                ts.callback.run();
+                _timerQueue.poll();
+            }
+            else
+                return;
+        }
     }
 
     private void killGameObjects(){

@@ -1,7 +1,5 @@
 package Host;
 
-import android.os.SystemClock;
-
 import Common.AndroidTime;
 import Common.GameStateType;
 import Common.Match;

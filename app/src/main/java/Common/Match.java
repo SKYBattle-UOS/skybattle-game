@@ -14,4 +14,5 @@ public interface Match {
     List<GameObject> getWorld();
     List<PlayerCommon> getPlayers();
     GameObject createGameObject(int classId, boolean addToCollider);
+    void setTimer(Runnable callback, float seconds);
 }
