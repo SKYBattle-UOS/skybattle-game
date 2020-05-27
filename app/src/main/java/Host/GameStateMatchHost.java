@@ -155,12 +155,11 @@ public class GameStateMatchHost implements GameState, Match {
         for (GameObject go : _gameObjects)
             go.update(ms);
 
-        processTimers();
-
         for (GameObject go : _gameObjects)
             go.after(ms);
 
         addNewGameObjectsToWorld();
+        processTimers();
         killGameObjects();
 
         _collider.update(ms);

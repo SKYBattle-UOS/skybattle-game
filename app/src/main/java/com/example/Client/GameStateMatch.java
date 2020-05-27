@@ -62,6 +62,7 @@ public class GameStateMatch implements GameState, Match {
         if (packetStream != null && _worldSetterActive)
             _worldSetter.processInstructions(packetStream);
 
+        processTimers();
         killGameObjects();
 
         for (GameObject go : _gameObjects)
@@ -69,8 +70,6 @@ public class GameStateMatch implements GameState, Match {
 
         for (GameObject go : _gameObjects)
             go.update(ms);
-
-        processTimers();
 
         for (GameObject go : _gameObjects)
             go.after(ms);
@@ -164,6 +163,7 @@ public class GameStateMatch implements GameState, Match {
             if (gameObject.wantsToDie()) {
                 gameObject.faceDeath();
                 _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
+                _gameObjects.get(gameObject.getIndexInWorld()).setIndexInWorld(gameObject.getIndexInWorld());
                 _gameObjects.remove(_gameObjects.size() - 1);
                 goSize--;
                 i--;

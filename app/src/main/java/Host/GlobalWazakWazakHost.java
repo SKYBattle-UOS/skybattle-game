@@ -18,6 +18,9 @@ public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
         spawned.setName("원격 와작와작 지뢰");
         spawned.setPosition(_lat, _lon);
         spawned.setLook(ImageType.MARKER);
-        spawned.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
+        spawned.getMatch().getWorldSetterHost()
+                .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
+
+        CoreHost.getInstance().getMatch().setTimer(spawned::scheduleDeath, 3);
     }
 }
