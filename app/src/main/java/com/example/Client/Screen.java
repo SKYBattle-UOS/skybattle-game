@@ -7,6 +7,7 @@ enum ScreenType {
     CHARACTERSELECT,
     GETREADY,
     INGAME,
+    DEATH,
     END
 }
 

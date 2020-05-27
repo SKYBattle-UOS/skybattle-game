@@ -104,18 +104,29 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     public void switchTo(ScreenType type) {
         _currentScreenType = type;
 
+        Fragment currentFragmnet = getSupportFragmentManager()
+                .findFragmentById(R.id.frag);
+
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+
+        if (currentFragmnet != _mapFragment)
+            trans.remove(currentFragmnet);
+
         switch (type){
             case CHARACTERSELECT:
                 trans.add(R.id.frag, new SelectCharacterFragment());
                 break;
 
             case GETREADY:
-                trans.replace(R.id.frag, _mapFragment);
+                // nothing
                 break;
 
             case INGAME:
                 trans.add(R.id.frag, new InGameFragment());
+                break;
+
+            case DEATH:
+                // nothing
                 break;
         }
 

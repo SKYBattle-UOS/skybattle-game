@@ -75,7 +75,8 @@ public class AndroidUIManager implements UIManager {
                 _shouldSendSwitch = false;
             }
             else if (type == _nextScreen){
-                _onComplete.run();
+                if (_onComplete != null)
+                    _onComplete.run();
                 _nextScreen = null;
                 _onComplete = null;
             }

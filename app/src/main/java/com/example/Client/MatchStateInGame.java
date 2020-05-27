@@ -1,6 +1,7 @@
 package com.example.Client;
 
 import java.util.Collection;
+import java.util.List;
 
 import Common.GameObject;
 import Common.GameState;
@@ -14,6 +15,7 @@ import Common.GameState;
  */
 public class MatchStateInGame implements GameState {
     private GameStateMatch _match;
+    private boolean _isPlayerDead;
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
@@ -24,7 +26,7 @@ public class MatchStateInGame implements GameState {
     public void start() {
         // TODO this is temp
         Player player = null;
-        Collection<GameObject> gos = _match.getWorld();
+        List<GameObject> gos = _match.getWorld();
         for (GameObject go : gos){
             if (go instanceof Player) {
                 player = (Player) go;
@@ -42,9 +44,28 @@ public class MatchStateInGame implements GameState {
         UIManager uiManager = Core.getInstance().getUIManager();
 
         if (inputManager.getThisPlayer() == null){
-            uiManager.setDefaultTopText("당신은 죽었습니다.");
-            setButtons(null, false);
+            _isPlayerDead = true;
+            uiManager.setDefaultTopText("당신은 죽었습니다. 부활지점으로 이동하세요.");
+            uiManager.switchScreen(ScreenType.DEATH, null);
             inputManager.setThisPlayer(new Player(0, 0, "temp"));
+
+            List<GameObject> world = _match.getWorld();
+            for (GameObject go : world) {
+                if (go.getName().equals("부활 지점")) {
+                    go.setRenderComponent(
+                            Core.getInstance().getRenderer().createRenderComponent(
+                                    go, ImageType.CIRCLE_WITH_MARKER
+                            )
+                    );
+
+                    double[] respawnLatLon = go.getPosition();
+                    Core.getInstance().getCamera().move(respawnLatLon[0], respawnLatLon[1]);
+                }
+            }
+        }
+
+        if (_isPlayerDead){
+            // TODO update player position
         }
     }
 
