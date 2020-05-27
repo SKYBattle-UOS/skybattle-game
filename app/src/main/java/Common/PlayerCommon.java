@@ -1,5 +1,4 @@
 package Common;
-
 import java.io.IOException;
 
 public abstract class PlayerCommon extends GameObject implements Damageable {
