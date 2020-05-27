@@ -5,6 +5,7 @@ import java.io.IOException;
 public abstract class PlayerCommon extends GameObject implements Damageable {
     public static int playerIdDirtyFlag;
     public static int healthDirtyFlag;
+    public static int maxHealthDirtyFlag;
     public static int teamDirtyFlag;
     public static int skillDirtyFlag;
     public static int startFromHereFlag;
@@ -19,12 +20,15 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         i *= 2;
         skillDirtyFlag = i;
         i *= 2;
+        maxHealthDirtyFlag = i;
+        i *= 2;
         startFromHereFlag = i;
     }
 
     protected Skill[] _skills = new Skill[4];
     protected int _playerId;
     protected int _health = 100000;
+    protected int _maxHealth = 100000;
     protected int _dps = 20000;
     protected int _team;
 
@@ -43,6 +47,9 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
             if ((dirtyFlag & healthDirtyFlag) != 0)
                 stream.write(getHealth(), 32);
 
+            if ((dirtyFlag & maxHealthDirtyFlag) != 0)
+                stream.write(getMaxHealth(), 32);
+
             if ((dirtyFlag & teamDirtyFlag) != 0)
                 stream.write(getTeam(), 1);
 
@@ -51,7 +58,6 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
                     skill.writeToStream(stream);
                 }
             }
-
 
         } catch (IOException e){
             e.printStackTrace();
@@ -65,9 +71,11 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         if ((dirtyFlag & playerIdDirtyFlag) != 0)
             setPlayerId(stream.read(32));
 
-        if ((dirtyFlag & healthDirtyFlag) != 0){
+        if ((dirtyFlag & healthDirtyFlag) != 0)
             setHealth(stream.read(32));
-        }
+
+        if ((dirtyFlag & maxHealthDirtyFlag) != 0)
+            setMaxHealth(stream.read(32));
 
         if ((dirtyFlag & teamDirtyFlag) != 0)
             setTeam(stream.read(1));
@@ -102,8 +110,14 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
     }
 
     public void setHealth(int health) {
+        if (health > _maxHealth)
+            health = _maxHealth;
         this._health = health;
     }
+
+    public int getMaxHealth() { return _maxHealth; }
+
+    public void setMaxHealth(int health) { _maxHealth = health; }
 
     @Override
     public void getHurt(int damage) {
