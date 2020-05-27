@@ -112,6 +112,11 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
     public void setHealth(int health) {
         if (health > _maxHealth)
             health = _maxHealth;
+        else if (health < 0){
+            scheduleDeath();
+            health = 0;
+        }
+
         this._health = health;
     }
 
