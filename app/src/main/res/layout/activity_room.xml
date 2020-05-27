@@ -18,7 +18,7 @@
 
     <EditText
         android:id="@+id/edit_nickname"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_weight="1"
@@ -31,7 +31,7 @@
         android:layout_width="130dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
         android:text="등록" />
 
     <TextView
@@ -55,14 +55,14 @@
 
         <Button
             android:id="@+id/startButton"
-            android:layout_width="150dp"
+            android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:text="시작" />
 
         <Button
         android:id="@+id/btn_exit"
-        android:layout_width="150dp"
+            android:layout_width="200dp"
         android:layout_height="40dp"
         android:layout_weight="1"
         android:text="나가기" />
