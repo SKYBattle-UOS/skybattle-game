@@ -48,8 +48,11 @@ public class PlayerHost extends PlayerCommon {
 
     private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
-            if (((Damageable) state.other).getTeam() != _team)
+            if (((Damageable) state.other).getTeam() != _team){
                 ((Damageable) state.other).getHurt((int) (_dps * ms / 1000));
+                CoreHost.getInstance().getMatch().getWorldSetterHost()
+                        .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
+            }
         }
     }
 

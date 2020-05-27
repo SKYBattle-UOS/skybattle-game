@@ -21,4 +21,5 @@ public interface UIManager {
     void setTopText(String text, float seconds);
     void setButtonText(int button, String text);
     void setButtonActive(int button, boolean active);
+    void setHealth(int health);
 }

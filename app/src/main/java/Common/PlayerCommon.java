@@ -38,13 +38,13 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
 
         try {
             if ((dirtyFlag & playerIdDirtyFlag) != 0)
-                stream.write(_playerId, 32);
+                stream.write(getPlayerId(), 32);
 
             if ((dirtyFlag & healthDirtyFlag) != 0)
-                stream.write(_health, 32);
+                stream.write(getHealth(), 32);
 
             if ((dirtyFlag & teamDirtyFlag) != 0)
-                stream.write(_team, 1);
+                stream.write(getTeam(), 1);
 
             if ((dirtyFlag & skillDirtyFlag) != 0) {
                 for (Skill skill : _skills){
@@ -63,14 +63,14 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         super.readFromStream(stream, dirtyFlag);
 
         if ((dirtyFlag & playerIdDirtyFlag) != 0)
-            _playerId = stream.read(32);
+            setPlayerId(stream.read(32));
 
         if ((dirtyFlag & healthDirtyFlag) != 0){
-            _health = stream.read(32);
+            setHealth(stream.read(32));
         }
 
         if ((dirtyFlag & teamDirtyFlag) != 0)
-            _team = stream.read(1);
+            setTeam(stream.read(1));
 
         if ((dirtyFlag & skillDirtyFlag) != 0){
             for (Skill skill : _skills){

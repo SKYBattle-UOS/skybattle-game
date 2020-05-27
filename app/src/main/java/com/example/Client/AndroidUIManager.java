@@ -30,6 +30,7 @@ public class AndroidUIManager implements UIManager {
     private MutableLiveData<Boolean>[] _qwerEnables = new MutableLiveData[4];
     private MutableLiveData<String> _topText = new MutableLiveData<>();
     private MutableLiveData<String> _titleText = new MutableLiveData<>();
+    private MutableLiveData<Integer> _health = new MutableLiveData<>();
 
     public AndroidUIManager(){
         for (int i = 0; i < 4; i++) {
@@ -137,6 +138,11 @@ public class AndroidUIManager implements UIManager {
         _qwerEnables[button - BUTTON_Q].postValue(active);
     }
 
+    @Override
+    public void setHealth(int health) {
+        _health.postValue(health);
+    }
+
     public MutableLiveData<String> getButtonString(int button){
         switch (button){
             case BUTTON_Q:
@@ -166,5 +172,7 @@ public class AndroidUIManager implements UIManager {
     public MutableLiveData<String> getTitleText(){
         return _titleText;
     }
+
+    public MutableLiveData<Integer> getHealth() { return _health; }
 
 }
