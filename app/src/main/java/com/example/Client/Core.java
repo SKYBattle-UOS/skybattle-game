@@ -3,10 +3,12 @@ package com.example.Client;
 import android.content.Context;
 import android.os.SystemClock;
 
+import Common.AndroidTime;
 import Common.Camera;
 import Common.GameStateType;
 import Common.LatLonByteConverter;
 import Common.Match;
+import Common.Time;
 import Common.Util;
 import Host.CoreHost;
 
@@ -33,6 +35,7 @@ public class Core {
     private InputManager _inputManager;
     private LatLonByteConverter _converter;
     private Match _match;
+    private Time _time;
 
     private Core(Context context){
         _appContext = context;
@@ -43,6 +46,7 @@ public class Core {
         _converter = new LatLonByteConverter();
         _inputManager = new InputManager(context, _converter);
         _stateContext = new GameStateContext(_converter);
+        _time = new AndroidTime();
 
         Util.registerGameObjects(_gameObjectFactory);
     }
@@ -70,23 +74,17 @@ public class Core {
     }
 
     private void run(){
-        long prev = SystemClock.uptimeMillis();
-        long ms;
-
         while (true){
-            long now = SystemClock.uptimeMillis();
-            ms = now - prev;
-            run(ms);
+            _time.setStartOfFrame();
+            run(_time.getFrameInterval());
 
-            long elapsed = SystemClock.uptimeMillis() - now;
+            int elapsed = _time.getElapsedSinceStart();
             if (elapsed < 33)
                 try {
                     Thread.sleep(33 - elapsed);
                 } catch (InterruptedException e) {
                     // nothing
                 }
-
-            prev = now;
         }
     }
 
@@ -130,4 +128,6 @@ public class Core {
     public Match getMatch(){ return _match; }
 
     public void setMatch(Match match){ _match = match; }
+
+    public Time getTime(){ return _time; }
 }
