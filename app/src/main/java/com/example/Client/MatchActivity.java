@@ -163,8 +163,8 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
         _clickMapAfter = after;
         _map.setOnMapClickListener(latLng -> {
             listener.onClick(latLng.latitude, latLng.longitude);
-//            getSupportFragmentManager()
-//                    .popBackStackImmediate();
+            getSupportFragmentManager()
+                    .popBackStackImmediate();
         });
 
         getSupportFragmentManager()
@@ -173,8 +173,8 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
             .addToBackStack(null)
             .commit();
 
-//        getSupportFragmentManager()
-//                .addOnBackStackChangedListener(_clickMapBackStack);
+        getSupportFragmentManager()
+                .addOnBackStackChangedListener(_clickMapBackStack);
     }
 
     public void showTargetPlayers(Consumer<Integer> onButtonClick, Runnable after) {

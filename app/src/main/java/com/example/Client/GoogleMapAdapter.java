@@ -61,10 +61,7 @@ public class GoogleMapAdapter implements Map {
 
     public GoogleMapAdapter(GoogleMap googleMap, Context mContext,
                             View marker_root_view, TextView tv_marker) {
-        _googleMap = googleMap;
-        _matchActivity = mContext;
-        _marker_root_view = marker_root_view;
-        _tv_marker = tv_marker;
+        setContext(googleMap, mContext, marker_root_view, tv_marker);
     }
 
     public void setContext(GoogleMap googleMap, Context context, View markerView, TextView textView){
@@ -72,6 +69,8 @@ public class GoogleMapAdapter implements Map {
         _matchActivity = context;
         _marker_root_view = markerView;
         _tv_marker = textView;
+
+        _googleMap.setOnMarkerClickListener((marker) -> true);
     }
 
     @Override
