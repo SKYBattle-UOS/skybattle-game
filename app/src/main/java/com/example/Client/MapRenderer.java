@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Common.Camera;
 import Common.GameObject;
+import Common.CompositeRenderComponent;
 
 public class MapRenderer implements Renderer, Camera {
     private Map _map;
@@ -30,10 +31,15 @@ public class MapRenderer implements Renderer, Camera {
     @Override
     public RenderComponent createRenderComponent(GameObject parent, ImageType type) {
         switch (type){
-            case FILLED_CIRCLE:
+            case MARKER:
                 return new MapMarkerRenderComponent(_map, parent);
-            case HOLLOW_CIRCLE:
+            case CIRCLE:
                 return new MapCircleRenderComponent(_map, parent);
+            case CIRCLE_WITH_MARKER:
+                CompositeRenderComponent ret = new CompositeRenderComponent();
+                ret.addRenderComponent(new MapMarkerRenderComponent(_map, parent));
+                ret.addRenderComponent(new MapCircleRenderComponent(_map, parent));
+                return ret;
         }
         return null;
     }

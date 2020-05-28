@@ -32,11 +32,6 @@ public class MatchStateAssemble implements GameState {
     }
 
     @Override
-    public void start() {
-        Core.getInstance().getInputManager().sendDebugMove();
-    }
-
-    @Override
     public void update(long ms) {
         if (_waiting) return;
 

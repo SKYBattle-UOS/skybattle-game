@@ -12,20 +12,14 @@ import Common.Util;
 
 public class GameStateRoomHost implements GameState {
     private GameStateContextHost _parent;
-    private byte[] _buffer;
     private boolean _buttonPressed;
-
-    // TODO
-    private long _elapsed;
 
     public GameStateRoomHost(GameStateContextHost parent){
         _parent = parent;
-        _buffer = new byte[1];
     }
 
     @Override
     public void update(long ms) {
-        _elapsed += ms;
         NetworkManager net = CoreHost.getInstance().getNetworkManager();
         Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
 
@@ -34,7 +28,7 @@ public class GameStateRoomHost implements GameState {
             if (packet == null)
                 continue;
 
-            _buttonPressed = packet.read(8) == 77;
+            _buttonPressed = packet.read(1) == 1;
         }
 
         // host sent start

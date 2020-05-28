@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.pedro.library.AutoPermissions;
 import com.pedro.library.AutoPermissionsListener;
 
@@ -19,13 +18,10 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!checkLocationServicesStatus()) {   //gps 기능이 켜져있는지 확인
-            showDialogForLocationServiceSetting();
-        }
-
         Core.createInstance(getApplicationContext());
 
         Button btn_entrance = findViewById(R.id.btn_entrance);
+
         btn_entrance.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v){
@@ -40,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         /*"입력" 버튼 클릭 시 실행하는 메소드*/
-                        Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT);
+                        Core.getInstance().getUIManager().invoke(UIManager.ENTER_ROOM_PORT);
                     }
                 });
                 alert.show();
@@ -48,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         });
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
-        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.SWITCH_SCREEN_PORT));
+        btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.ENTER_ROOM_PORT));
     }
 
     @Override
@@ -89,35 +85,4 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
     }
 
 
-    //위치 서비스 사용이 가능한지 불가능한지 0
-    public boolean checkLocationServicesStatus() {
-        LocationManager locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
-
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    private void showDialogForLocationServiceSetting() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("위치 서비스 비활성화");
-        builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
-                + "위치 설정을 수정부탁드립니다.");
-        builder.setCancelable(true);
-        builder.setPositiveButton("설정", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                Intent callGPSSettingIntent
-                        = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivityForResult(callGPSSettingIntent, Location.GPS_ENABLE_REQUEST_CODE);
-            }
-        });
-        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        builder.create().show();
-    }
 }

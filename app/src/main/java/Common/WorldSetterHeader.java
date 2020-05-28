@@ -34,21 +34,22 @@ public class WorldSetterHeader {
     }
 
     private int actionToInt(WorldSetterAction action){
-        int actionInt = 3;
-        switch (action){
-            case CREATE:
-                actionInt = 0;
-                break;
-
-            case UPDATE:
-                actionInt = 1;
-                break;
-
-            case DESTROY:
-                actionInt = 2;
-                break;
-        }
-        return actionInt;
+        return action.ordinal();
+//        int actionInt = 3;
+//        switch (action){
+//            case CREATE:
+//                actionInt = 0;
+//                break;
+//
+//            case UPDATE:
+//                actionInt = 1;
+//                break;
+//
+//            case DESTROY:
+//                actionInt = 2;
+//                break;
+//        }
+//        return actionInt;
     }
 
     private WorldSetterAction intToAction(int i){

@@ -5,20 +5,25 @@ import com.example.Client.Player;
 
 import java.io.IOException;
 
+import Host.DummyPlayerHost;
+
 public class Util {
     public static final int PORT = 9998;
     public static int PlayerClassId;
     public static int ItemClassId;
+    public static int DummyPlayerClassId;
 
     public static void registerGameObjects(GameObjectFactory factory){
         PlayerClassId = factory.registerCreateMethod(Player::createInstance);
         ItemClassId = factory.registerCreateMethod(Item::createInstance);
+        DummyPlayerClassId = factory.registerCreateMethod(Player::createInstance);
     }
 
     public static void registerGameObjectsHost(GameObjectFactory factory){
         // should be same order as registerGameObjects !!!!!!!!!!
         factory.registerCreateMethod(PlayerHost::createInstance);
         factory.registerCreateMethod(ItemHost::createInstance);
+        factory.registerCreateMethod(DummyPlayerHost::createInstance);
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {

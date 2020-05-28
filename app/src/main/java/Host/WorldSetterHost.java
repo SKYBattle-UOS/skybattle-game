@@ -3,6 +3,7 @@ package Host;
 import com.example.Client.GameObjectRegistry;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ public class WorldSetterHost {
     }
 
     public void writeInstructionToStream(OutputBitStream packetToSend) {
+        ArrayList<Integer> _toRemove = new ArrayList<>();
         for (Map.Entry<Integer, WorldSetterHeader> entry : _mappingN2I.entrySet()){
             WorldSetterHeader header = entry.getValue();
             if (header.dirtyFlag != 0){
@@ -36,10 +38,13 @@ public class WorldSetterHost {
             }
 
             if (entry.getValue().action == WorldSetterAction.DESTROY)
-                _mappingN2I.remove(header.networkId);
+                _toRemove.add(header.networkId);
             else
                 entry.getValue().action = WorldSetterAction.UPDATE;
         }
+
+        for (int nid : _toRemove)
+            _mappingN2I.remove(nid);
 
         try {
             packetToSend.write(0, 1);
@@ -62,7 +67,7 @@ public class WorldSetterHost {
         WorldSetterHeader header = _mappingN2I.get(networkId);
         if (header == null || header.action != WorldSetterAction.UPDATE) return;
 
-        header.dirtyFlag = dirtyFlag;
+        header.dirtyFlag |= dirtyFlag;
     }
 
     public void generateDestroyInstruction(int networkId){

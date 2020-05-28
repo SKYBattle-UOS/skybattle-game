@@ -12,5 +12,6 @@ public interface Match {
     WorldSetterHost getWorldSetterHost();
     GameObjectRegistry getRegistry();
     List<GameObject> getWorld();
-    GameObject createGameObject(int classId);
+    List<PlayerCommon> getPlayers();
+    GameObject createGameObject(int classId, boolean addToCollider);
 }

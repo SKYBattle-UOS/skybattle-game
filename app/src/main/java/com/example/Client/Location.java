@@ -1,20 +1,15 @@
 package com.example.Client;
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.content.Context;
-import androidx.core.app.ActivityCompat;
 import android.content.Intent;
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import android.app.Service;
 import android.os.IBinder;
-import android.widget.Toast;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class Location
@@ -22,20 +17,12 @@ public class Location
     private GpsTracker gpsTracker;
 
     public static final int GPS_ENABLE_REQUEST_CODE = 2001;    //gps 사용 requestCode
-    public static final int PERMISSIONS_REQUEST_CODE = 100;    //앱 위치 사용 requestCode 101?은 뭐지
-    String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
     Context mContext;
-    Activity activity;
 
-    public Location(Activity activity, Context mContext){
+    public Location(Context mContext){
         this.mContext = mContext;
-        this.activity = activity;
 
-        checkRunTimePermission();
-
-
-        gpsTracker = new GpsTracker(activity);
+        gpsTracker = new GpsTracker(mContext);
 
         double latitude = gpsTracker.getLatitude();
         double longitude = gpsTracker.getLongitude();
@@ -65,32 +52,6 @@ public class Location
     public double[] getLocation() {
         gpsTracker.getLocation();
         return new double[]{gpsTracker.getLatitude(), gpsTracker.getLongitude() };
-    }
-
-    //런타임 퍼미션 처리 0
-    void checkRunTimePermission(){
-        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
-
-        ArrayList<String> targetList = new ArrayList<String>();
-
-        for (int i=0; i< REQUIRED_PERMISSIONS.length; i++ ){
-            String currentPermission = REQUIRED_PERMISSIONS[i];
-            int permissionCheck = ContextCompat.checkSelfPermission(mContext, currentPermission);
-
-            if(permissionCheck != PackageManager.PERMISSION_GRANTED){
-                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, REQUIRED_PERMISSIONS[i])) {
-                    // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있다.
-                    Toast.makeText(mContext, currentPermission + " 어플 사용을 위하여 위치권한이 필요합니다.",Toast.LENGTH_LONG).show();
-                }else
-                    targetList.add(currentPermission);
-            }
-        }
-
-        String[] targets = new String[targetList.size()];
-        targetList.toArray(targets);
-
-        if(targets.length > 0)
-            ActivityCompat.requestPermissions(activity, targets, PERMISSIONS_REQUEST_CODE);
     }
 }
 

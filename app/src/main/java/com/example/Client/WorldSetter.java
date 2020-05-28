@@ -2,6 +2,7 @@ package com.example.Client;
 
 import Common.GameObject;
 import Common.InputBitStream;
+import Common.PlayerCommon;
 import Common.WorldSetterHeader;
 
 public class WorldSetter {
@@ -38,12 +39,16 @@ public class WorldSetter {
     private void createGO(InputBitStream stream){
         if (_match.getRegistry().getGameObject(_header.networkId) == null){
             GameObject newGO = Core.getInstance().getGameObjectFactory().createGameObject(_header.classId);
+
             newGO.setMatch(_match);
             newGO.setNetworkId(_header.networkId);
             newGO.readFromStream(stream, _header.dirtyFlag);
             _match.getRegistry().add(_header.networkId, newGO);
             newGO.setIndexInWorld(_match.getWorld().size());
             _match.getWorld().add(newGO);
+
+            if (newGO instanceof Player)
+                _match.getPlayers().add((PlayerCommon) newGO);
         }
     }
 

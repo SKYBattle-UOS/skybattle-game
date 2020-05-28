@@ -14,5 +14,8 @@ public interface Map {
     void moveCamera(double latitude, double longitude);
     void zoomCamera(float zoom);
     void setMarkerPosition(MapMarkerHandle marker, double lat, double lon);
+    void setCirclePosition(MapCircleHandle circle, double lat, double lon);
+    void setCircleRadius(MapCircleHandle circle, float radius);
     void removeMarker(MapMarkerHandle marker);
+    void removeCircle(MapCircleHandle circle);
 }

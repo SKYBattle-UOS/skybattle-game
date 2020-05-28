@@ -22,6 +22,7 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void start() {
+        // TODO this is temp
         Collection<GameObject> gos = _match.getWorld();
         for (GameObject go : gos){
             if (go instanceof Player) {
