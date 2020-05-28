@@ -113,6 +113,15 @@ public class GoogleMapAdapter implements Map {
     public void zoomCamera(float zoom) {
         _mainHandler.post(()->_animateCamera(zoom));
     }
+    @Override
+    public void hideMarker(MapMarkerHandle marker){
+        _mainHandler.post(()->_hideMarker(marker));
+    }
+
+    @Override
+    public void showMarker(MapMarkerHandle marker){
+        _mainHandler.post(()->_showMarker(marker));
+    }
 
     private synchronized void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
         int index = ((GoogleMarkerHandle) marker).index;
@@ -203,14 +212,31 @@ public class GoogleMapAdapter implements Map {
 //    }
 
     private void _addCircle(int number,double lat, double lon, int color, float radius) {
+        String color_fill="";
         LatLng position = new LatLng(lat, lon);
+        if(color==Color.RED)
+            color_fill="#88FF0000";
 
         Circle circle = _googleMap.addCircle(new CircleOptions()
                 .center(position)
                 .radius(radius)
-                .strokeColor(color));
+                .strokeColor(color)
+                .fillColor(Color.parseColor(color_fill)));
 
         _circles.put(number, circle);
+    }
+
+    private void _hideMarker(MapMarkerHandle marker) {
+        int index = ((GoogleMarkerHandle) marker).index;
+        Marker cur_marker = _markers.get(index);
+        cur_marker.setVisible(false);
+    }
+
+    private void _showMarker(MapMarkerHandle marker) {
+        int index = ((GoogleMarkerHandle) marker).index;
+        Marker cur_marker = _markers.get(index);
+        cur_marker.setVisible(true);
+        cur_marker.showInfoWindow();
     }
 
     public static Bitmap getResizedBitmap(Resources resources, int id, int size, int width, int height) {

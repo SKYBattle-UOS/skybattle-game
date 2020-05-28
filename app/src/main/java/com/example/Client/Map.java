@@ -18,4 +18,6 @@ public interface Map {
     void setCircleRadius(MapCircleHandle circle, float radius);
     void removeMarker(MapMarkerHandle marker);
     void removeCircle(MapCircleHandle circle);
+    void hideMarker(MapMarkerHandle marker);
+    void showMarker(MapMarkerHandle marker);
 }
