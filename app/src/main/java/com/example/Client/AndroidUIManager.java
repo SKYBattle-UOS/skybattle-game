@@ -12,10 +12,10 @@ import java.util.Objects;
 import java.util.Queue;
 
 public class AndroidUIManager implements UIManager {
-    private Screen _currentScreen = null;
-    private ScreenType _nextScreen = null;
-    private Runnable _onComplete = null;
-    private boolean _shouldSendSwitch = false;
+    private Screen _currentScreen;
+    private ScreenType _nextScreen;
+    private Runnable _onComplete;
+    private boolean _shouldSendSwitch;
     private final Object _mutex = new Object();
     private String _topTextCache;
     private String _defaultTopText;
@@ -30,6 +30,7 @@ public class AndroidUIManager implements UIManager {
     private MutableLiveData<Boolean>[] _qwerEnables = new MutableLiveData[4];
     private MutableLiveData<String> _topText = new MutableLiveData<>();
     private MutableLiveData<String> _titleText = new MutableLiveData<>();
+    private MutableLiveData<Integer> _health = new MutableLiveData<>();
 
     public AndroidUIManager(){
         for (int i = 0; i < 4; i++) {
@@ -74,7 +75,8 @@ public class AndroidUIManager implements UIManager {
                 _shouldSendSwitch = false;
             }
             else if (type == _nextScreen){
-                _onComplete.run();
+                if (_onComplete != null)
+                    _onComplete.run();
                 _nextScreen = null;
                 _onComplete = null;
             }
@@ -137,6 +139,11 @@ public class AndroidUIManager implements UIManager {
         _qwerEnables[button - BUTTON_Q].postValue(active);
     }
 
+    @Override
+    public void setHealth(int health) {
+        _health.postValue(health);
+    }
+
     public MutableLiveData<String> getButtonString(int button){
         switch (button){
             case BUTTON_Q:
@@ -166,4 +173,7 @@ public class AndroidUIManager implements UIManager {
     public MutableLiveData<String> getTitleText(){
         return _titleText;
     }
+
+    public MutableLiveData<Integer> getHealth() { return _health; }
+
 }

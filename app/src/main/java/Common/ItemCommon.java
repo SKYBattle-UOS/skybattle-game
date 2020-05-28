@@ -29,7 +29,7 @@ public abstract class ItemCommon extends GameObject implements Pickable {
 
         if ((dirtyFlag & isPickedUpDirtyFlag) != 0){
             try {
-                stream.write(_isPickedUp ? 1 : 0, 1);
+                stream.write(isPickedUp() ? 1 : 0, 1);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,22 +1,19 @@
 package com.example.Client;
 
 import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.function.Consumer;
 
@@ -25,8 +22,9 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     private TextView _topText;
     private TextView tv_marker;
     private GoogleMap _map;
+    private AndroidGoogleMap _adapter;
     private SupportMapFragment _mapFragment;
-    private ScreenType _currentScreenType = null;
+    private ScreenType _currentScreenType;
 
     private Runnable _clickMapAfter;
     private FragmentManager.OnBackStackChangedListener
@@ -59,14 +57,12 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
-        if (_mapFragment == null){
-            _mapFragment = new SupportMapFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frag, _mapFragment)
-                    .commit();
-            _mapFragment.getMapAsync(this);
-        }
+        _mapFragment = new SupportMapFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frag, _mapFragment)
+                .commit();
+        _mapFragment.getMapAsync(this);
         _topText = findViewById(R.id.topText);
         ((AndroidUIManager) Core.getInstance().getUIManager())
                 .getTopText().observe(this, text -> _topText.setText(text));
@@ -86,21 +82,47 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        _adapter.save();
+        outState.putInt("screenType", _currentScreenType.ordinal());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        ScreenType stype = ScreenType.values()[savedInstanceState.getInt("screenType")];
+        switchTo(stype);
+    }
+
+    @Override
     public void switchTo(ScreenType type) {
         _currentScreenType = type;
 
+        Fragment currentFragmnet = getSupportFragmentManager()
+                .findFragmentById(R.id.frag);
+
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+
+        if (currentFragmnet != _mapFragment)
+            trans.remove(currentFragmnet);
+
         switch (type){
             case CHARACTERSELECT:
                 trans.add(R.id.frag, new SelectCharacterFragment());
                 break;
 
             case GETREADY:
-                trans.replace(R.id.frag, _mapFragment);
+                // nothing
                 break;
 
             case INGAME:
                 trans.add(R.id.frag, new InGameFragment());
+                break;
+
+            case DEATH:
+                // nothing
+                trans.add(R.id.frag, new DebugMapFragment());
                 break;
         }
 
@@ -110,17 +132,23 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         setCustomMarkerView();
 
         _map = googleMap;
-        MapRenderer mapRenderer = new MapRenderer(
-                new GoogleMapAdapter(googleMap,this,marker_root_view,tv_marker)
-        );
 
-        Core.getInstance().setRenderer(mapRenderer);
-        Core.getInstance().setCamera(mapRenderer);
-        _currentScreenType = ScreenType.ASSEMBLE;
+        if (Core.getInstance().getRenderer() == null){
+            _adapter = new AndroidGoogleMap(googleMap, this, marker_root_view, tv_marker);
+            MapRenderer mapRenderer = new MapRenderer(_adapter);
+            Core.getInstance().setRenderer(mapRenderer);
+            Core.getInstance().setCamera(mapRenderer);
+            _currentScreenType = ScreenType.ASSEMBLE;
+        }
+        else {
+            _adapter = (AndroidGoogleMap) ((MapRenderer) Core.getInstance().getRenderer()).getMap();
+            _adapter.setContext(googleMap, this, marker_root_view, tv_marker);
+            _adapter.restore();
+        }
+
         Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 

@@ -2,6 +2,7 @@ package com.example.Client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Vector;
 
 import Common.Collider;
@@ -12,6 +13,7 @@ import Common.LatLonByteConverter;
 import Common.Match;
 import Common.MatchStateType;
 import Common.PlayerCommon;
+import Common.TimerStruct;
 import Host.WorldSetterHost;
 
 /**
@@ -32,6 +34,7 @@ public class GameStateMatch implements GameState, Match {
     private int _numPlayers;
     private boolean _worldSetterActive = false;
     private double[] _battleGroundLatLon;
+    private PriorityQueue<TimerStruct> _timerQueue = new PriorityQueue<>();
 
     private GameState _currentState;
 
@@ -59,6 +62,7 @@ public class GameStateMatch implements GameState, Match {
         if (packetStream != null && _worldSetterActive)
             _worldSetter.processInstructions(packetStream);
 
+        processTimers();
         killGameObjects();
 
         for (GameObject go : _gameObjects)
@@ -71,6 +75,20 @@ public class GameStateMatch implements GameState, Match {
             go.after(ms);
 
         _currentState.update(ms);
+    }
+
+    private void processTimers() {
+        while (true){
+            TimerStruct ts = _timerQueue.peek();
+            if (ts == null) return;
+
+            if (ts.timeToBeFired < Core.getInstance().getTime().getStartOfFrame()){
+                ts.callback.run();
+                _timerQueue.poll();
+            }
+            else
+                return;
+        }
     }
 
     @Override
@@ -131,6 +149,13 @@ public class GameStateMatch implements GameState, Match {
         return null;
     }
 
+    @Override
+    public void setTimer(Runnable callback, float seconds) {
+        long timeToBeFired = Core.getInstance().getTime().getStartOfFrame();
+        timeToBeFired += (long) seconds * 1000;
+        _timerQueue.add(new TimerStruct(callback, timeToBeFired));
+    }
+
     private void killGameObjects(){
         int goSize = _gameObjects.size();
         for (int i = 0; i < goSize; i++) {
@@ -138,6 +163,7 @@ public class GameStateMatch implements GameState, Match {
             if (gameObject.wantsToDie()) {
                 gameObject.faceDeath();
                 _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
+                _gameObjects.get(gameObject.getIndexInWorld()).setIndexInWorld(gameObject.getIndexInWorld());
                 _gameObjects.remove(_gameObjects.size() - 1);
                 goSize--;
                 i--;

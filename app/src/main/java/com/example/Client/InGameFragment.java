@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,9 +34,9 @@ public class InGameFragment extends Fragment {
         buttons[2] = view.findViewById(R.id.btn_e);
         buttons[3] = view.findViewById(R.id.btn_r);
 
+        AndroidUIManager uiManager = (AndroidUIManager) Core.getInstance().getUIManager();
         for (int i = 0; i < 4; i++){
             int finalI = i;
-            AndroidUIManager uiManager = (AndroidUIManager) Core.getInstance().getUIManager();
             uiManager.getButtonString(i).observe(this, text -> buttons[finalI].setText(text));
             uiManager.getButtonEnabled(i).observe(this, bool -> buttons[finalI].setEnabled(bool));
         }
@@ -52,6 +53,9 @@ public class InGameFragment extends Fragment {
 
         Button btn_map = view.findViewById(R.id.btn_map);
         btn_map.setOnClickListener(v -> ((MatchActivity) getActivity()).showDebugMap());
+
+        TextView health = view.findViewById(R.id.health_text);
+        uiManager.getHealth().observe(this, i -> health.setText("체력 : " + (i / 1000)));
     }
 
     private void setCoordBtnListener(Button btn, int i){

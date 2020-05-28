@@ -17,7 +17,7 @@ public class WorldSetter {
 
     public void processInstructions(InputBitStream stream){
         while (true){
-            if (stream.read(1) == 0) return;
+            if (stream.read(1) != 1) return;
 
             _header.readFromStream(stream);
 
@@ -42,8 +42,9 @@ public class WorldSetter {
         if (_match.getRegistry().getGameObject(_header.networkId) == null){
             GameObject newGO = Core.getInstance().getGameObjectFactory().createGameObject(_header.classId);
 
-            if (newGO == null)
-                Log.i("hehe", "what's goign on");
+            if (newGO == null){
+                Log.i("hehe", "what's goign on" + _header.classId);
+            }
 
             newGO.setMatch(_match);
             newGO.setNetworkId(_header.networkId);
@@ -69,6 +70,9 @@ public class WorldSetter {
         if (goToDestroy != null){
             goToDestroy.scheduleDeath();
             _match.getRegistry().remove(_header.networkId);
+
+            if (goToDestroy instanceof Player)
+                _match.getPlayers().remove(goToDestroy);
         }
     }
 }

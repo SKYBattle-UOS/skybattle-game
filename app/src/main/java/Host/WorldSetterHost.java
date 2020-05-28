@@ -1,5 +1,7 @@
 package Host;
 
+import android.util.Log;
+
 import com.example.Client.GameObjectRegistry;
 
 import java.io.IOException;
@@ -26,21 +28,24 @@ public class WorldSetterHost {
             WorldSetterHeader header = entry.getValue();
             if (header.dirtyFlag != 0){
                 CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+
                 try {
                     packetToSend.write(1, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
                 header.writeToStream(packetToSend);
-                _registry.getGameObject(header.networkId).writeToStream(packetToSend, header.dirtyFlag);
+
+                if (header.action != WorldSetterAction.DESTROY){
+                    _registry.getGameObject(header.networkId).writeToStream(packetToSend, header.dirtyFlag);
+                    entry.getValue().action = WorldSetterAction.UPDATE;
+                }
+                else
+                    _toRemove.add(header.networkId);
 
                 header.dirtyFlag = 0;
             }
-
-            if (entry.getValue().action == WorldSetterAction.DESTROY)
-                _toRemove.add(header.networkId);
-            else
-                entry.getValue().action = WorldSetterAction.UPDATE;
         }
 
         for (int nid : _toRemove)
@@ -72,7 +77,10 @@ public class WorldSetterHost {
 
     public void generateDestroyInstruction(int networkId){
         WorldSetterHeader header = _mappingN2I.get(networkId);
-        if (header == null || header.action != WorldSetterAction.UPDATE) return;
+        if (header == null || header.action != WorldSetterAction.UPDATE){
+            Log.i("hehe", "something wrong");
+            return;
+        }
 
         header.action = WorldSetterAction.DESTROY;
         header.networkId = networkId;

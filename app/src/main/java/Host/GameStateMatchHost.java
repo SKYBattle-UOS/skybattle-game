@@ -1,5 +1,6 @@
 package Host;
 
+import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
 import com.example.Client.ImageType;
@@ -10,6 +11,7 @@ import Common.GameObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 import Common.GameState;
@@ -20,6 +22,7 @@ import Common.Match;
 import Common.MatchStateType;
 import Common.PlayerCommon;
 import Common.PlayerHost;
+import Common.TimerStruct;
 import Common.Util;
 
 public class GameStateMatchHost implements GameState, Match {
@@ -35,6 +38,7 @@ public class GameStateMatchHost implements GameState, Match {
     private Collider _collider;
     private int _nextNetworkId = 1;
     private boolean _worldSetterActive = false;
+    private PriorityQueue<TimerStruct> _timerQueue = new PriorityQueue<>();
 
     // TODO
     private double[] _battleGroundLatLon;
@@ -80,6 +84,13 @@ public class GameStateMatchHost implements GameState, Match {
         return ret;
     }
 
+    @Override
+    public void setTimer(Runnable callback, float seconds) {
+        long timeToBeFired = Core.getInstance().getTime().getStartOfFrame();
+        timeToBeFired += (long) seconds * 1000;
+        _timerQueue.add(new TimerStruct(callback, timeToBeFired));
+    }
+
     private void addNewGameObjectsToWorld(){
         int i = 0;
         for (GameObject go : _newGameObjects){
@@ -117,11 +128,17 @@ public class GameStateMatchHost implements GameState, Match {
         }
 
         // create temp item
-        GameObject tempItem = createGameObject(Util.ItemClassId, true);
-        tempItem.setPosition(37.716109, 127.048926);
-        tempItem.setName("여기여기 모여라");
-        tempItem.setRadius(100);
-        tempItem.setLook(ImageType.CIRCLE_WITH_MARKER);
+        GameObject assemblePoint = createGameObject(Util.ItemClassId, true);
+        assemblePoint.setPosition(37.716109, 127.048926);
+        assemblePoint.setName("여기여기 모여라");
+        assemblePoint.setRadius(100);
+        assemblePoint.setLook(ImageType.CIRCLE_WITH_MARKER);
+
+        GameObject respawnPoint = createGameObject(Util.ItemClassId, true);
+        respawnPoint.setPosition(37.715151, 127.045780);
+        respawnPoint.setName("부활지점");
+        respawnPoint.setRadius(20);
+        respawnPoint.setLook(ImageType.INVISIBLE);
 
         addNewGameObjectsToWorld();
     }
@@ -148,10 +165,25 @@ public class GameStateMatchHost implements GameState, Match {
             go.after(ms);
 
         addNewGameObjectsToWorld();
+        processTimers();
         killGameObjects();
 
         _collider.update(ms);
         _currentState.update(ms);
+    }
+
+    private void processTimers() {
+        while (true){
+            TimerStruct ts = _timerQueue.peek();
+            if (ts == null) return;
+
+            if (ts.timeToBeFired < Core.getInstance().getTime().getStartOfFrame()){
+                ts.callback.run();
+                _timerQueue.poll();
+            }
+            else
+                return;
+        }
     }
 
     private void killGameObjects(){

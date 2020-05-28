@@ -1,9 +1,9 @@
 package Host;
 
-import android.os.SystemClock;
-
+import Common.AndroidTime;
 import Common.GameStateType;
 import Common.Match;
+import Common.Time;
 
 public class CoreHost {
     private static CoreHost _instance;
@@ -12,11 +12,13 @@ public class CoreHost {
     private NetworkManager _networkManager;
     private GameStateContextHost _gameStateContext;
     private Match _match;
+    private Time _time;
 
     private CoreHost(){
         _isInitialized = false;
         _networkManager = new NetworkManager();
         _gameStateContext = new GameStateContextHost();
+        _time = new AndroidTime();
     }
 
     public static CoreHost getInstance(){
@@ -37,23 +39,17 @@ public class CoreHost {
     }
 
     private void run(){
-        long prev = SystemClock.uptimeMillis();
-        long ms;
-
         while (true){
-            long now = SystemClock.uptimeMillis();
-            ms = now - prev;
-            run(ms);
+            _time.setStartOfFrame();
+            run(_time.getFrameInterval());
 
-            long elapsed = SystemClock.uptimeMillis() - now;
+            int elapsed = _time.getElapsedSinceStart();
             if (elapsed < 33)
                 try {
                     Thread.sleep(33 - elapsed);
                 } catch (InterruptedException e) {
                     // nothing
                 }
-
-            prev = now;
         }
     }
 
@@ -77,4 +73,6 @@ public class CoreHost {
     public Match getMatch(){
         return _match;
     }
+
+    public Time getTime(){ return _time; }
 }
