@@ -136,7 +136,7 @@ public class GameStateMatchHost implements GameState, Match {
 
         GameObject respawnPoint = createGameObject(Util.ItemClassId, true);
         respawnPoint.setPosition(37.715151, 127.045780);
-        respawnPoint.setName("부활 지점");
+        respawnPoint.setName("부활지점");
         respawnPoint.setRadius(20);
         respawnPoint.setLook(ImageType.INVISIBLE);
 

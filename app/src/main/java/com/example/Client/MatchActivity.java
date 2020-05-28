@@ -1,9 +1,6 @@
 package com.example.Client;
 
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.PersistableBundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -14,11 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.function.Consumer;
 
@@ -27,7 +22,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     private TextView _topText;
     private TextView tv_marker;
     private GoogleMap _map;
-    private GoogleMapAdapter _adapter;
+    private AndroidGoogleMap _adapter;
     private SupportMapFragment _mapFragment;
     private ScreenType _currentScreenType;
 
@@ -127,6 +122,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
 
             case DEATH:
                 // nothing
+                trans.add(R.id.frag, new DebugMapFragment());
                 break;
         }
 
@@ -141,14 +137,14 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
         _map = googleMap;
 
         if (Core.getInstance().getRenderer() == null){
-            _adapter = new GoogleMapAdapter(googleMap, this, marker_root_view, tv_marker);
+            _adapter = new AndroidGoogleMap(googleMap, this, marker_root_view, tv_marker);
             MapRenderer mapRenderer = new MapRenderer(_adapter);
             Core.getInstance().setRenderer(mapRenderer);
             Core.getInstance().setCamera(mapRenderer);
             _currentScreenType = ScreenType.ASSEMBLE;
         }
         else {
-            _adapter = (GoogleMapAdapter) ((MapRenderer) Core.getInstance().getRenderer()).getMap();
+            _adapter = (AndroidGoogleMap) ((MapRenderer) Core.getInstance().getRenderer()).getMap();
             _adapter.setContext(googleMap, this, marker_root_view, tv_marker);
             _adapter.restore();
         }

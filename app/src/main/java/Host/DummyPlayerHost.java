@@ -16,4 +16,8 @@ public class DummyPlayerHost extends PlayerHost {
     protected void networkUpdate() {
         // nothing
     }
+
+    @Override
+    public void faceDeath() {
+    }
 }

@@ -70,6 +70,9 @@ public class WorldSetter {
         if (goToDestroy != null){
             goToDestroy.scheduleDeath();
             _match.getRegistry().remove(_header.networkId);
+
+            if (goToDestroy instanceof Player)
+                _match.getPlayers().remove(goToDestroy);
         }
     }
 }

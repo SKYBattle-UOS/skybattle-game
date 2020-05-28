@@ -5,6 +5,7 @@ import java.util.List;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.PlayerCommon;
 
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 매치 진행 중 화면.
@@ -15,6 +16,7 @@ import Common.GameState;
  */
 public class MatchStateInGame implements GameState {
     private GameStateMatch _match;
+    private int _playerId = 0;
     private boolean _isPlayerDead;
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
@@ -24,17 +26,7 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void start() {
-        // TODO this is temp
-        Player player = null;
-        List<GameObject> gos = _match.getWorld();
-        for (GameObject go : gos){
-            if (go instanceof Player) {
-                player = (Player) go;
-                Core.getInstance().getInputManager().setThisPlayer((Player) go);
-                break;
-            }
-        }
-
+        Player player = findPlayer();
         setButtons(player, true);
     }
 
@@ -51,7 +43,7 @@ public class MatchStateInGame implements GameState {
 
             List<GameObject> world = _match.getWorld();
             for (GameObject go : world) {
-                if (go.getName().equals("부활 지점")) {
+                if (go.getName().equals("부활지점")) {
                     go.setRenderComponent(
                             Core.getInstance().getRenderer().createRenderComponent(
                                     go, ImageType.CIRCLE_WITH_MARKER
@@ -65,7 +57,16 @@ public class MatchStateInGame implements GameState {
         }
 
         if (_isPlayerDead){
-            // TODO update player position
+            Player player = findPlayer();
+            if (player != null){
+                player.setRenderComponent(
+                        Core.getInstance().getRenderer().createRenderComponent(
+                                player, ImageType.MARKER
+                        )
+                );
+                Core.getInstance().getInputManager().setThisPlayer(player);
+                _isPlayerDead = false;
+            }
         }
     }
 
@@ -85,5 +86,18 @@ public class MatchStateInGame implements GameState {
             }
             Core.getInstance().getUIManager().setButtonActive(UIManager.BUTTON_Q + i, enable);
         }
+    }
+
+    private Player findPlayer(){
+        Player player;
+        List<PlayerCommon> gos = _match.getPlayers();
+        for (PlayerCommon go : gos){
+            if (go.getPlayerId() == _playerId) {
+                player = (Player) go;
+                Core.getInstance().getInputManager().setThisPlayer(player);
+                return player;
+            }
+        }
+        return null;
     }
 }

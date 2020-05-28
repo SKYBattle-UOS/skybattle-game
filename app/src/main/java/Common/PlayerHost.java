@@ -1,5 +1,7 @@
 package Common;
 
+import com.example.Client.ImageType;
+
 import java.util.Collection;
 import java.util.Queue;
 
@@ -91,5 +93,16 @@ public class PlayerHost extends PlayerCommon {
         }
 
         _match.getWorldSetterHost().generateUpdateInstruction(getNetworkId(), dirtyFlag);
+    }
+
+    @Override
+    public void faceDeath() {
+        PlayerHost deadPlayer = (PlayerHost) CoreHost.getInstance().getMatch()
+                .createGameObject(Util.PlayerClassId, true);
+
+        deadPlayer.setPlayerId(getPlayerId());
+        deadPlayer.setName("현재위치");
+        deadPlayer.setLook(ImageType.INVISIBLE);
+        deadPlayer.setPosition(getPosition()[0], getPosition()[1]);
     }
 }

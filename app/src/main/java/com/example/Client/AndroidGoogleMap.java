@@ -41,7 +41,7 @@ import java.util.HashMap;
  *  float	HUE_VIOLET 270 .0
  *  float	HUE_YELLOW	60 .0 marker 색상
  */
-public class GoogleMapAdapter implements Map {
+public class AndroidGoogleMap implements Map {
     private final float hue_color = (float) 0.0; //default
 
     private GoogleMap _googleMap;
@@ -59,7 +59,7 @@ public class GoogleMapAdapter implements Map {
     private HashMap<Integer, SavedCircle> _savedCircles = new HashMap<>();
     private SavedCamera _savedCamera = new SavedCamera(0, 0, 0);
 
-    public GoogleMapAdapter(GoogleMap googleMap, Context mContext,
+    public AndroidGoogleMap(GoogleMap googleMap, Context mContext,
                             View marker_root_view, TextView tv_marker) {
         setContext(googleMap, mContext, marker_root_view, tv_marker);
     }
