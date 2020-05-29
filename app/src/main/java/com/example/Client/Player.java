@@ -42,7 +42,8 @@ public class Player extends PlayerCommon {
     @Override
     public void setHealth(int health) {
         super.setHealth(health);
-        Core.get().getUIManager().setHealth(health);
+        if (Core.get().getMatch().getThisPlayer() == this)
+            Core.get().getUIManager().setHealth(health);
     }
 
     @Override
