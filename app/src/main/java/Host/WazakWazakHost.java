@@ -8,6 +8,10 @@ import Common.WazakWazakCommon;
 import Common.Util;
 
 public class WazakWazakHost extends WazakWazakCommon {
+    public WazakWazakHost(int index) {
+        super(index);
+    }
+
     @Override
     public void cast(GameObject caster){
         GameObject spawned = caster.getMatch().createGameObject(Util.ItemClassId, true);
@@ -15,6 +19,7 @@ public class WazakWazakHost extends WazakWazakCommon {
         spawned.setPosition(caster.getPosition()[0], caster.getPosition()[1]);
         spawned.setLook(ImageType.MARKER);
 
-        spawned.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.shouldCastFlag);
+        spawned.getMatch().getWorldSetterHost()
+                .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
     }
 }

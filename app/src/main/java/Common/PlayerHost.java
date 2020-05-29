@@ -1,12 +1,9 @@
 package Common;
-
 import java.util.Collection;
 import java.util.Queue;
-
 import Host.ClientProxy;
 import Host.CoreHost;
 import Host.GlobalWazakWazakHost;
-import Host.HealthUpCommon;
 import Host.HealthUpHost;
 import Host.WazakWazakHost;
 
@@ -15,10 +12,10 @@ public class PlayerHost extends PlayerCommon {
 
     public PlayerHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skills[0] = new WazakWazakHost();
-        _skills[1] = new GlobalWazakWazakHost();
-        _skills[2] = new HealthUpHost();
-        _skills[3] = new HealthUpHost();
+        _skills[0] = new WazakWazakHost(0);
+        _skills[1] = new GlobalWazakWazakHost(1);
+        _skills[2] = new HealthUpHost(2);
+        _skills[3] = new HealthUpHost(3);
     }
 
     public static GameObject createInstance(){
@@ -35,27 +32,19 @@ public class PlayerHost extends PlayerCommon {
         // passive
         Collection<CollisionState> collisions = _match.getCollider().getCollisions(this);
         for (CollisionState collision : collisions){
-            processColiision(collision, ms);
+            processCollision(collision, ms);
         }
 
-        if ((_shouldCast & 1) != 0)
-            _skills[0].cast(this);
-
-        if ((_shouldCast & 2) != 0)
-            _skills[1].cast(this);
-
-        if ((_shouldCast & 4) != 0)
-            _skills[2].cast(this);
-
-        if ((_shouldCast & 8) != 0)
-            _skills[3].cast(this);
+        for (Skill skill : _skills)
+            if (skill.isDirty())
+                skill.cast(this);
     }
 
     @Override
     public void after(long ms) {
     }
 
-    private void processColiision(CollisionState state, long ms){
+    private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
             if (((Damageable) state.other).getTeam() != _team)
                 ((Damageable) state.other).getHurt((int) (_dps * ms / 1000));
@@ -73,16 +62,17 @@ public class PlayerHost extends PlayerCommon {
 
             switch (input.qwer){
                 case 0: case 1: case 2: case 3:
-                    _shouldCast |= (1 << input.qwer);
+                    _skills[input.qwer].setDirty(true);
+                    dirtyFlag |= PlayerHost.skillDirtyFlag;
 
                     // target is coordinate
                     if (input.lat * input.lon != 0){
                         _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
-                        _skills[input.qwer].setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
+                        ((CoordinateSkill) _skills[input.qwer]).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
                     }
                     // target is player
                     else if (input.playerId >= 0){
-                        _skills[input.qwer].setTargetPlayer(input.playerId);
+                        ((PlayerTargetSkill) _skills[input.qwer]).setTargetPlayer(input.playerId);
                     }
                     break;
 

@@ -17,18 +17,25 @@ public class MatchStateInGame implements GameState {
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
-        Core.getInstance().getUIManager().setTopText("게임이 시작되었습니다");
+        Core.getInstance().getUIManager().setDefaultTopText("게임이 시작되었습니다");
     }
 
     @Override
     public void start() {
         // TODO this is temp
+        Player player = null;
         Collection<GameObject> gos = _match.getWorld();
         for (GameObject go : gos){
             if (go instanceof Player) {
+                player = (Player) go;
                 Core.getInstance().getInputManager().setThisPlayer((Player) go);
-                return;
+                break;
             }
+        }
+
+        for (int i = 0; i < 4; i++){
+            Core.getInstance().getUIManager().setButtonText(AndroidUIManager.BUTTON_Q + i, player.getSkills()[i].getName());
+            Core.getInstance().getUIManager().setButtonActive(AndroidUIManager.BUTTON_Q + i, true);
         }
     }
 

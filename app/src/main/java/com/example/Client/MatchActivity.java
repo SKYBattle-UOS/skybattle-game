@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -19,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.function.Consumer;
 
-public class MatchActivity extends AppCompatActivity implements MatchScreen, OnMapReadyCallback {
+public class MatchActivity extends AppCompatActivity implements Screen, OnMapReadyCallback {
     private View marker_root_view;
     private TextView _topText;
     private TextView tv_marker;
@@ -35,7 +36,8 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
             if (getSupportFragmentManager().getBackStackEntryCount() < 1){
                 _clickMapAfter.run();
                 _map.setOnMapClickListener(null);
-                getSupportFragmentManager().removeOnBackStackChangedListener(_clickMapBackStack);
+                getSupportFragmentManager()
+                        .removeOnBackStackChangedListener(_clickMapBackStack);
             }
         }
     };
@@ -47,7 +49,8 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         public void onBackStackChanged() {
             if (getSupportFragmentManager().getBackStackEntryCount() < 1){
                 _targetPlayerAfter.run();
-                getSupportFragmentManager().removeOnBackStackChangedListener(_targetPlayerBackStack);
+                getSupportFragmentManager()
+                        .removeOnBackStackChangedListener(_targetPlayerBackStack);
             }
         }
     };
@@ -56,10 +59,17 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
-        _mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.frag);
-        _mapFragment.getMapAsync(this);
+        if (_mapFragment == null){
+            _mapFragment = new SupportMapFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frag, _mapFragment)
+                    .commit();
+            _mapFragment.getMapAsync(this);
+        }
         _topText = findViewById(R.id.topText);
+        ((AndroidUIManager) Core.getInstance().getUIManager())
+                .getTopText().observe(this, text -> _topText.setText(text));
     }
 
     @Override
@@ -119,11 +129,6 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
         tv_marker = marker_root_view.findViewById(R.id.tv_marker);
     }
 
-    @Override
-    public void setTopText(String text) {
-        _topText.setText(text);
-    }
-
     public void showDebugMap(){
         getSupportFragmentManager()
             .beginTransaction()
@@ -149,10 +154,6 @@ public class MatchActivity extends AppCompatActivity implements MatchScreen, OnM
 
         getSupportFragmentManager()
                 .addOnBackStackChangedListener(_clickMapBackStack);
-    }
-
-    public String getTopText() {
-        return (String) _topText.getText();
     }
 
     public void showTargetPlayers(Consumer<Integer> onButtonClick, Runnable after) {

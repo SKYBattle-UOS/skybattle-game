@@ -4,6 +4,10 @@ import Common.GameObject;
 import Common.PlayerHost;
 
 public class HealthUpHost extends HealthUpCommon {
+    public HealthUpHost(int index) {
+        super(index);
+    }
+
     @Override
     public void cast(GameObject caster) {
         PlayerHost player = (PlayerHost) CoreHost.getInstance()
@@ -16,6 +20,6 @@ public class HealthUpHost extends HealthUpCommon {
                 .getWorldSetterHost()
                 .generateUpdateInstruction(player.getNetworkId(), PlayerHost.healthDirtyFlag);
 
-        player.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.shouldCastFlag);
+        player.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
     }
 }

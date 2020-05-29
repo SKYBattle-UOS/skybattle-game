@@ -1,32 +1,27 @@
 package Common;
-
-import android.util.Log;
-
 import java.io.IOException;
 
 public abstract class PlayerCommon extends GameObject implements Damageable {
     public static int playerIdDirtyFlag;
     public static int healthDirtyFlag;
     public static int teamDirtyFlag;
-    public static int shouldCastFlag;
+    public static int skillDirtyFlag;
     public static int startFromHereFlag;
 
-    {
+    static {
         int i = GameObject.startFromHereFlag;
-        i *= 2;
         playerIdDirtyFlag = i;
         i *= 2;
         healthDirtyFlag = i;
         i *= 2;
         teamDirtyFlag = i;
         i *= 2;
-        shouldCastFlag = i;
+        skillDirtyFlag = i;
         i *= 2;
         startFromHereFlag = i;
     }
 
     protected Skill[] _skills = new Skill[4];
-    protected int _shouldCast = 0;
     protected int _playerId;
     protected int _health = 100000;
     protected int _dps = 20000;
@@ -50,9 +45,10 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
             if ((dirtyFlag & teamDirtyFlag) != 0)
                 stream.write(_team, 1);
 
-            if ((dirtyFlag & shouldCastFlag) != 0) {
-                stream.write(_shouldCast, 4);
-                _shouldCast = 0;
+            if ((dirtyFlag & skillDirtyFlag) != 0) {
+                for (Skill skill : _skills){
+                    skill.writeToStream(stream);
+                }
             }
 
 
@@ -75,21 +71,10 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         if ((dirtyFlag & teamDirtyFlag) != 0)
             _team = stream.read(1);
 
-        if ((dirtyFlag & shouldCastFlag) != 0){
-            _shouldCast = stream.read(4);
-            if ((_shouldCast & 1) != 0)
-                _skills[0].cast(this);
-
-            if ((_shouldCast & 2) != 0)
-                _skills[1].cast(this);
-
-            if ((_shouldCast & 4) != 0)
-                _skills[2].cast(this);
-
-            if ((_shouldCast & 8) != 0)
-                _skills[3].cast(this);
-
-            _shouldCast = 0;
+        if ((dirtyFlag & skillDirtyFlag) != 0){
+            for (Skill skill : _skills){
+                skill.readFromStream(stream);
+            }
         }
     }
 

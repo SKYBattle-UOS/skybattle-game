@@ -1,29 +1,24 @@
 package com.example.Client;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import android.widget.Button;
-
 import android.widget.TextView;
-import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 
-public class RoomActivity extends AppCompatActivity implements RoomScreen {
+public class RoomActivity extends AppCompatActivity implements Screen {
     private TextView _roomTitle;
     ListView listView;
     @Override
@@ -31,6 +26,9 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         _roomTitle = findViewById(R.id.roomTitle);
+
+        ((AndroidUIManager) Core.getInstance().getUIManager())
+                .getTitleText().observe(this, text -> _roomTitle.setText(text));
 
         listView = (ListView) this.findViewById(R.id.playerlist);
 
@@ -50,11 +48,11 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
         
         //시작 버튼
         Button btn_start = findViewById(R.id.startButton);
-        btn_start.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.ROOM_START_PORT));
+        btn_start.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(AndroidUIManager.ROOM_START_PORT));
 
         //나가기 버튼: 클릭 시, 이전 화면으로 돌아감. 닉네임 리스트에서 나가기 버튼을 클릭한 사용자가 사라지도록 해야함.(추가예정)
         Button btn_exit= findViewById(R.id.btn_exit);
-        btn_exit.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(UIManager.EXIT_ROOM_PORT));
+        btn_exit.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(AndroidUIManager.EXIT_ROOM_PORT));
     }
 
   /*한 화면에 리스트뷰, 텍스트뷰, 버튼을 표현하기 위해 커스텀 어댑터 사용*/
@@ -124,10 +122,5 @@ public class RoomActivity extends AppCompatActivity implements RoomScreen {
             startActivity(room_intent);
             finish();
         }
-    }
-
-    @Override
-    public void setTitle(String title) {
-        _roomTitle.setText(title);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import android.util.Log;
+
 import Common.GameObject;
 import Common.InputBitStream;
 import Common.PlayerCommon;
@@ -39,6 +41,9 @@ public class WorldSetter {
     private void createGO(InputBitStream stream){
         if (_match.getRegistry().getGameObject(_header.networkId) == null){
             GameObject newGO = Core.getInstance().getGameObjectFactory().createGameObject(_header.classId);
+
+            if (newGO == null)
+                Log.i("hehe", "what's goign on");
 
             newGO.setMatch(_match);
             newGO.setNetworkId(_header.networkId);

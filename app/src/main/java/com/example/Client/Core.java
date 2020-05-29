@@ -40,7 +40,7 @@ public class Core {
         _isInitialized = false;
         _packetManager = new NetworkPacketManager();
         _gameObjectFactory = new GameObjectFactory();
-        _uiManager = new UIManager();
+        _uiManager = new AndroidUIManager();
         _converter = new LatLonByteConverter();
         _inputManager = new InputManager( activity,context, _converter);
         _stateContext = new GameStateContext(_converter);
@@ -101,6 +101,7 @@ public class Core {
         if (_renderer != null)
             _renderer.render(ms);
 
+        _uiManager.update(ms);
     }
 
     public PacketManager getPakcetManager(){

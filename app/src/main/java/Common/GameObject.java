@@ -30,7 +30,7 @@ public abstract class GameObject {
     public static int imageTypeDirtyFlag;
     public static int startFromHereFlag;
 
-    {
+    static {
         int i = 1;
         posDirtyFlag = i;
         i *= 2;
@@ -128,6 +128,7 @@ public abstract class GameObject {
 
         if ((dirtyFlag & imageTypeDirtyFlag) != 0) {
             ImageType type = ImageType.values()[stream.read(4)];
+            getRenderComponent().destroy();
             setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, type));
         }
     }
