@@ -5,6 +5,7 @@ import java.util.List;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.MatchStateType;
 import Common.PlayerCommon;
 
 /**
@@ -18,6 +19,7 @@ public class MatchStateInGame implements GameState {
     private GameStateMatch _match;
     private int _playerId = 0;
     private boolean _isPlayerDead;
+    private boolean _waiting = true;
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
@@ -28,10 +30,13 @@ public class MatchStateInGame implements GameState {
     public void start() {
         Player player = findPlayer();
         setButtons(player, true);
+        Core.getInstance().getUIManager().switchScreen(ScreenType.INGAME, () -> _waiting = false);
     }
 
     @Override
     public void update(long ms) {
+        if (_waiting) return;
+
         InputManager inputManager = Core.getInstance().getInputManager();
         UIManager uiManager = Core.getInstance().getUIManager();
 
