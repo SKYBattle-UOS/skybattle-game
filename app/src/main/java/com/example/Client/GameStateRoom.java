@@ -42,13 +42,13 @@ public class GameStateRoom implements GameState {
     @Override
     public void start() {
         // 메소드 함수 등록 (시작하기 / 나가기 기능 등록)
-        Core.getInstance().getUIManager().registerCallback(AndroidUIManager.ROOM_START_PORT,
+        Core.get().getUIManager().registerCallback(AndroidUIManager.ROOM_START_PORT,
                 ()-> this.playerStartedGame = true
         );
 
         // TODO: close connection
-        Core.getInstance().getUIManager().registerCallback(AndroidUIManager.EXIT_ROOM_PORT,
-                ()-> Core.getInstance().getUIManager().switchScreen(ScreenType.MAIN,
+        Core.get().getUIManager().registerCallback(AndroidUIManager.EXIT_ROOM_PORT,
+                ()-> Core.get().getUIManager().switchScreen(ScreenType.MAIN,
                         ()->_parent.switchState(GameStateType.MAIN))
         );
 
@@ -79,19 +79,19 @@ public class GameStateRoom implements GameState {
 
 
             // 메시지 전송
-            OutputBitStream out = Core.getInstance().getPakcetManager().getPacketToSend();
+            OutputBitStream out = Core.get().getPakcetManager().getPacketToSend();
 
             this.writeFlagBits(out);
             this.writeContentBits(out);
 
             if (this.playerStartedGame || this.playerExited || this.playerChangedTeam
                     || this.playerChangedName) {
-                Core.getInstance().getPakcetManager().shouldSendThisFrame();
+                Core.get().getPakcetManager().shouldSendThisFrame();
             }
 
 
             // 메시지 수신
-            InputBitStream in = Core.getInstance().getPakcetManager().getPacketStream();
+            InputBitStream in = Core.get().getPakcetManager().getPacketStream();
             this.processMessage(in); // 이 메소드 내부에서 화면 전환 일어남
         }
     }
@@ -183,10 +183,10 @@ public class GameStateRoom implements GameState {
 
     // 화면을 전환하는 내부 함수
     private void switchScreen() {
-        Core.getInstance().getInputManager().startSending();
+        Core.get().getInputManager().startSending();
         Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
         this.switchingToNextScreen = true;
-        Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE, ()->_parent.switchState(GameStateType.MATCH));
+        Core.get().getUIManager().switchScreen(ScreenType.ASSEMBLE, ()->_parent.switchState(GameStateType.MATCH));
     }
 
 

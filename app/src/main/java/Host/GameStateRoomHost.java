@@ -20,8 +20,8 @@ public class GameStateRoomHost implements GameState {
 
     @Override
     public void update(long ms) {
-        NetworkManager net = CoreHost.getInstance().getNetworkManager();
-        Collection<ClientProxy> players = CoreHost.getInstance().getNetworkManager().
+        NetworkManager net = CoreHost.get().getNetworkManager();
+        Collection<ClientProxy> players = CoreHost.get().getNetworkManager().
                                             getClientProxies();
 
         /*
