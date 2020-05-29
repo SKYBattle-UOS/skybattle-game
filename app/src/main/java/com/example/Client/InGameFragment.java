@@ -61,7 +61,7 @@ public class InGameFragment extends Fragment {
     }
 
     public void addItemButton(OnButtonCreatedListener callback){
-        LinearLayout layout = getActivity().findViewById(R.id.ingame_fragment);
+        LinearLayout layout = getActivity().findViewById(R.id.ingame_linlayout);
         Button btn = new Button(getActivity());
         layout.addView(btn);
         _items.add(btn);
@@ -69,7 +69,7 @@ public class InGameFragment extends Fragment {
     }
 
     public void clearItemButtons(){
-        LinearLayout layout = getActivity().findViewById(R.id.ingame_fragment);
+        LinearLayout layout = getActivity().findViewById(R.id.ingame_linlayout);
         for (Button btn : _items){
             layout.removeView(btn);
         }
