@@ -47,11 +47,6 @@ public class Player extends PlayerCommon {
     }
 
     @Override
-    public void faceDeath() {
-        super.faceDeath();
-    }
-
-    @Override
     protected void itemsWereAdded() {
         if (Core.get().getMatch().getThisPlayer() == this)
             Core.get().getUIManager().updateItems();
