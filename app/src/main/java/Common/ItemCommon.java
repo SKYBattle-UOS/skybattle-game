@@ -67,6 +67,5 @@ public abstract class ItemCommon extends GameObject implements Pickable {
 
     @Override
     public void pickUp(GameObject owner) {
-
     }
 }

@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class AndroidUIManager implements UIManager {
+public class AndroidUIManager implements UIManager, LifecycleObserver {
     private Screen _currentScreen;
     private ScreenType _nextScreenType;
     private Runnable _onComplete;

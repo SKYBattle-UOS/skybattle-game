@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,6 +59,13 @@ public class InGameFragment extends Fragment {
 
         TextView health = view.findViewById(R.id.health_text);
         uiManager.getHealth().observe(this, i -> health.setText("체력 : " + (i / 1000)));
+    }
+
+    public void addSkill(OnButtonCreatedListener callback){
+        LinearLayout layout = getActivity().findViewById(R.id.ingame_fragment);
+        Button btn = new Button(getActivity());
+        layout.addView(btn);
+        callback.onButtonCreated(btn);
     }
 
     private void setCoordBtnListener(Button btn, int i){
