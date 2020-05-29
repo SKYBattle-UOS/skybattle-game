@@ -12,14 +12,15 @@ import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
 import Host.MatchHost;
 import Host.WazakWazakHost;
+import Host.SneakHost;
 
 public class PlayerHost extends PlayerCommon {
     private double[] _newPosTemp = new double[2];
 
     public PlayerHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skills[0] = new SneakHost(0);//new WazakWazakHost(0);
-        _skills[1] = new DuplicationTrickHost(1);//new GlobalWazakWazakHost(1);
+        _skills[0] = new WazakWazakHost(0);//new SneakHost(0);//new WazakWazakHost(0);
+        _skills[1] = new GlobalWazakWazakHost(1);//new DuplicationTrickHost(1);//new GlobalWazakWazakHost(1);
         _skills[2] = new HealthUpHost(2);
         _skills[3] = new HealthUpHost(3);
     }
