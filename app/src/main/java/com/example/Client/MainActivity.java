@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
 
         Core.createInstance(getApplicationContext());
 
+
+        // 방 입장하기
         Button btn_entrance = findViewById(R.id.btn_entrance);
 
         btn_entrance.setOnClickListener(new View.OnClickListener(){
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
             }
         });
 
+        // 방 만들기
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
         btn_makeroom.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(AndroidUIManager.ENTER_ROOM_PORT));
     }
