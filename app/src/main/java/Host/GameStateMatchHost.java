@@ -1,8 +1,10 @@
 package Host;
 
+import android.widget.Toast;
+
+import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
-import com.example.Client.ImageType;
 
 import Common.Collider;
 import Common.GameObject;
@@ -18,7 +20,6 @@ import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.Match;
 import Common.MatchStateType;
-import Common.PlayerCommon;
 import Common.PlayerHost;
 import Common.Util;
 
@@ -29,7 +30,7 @@ public class GameStateMatchHost implements GameState, Match {
     private ArrayList<GameObject> _gameObjects;
     private ArrayList<GameObject> _newGameObjects;
     private ArrayList<Integer> _newGOClassId;
-    private ArrayList<PlayerCommon> _players;
+    private ArrayList<PlayerHost> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
     private Collider _collider;
@@ -37,6 +38,7 @@ public class GameStateMatchHost implements GameState, Match {
     private boolean _worldSetterActive = false;
 
     // TODO
+    private int _numPlayers;
     private double[] _battleGroundLatLon;
     private final int GET_READY_COUNT;
     private final int NUM_PACKET_PER_FRAME;
@@ -52,6 +54,7 @@ public class GameStateMatchHost implements GameState, Match {
         _players = new ArrayList<>();
         _collider = new Collider();
 
+        _numPlayers = CoreHost.getInstance().getNetworkManager().getNumConnections();
         _battleGroundLatLon = new double[2];
         GET_READY_COUNT = 1000;
         NUM_PACKET_PER_FRAME = 3;
@@ -62,17 +65,13 @@ public class GameStateMatchHost implements GameState, Match {
     }
 
     @Override
-    public GameObject createGameObject(int classId, boolean addToCollider){
+    public GameObject createGameObject(int classId){
         GameObject ret = _factory.createGameObject(classId);
         int networkId = _nextNetworkId++;
 
         ret.setMatch(this);
         ret.setNetworkId(networkId);
-
-        if (addToCollider) {
-            _collider.registerNew(ret);
-            ret.setCollision();
-        }
+        _collider.registerNew(ret);
 
         _newGameObjects.add(ret);
         _newGOClassId.add(classId);
@@ -94,41 +93,25 @@ public class GameStateMatchHost implements GameState, Match {
     }
 
     public void createPlayers() {
+        double[] _newPos = Core.getInstance().getInputManager().getCurrentPosition();
         Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
-
-        int i = 1;
-        int lastPlayerId = 0;
         for (ClientProxy client : clients){
-            PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId, true);
-            lastPlayerId = client.getPlayerId();
+            PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId);
             newPlayer.setPlayerId(client.getPlayerId());
-            newPlayer.setPosition(37.714580, 127.045195);
-            newPlayer.setName("플레이어" + i++);
-            newPlayer.setLook(ImageType.MARKER);
-        }
-
-        for (int j = 0; j < 3; j++){
-            DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
-            dummy.setPlayerId(lastPlayerId + j + 1);
-            dummy.setPosition(37.715583 + 0.0005 * j, 127.048421 + 0.0005 * j);
-            dummy.setName("플레이어" + i++ + " (가짜)");
-            dummy.setLook(ImageType.MARKER);
-            dummy.setTeam(1);
+            newPlayer.setPosition(_newPos[0],_newPos[1]);
         }
 
         // create temp item
-        GameObject tempItem = createGameObject(Util.ItemClassId, true);
-        tempItem.setPosition(37.716109, 127.048926);
+
+        GameObject tempItem = createGameObject(Util.ItemClassId);
+        tempItem.setPosition(_newPos[0],_newPos[1]);
         tempItem.setName("여기여기 모여라");
-        tempItem.setRadius(100);
-        tempItem.setLook(ImageType.CIRCLE_WITH_MARKER);
 
         addNewGameObjectsToWorld();
     }
 
-    @Override
-    public void start() {
-        CoreHost.getInstance().setMatch(this);
+    public void setWorldSetterActive(){
+        _worldSetterActive = true;
     }
 
     @Override
@@ -162,7 +145,6 @@ public class GameStateMatchHost implements GameState, Match {
                 _worldSetter.generateDestroyInstruction(gameObject.getNetworkId());
                 gameObject.faceDeath();
                 _gameObjects.set(gameObject.getIndexInWorld(), _gameObjects.get(_gameObjects.size() - 1));
-                _gameObjects.get(gameObject.getIndexInWorld()).setIndexInWorld(gameObject.getIndexInWorld());
                 _gameObjects.remove(_gameObjects.size() - 1);
                 goSize--;
                 i--;
@@ -200,7 +182,7 @@ public class GameStateMatchHost implements GameState, Match {
     public void switchState(MatchStateType matchState) {
         switch (matchState) {
             case ASSEMBLE:
-                _currentState = new MatchStateAssembleHost(this);
+                _currentState = new MatchStateAssembleHost(this, _numPlayers);
                 break;
             case SELECT_CHARACTER:
                 _currentState = new MatchStateSelectCharacterHost(this);
@@ -215,13 +197,10 @@ public class GameStateMatchHost implements GameState, Match {
         _currentState.start();
     }
 
+    public List<PlayerHost> getPlayers() { return _players; }
 
     public boolean isWorldSetterActive() {
         return _worldSetterActive;
-    }
-
-    public void setWorldSetterActive() {
-        _worldSetterActive = true;
     }
 
     public double[] getBattleGroundLatLon() {
@@ -233,9 +212,6 @@ public class GameStateMatchHost implements GameState, Match {
         _battleGroundLatLon[1] = lon;
         _parent.getConverter().setOffset(lat, lon);
     }
-
-    @Override
-    public List<PlayerCommon> getPlayers() { return _players; }
 
     @Override
     public Collider getCollider(){ return _collider; }

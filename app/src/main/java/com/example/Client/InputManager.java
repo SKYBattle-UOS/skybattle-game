@@ -1,18 +1,24 @@
 package com.example.Client;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
+
+import androidx.fragment.app.Fragment;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import Common.GameObject;
 import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.OutputBitStream;
 import Host.SkillTarget;
 
 public class InputManager {
-//    private Location _location;
+    private Location _location;
 //    private double[] _prevLatlon;
     private Queue<InputState> _inputStates;
     private LatLonByteConverter _converter;
@@ -20,48 +26,42 @@ public class InputManager {
 
     // TODO
     private long _elapsed;
-    private double lat = 37.714775;
-    private double lon = 127.043325;
-    private double destLat = 37.715584;
-    private double destLon = 127.048616;
+    //private double lat = 37.714775;
+    //private double lon = 127.043325;
+    //private double destLat = 37.715584;
+    //private double destLon = 127.048616;
     private int step = 0;
     private int[] _convertTemp = new int[2];
     private Player _player;
-    private boolean _startSending;
-    private Location location;
+    private boolean _sendDebugMove;
 
-    public InputManager(Context context, LatLonByteConverter converter){
+    public InputManager(Activity activity, Context context, LatLonByteConverter converter){
+        _location = new Location(activity, context);
         _inputStates = new ConcurrentLinkedQueue<>();
         _converter = converter;
-        location = new Location(context);
     }
 
     public void update(long ms){
-        if (!_startSending)
-            return;
-
+        if (!_sendDebugMove) return;
         debugMoveToAssemblePoint();
         sendInput();
-
-        boolean isTest = false; //true - 실제 디바이스 false - 테스트 -> 가상 시뮬로 테스트 사용
-        if(isTest){
-            double[] _newPos = location.getLocation();
-
-            InputState state = new InputState();
-            state.qwer = 4;
-            _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
-            state.lat = _convertTemp[0];
-            state.lon = _convertTemp[1];
-            _inputStates.offer(state);
-        }
-
 
         // TODO
         _elapsed += ms;
     }
 
+    public void setThisPlayer(Player player){
+        _player = player;
+    }
+
+    public double[]  getCurrentPosition()    {
+        double[] _newPos = _location.getLocation();
+        return _newPos;
+    }
     public void debugMove(int direction) {
-        double[] _newPos = _player.getPosition();
+        double[] _newPos = _location.getLocation();
+
+        /*
         switch (direction){
             case 0:
                 _newPos[0] += 0.00005;
@@ -76,7 +76,7 @@ public class InputManager {
                 _newPos[1] -= 0.00005;
                 break;
         }
-
+*/
         InputState state = new InputState();
         state.qwer = 4;
         _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
@@ -86,9 +86,10 @@ public class InputManager {
     }
 
     private void debugMoveToAssemblePoint(){
+
         if (_elapsed > 100 && step <= 100){
             InputState newState = new InputState();
-            _converter.convertLatLon(lat + (destLat - lat) / 100 * step, lon + (destLon - lon) / 100 * step, _convertTemp);
+            //_converter.convertLatLon(lat + (destLat - lat) / 100 * step, lon + (destLon - lon) / 100 * step, _convertTemp);
             newState.lat = _convertTemp[0];
             newState.lon = _convertTemp[1];
             newState.qwer = 4;
@@ -126,7 +127,7 @@ public class InputManager {
     public void qwer(SkillTarget target){
         InputState state = new InputState();
         state.qwer = target.qwer;
-        state.playerId = target.networkId;
+        state.playerId = target.playerId;
         if (target.lat * target.lon != 0){
             _converter.convertLatLon(target.lat, target.lon, _convertTemp);
             state.lat = _convertTemp[0];
@@ -135,15 +136,11 @@ public class InputManager {
         _inputStates.offer(state);
     }
 
-    public void setThisPlayer(Player player){
-        _player = player;
-    }
-
     public Player getThisPlayer(){
         return _player;
     }
 
-    public void startSending(){
-        _startSending = true;
+    public void sendDebugMove(){
+        _sendDebugMove = true;
     }
 }

@@ -44,6 +44,7 @@ public class StreamTest {
         }
 
         byte[] buffer = bitOut.getBuffer();
+
         BitInputStream bitIn = new BitInputStream(buffer);
 
         System.out.println(bitIn.read(32));

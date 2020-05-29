@@ -15,7 +15,7 @@ public class Player extends PlayerCommon {
     }
 
     public static GameObject createInstance() {
-        return new Player(0, 0, "Player");
+        return new Player(0,0 , "Player");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.Client;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.SystemClock;
 
@@ -34,14 +35,14 @@ public class Core {
     private LatLonByteConverter _converter;
     private Match _match;
 
-    private Core(Context context){
+    private Core(Activity activity, Context context){
         _appContext = context;
         _isInitialized = false;
         _packetManager = new NetworkPacketManager();
         _gameObjectFactory = new GameObjectFactory();
         _uiManager = new UIManager();
         _converter = new LatLonByteConverter();
-        _inputManager = new InputManager(context, _converter);
+        _inputManager = new InputManager( activity,context, _converter);
         _stateContext = new GameStateContext(_converter);
 
         Util.registerGameObjects(_gameObjectFactory);
@@ -57,9 +58,9 @@ public class Core {
         }
     }
 
-    public static void createInstance(Context context){
+    public static void createInstance(Activity activity, Context context){
         if (_coreInstance == null){
-            _coreInstance = new Core(context);
+            _coreInstance = new Core(activity, context);
             _coreInstance.init();
             (new Thread(() -> _coreInstance.run())).start();
         }

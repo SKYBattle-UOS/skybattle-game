@@ -29,6 +29,7 @@ public class MatchStateAssemble implements GameState {
         sentInitComplete = false;
         _numPlayers = numPlayers;
         Core.getInstance().getUIManager().setTopText("다른 플레이어를 기다리는중...");
+        start();
     }
 
     @Override
@@ -53,8 +54,9 @@ public class MatchStateAssemble implements GameState {
             _match.activateWorldSetter();
             if (!_isInitialized){
                 Core.getInstance().getUIManager().setTopText("집합하세요");
-                _match.setBattleGroundLatLon(37.714617, 127.045170);
-                Core.getInstance().getCamera().move(37.714617, 127.045170);
+                double[] _newPos = Core.getInstance().getInputManager().getCurrentPosition();
+                _match.setBattleGroundLatLon(_newPos[0],_newPos[1]);
+                Core.getInstance().getCamera().move(_newPos[0],_newPos[1]);
                 Core.getInstance().getCamera().zoom(17);
             }
             _isInitialized = true;
