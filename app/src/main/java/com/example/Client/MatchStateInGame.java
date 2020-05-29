@@ -1,6 +1,7 @@
 package com.example.Client;
 
 import java.util.Collection;
+import java.util.List;
 
 import Common.GameObject;
 import Common.GameState;
@@ -14,34 +15,69 @@ import Common.GameState;
  */
 public class MatchStateInGame implements GameState {
     private GameStateMatch _match;
+    private boolean _isPlayerDead;
+    private boolean _waiting = true;
+    private boolean _isDeathScreen;
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
-        Core.getInstance().getUIManager().setDefaultTopText("게임이 시작되었습니다");
+        Core.get().getUIManager().setDefaultTopText("게임이 시작되었습니다");
     }
 
     @Override
     public void start() {
-        // TODO this is temp
-        Player player = null;
-        Collection<GameObject> gos = _match.getWorld();
-        for (GameObject go : gos){
-            if (go instanceof Player) {
-                player = (Player) go;
-                Core.getInstance().getInputManager().setThisPlayer((Player) go);
-                break;
-            }
-        }
-
-        for (int i = 0; i < 4; i++){
-            Core.getInstance().getUIManager().setButtonText(AndroidUIManager.BUTTON_Q + i, player.getSkills()[i].getName());
-            Core.getInstance().getUIManager().setButtonActive(AndroidUIManager.BUTTON_Q + i, true);
-        }
+        Player player = Core.get().getMatch().getThisPlayer();
+        player.setOnDeathListener(() -> _isPlayerDead = true);
+        setButtons(player, true);
+        Core.get().getUIManager().switchScreen(ScreenType.INGAME, () -> _waiting = false);
     }
 
     @Override
     public void update(long ms) {
-        // TODO
+        if (_waiting) return;
+
+        if (_isPlayerDead){
+            if (!_isDeathScreen) {
+                setDeathScreen();
+                _isDeathScreen = true;
+            }
+
+            if (setGhost())
+                _isPlayerDead = false;
+        }
+    }
+
+    private boolean setGhost() {
+        Player player = Core.get().getMatch().getThisPlayer();
+        if (player != null && player.getName().equals("현재위치")){
+            player.setRenderComponent(
+                    Core.get().getRenderer().createRenderComponent(
+                            player, ImageType.MARKER
+                    )
+            );
+            return true;
+        }
+        return false;
+    }
+
+    private void setDeathScreen() {
+        UIManager uiManager = Core.get().getUIManager();
+        uiManager.setDefaultTopText("당신은 죽었습니다. 부활지점으로 이동하세요.");
+        uiManager.switchScreen(ScreenType.MAP, null);
+
+        List<GameObject> world = _match.getWorld();
+        for (GameObject go : world) {
+            if (go.getName().equals("부활지점")) {
+                go.setRenderComponent(
+                        Core.get().getRenderer().createRenderComponent(
+                                go, ImageType.CIRCLE_WITH_MARKER
+                        )
+                );
+
+                double[] respawnLatLon = go.getPosition();
+                Core.get().getCamera().move(respawnLatLon[0], respawnLatLon[1]);
+            }
+        }
     }
 
     @Override
@@ -49,6 +85,16 @@ public class MatchStateInGame implements GameState {
         Collection<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
             go.render(renderer);
+        }
+    }
+
+    private void setButtons(Player player, boolean enable){
+        for (int i = 0; i < 4; i++){
+            if (player != null) {
+                Core.get().getUIManager()
+                        .setButtonText(UIManager.BUTTON_Q + i, player.getSkills()[i].getName());
+            }
+            Core.get().getUIManager().setButtonActive(UIManager.BUTTON_Q + i, enable);
         }
     }
 }

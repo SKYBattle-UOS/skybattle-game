@@ -32,11 +32,11 @@ class MatchStateGetReadyHost implements GameState {
         if (_countMS < 0)
             startMatch = true;
 
-        OutputBitStream packet = CoreHost.getInstance().getNetworkManager().getPacketToSend();
+        OutputBitStream packet = CoreHost.get().getNetworkManager().getPacketToSend();
 
         Util.sendHas(packet, countChanged);
         if (countChanged){
-            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+            CoreHost.get().getNetworkManager().shouldSendThisFrame();
             try {
                 packet.write(_prevCount, 8);
             } catch (IOException e) {
@@ -46,7 +46,7 @@ class MatchStateGetReadyHost implements GameState {
 
         Util.sendHas(packet, startMatch);
         if (startMatch){
-            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+            CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.INGAME);
         }
     }

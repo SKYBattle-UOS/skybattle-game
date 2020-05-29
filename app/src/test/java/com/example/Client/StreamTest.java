@@ -129,5 +129,23 @@ public class StreamTest {
         System.out.println(bitIn2.read(4));
         System.out.println(bitIn2.read(32));
         System.out.println(bitIn2.read(32));
+
+        BitOutputStream bitOut2 = new BitOutputStream();
+        try {
+            for (int i = 0; i < 30; i++){
+                bitOut2.write(0, 1);
+                System.out.println(bitOut2.getBufferByteLength());
+                BitInputStream tempIn = new BitInputStream(bitOut2.getBuffer());
+                tempIn.setBufferLength(bitOut2.getBufferByteLength());
+                int count = 0;
+                for (int j = 0; j < i + 1; j++)
+                    if (tempIn.read(1) == 0)
+                        count++;
+
+                System.out.println("read " + count);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

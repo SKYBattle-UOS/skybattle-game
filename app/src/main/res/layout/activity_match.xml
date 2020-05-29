@@ -11,7 +11,6 @@
         android:layout_height="57dp"
         android:gravity="center_horizontal"
         android:padding="1dp"
-        android:text="이 메시지는 보이면 안 되는데"
         android:textSize="25sp" />
 
     <FrameLayout

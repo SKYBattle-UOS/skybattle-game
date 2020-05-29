@@ -38,4 +38,15 @@ public class Player extends PlayerCommon {
     public void after(long ms) {
 
     }
+
+    @Override
+    public void setHealth(int health) {
+        super.setHealth(health);
+        Core.get().getUIManager().setHealth(health);
+    }
+
+    @Override
+    public void faceDeath() {
+        super.faceDeath();
+    }
 }

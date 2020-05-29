@@ -3,9 +3,8 @@ package com.example.Client;
 enum ScreenType {
     MAIN,
     ROOM,
-    ASSEMBLE,
+    MAP,
     CHARACTERSELECT,
-    GETREADY,
     INGAME,
     END
 }

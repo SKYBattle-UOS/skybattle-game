@@ -22,18 +22,15 @@ public class MatchStateGetReady implements GameState {
     private int _count;
     private int _prevCount;
     private GameStateMatch _match;
-    private boolean _waiting;
 
     MatchStateGetReady(GameStateMatch parent){
         _match = parent;
-        Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
+        Core.get().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
     }
 
     @Override
     public void update(long ms) {
-        if (_waiting) return;
-
-        InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+        InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
         if (Util.hasMessage(packet)){
@@ -41,8 +38,7 @@ public class MatchStateGetReady implements GameState {
         }
 
         if (Util.hasMessage(packet)){
-            _waiting = true;
-            Core.getInstance().getUIManager().switchScreen(ScreenType.INGAME, ()->_match.switchState(MatchStateType.INGAME));
+            _match.switchState(MatchStateType.INGAME);
         }
     }
 
@@ -50,7 +46,7 @@ public class MatchStateGetReady implements GameState {
     public void render(Renderer renderer, long ms) {
         if (_prevCount != _count){
             _prevCount = _count;
-            Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _count));
+            Core.get().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _count));
         }
 
         Collection<GameObject> gameObjects = _match.getWorld();

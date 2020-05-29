@@ -62,7 +62,11 @@ public class InputManager {
     }
 
     public void debugMove(int direction) {
-        double[] _newPos = _player.getPosition();
+        Player player = Core.get().getMatch().getThisPlayer();
+
+        if (player == null) return;
+
+        double[] _newPos = player.getPosition();
         switch (direction){
             case 0:
                 _newPos[0] += 0.00005;
@@ -100,7 +104,7 @@ public class InputManager {
     }
 
     private void sendInput() {
-        OutputBitStream stream = Core.getInstance().getPakcetManager().getPacketToSend();
+        OutputBitStream stream = Core.get().getPakcetManager().getPacketToSend();
 
         InputState input = _inputStates.poll();
         if (input != null){
@@ -112,7 +116,7 @@ public class InputManager {
             }
 
             input.writeToStream(stream);
-            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+            Core.get().getPakcetManager().shouldSendThisFrame();
         }
         else {
             // sending 0 input in the packet
@@ -134,14 +138,6 @@ public class InputManager {
             state.lon = _convertTemp[1];
         }
         _inputStates.offer(state);
-    }
-
-    public void setThisPlayer(Player player){
-        _player = player;
-    }
-
-    public Player getThisPlayer(){
-        return _player;
     }
 
     public void startSending(){

@@ -28,20 +28,19 @@ public class MatchStateAssemble implements GameState {
         _isInitialized = false;
         sentInitComplete = false;
         _numPlayers = numPlayers;
-        Core.getInstance().getUIManager().setTopText("다른 플레이어를 기다리는중...");
-        start();
+        Core.get().getUIManager().setTopText("다른 플레이어를 기다리는중...");
     }
 
     @Override
     public void update(long ms) {
         if (_waiting) return;
 
-        InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
-        OutputBitStream outPacket = Core.getInstance().getPakcetManager().getPacketToSend();
+        InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
+        OutputBitStream outPacket = Core.get().getPakcetManager().getPacketToSend();
 
         if (!sentInitComplete) {
             sentInitComplete = true;
-            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+            Core.get().getPakcetManager().shouldSendThisFrame();
 
             Util.sendHas(outPacket, sentInitComplete);
         }
@@ -53,18 +52,17 @@ public class MatchStateAssemble implements GameState {
         if (Util.hasMessage(packet)) {
             _match.activateWorldSetter();
             if (!_isInitialized){
-                Core.getInstance().getUIManager().setTopText("집합하세요");
-                double[] _newPos = Core.getInstance().getInputManager().getCurrentPosition();
-                _match.setBattleGroundLatLon(_newPos[0],_newPos[1]);
-                Core.getInstance().getCamera().move(_newPos[0],_newPos[1]);
-                Core.getInstance().getCamera().zoom(17);
+                Core.get().getUIManager().setTopText("집합하세요");
+                _match.setBattleGroundLatLon(37.714617, 127.045170);
+                Core.get().getCamera().move(37.714617, 127.045170);
+                Core.get().getCamera().zoom(17);
             }
             _isInitialized = true;
         }
 
         if (Util.hasMessage(packet)) {
             _waiting = true;
-            Core.getInstance().getUIManager().switchScreen(ScreenType.CHARACTERSELECT,
+            Core.get().getUIManager().switchScreen(ScreenType.CHARACTERSELECT,
                     ()-> _match.switchState(MatchStateType.SELECT_CHARACTER));
         }
     }

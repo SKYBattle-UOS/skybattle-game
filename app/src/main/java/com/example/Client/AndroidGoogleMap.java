@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -40,68 +41,106 @@ import java.util.HashMap;
  *  float	HUE_VIOLET 270 .0
  *  float	HUE_YELLOW	60 .0 marker 색상
  */
-public class GoogleMapAdapter implements Map {
+public class AndroidGoogleMap implements Map {
     private final float hue_color = (float) 0.0; //default
 
     private GoogleMap _googleMap;
-    private Handler _mainHandler;
     private Context _matchActivity;
     private View _marker_root_view; //text 띄우기 위해
     private TextView _tv_marker; //textview
+    private Handler _mainHandler = new Handler(Looper.getMainLooper());
 
-    private HashMap<Integer, Circle> _circles;
-    private HashMap<Integer, Marker> _markers;
+    private HashMap<Integer, Circle> _circles = new HashMap<>();
+    private HashMap<Integer, Marker> _markers = new HashMap<>();
     private int _nextMarkerNumber;
     private int _nextCircleNumber;
 
-    public GoogleMapAdapter(GoogleMap googleMap, Context mContext, View marker_root_view, TextView tv_marker) {
+    private HashMap<Integer, SavedMarker> _savedMarkers = new HashMap<>();
+    private HashMap<Integer, SavedCircle> _savedCircles = new HashMap<>();
+    private SavedCamera _savedCamera = new SavedCamera(0, 0, 0);
+
+    public AndroidGoogleMap(GoogleMap googleMap, Context mContext,
+                            View marker_root_view, TextView tv_marker) {
+        setContext(googleMap, mContext, marker_root_view, tv_marker);
+    }
+
+    public void setContext(GoogleMap googleMap, Context context, View markerView, TextView textView){
         _googleMap = googleMap;
-        _mainHandler = new Handler(Looper.getMainLooper());
-        _markers = new HashMap<>();
-        _circles= new HashMap<>();
-        _matchActivity = mContext;
-        _marker_root_view = marker_root_view;
-        _tv_marker = tv_marker;
+        _matchActivity = context;
+        _marker_root_view = markerView;
+        _tv_marker = textView;
+
+        _googleMap.setOnMarkerClickListener((marker) -> true);
     }
 
     @Override
     public MapCircleHandle addCircle(double lat, double lon, int color, float radius) {
         int number = _nextCircleNumber++;
         GoogleCircleHandle ret = new GoogleCircleHandle(number);
-        _mainHandler.post(() -> _addCircle(number, lat, lon, color, radius));
+        SavedCircle saved = new SavedCircle(lat, lon, color, radius);
+        _savedCircles.put(number, saved);
+
+        if (_googleMap != null)
+            _mainHandler.post(() -> _addCircle(number, lat, lon, color, radius));
         return ret;
     }
 
     @Override
-    public synchronized MapMarkerHandle addMarker(double latitude, double longitude, int color, float size, String name) {
+    public synchronized MapMarkerHandle addMarker(double latitude, double longitude,
+                                                  int color, float size, String name) {
         int number = _nextMarkerNumber++;
         GoogleMarkerHandle ret = new GoogleMarkerHandle(number);
-        _mainHandler.post(() -> _addMarker(number, latitude, longitude, color, size, name));
+        SavedMarker saved = new SavedMarker(latitude, longitude, color, size, name);
+        _savedMarkers.put(number, saved);
+
+        if (_googleMap != null)
+            _mainHandler.post(() -> _addMarker(number, latitude, longitude, color, size, name));
+
         return ret;
     }
 
     @Override
     public void setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
-        _mainHandler.post(() -> _setMarkerPosition(marker, lat, lon));
+        SavedMarker saved = _savedMarkers.get(((GoogleMarkerHandle) marker).index);
+        saved.lat = lat;
+        saved.lon = lon;
+
+        if (_googleMap != null)
+            _mainHandler.post(() -> _setMarkerPosition(marker, lat, lon));
     }
 
     @Override
     public void setCirclePosition(MapCircleHandle circle, double lat, double lon){
-        _mainHandler.post(() -> _setCirclePosition(circle, lat, lon));
+        SavedCircle saved = _savedCircles.get(((GoogleCircleHandle) circle).index);
+        saved.lat = lat;
+        saved.lon = lon;
+
+        if (_googleMap != null)
+            _mainHandler.post(() -> _setCirclePosition(circle, lat, lon));
     }
 
     @Override
     public void setCircleRadius(MapCircleHandle circle, float radius){
-        _mainHandler.post(() -> _setCircleRadius(circle, radius));
+        SavedCircle saved = _savedCircles.get(((GoogleCircleHandle) circle).index);
+        saved.radius = radius;
+
+        if (_googleMap != null)
+            _mainHandler.post(() -> _setCircleRadius(circle, radius));
     }
 
     @Override
     public void removeMarker(MapMarkerHandle marker) {
-        _mainHandler.post(() -> _removeMarker(marker));
+        _savedMarkers.remove(((GoogleMarkerHandle) marker).index);
+
+        if (_googleMap != null)
+            _mainHandler.post(() -> _removeMarker(marker));
     }
     @Override
     public void removeCircle(MapCircleHandle circle){
-        _mainHandler.post(() -> _removeCircle(circle));
+        _savedCircles.remove(((GoogleCircleHandle) circle).index);
+
+        if (_googleMap != null)
+            _mainHandler.post(() -> _removeCircle(circle));
     }
 
     @Override
@@ -114,13 +153,46 @@ public class GoogleMapAdapter implements Map {
         _mainHandler.post(()->_animateCamera(zoom));
     }
 
+    public void save(){
+        CameraPosition camPos = _googleMap.getCameraPosition();
+        _savedCamera.lat = camPos.target.latitude;
+        _savedCamera.lon = camPos.target.longitude;
+        _savedCamera.zoom = camPos.zoom;
+
+        _googleMap = null;
+        _tv_marker = null;
+        _matchActivity = null;
+        _marker_root_view = null;
+        _markers.clear();
+        _circles.clear();
+    }
+
+    public void restore(){
+        for (java.util.Map.Entry<Integer, SavedMarker> e : _savedMarkers.entrySet()){
+            SavedMarker saved = e.getValue();
+            _addMarker(e.getKey(), saved.lat, saved.lon, saved.color, saved.size, saved.name);
+        }
+
+        for (java.util.Map.Entry<Integer, SavedCircle> e : _savedCircles.entrySet()){
+            SavedCircle saved = e.getValue();
+            _addCircle(e.getKey(), saved.lat, saved.lon, saved.color, saved.radius);
+        }
+
+        _moveCamera(_savedCamera.lat, _savedCamera.lon);
+        _animateCamera(_savedCamera.zoom);
+    }
+
     private synchronized void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
+        if (_googleMap == null) return;
+
         int index = ((GoogleMarkerHandle) marker).index;
         Marker cur_marker = _markers.get(index);
         cur_marker.setPosition(new LatLng(lat, lon));
         cur_marker.showInfoWindow();
     }
     private synchronized void _setCirclePosition(MapCircleHandle circle, double lat, double lon){
+        if (_googleMap == null) return;
+
         int index = ((GoogleCircleHandle) circle).index;
         Circle cur_circle = _circles.get(index);
         cur_circle.setCenter(new LatLng(lat,lon));
@@ -128,13 +200,16 @@ public class GoogleMapAdapter implements Map {
     }
 
     private synchronized void _setCircleRadius(MapCircleHandle circle, float radius){
+        if (_googleMap == null) return;
+
         int index = ((GoogleCircleHandle) circle).index;
         Circle cur_circle = _circles.get(index);
         cur_circle.setRadius((double)radius);
         //cur_circle.setVisible(true);
     }
 
-    private synchronized void _addMarker(int number, double latitude, double longitude, int color, float size, String name){
+    private synchronized void _addMarker(int number, double latitude, double longitude,
+                                         int color, float size, String name){
         _drawText(number, latitude, longitude, name);
     }
 
@@ -143,6 +218,8 @@ public class GoogleMapAdapter implements Map {
     }
 
     private synchronized void _removeMarker(MapMarkerHandle marker) {
+        if (_googleMap == null) return;
+
         int index = ((GoogleMarkerHandle) marker).index;
         Marker cur_marker = _markers.get(index);
         _markers.remove(index);
@@ -150,6 +227,8 @@ public class GoogleMapAdapter implements Map {
     }
 
     private synchronized void _removeCircle(MapCircleHandle circle) {
+        if (_googleMap == null) return;
+
         int index = ((GoogleCircleHandle) circle).index;
         Circle cur_circle = _circles.get(index);
         _circles.remove(index);

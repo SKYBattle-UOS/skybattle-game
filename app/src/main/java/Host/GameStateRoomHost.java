@@ -8,7 +8,6 @@ import java.util.Collection;
 import Common.GameState;
 import Common.GameStateType;
 import Common.InputBitStream;
-import Common.Util;
 
 public class GameStateRoomHost implements GameState {
     private GameStateContextHost _parent;
@@ -20,8 +19,8 @@ public class GameStateRoomHost implements GameState {
 
     @Override
     public void update(long ms) {
-        NetworkManager net = CoreHost.getInstance().getNetworkManager();
-        Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
+        NetworkManager net = CoreHost.get().getNetworkManager();
+        Collection<ClientProxy> clients = CoreHost.get().getNetworkManager().getClientProxies();
 
         for (ClientProxy client : clients){
             InputBitStream packet = client.getRawPacketQueue().poll();

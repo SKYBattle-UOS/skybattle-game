@@ -55,4 +55,8 @@ public class MapRenderer implements Renderer, Camera {
     public void zoom(float scale) {
         _map.zoomCamera(scale);
     }
+
+    public Map getMap(){
+        return _map;
+    }
 }

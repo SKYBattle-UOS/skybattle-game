@@ -3,19 +3,21 @@ package com.example.Client;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.OnLifecycleEvent;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Queue;
 
 public class AndroidUIManager implements UIManager {
-    private Screen _currentScreen = null;
-    private ScreenType _nextScreen = null;
-    private Runnable _onComplete = null;
-    private boolean _shouldSendSwitch = false;
+    private Screen _currentScreen;
+    private ScreenType _nextScreenType;
+    private Runnable _onComplete;
+    private boolean _shouldSwitch;
     private final Object _mutex = new Object();
     private String _topTextCache;
     private String _defaultTopText;
@@ -30,6 +32,7 @@ public class AndroidUIManager implements UIManager {
     private MutableLiveData<Boolean>[] _qwerEnables = new MutableLiveData[4];
     private MutableLiveData<String> _topText = new MutableLiveData<>();
     private MutableLiveData<String> _titleText = new MutableLiveData<>();
+    private MutableLiveData<Integer> _health = new MutableLiveData<>();
 
     public AndroidUIManager(){
         for (int i = 0; i < 4; i++) {
@@ -51,16 +54,24 @@ public class AndroidUIManager implements UIManager {
 
     @Override
     public void switchScreen(ScreenType type, Runnable onComplete){
-        _nextScreen = type;
-        _onComplete = onComplete;
-        _shouldSendSwitch = true;
+        if (_shouldSwitch) return;
 
-        synchronized (_mutex) {
-            if (_currentScreen != null) {
-                _mainHandler.post(()->_currentScreen.switchTo(type));
-                _shouldSendSwitch = false;
+        _nextScreenType = type;
+        _onComplete = onComplete;
+        _shouldSwitch = true;
+
+        postSwitchScreen(type);
+    }
+
+    private void postSwitchScreen(ScreenType type) {
+        _mainHandler.post(() -> {
+            synchronized (_mutex){
+                if (_currentScreen != null){
+                    _shouldSwitch = false;
+                    _currentScreen.switchTo(type);
+                }
             }
-        }
+        });
     }
 
     @Override
@@ -69,13 +80,15 @@ public class AndroidUIManager implements UIManager {
             _currentScreen = screen;
             if (_currentScreen == null) return;
 
-            if (_shouldSendSwitch) {
-                _mainHandler.post(()->_currentScreen.switchTo(_nextScreen));
-                _shouldSendSwitch = false;
+            if (_shouldSwitch) {
+                postSwitchScreen(_nextScreenType);
+                return;
             }
-            else if (type == _nextScreen){
-                _onComplete.run();
-                _nextScreen = null;
+
+            if (type == _nextScreenType){
+                if (_onComplete != null)
+                    _onComplete.run();
+                _nextScreenType = null;
                 _onComplete = null;
             }
         }
@@ -137,6 +150,19 @@ public class AndroidUIManager implements UIManager {
         _qwerEnables[button - BUTTON_Q].postValue(active);
     }
 
+    @Override
+    public void setHealth(int health) {
+        _health.postValue(health);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void onResume(LifecycleOwner owner){
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void onPause(LifecycleOwner owner){
+    }
+
     public MutableLiveData<String> getButtonString(int button){
         switch (button){
             case BUTTON_Q:
@@ -166,4 +192,7 @@ public class AndroidUIManager implements UIManager {
     public MutableLiveData<String> getTitleText(){
         return _titleText;
     }
+
+    public MutableLiveData<Integer> getHealth() { return _health; }
+
 }

@@ -21,7 +21,7 @@ public class MatchStateSelectCharacter implements GameState {
 
     MatchStateSelectCharacter(GameStateMatch match) {
         _match = match;
-        Core.getInstance().getUIManager().setTopText("집합 완료 : 캐릭터를 선택하세요");
+        Core.get().getUIManager().setTopText("집합 완료 : 캐릭터를 선택하세요");
         _selectedCharacter = false;
         _sentSelected = false;
     }
@@ -30,21 +30,21 @@ public class MatchStateSelectCharacter implements GameState {
     public void update(long ms) {
         if (_waiting) return;
 
-        InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+        InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
         if (_selectedCharacter && !_sentSelected) {
-            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+            Core.get().getPakcetManager().shouldSendThisFrame();
             _sentSelected = true;
             return;
         }
 
-        OutputBitStream packetToSend = Core.getInstance().getPakcetManager().getPacketToSend();
+        OutputBitStream packetToSend = Core.get().getPakcetManager().getPacketToSend();
         Util.sendHas(packetToSend, _selectedCharacter);
 
         if (Util.hasMessage(packet)){
             _waiting = true;
-            Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY, ()->_match.switchState(MatchStateType.GET_READY));
+            Core.get().getUIManager().switchScreen(ScreenType.MAP, ()->_match.switchState(MatchStateType.GET_READY));
         }
     }
 }
