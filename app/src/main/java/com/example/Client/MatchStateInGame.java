@@ -6,6 +6,7 @@ import java.util.List;
 import Common.GameObject;
 import Common.GameState;
 import Common.ImageType;
+import Common.Player;
 
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 매치 진행 중 화면.
@@ -27,8 +28,8 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void start() {
-        PlayerClient player = Core.get().getMatch().getThisPlayer();
-        player.setOnDeathListener(() -> _isPlayerDead = true);
+        Player player = Core.get().getMatch().getThisPlayer();
+        player.getGameObject().setOnDeathListener(() -> _isPlayerDead = true);
         setButtons(player, true);
         Core.get().getUIManager().switchScreen(ScreenType.INGAME, () -> _waiting = false);
     }
@@ -49,13 +50,9 @@ public class MatchStateInGame implements GameState {
     }
 
     private boolean setGhost() {
-        PlayerClient player = Core.get().getMatch().getThisPlayer();
+        GameObject player = Core.get().getMatch().getThisPlayer().getGameObject();
         if (player != null && player.getName().equals("현재위치")){
-            player.setRenderComponent(
-                    Core.get().getRenderer().createRenderComponent(
-                            player, ImageType.MARKER
-                    )
-            );
+            player.setLook(ImageType.MARKER);
             return true;
         }
         return false;
@@ -85,7 +82,7 @@ public class MatchStateInGame implements GameState {
         }
     }
 
-    private void setButtons(PlayerClient player, boolean enable){
+    private void setButtons(Player player, boolean enable){
         for (int i = 0; i < 4; i++){
             if (player != null) {
                 Core.get().getUIManager()
