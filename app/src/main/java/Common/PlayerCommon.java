@@ -15,6 +15,10 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         int i = GameObject.startFromHereFlag;
         playerIdDirtyFlag = i;
         i *= 2;
+        invincibilityFlag = i;
+        i *= 2;
+        cantAttackFlag = i;
+        i *= 2;
         healthDirtyFlag = i;
         i *= 2;
         teamDirtyFlag = i;
@@ -24,10 +28,6 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         maxHealthDirtyFlag = i;
         i *= 2;
         startFromHereFlag = i;
-        i *= 2;
-        invincibilityFlag = i;
-        i *= 2;
-        cantAttackFlag = i;
     }
 
     protected Skill[] _skills = new Skill[4];
