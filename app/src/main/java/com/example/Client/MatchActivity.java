@@ -97,6 +97,8 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
 
     @Override
     public void switchTo(ScreenType type) {
+        if (_currentScreenType == type) return;
+
         _currentScreenType = type;
 
         Fragment currentFragmnet = getSupportFragmentManager()
@@ -112,17 +114,13 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
                 trans.add(R.id.frag, new SelectCharacterFragment());
                 break;
 
-            case GETREADY:
+            case MAP:
                 // nothing
+                trans.add(R.id.frag, new DebugMapFragment());
                 break;
 
             case INGAME:
                 trans.add(R.id.frag, new InGameFragment());
-                break;
-
-            case DEATH:
-                // nothing
-                trans.add(R.id.frag, new DebugMapFragment());
                 break;
         }
 
@@ -141,7 +139,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
             MapRenderer mapRenderer = new MapRenderer(_adapter);
             Core.getInstance().setRenderer(mapRenderer);
             Core.getInstance().setCamera(mapRenderer);
-            _currentScreenType = ScreenType.ASSEMBLE;
+            switchTo(ScreenType.MAP);
         }
         else {
             _adapter = (AndroidGoogleMap) ((MapRenderer) Core.getInstance().getRenderer()).getMap();

@@ -17,7 +17,7 @@ public class HealthUpCommon extends PlayerTargetSkill {
 
     @Override
     public void cast(GameObject caster) {
-        if (caster == Core.getInstance().getInputManager().getThisPlayer()){
+        if (caster == Core.getInstance().getMatch().getThisPlayer()){
             String targetName = Core.getInstance()
                     .getMatch().getRegistry().getGameObject(_networkId).getName();
             Core.getInstance().getUIManager().setTopText(targetName + "(을)를 회복했습니다", 2);

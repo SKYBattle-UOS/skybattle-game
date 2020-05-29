@@ -4,6 +4,7 @@ import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
 import com.example.Client.ImageType;
+import com.example.Client.Player;
 
 import Common.Collider;
 import Common.GameObject;
@@ -89,6 +90,11 @@ public class GameStateMatchHost implements GameState, Match {
         long timeToBeFired = Core.getInstance().getTime().getStartOfFrame();
         timeToBeFired += (long) seconds * 1000;
         _timerQueue.add(new TimerStruct(callback, timeToBeFired));
+    }
+
+    @Override
+    public Player getThisPlayer() {
+        return null;
     }
 
     private void addNewGameObjectsToWorld(){

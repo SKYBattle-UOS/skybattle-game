@@ -17,9 +17,9 @@ import Common.PlayerCommon;
  */
 public class MatchStateInGame implements GameState {
     private GameStateMatch _match;
-    private int _playerId = 0;
     private boolean _isPlayerDead;
     private boolean _waiting = true;
+    private boolean _isDeathScreen;
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
@@ -28,7 +28,8 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void start() {
-        Player player = findPlayer();
+        Player player = Core.getInstance().getMatch().getThisPlayer();
+        player.setOnDeathListener(() -> _isPlayerDead = true);
         setButtons(player, true);
         Core.getInstance().getUIManager().switchScreen(ScreenType.INGAME, () -> _waiting = false);
     }
@@ -37,40 +38,46 @@ public class MatchStateInGame implements GameState {
     public void update(long ms) {
         if (_waiting) return;
 
-        InputManager inputManager = Core.getInstance().getInputManager();
-        UIManager uiManager = Core.getInstance().getUIManager();
-
-        if (inputManager.getThisPlayer() == null){
-            _isPlayerDead = true;
-            uiManager.setDefaultTopText("당신은 죽었습니다. 부활지점으로 이동하세요.");
-            uiManager.switchScreen(ScreenType.DEATH, null);
-            inputManager.setThisPlayer(new Player(0, 0, "temp"));
-
-            List<GameObject> world = _match.getWorld();
-            for (GameObject go : world) {
-                if (go.getName().equals("부활지점")) {
-                    go.setRenderComponent(
-                            Core.getInstance().getRenderer().createRenderComponent(
-                                    go, ImageType.CIRCLE_WITH_MARKER
-                            )
-                    );
-
-                    double[] respawnLatLon = go.getPosition();
-                    Core.getInstance().getCamera().move(respawnLatLon[0], respawnLatLon[1]);
-                }
-            }
-        }
-
         if (_isPlayerDead){
-            Player player = findPlayer();
-            if (player != null){
-                player.setRenderComponent(
+            if (!_isDeathScreen) {
+                setDeathScreen();
+                _isDeathScreen = true;
+            }
+
+            if (setGhost())
+                _isPlayerDead = false;
+        }
+    }
+
+    private boolean setGhost() {
+        Player player = Core.getInstance().getMatch().getThisPlayer();
+        if (player != null && player.getName().equals("현재위치")){
+            player.setRenderComponent(
+                    Core.getInstance().getRenderer().createRenderComponent(
+                            player, ImageType.MARKER
+                    )
+            );
+            return true;
+        }
+        return false;
+    }
+
+    private void setDeathScreen() {
+        UIManager uiManager = Core.getInstance().getUIManager();
+        uiManager.setDefaultTopText("당신은 죽었습니다. 부활지점으로 이동하세요.");
+        uiManager.switchScreen(ScreenType.MAP, null);
+
+        List<GameObject> world = _match.getWorld();
+        for (GameObject go : world) {
+            if (go.getName().equals("부활지점")) {
+                go.setRenderComponent(
                         Core.getInstance().getRenderer().createRenderComponent(
-                                player, ImageType.MARKER
+                                go, ImageType.CIRCLE_WITH_MARKER
                         )
                 );
-                Core.getInstance().getInputManager().setThisPlayer(player);
-                _isPlayerDead = false;
+
+                double[] respawnLatLon = go.getPosition();
+                Core.getInstance().getCamera().move(respawnLatLon[0], respawnLatLon[1]);
             }
         }
     }
@@ -91,18 +98,5 @@ public class MatchStateInGame implements GameState {
             }
             Core.getInstance().getUIManager().setButtonActive(UIManager.BUTTON_Q + i, enable);
         }
-    }
-
-    private Player findPlayer(){
-        Player player;
-        List<PlayerCommon> gos = _match.getPlayers();
-        for (PlayerCommon go : gos){
-            if (go.getPlayerId() == _playerId) {
-                player = (Player) go;
-                Core.getInstance().getInputManager().setThisPlayer(player);
-                return player;
-            }
-        }
-        return null;
     }
 }

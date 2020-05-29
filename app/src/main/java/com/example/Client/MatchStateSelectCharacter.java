@@ -44,7 +44,7 @@ public class MatchStateSelectCharacter implements GameState {
 
         if (Util.hasMessage(packet)){
             _waiting = true;
-            Core.getInstance().getUIManager().switchScreen(ScreenType.GETREADY, ()->_match.switchState(MatchStateType.GET_READY));
+            Core.getInstance().getUIManager().switchScreen(ScreenType.MAP, ()->_match.switchState(MatchStateType.GET_READY));
         }
     }
 }

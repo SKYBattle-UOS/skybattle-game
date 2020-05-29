@@ -165,7 +165,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
     @Override
     public void switchTo(ScreenType type) {
-        if (type == ScreenType.ASSEMBLE) {
+        if (type == ScreenType.MAP) {
             Intent room_intent = new Intent(RoomActivity.this, MatchActivity.class);
             startActivity(room_intent);
             finish();

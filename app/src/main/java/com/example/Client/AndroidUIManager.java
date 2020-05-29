@@ -67,8 +67,8 @@ public class AndroidUIManager implements UIManager {
         _mainHandler.post(() -> {
             synchronized (_mutex){
                 if (_currentScreen != null){
-                    _currentScreen.switchTo(type);
                     _shouldSwitch = false;
+                    _currentScreen.switchTo(type);
                 }
             }
         });

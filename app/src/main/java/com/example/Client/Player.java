@@ -48,8 +48,5 @@ public class Player extends PlayerCommon {
     @Override
     public void faceDeath() {
         super.faceDeath();
-        InputManager input = Core.getInstance().getInputManager();
-        if (this == input.getThisPlayer())
-            input.setThisPlayer(null);
     }
 }

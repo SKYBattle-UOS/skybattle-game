@@ -62,7 +62,11 @@ public class InputManager {
     }
 
     public void debugMove(int direction) {
-        double[] _newPos = _player.getPosition();
+        Player player = Core.getInstance().getMatch().getThisPlayer();
+
+        if (player == null) return;
+
+        double[] _newPos = player.getPosition();
         switch (direction){
             case 0:
                 _newPos[0] += 0.00005;
@@ -134,14 +138,6 @@ public class InputManager {
             state.lon = _convertTemp[1];
         }
         _inputStates.offer(state);
-    }
-
-    public void setThisPlayer(Player player){
-        _player = player;
-    }
-
-    public Player getThisPlayer(){
-        return _player;
     }
 
     public void startSending(){

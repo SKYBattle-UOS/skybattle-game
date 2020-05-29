@@ -2,6 +2,7 @@ package Common;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.Client.Core;
@@ -12,6 +13,7 @@ import com.example.Client.Renderer;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import Host.GameStateMatchHost;
 import Host.WorldSetterHost;
@@ -52,6 +54,7 @@ public abstract class GameObject {
     private boolean _collision;
     private ImageType _imageType;
     private RenderComponent _renderComponent;
+    private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
 
     protected Match _match;
 
@@ -139,6 +142,13 @@ public abstract class GameObject {
     public void faceDeath(){
         if (_renderComponent != null)
             _renderComponent.destroy();
+
+        for (Runnable r : _onDeathListeners)
+            r.run();
+    }
+
+    public void setOnDeathListener(@NonNull Runnable onDeathListener){
+        _onDeathListeners.add(onDeathListener);
     }
 
     public void render(Renderer renderer){

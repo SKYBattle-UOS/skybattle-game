@@ -156,6 +156,20 @@ public class GameStateMatch implements GameState, Match {
         _timerQueue.add(new TimerStruct(callback, timeToBeFired));
     }
 
+    @Override
+    public Player getThisPlayer() {
+        // TODO
+        Player player;
+        List<PlayerCommon> gos = getPlayers();
+        for (PlayerCommon go : gos){
+            if (go.getPlayerId() == 0) {
+                player = (Player) go;
+                return player;
+            }
+        }
+        return null;
+    }
+
     private void killGameObjects(){
         int goSize = _gameObjects.size();
         for (int i = 0; i < goSize; i++) {

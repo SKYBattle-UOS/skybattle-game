@@ -33,7 +33,7 @@ public class TargetPlayersFragment extends Fragment {
             btn.setHeight(200);
             btn.setOnClickListener(v -> _onButtonClick.accept(player.getNetworkId()));
 
-            if (player == Core.getInstance().getInputManager().getThisPlayer())
+            if (player == Core.getInstance().getMatch().getThisPlayer())
                 btn.setText(player.getName() + " (자기 자신)");
             else
                 btn.setText(player.getName());

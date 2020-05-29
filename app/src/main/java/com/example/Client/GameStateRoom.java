@@ -70,7 +70,7 @@ public class GameStateRoom implements GameState {
             Core.getInstance().getInputManager().startSending();
             Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
             _waiting = true;
-            Core.getInstance().getUIManager().switchScreen(ScreenType.ASSEMBLE, ()->_parent.switchState(GameStateType.MATCH));
+            Core.getInstance().getUIManager().switchScreen(ScreenType.MAP, ()->_parent.switchState(GameStateType.MATCH));
 //            }
         }
     }

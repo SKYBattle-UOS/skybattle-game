@@ -1,6 +1,7 @@
 package Common;
 
 import com.example.Client.GameObjectRegistry;
+import com.example.Client.Player;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface Match {
     List<PlayerCommon> getPlayers();
     GameObject createGameObject(int classId, boolean addToCollider);
     void setTimer(Runnable callback, float seconds);
+    Player getThisPlayer();
 }
