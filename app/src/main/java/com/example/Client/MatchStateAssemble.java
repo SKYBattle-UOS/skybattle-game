@@ -41,7 +41,6 @@ public class MatchStateAssemble implements GameState {
         if (!sentInitComplete) {
             sentInitComplete = true;
             Core.get().getPakcetManager().shouldSendThisFrame();
-
             Util.sendHas(outPacket, sentInitComplete);
         }
         else
@@ -50,14 +49,14 @@ public class MatchStateAssemble implements GameState {
         if (packet == null) return;
 
         if (Util.hasMessage(packet)) {
-            _match.activateWorldSetter();
             if (!_isInitialized){
+                _match.activateWorldSetter();
                 Core.get().getUIManager().setTopText("집합하세요");
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
                 Core.get().getCamera().move(37.714617, 127.045170);
                 Core.get().getCamera().zoom(17);
+                _isInitialized = true;
             }
-            _isInitialized = true;
         }
 
         if (Util.hasMessage(packet)) {

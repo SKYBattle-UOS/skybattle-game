@@ -1,5 +1,7 @@
 package Host;
 
+import android.util.Log;
+
 import com.example.Client.Core;
 
 import java.util.Collection;
@@ -29,10 +31,10 @@ class MatchStateAssembleHost implements GameState {
 
     @Override
     public void update(long ms) {
-        updateAssembleInit();
-
-        if (!_shouldSendAllInit)
+        if (!_shouldSendAllInit){
+            updateAssembleInit();
             _shouldSendAllInit = checkIfEverybodyInit();
+        }
 
         boolean assembled = hasEverybodyAssembled();
 
@@ -48,7 +50,7 @@ class MatchStateAssembleHost implements GameState {
                 _match.createPlayers();
 
                 for (GameObject go : _match.getWorld()){
-                    if (go.getName() == "여기여기 모여라") {
+                    if (go.getName().equals("여기여기 모여라")) {
                         _assemblePoint = go;
                         return;
                     }
@@ -86,7 +88,7 @@ class MatchStateAssembleHost implements GameState {
         int i = 0;
         for (ClientProxy client : _clients){
             InputBitStream packet = client.getPacketQueue().poll();
-            if (packet == null)
+            if (packet == null || _assembleInit[i])
                 continue;
 
             _assembleInit[i] = Util.hasMessage(packet);
