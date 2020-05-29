@@ -51,4 +51,9 @@ public class Player extends PlayerCommon {
     public void faceDeath() {
         super.faceDeath();
     }
+
+    @Override
+    protected void itemsWereAdded() {
+        
+    }
 }

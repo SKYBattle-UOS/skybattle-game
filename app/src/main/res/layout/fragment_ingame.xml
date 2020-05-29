@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:background="@drawable/sky"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:id="@+id/ingame_fragment">
 
     <Button
         android:id="@+id/btn_q"

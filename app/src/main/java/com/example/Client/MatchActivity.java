@@ -182,12 +182,12 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
                 .addOnBackStackChangedListener(_clickMapBackStack);
     }
 
-    public void showTargetPlayers(Consumer<Integer> onButtonClick, Runnable after) {
+    public void showTargetPlayers(Consumer<Integer> onButtonClickListener, Runnable after) {
         _targetPlayerAfter = after;
         getSupportFragmentManager()
             .beginTransaction()
             .add(R.id.frag, new TargetPlayersFragment(integer -> {
-                onButtonClick.accept(integer);
+                onButtonClickListener.accept(integer);
                 getSupportFragmentManager()
                         .popBackStackImmediate();
             }))

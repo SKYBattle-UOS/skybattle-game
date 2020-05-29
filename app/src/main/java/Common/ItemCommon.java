@@ -18,6 +18,7 @@ public abstract class ItemCommon extends GameObject implements Pickable {
 
     protected boolean _isPickedUp;
     protected GameObject _owner;
+    protected Skill _skill;
 
     protected ItemCommon(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
@@ -52,7 +53,7 @@ public abstract class ItemCommon extends GameObject implements Pickable {
         super.readFromStream(stream, dirtyFlag);
 
         if ((dirtyFlag & isPickedUpDirtyFlag) != 0){
-            _isPickedUp = stream.read(1) == 1;
+            setPickedUp(stream.read(1) == 1);
         }
 
         if ((dirtyFlag & ownerDirtyFlag) != 0){
@@ -65,8 +66,15 @@ public abstract class ItemCommon extends GameObject implements Pickable {
         return _isPickedUp;
     }
 
+    public void setPickedUp(boolean pickedUp){
+        _isPickedUp = pickedUp;
+    }
+
     @Override
     public void pickUp(GameObject owner) {
+    }
 
+    public Skill getSkill(){
+        return _skill;
     }
 }

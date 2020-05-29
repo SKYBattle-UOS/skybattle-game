@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class AndroidUIManager implements UIManager {
+import Common.Item;
+
+public class AndroidUIManager implements UIManager, LifecycleObserver {
     private Screen _currentScreen;
     private ScreenType _nextScreenType;
     private Runnable _onComplete;
@@ -153,6 +155,11 @@ public class AndroidUIManager implements UIManager {
     @Override
     public void setHealth(int health) {
         _health.postValue(health);
+    }
+
+    @Override
+    public void setItems(Item[] items) {
+
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

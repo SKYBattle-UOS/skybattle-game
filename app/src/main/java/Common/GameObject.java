@@ -9,6 +9,7 @@ import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ public abstract class GameObject {
     public static int nameDirtyFlag;
     public static int radiusDirtyFlag;
     public static int imageTypeDirtyFlag;
+    public static int itemsDirtyFlag;
     public static int startFromHereFlag;
 
     static {
@@ -35,6 +37,8 @@ public abstract class GameObject {
         radiusDirtyFlag = i;
         i *= 2;
         imageTypeDirtyFlag = i;
+        i *= 2;
+        itemsDirtyFlag = i;
         i *= 2;
         startFromHereFlag = i;
     }
@@ -49,6 +53,7 @@ public abstract class GameObject {
     private ImageType _imageType;
     private RenderComponent _renderComponent;
     private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
+    private ArrayList<ItemCommon> _items = new ArrayList<>();
 
     protected MatchCommon _match;
 
@@ -101,6 +106,17 @@ public abstract class GameObject {
                 e.printStackTrace();
             }
         }
+
+        if ((dirtyFlag & itemsDirtyFlag) != 0){
+            try {
+                stream.write(_items.size(), 4);
+                for (ItemCommon item : _items){
+                    stream.write(item.getNetworkId(), 32);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
@@ -126,6 +142,16 @@ public abstract class GameObject {
         if ((dirtyFlag & imageTypeDirtyFlag) != 0) {
             ImageType type = ImageType.values()[stream.read(4)];
             setRenderComponent(Core.get().getRenderer().createRenderComponent(this, type));
+        }
+
+        if ((dirtyFlag & itemsDirtyFlag) != 0){
+            _items.clear();
+            int itemsSize = stream.read(4);
+            for (int i = 0; i < itemsSize; i++){
+                GameObject item = _match.getRegistry().getGameObject(stream.read(32));
+                _items.add((ItemCommon) item);
+            }
+            itemsWereAdded();
         }
     }
 
@@ -238,5 +264,11 @@ public abstract class GameObject {
     public void setLook(ImageType type){
         _imageType = type;
     }
+
+    public void addItem(ItemCommon item){
+        _items.add(item);
+    }
+
+    protected void itemsWereAdded(){}
     // endregion
 }
