@@ -1,8 +1,5 @@
 package Common;
 
-import com.example.Client.ImageType;
-
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Queue;
 

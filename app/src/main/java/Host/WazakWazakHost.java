@@ -1,9 +1,8 @@
 package Host;
 
-import com.example.Client.ImageType;
+import Common.ImageType;
 
 import Common.GameObject;
-import Common.PlayerHost;
 import Common.PlayerProperty;
 import Common.WazakWazakCommon;
 import Common.Util;

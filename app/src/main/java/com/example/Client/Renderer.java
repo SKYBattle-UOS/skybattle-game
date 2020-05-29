@@ -1,6 +1,7 @@
 package com.example.Client;
 
 import Common.GameObject;
+import Common.ImageType;
 
 public interface Renderer {
     void render(long ms);

@@ -3,11 +3,6 @@ package Common;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.Client.Core;
-import com.example.Client.ImageType;
-import com.example.Client.RenderComponent;
-import com.example.Client.Renderer;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -48,7 +43,6 @@ public abstract class GameObject {
     private boolean _wantsToDie;
     private boolean _collision;
     private ImageType _imageType;
-    private RenderComponent _renderComponent;
     private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
     private ArrayList<ItemCommon> _items = new ArrayList<>();
 
@@ -138,7 +132,7 @@ public abstract class GameObject {
 
         if ((dirtyFlag & imageTypeDirtyFlag) != 0) {
             ImageType type = ImageType.values()[stream.read(4)];
-            setRenderComponent(Core.get().getRenderer().createRenderComponent(this, type));
+            setLook(type);
         }
 
         if ((dirtyFlag & itemsDirtyFlag) != 0){
@@ -157,20 +151,12 @@ public abstract class GameObject {
     public abstract void after(long ms);
 
     public void faceDeath(){
-        if (_renderComponent != null)
-            _renderComponent.destroy();
-
         for (Runnable r : _onDeathListeners)
             r.run();
     }
 
     public void setOnDeathListener(@NonNull Runnable onDeathListener){
         _onDeathListeners.add(onDeathListener);
-    }
-
-    public void render(Renderer renderer){
-        if (_renderComponent != null)
-            renderer.batch(_renderComponent);
     }
 
     @Override
@@ -227,16 +213,6 @@ public abstract class GameObject {
 
     public int getIndexInWorld(){
         return _indexInWorld;
-    }
-
-    public RenderComponent getRenderComponent() {
-        return _renderComponent;
-    }
-
-    public void setRenderComponent(RenderComponent renderComponent) {
-        if (_renderComponent != null)
-            _renderComponent.destroy();
-        this._renderComponent = renderComponent;
     }
 
     public int getNetworkId(){

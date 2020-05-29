@@ -5,6 +5,7 @@ import java.util.List;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.ImageType;
 
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 매치 진행 중 화면.
@@ -68,11 +69,7 @@ public class MatchStateInGame implements GameState {
         List<GameObject> world = _match.getWorld();
         for (GameObject go : world) {
             if (go.getName().equals("부활지점")) {
-                go.setRenderComponent(
-                        Core.get().getRenderer().createRenderComponent(
-                                go, ImageType.CIRCLE_WITH_MARKER
-                        )
-                );
+                go.setLook(ImageType.CIRCLE_WITH_MARKER);
 
                 double[] respawnLatLon = go.getPosition();
                 Core.get().getCamera().move(respawnLatLon[0], respawnLatLon[1]);
@@ -84,7 +81,7 @@ public class MatchStateInGame implements GameState {
     public void render(Renderer renderer, long ms) {
         Collection<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
-            go.render(renderer);
+            ((GameObjectClient) go).render(renderer);
         }
     }
 

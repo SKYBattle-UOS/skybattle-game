@@ -8,7 +8,7 @@ import Common.Skill;
 import Common.WazakWazakCommon;
 import Common.HealthUpCommon;
 
-public class Player extends GameObject {
+public class Player extends GameObjectClient {
     private PlayerProperty _property = new PlayerProperty(){
         @Override
         public void setHealth(int health) {

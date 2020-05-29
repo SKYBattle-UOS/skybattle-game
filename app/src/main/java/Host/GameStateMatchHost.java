@@ -3,7 +3,7 @@ package Host;
 import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
-import com.example.Client.ImageType;
+import Common.ImageType;
 
 import Common.Collider;
 import Common.GameObject;
@@ -19,7 +19,6 @@ import Common.InputBitStream;
 import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.MatchStateType;
-import Common.PlayerProperty;
 import Common.PlayerHost;
 import Common.TimerStruct;
 import Common.Util;

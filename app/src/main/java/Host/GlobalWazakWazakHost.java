@@ -1,11 +1,10 @@
 package Host;
 
-import com.example.Client.ImageType;
+import Common.ImageType;
 
 import Common.GameObject;
 import Common.GlobalWazakWazakCommon;
 import Common.Pickable;
-import Common.PlayerHost;
 import Common.PlayerProperty;
 import Common.Util;
 

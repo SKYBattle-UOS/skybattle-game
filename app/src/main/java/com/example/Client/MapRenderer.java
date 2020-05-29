@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import Common.Camera;
 import Common.GameObject;
 import Common.CompositeRenderComponent;
+import Common.ImageType;
 
 public class MapRenderer implements Renderer, Camera {
     private Map _map;
