@@ -9,7 +9,6 @@ import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,21 +26,18 @@ public abstract class GameObject {
     public static int radiusDirtyFlag;
     public static int imageTypeDirtyFlag;
     public static int itemsDirtyFlag;
-    public static int startFromHereFlag;
+    public static int EndOfFlag;
+    public static int EndOfFlagPos;
 
     static {
-        int i = 1;
-        posDirtyFlag = i;
-        i *= 2;
-        nameDirtyFlag = i;
-        i *= 2;
-        radiusDirtyFlag = i;
-        i *= 2;
-        imageTypeDirtyFlag = i;
-        i *= 2;
-        itemsDirtyFlag = i;
-        i *= 2;
-        startFromHereFlag = i;
+        int i = 0;
+        posDirtyFlag = 1 << i++;
+        nameDirtyFlag = 1 << i++;
+        radiusDirtyFlag = 1 << i++;
+        imageTypeDirtyFlag = 1 << i++;
+        itemsDirtyFlag = 1 << i++;
+        EndOfFlagPos = i;
+        EndOfFlag = 1 << i++;
     }
 
     private float _radius = 2.5f;

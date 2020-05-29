@@ -1,4 +1,4 @@
-package Host;
+package Common;
 
 import com.example.Client.Core;
 

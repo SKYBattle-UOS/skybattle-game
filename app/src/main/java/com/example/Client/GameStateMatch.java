@@ -10,11 +10,9 @@ import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.LatLonByteConverter;
-import Common.MatchCommon;
 import Common.MatchStateType;
-import Common.PlayerCommon;
+import Common.PlayerProperty;
 import Common.TimerStruct;
-import Host.WorldSetterHost;
 
 /**
  * 앱의 각 화면에 대한 상태패턴의 상태 객체 중 매치화면.
@@ -30,7 +28,7 @@ public class GameStateMatch implements GameState, Match {
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
     private Vector<GameObject> _gameObjects;
-    private ArrayList<PlayerCommon> _players;
+    private ArrayList<GameObject> _players;
     private int _numPlayers;
     private boolean _worldSetterActive = false;
     private double[] _battleGroundLatLon;
@@ -135,7 +133,7 @@ public class GameStateMatch implements GameState, Match {
     public List<GameObject> getWorld() { return _gameObjects; }
 
     @Override
-    public List<PlayerCommon> getPlayers() {
+    public List<GameObject> getPlayers() {
         return _players;
     }
 
@@ -150,9 +148,9 @@ public class GameStateMatch implements GameState, Match {
     public Player getThisPlayer() {
         // TODO
         Player player;
-        List<PlayerCommon> gos = getPlayers();
-        for (PlayerCommon go : gos){
-            if (go.getPlayerId() == 0) {
+        List<GameObject> gos = getPlayers();
+        for (GameObject go : gos){
+            if (((Player) go).getProperty().getPlayerId() == 0) {
                 player = (Player) go;
                 return player;
             }

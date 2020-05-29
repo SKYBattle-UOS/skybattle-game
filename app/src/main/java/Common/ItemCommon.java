@@ -8,7 +8,7 @@ public abstract class ItemCommon extends GameObject implements Pickable {
     public static int startFromHereFlag;
 
     static {
-        int i = GameObject.startFromHereFlag;
+        int i = GameObject.EndOfFlag;
         isPickedUpDirtyFlag = i;
         i *= 2;
         ownerDirtyFlag = i;

@@ -4,6 +4,7 @@ import com.example.Client.ImageType;
 
 import Common.GameObject;
 import Common.PlayerHost;
+import Common.PlayerProperty;
 import Common.WazakWazakCommon;
 import Common.Util;
 
@@ -16,6 +17,6 @@ public class WazakWazakHost extends WazakWazakCommon {
         spawned.setLook(ImageType.MARKER);
 
         CoreHost.get().getMatch().getWorldSetterHost()
-                .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
+                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }

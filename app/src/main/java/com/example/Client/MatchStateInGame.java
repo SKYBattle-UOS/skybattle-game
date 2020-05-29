@@ -92,7 +92,8 @@ public class MatchStateInGame implements GameState {
         for (int i = 0; i < 4; i++){
             if (player != null) {
                 Core.get().getUIManager()
-                        .setButtonText(UIManager.BUTTON_Q + i, player.getSkills().get(i).getName());
+                        .setButtonText(UIManager.BUTTON_Q + i,
+                                player.getProperty().getSkills().get(i).getName());
             }
             Core.get().getUIManager().setButtonActive(UIManager.BUTTON_Q + i, enable);
         }

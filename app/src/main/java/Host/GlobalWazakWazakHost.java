@@ -6,6 +6,7 @@ import Common.GameObject;
 import Common.GlobalWazakWazakCommon;
 import Common.Pickable;
 import Common.PlayerHost;
+import Common.PlayerProperty;
 import Common.Util;
 
 public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
@@ -19,7 +20,7 @@ public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
         spawned.setLook(ImageType.MARKER);
 
         match.getWorldSetterHost()
-                .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
+                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
         match.setTimer(() -> {
             if (!((Pickable) spawned).isPickedUp())
                 spawned.scheduleDeath();

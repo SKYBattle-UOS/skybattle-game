@@ -2,6 +2,7 @@ package Common;
 
 import com.example.Client.ImageType;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Queue;
 
@@ -9,22 +10,37 @@ import Host.ClientProxy;
 import Host.CoreHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
-import Host.MatchHost;
 import Host.WazakWazakHost;
 
-public class PlayerHost extends PlayerCommon {
+import static Common.PlayerProperty.*;
+
+public class PlayerHost extends GameObject implements Damageable {
     private double[] _newPosTemp = new double[2];
+
+    private PlayerProperty _property = new PlayerProperty(){
+        @Override
+        public void setHealth(int health) {
+            health = checkHealth(health);
+            super.setHealth(health);
+        }
+    };
 
     public PlayerHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skills.set(0, new WazakWazakHost());
-        _skills.set(1, new GlobalWazakWazakHost());
-        _skills.set(2, new HealthUpHost());
-        _skills.set(3, new HealthUpHost());
+        _property.getSkills().set(0, new WazakWazakHost());
+        _property.getSkills().set(1, new GlobalWazakWazakHost());
+        _property.getSkills().set(2, new HealthUpHost());
+        _property.getSkills().set(3, new HealthUpHost());
     }
 
     public static GameObject createInstance(){
         return new PlayerHost(0, 0, "Player");
+    }
+
+    @Override
+    public void writeToStream(OutputBitStream stream, int dirtyFlag) {
+        super.writeToStream(stream, dirtyFlag);
+        _property.writeToStream(stream, dirtyFlag);
     }
 
     @Override
@@ -40,7 +56,7 @@ public class PlayerHost extends PlayerCommon {
             processCollision(collision, ms);
         }
 
-        for (Skill skill : _skills)
+        for (Skill skill : _property.getSkills())
             if (skill.isDirty())
                 skill.cast(this);
     }
@@ -51,8 +67,8 @@ public class PlayerHost extends PlayerCommon {
 
     private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
-            if (((Damageable) state.other).getTeam() != _team){
-                ((Damageable) state.other).getHurt((int) (_dps * ms / 1000));
+            if (((Damageable) state.other).getTeam() != _property.getTeam()){
+                ((Damageable) state.other).getHurt((int) (_property.getDPS() * ms / 1000));
                 CoreHost.get().getMatch().getWorldSetterHost()
                         .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
             }
@@ -66,7 +82,7 @@ public class PlayerHost extends PlayerCommon {
     protected void networkUpdate(){
         int dirtyFlag = 0;
 
-        ClientProxy client = CoreHost.get().getNetworkManager().getClientById(getPlayerId());
+        ClientProxy client = CoreHost.get().getNetworkManager().getClientById(_property.getPlayerId());
         Queue<InputState> inputs = client.getUnprocessedInputs();
         while (true) {
             InputState input = inputs.poll();
@@ -82,17 +98,19 @@ public class PlayerHost extends PlayerCommon {
 
                 default:
                     int skillIndex = input.qwer - 1;
-                    _skills.get(skillIndex).setDirty(true);
-                    dirtyFlag |= PlayerHost.skillDirtyFlag;
+                    _property.getSkills().get(skillIndex).setDirty(true);
+                    dirtyFlag |= skillDirtyFlag;
 
                     // target is coordinate
                     if (input.lat * input.lon != 0){
                         _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
-                        ((CoordinateSkill) _skills.get(skillIndex)).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
+                        ((CoordinateSkill) _property.getSkills().get(skillIndex))
+                                .setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
                     }
                     // target is player
                     else if (input.playerId >= 0){
-                        ((PlayerTargetSkill) _skills.get(skillIndex)).setTargetPlayer(input.playerId);
+                        ((PlayerTargetSkill) _property.getSkills().get(skillIndex))
+                                .setTargetPlayer(input.playerId);
                     }
                     break;
             }
@@ -107,27 +125,42 @@ public class PlayerHost extends PlayerCommon {
         PlayerHost deadPlayer = (PlayerHost) CoreHost.get().getMatch()
                 .createGameObject(Util.PlayerClassId, true);
 
-        deadPlayer.setPlayerId(getPlayerId());
+        PlayerProperty deadPlayerProperty = deadPlayer.getProperty();
+        deadPlayerProperty.setPlayerId(_property.getPlayerId());
         deadPlayer.setName("현재위치");
         deadPlayer.setLook(ImageType.INVISIBLE);
         deadPlayer.setPosition(getPosition()[0], getPosition()[1]);
     }
 
-    @Override
-    public void setHealth(int health) {
-        if (health > _maxHealth)
-            health = _maxHealth;
+    private int checkHealth(int health) {
+        if (health > _property.getMaxHealth())
+            health = _property.getMaxHealth();
         else if (health < 0){
             scheduleDeath();
             health = 0;
         }
 
-        super.setHealth(health);
+        return health;
     }
 
     @Override
     public void addItem(ItemCommon item) {
         super.addItem(item);
-        _skills.add(item.getSkill());
+        _property.getSkills().add(item.getSkill());
+    }
+
+    @Override
+    public void getHurt(int damage) {
+        // 0 defense
+        _property.setHealth(_property.getHealth() - damage);
+    }
+
+    @Override
+    public int getTeam() {
+        return _property.getTeam();
+    }
+
+    public PlayerProperty getProperty(){
+        return _property;
     }
 }

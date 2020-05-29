@@ -13,7 +13,8 @@ import androidx.fragment.app.Fragment;
 
 import java.util.function.Consumer;
 
-import Common.PlayerCommon;
+import Common.GameObject;
+import Common.PlayerProperty;
 
 public class TargetPlayersFragment extends Fragment {
     private Consumer<Integer> _onButtonClick;
@@ -27,7 +28,7 @@ public class TargetPlayersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.fragment_target_players, container, false);
 
-        for (PlayerCommon player : Core.get().getMatch().getPlayers()){
+        for (GameObject player : Core.get().getMatch().getPlayers()){
             Button btn = new Button(view.getContext());
             btn.setTextSize(20);
             btn.setHeight(200);

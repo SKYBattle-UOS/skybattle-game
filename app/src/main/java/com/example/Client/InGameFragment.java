@@ -48,7 +48,7 @@ public class InGameFragment extends Fragment {
             uiManager.getButtonEnabled(i).observe(this, bool -> _buttons[finalI].setEnabled(bool));
         }
 
-        List<Skill> skills = Core.get().getMatch().getThisPlayer().getSkills();
+        List<Skill> skills = Core.get().getMatch().getThisPlayer().getProperty().getSkills();
         for (int i = 0 ; i < 4; i++){
             setButtonListener(skills.get(i), _buttons[i], i + 1);
         }
