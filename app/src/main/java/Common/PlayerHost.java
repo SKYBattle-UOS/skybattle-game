@@ -52,9 +52,11 @@ public class PlayerHost extends PlayerCommon {
     private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
             if (((Damageable) state.other).getTeam() != _team){
-                ((Damageable) state.other).getHurt(this, (int) (_dps * ms / 1000));
-                CoreHost.get().getMatch().getWorldSetterHost()
-                        .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
+                if(_cantAttack == false){
+                    ((Damageable) state.other).getHurt(this, (int) (_dps * ms / 1000));
+                    CoreHost.get().getMatch().getWorldSetterHost()
+                            .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
+                }
             }
         }
     }
@@ -110,7 +112,7 @@ public class PlayerHost extends PlayerCommon {
 
     public void getHurt(GameObject attacker, int damage) {
         // 0 defense
-        if(_invincibility != 0)
+        if(_invincibility == false)
             setHealth(getHealth() - damage);
     }
 }

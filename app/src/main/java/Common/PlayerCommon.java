@@ -36,8 +36,8 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
     protected int _maxHealth = 100000;
     protected int _dps = 20000;
     protected int _team;
-    protected int _invincibility;
-    protected int _cantAttack;
+    protected boolean _invincibility;
+    protected boolean _cantAttack;
 
     protected PlayerCommon(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
@@ -67,10 +67,10 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
             }
 
             if ((dirtyFlag & invincibilityFlag) != 0)
-                stream.write(getInvincibility(), 1);
+                stream.write(getInvincibility()==true ? 1:0, 1);
 
             if ((dirtyFlag & cantAttackFlag) != 0)
-                stream.write(getCantAttack(), 1);
+                stream.write(getCantAttack()==true ? 1:0, 1);
 
         } catch (IOException e){
             e.printStackTrace();
@@ -100,10 +100,10 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         }
 
         if ((dirtyFlag & invincibilityFlag) != 0)
-            setInvincibility(stream.read(1));
+            setInvincibility(stream.read(1)==1?true:false);
 
         if ((dirtyFlag & cantAttackFlag) != 0)
-            setCantAttack(stream.read(1));
+            setCantAttack(stream.read(1)==1?true:false);
     }
 
     public Skill[] getSkills() { return _skills; }
@@ -116,19 +116,19 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         _team = team;
     }
 
-    public int getInvincibility() {
+    public boolean getInvincibility() {
         return _invincibility;
     }
 
-    public void setInvincibility(int invincibility){
+    public void setInvincibility(boolean invincibility){
         _invincibility = invincibility;
     }
 
-    public int getCantAttack() {
+    public boolean getCantAttack() {
         return _cantAttack;
     }
 
-    public void setCantAttack(int cantAttack){
+    public void setCantAttack(boolean cantAttack){
         _cantAttack = cantAttack;
     }
 

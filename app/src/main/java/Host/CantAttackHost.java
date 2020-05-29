@@ -10,19 +10,15 @@ public class CantAttackHost extends CantAttackCommon {
 
     @Override
     public void cast(GameObject caster) {
-        todo(0);
-        CoreHost.get().getMatch().setTimer(() -> todo(0),1);
+        todo(true);
+        CoreHost.get().getMatch().setTimer(() -> todo(false),10);
     }
 
-    public void todo(int value){
+    public void todo(boolean value){
         PlayerHost player = (PlayerHost) CoreHost.get()
                 .getMatch().getRegistry().getGameObject(_networkId);
 
         player.setCantAttack(value);
-        CoreHost.get()
-                .getMatch()
-                .getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), PlayerHost.cantAttackFlag);
 
         CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), PlayerHost.cantAttackFlag);
     }

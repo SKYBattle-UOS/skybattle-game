@@ -12,8 +12,8 @@ public class invincibilityHost extends invincibilityCommon {
 
     @Override
     public void cast(GameObject caster){
-        todo(0);
-        CoreHost.get().getMatch().setTimer(() -> todo(0),1);
+        todo(1);
+        CoreHost.get().getMatch().setTimer(() -> todo(0),10);
     }
 
     public void todo(int value){
@@ -21,10 +21,6 @@ public class invincibilityHost extends invincibilityCommon {
                 .getMatch().getRegistry().getGameObject(_networkId);
 
         player.setInvincibility(value);
-        CoreHost.get()
-                .getMatch()
-                .getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), PlayerHost.invincibilityFlag);
 
         CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), PlayerHost.invincibilityFlag);
     }
