@@ -12,22 +12,20 @@ public class invincibilityHost extends invincibilityCommon {
 
     @Override
     public void cast(GameObject caster){
+        todo(0);
+        CoreHost.get().getMatch().setTimer(() -> todo(0),1);
+    }
+
+    public void todo(int value){
         PlayerHost player = (PlayerHost) CoreHost.get()
                 .getMatch().getRegistry().getGameObject(_networkId);
 
-        int nowHealth = player.getHealth();
+        player.setInvincibility(value);
+        CoreHost.get()
+                .getMatch()
+                .getWorldSetterHost()
+                .generateUpdateInstruction(player.getNetworkId(), PlayerHost.invincibilityFlag);
 
-        for(int i=0; i <30; i++){ //갱신에 따라 수정해야함
-            player = (PlayerHost) CoreHost.get()
-                    .getMatch().getRegistry().getGameObject(_networkId);
-
-            player.setHealth(nowHealth);
-            CoreHost.get()
-                    .getMatch()
-                    .getWorldSetterHost()
-                    .generateUpdateInstruction(player.getNetworkId(), PlayerHost.healthDirtyFlag);
-
-            CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
-        }
+        CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), PlayerHost.invincibilityFlag);
     }
 }

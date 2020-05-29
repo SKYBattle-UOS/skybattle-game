@@ -110,6 +110,7 @@ public class PlayerHost extends PlayerCommon {
 
     public void getHurt(GameObject attacker, int damage) {
         // 0 defense
-        setHealth(getHealth() - damage);
+        if(_invincibility != 0)
+            setHealth(getHealth() - damage);
     }
 }

@@ -8,6 +8,8 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
     public static int teamDirtyFlag;
     public static int skillDirtyFlag;
     public static int startFromHereFlag;
+    public static int invincibilityFlag;
+    public static int cantAttackFlag;
 
     static {
         int i = GameObject.startFromHereFlag;
@@ -22,6 +24,10 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         maxHealthDirtyFlag = i;
         i *= 2;
         startFromHereFlag = i;
+        i *= 2;
+        invincibilityFlag = i;
+        i *= 2;
+        cantAttackFlag = i;
     }
 
     protected Skill[] _skills = new Skill[4];
@@ -30,6 +36,8 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
     protected int _maxHealth = 100000;
     protected int _dps = 20000;
     protected int _team;
+    protected int _invincibility;
+    protected int _cantAttack;
 
     protected PlayerCommon(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
@@ -58,6 +66,12 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
                 }
             }
 
+            if ((dirtyFlag & invincibilityFlag) != 0)
+                stream.write(getInvincibility(), 1);
+
+            if ((dirtyFlag & cantAttackFlag) != 0)
+                stream.write(getCantAttack(), 1);
+
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -84,6 +98,12 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
                 skill.readFromStream(stream);
             }
         }
+
+        if ((dirtyFlag & invincibilityFlag) != 0)
+            setInvincibility(stream.read(1));
+
+        if ((dirtyFlag & cantAttackFlag) != 0)
+            setCantAttack(stream.read(1));
     }
 
     public Skill[] getSkills() { return _skills; }
@@ -94,6 +114,22 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
 
     public void setTeam(int team){
         _team = team;
+    }
+
+    public int getInvincibility() {
+        return _invincibility;
+    }
+
+    public void setInvincibility(int invincibility){
+        _invincibility = invincibility;
+    }
+
+    public int getCantAttack() {
+        return _cantAttack;
+    }
+
+    public void setCantAttack(int cantAttack){
+        _cantAttack = cantAttack;
     }
 
     public void setPlayerId(int playerId){
