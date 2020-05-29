@@ -163,13 +163,13 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
 
     @Override
     public void updateItems() {
-        PlayerClient thisPlayer = Core.get().getMatch().getThisPlayer();
+        Player thisPlayer = Core.get().getMatch().getThisPlayer();
 
         _mainHandler.post(() -> {
             if (_ingameFrag == null) return;
             _ingameFrag.clearItemButtons();
             int i = 5;
-            for (Item item : thisPlayer.getItems()){
+            for (Item item : thisPlayer.getGameObject().getItems()){
                 int finalI = i;
                 _ingameFrag.addItemButton(btn -> {
                     btn.setText(item.getGameObject().getName());

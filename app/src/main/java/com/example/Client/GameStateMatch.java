@@ -145,7 +145,7 @@ public class GameStateMatch implements GameState, Match {
     }
 
     @Override
-    public PlayerClient getThisPlayer() {
+    public Player getThisPlayer() {
         // TODO
         List<Player> gos = getPlayers();
         for (Player go : gos){
