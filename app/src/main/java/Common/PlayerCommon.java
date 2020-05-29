@@ -1,6 +1,8 @@
 package Common;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class PlayerCommon extends GameObject implements Damageable {
     public static int playerIdDirtyFlag;
@@ -25,7 +27,7 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         startFromHereFlag = i;
     }
 
-    protected Skill[] _skills = new Skill[4];
+    protected ArrayList<Skill> _skills = new ArrayList<>();
     protected int _playerId;
     protected int _health = 100000;
     protected int _maxHealth = 100000;
@@ -34,6 +36,7 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
 
     protected PlayerCommon(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
+        while (_skills.size() < 4) _skills.add(null);
     }
 
     @Override
@@ -87,7 +90,7 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
         }
     }
 
-    public Skill[] getSkills() { return _skills; }
+    public List<Skill> getSkills() { return _skills; }
 
     public int getTeam() {
         return _team;
@@ -110,13 +113,6 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
     }
 
     public void setHealth(int health) {
-        if (health > _maxHealth)
-            health = _maxHealth;
-        else if (health < 0){
-            scheduleDeath();
-            health = 0;
-        }
-
         this._health = health;
     }
 

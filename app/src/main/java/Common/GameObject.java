@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 매 프레임 Update 될 필요가 있는 객체들의 base abstract class 입니다.
@@ -267,6 +268,10 @@ public abstract class GameObject {
 
     public void addItem(ItemCommon item){
         _items.add(item);
+    }
+
+    public List<ItemCommon> getItems(){
+        return _items;
     }
 
     protected void itemsWereAdded(){}

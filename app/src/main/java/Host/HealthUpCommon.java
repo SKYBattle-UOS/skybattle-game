@@ -6,10 +6,6 @@ import Common.GameObject;
 import Common.PlayerTargetSkill;
 
 public class HealthUpCommon extends PlayerTargetSkill {
-    public HealthUpCommon(int index) {
-        super(index);
-    }
-
     @Override
     public String getName() {
         return "회복";

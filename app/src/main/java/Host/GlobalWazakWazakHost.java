@@ -8,10 +8,6 @@ import Common.PlayerHost;
 import Common.Util;
 
 public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
-    public GlobalWazakWazakHost(int index) {
-        super(index);
-    }
-
     @Override
     public void cast(GameObject caster) {
         MatchHost match = CoreHost.get().getMatch();

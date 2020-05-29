@@ -8,7 +8,7 @@ import Host.HealthUpCommon;
 public class Item extends ItemCommon {
     protected Item(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skill = new HealthUpCommon(4);
+        _skill = new HealthUpCommon();
     }
 
     public static GameObject createInstance() {

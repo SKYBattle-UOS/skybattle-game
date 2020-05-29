@@ -17,10 +17,10 @@ public class PlayerHost extends PlayerCommon {
 
     public PlayerHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skills[0] = new WazakWazakHost(0);
-        _skills[1] = new GlobalWazakWazakHost(1);
-        _skills[2] = new HealthUpHost(2);
-        _skills[3] = new HealthUpHost(3);
+        _skills.set(0, new WazakWazakHost());
+        _skills.set(1, new GlobalWazakWazakHost());
+        _skills.set(2, new HealthUpHost());
+        _skills.set(3, new HealthUpHost());
     }
 
     public static GameObject createInstance(){
@@ -69,26 +69,27 @@ public class PlayerHost extends PlayerCommon {
             if (input == null) break;
 
             switch (input.qwer){
-                case 0: case 1: case 2: case 3:
-                    _skills[input.qwer].setDirty(true);
+                // just new position
+                case 0:
+                    _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
+                    setPosition(_newPosTemp[0], _newPosTemp[1]);
+                    dirtyFlag |= PlayerHost.posDirtyFlag;
+                    break;
+
+                default:
+                    int skillIndex = input.qwer - 1;
+                    _skills.get(skillIndex).setDirty(true);
                     dirtyFlag |= PlayerHost.skillDirtyFlag;
 
                     // target is coordinate
                     if (input.lat * input.lon != 0){
                         _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
-                        ((CoordinateSkill) _skills[input.qwer]).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
+                        ((CoordinateSkill) _skills.get(skillIndex)).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
                     }
                     // target is player
                     else if (input.playerId >= 0){
-                        ((PlayerTargetSkill) _skills[input.qwer]).setTargetPlayer(input.playerId);
+                        ((PlayerTargetSkill) _skills.get(skillIndex)).setTargetPlayer(input.playerId);
                     }
-                    break;
-
-                // just new position
-                case 4:
-                    _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
-                    setPosition(_newPosTemp[0], _newPosTemp[1]);
-                    dirtyFlag |= PlayerHost.posDirtyFlag;
                     break;
             }
         }
@@ -106,5 +107,23 @@ public class PlayerHost extends PlayerCommon {
         deadPlayer.setName("현재위치");
         deadPlayer.setLook(ImageType.INVISIBLE);
         deadPlayer.setPosition(getPosition()[0], getPosition()[1]);
+    }
+
+    @Override
+    public void setHealth(int health) {
+        if (health > _maxHealth)
+            health = _maxHealth;
+        else if (health < 0){
+            scheduleDeath();
+            health = 0;
+        }
+
+        super.setHealth(health);
+    }
+
+    @Override
+    public void addItem(ItemCommon item) {
+        super.addItem(item);
+        _skills.add(item.getSkill());
     }
 }

@@ -47,7 +47,7 @@ public class InputManager {
             double[] _newPos = location.getLocation();
 
             InputState state = new InputState();
-            state.qwer = 4;
+            state.qwer = 0;
             _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
             state.lat = _convertTemp[0];
             state.lon = _convertTemp[1];
@@ -83,7 +83,7 @@ public class InputManager {
         }
 
         InputState state = new InputState();
-        state.qwer = 4;
+        state.qwer = 0;
         _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
         state.lat = _convertTemp[0];
         state.lon = _convertTemp[1];
@@ -96,7 +96,7 @@ public class InputManager {
             _converter.convertLatLon(lat + (destLat - lat) / 100 * step, lon + (destLon - lon) / 100 * step, _convertTemp);
             newState.lat = _convertTemp[0];
             newState.lon = _convertTemp[1];
-            newState.qwer = 4;
+            newState.qwer = 0;
             _inputStates.offer(newState);
             _elapsed = 0;
             step++;

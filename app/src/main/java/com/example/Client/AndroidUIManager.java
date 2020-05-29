@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import Common.Item;
+import Common.ItemCommon;
 
 public class AndroidUIManager implements UIManager, LifecycleObserver {
     private Screen _currentScreen;
@@ -35,6 +35,8 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     private MutableLiveData<String> _topText = new MutableLiveData<>();
     private MutableLiveData<String> _titleText = new MutableLiveData<>();
     private MutableLiveData<Integer> _health = new MutableLiveData<>();
+
+    private InGameFragment _ingameFrag;
 
     public AndroidUIManager(){
         for (int i = 0; i < 4; i++) {
@@ -158,16 +160,38 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     }
 
     @Override
-    public void setItems(Item[] items) {
+    public void updateItems() {
+        Player thisPlayer = Core.get().getMatch().getThisPlayer();
 
+        _mainHandler.post(() -> {
+            if (_ingameFrag == null) return;
+            _ingameFrag.clearItemButtons();
+        });
+
+        _mainHandler.post(() -> {
+            if (_ingameFrag == null) return;
+            int i = 5;
+            for (ItemCommon item : thisPlayer.getItems()){
+                int finalI = i;
+                _ingameFrag.addItemButton(btn -> {
+                    btn.setText(item.getName());
+                    _ingameFrag.setButtonListener(item.getSkill(), btn, finalI);
+                });
+                i++;
+            }
+        });
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void onResume(LifecycleOwner owner){
+        // TODO: should lock
+        _ingameFrag = (InGameFragment) owner;
+        updateItems();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     public void onPause(LifecycleOwner owner){
+        _ingameFrag = null;
     }
 
     public MutableLiveData<String> getButtonString(int button){

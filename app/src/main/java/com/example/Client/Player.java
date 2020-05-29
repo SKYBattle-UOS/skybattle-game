@@ -10,10 +10,10 @@ import Host.HealthUpCommon;
 public class Player extends PlayerCommon {
     protected Player(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skills[0] = new WazakWazakCommon(0);
-        _skills[1] = new GlobalWazakWazakCommon(1);
-        _skills[2] = new HealthUpCommon(2);
-        _skills[3] = new HealthUpCommon(3);
+        _skills.set(0, new WazakWazakCommon());
+        _skills.set(1, new GlobalWazakWazakCommon());
+        _skills.set(2, new HealthUpCommon());
+        _skills.set(3, new HealthUpCommon());
     }
 
     public static GameObject createInstance() {
@@ -52,6 +52,7 @@ public class Player extends PlayerCommon {
 
     @Override
     protected void itemsWereAdded() {
-        
+        if (Core.get().getMatch().getThisPlayer() == this)
+            Core.get().getUIManager().updateItems();
     }
 }

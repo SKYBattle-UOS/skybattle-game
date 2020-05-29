@@ -10,7 +10,7 @@ public class ItemHost extends ItemCommon {
 
     protected ItemHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skill = new HealthUpHost(4);
+        _skill = new HealthUpHost();
     }
 
     public static GameObject createInstance() {
