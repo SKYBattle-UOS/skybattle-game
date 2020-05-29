@@ -9,6 +9,7 @@ import Host.ClientProxy;
 import Host.CoreHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
+import Host.MatchHost;
 import Host.WazakWazakHost;
 
 public class PlayerHost extends PlayerCommon {
@@ -92,7 +93,8 @@ public class PlayerHost extends PlayerCommon {
             }
         }
 
-        _match.getWorldSetterHost().generateUpdateInstruction(getNetworkId(), dirtyFlag);
+        CoreHost.get().getMatch()
+                .getWorldSetterHost().generateUpdateInstruction(getNetworkId(), dirtyFlag);
     }
 
     @Override
