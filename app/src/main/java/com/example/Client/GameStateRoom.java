@@ -186,7 +186,7 @@ public class GameStateRoom implements GameState {
         Core.get().getInputManager().startSending();
         Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
         this.switchingToNextScreen = true;
-        Core.get().getUIManager().switchScreen(ScreenType.ASSEMBLE, ()->_parent.switchState(GameStateType.MATCH));
+        Core.get().getUIManager().switchScreen(ScreenType.MAP, ()->_parent.switchState(GameStateType.MATCH));
     }
 
 
