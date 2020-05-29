@@ -21,6 +21,6 @@ public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
         spawned.getMatch().getWorldSetterHost()
                 .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
 
-        CoreHost.getInstance().getMatch().setTimer(spawned::scheduleDeath, 3);
+        CoreHost.get().getMatch().setTimer(spawned::scheduleDeath, 3);
     }
 }

@@ -1,12 +1,9 @@
 package Common;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.Client.Core;
-import com.example.Client.GameObjectRegistry;
 import com.example.Client.ImageType;
 import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
@@ -14,9 +11,6 @@ import com.example.Client.Renderer;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-
-import Host.GameStateMatchHost;
-import Host.WorldSetterHost;
 
 /**
  * 매 프레임 Update 될 필요가 있는 객체들의 base abstract class 입니다.
@@ -131,7 +125,7 @@ public abstract class GameObject {
 
         if ((dirtyFlag & imageTypeDirtyFlag) != 0) {
             ImageType type = ImageType.values()[stream.read(4)];
-            setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, type));
+            setRenderComponent(Core.get().getRenderer().createRenderComponent(this, type));
         }
     }
 

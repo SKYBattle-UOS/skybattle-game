@@ -64,7 +64,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
                 .commit();
         _mapFragment.getMapAsync(this);
         _topText = findViewById(R.id.topText);
-        ((AndroidUIManager) Core.getInstance().getUIManager())
+        ((AndroidUIManager) Core.get().getUIManager())
                 .getTopText().observe(this, text -> _topText.setText(text));
     }
 
@@ -72,13 +72,13 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
     protected void onResume() {
         super.onResume();
         if (_currentScreenType != null)
-            Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
+            Core.get().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Core.getInstance().getUIManager().setCurrentScreen(null, _currentScreenType);
+        Core.get().getUIManager().setCurrentScreen(null, _currentScreenType);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
         }
 
         trans.commit();
-        Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
+        Core.get().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     @Override
@@ -134,20 +134,20 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
 
         _map = googleMap;
 
-        if (Core.getInstance().getRenderer() == null){
+        if (Core.get().getRenderer() == null){
             _adapter = new AndroidGoogleMap(googleMap, this, marker_root_view, tv_marker);
             MapRenderer mapRenderer = new MapRenderer(_adapter);
-            Core.getInstance().setRenderer(mapRenderer);
-            Core.getInstance().setCamera(mapRenderer);
+            Core.get().setRenderer(mapRenderer);
+            Core.get().setCamera(mapRenderer);
             switchTo(ScreenType.MAP);
         }
         else {
-            _adapter = (AndroidGoogleMap) ((MapRenderer) Core.getInstance().getRenderer()).getMap();
+            _adapter = (AndroidGoogleMap) ((MapRenderer) Core.get().getRenderer()).getMap();
             _adapter.setContext(googleMap, this, marker_root_view, tv_marker);
             _adapter.restore();
         }
 
-        Core.getInstance().getUIManager().setCurrentScreen(this, _currentScreenType);
+        Core.get().getUIManager().setCurrentScreen(this, _currentScreenType);
     }
 
     private void setCustomMarkerView() {

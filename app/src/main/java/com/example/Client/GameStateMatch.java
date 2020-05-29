@@ -53,12 +53,12 @@ public class GameStateMatch implements GameState, Match {
 
     @Override
     public void start() {
-        Core.getInstance().setMatch(this);
+        Core.get().setMatch(this);
     }
 
     @Override
     public void update(long ms) {
-        InputBitStream packetStream = Core.getInstance().getPakcetManager().getPacketStream();
+        InputBitStream packetStream = Core.get().getPakcetManager().getPacketStream();
         if (packetStream != null && _worldSetterActive)
             _worldSetter.processInstructions(packetStream);
 
@@ -82,7 +82,7 @@ public class GameStateMatch implements GameState, Match {
             TimerStruct ts = _timerQueue.peek();
             if (ts == null) return;
 
-            if (ts.timeToBeFired < Core.getInstance().getTime().getStartOfFrame()){
+            if (ts.timeToBeFired < Core.get().getTime().getStartOfFrame()){
                 ts.callback.run();
                 _timerQueue.poll();
             }
@@ -151,7 +151,7 @@ public class GameStateMatch implements GameState, Match {
 
     @Override
     public void setTimer(Runnable callback, float seconds) {
-        long timeToBeFired = Core.getInstance().getTime().getStartOfFrame();
+        long timeToBeFired = Core.get().getTime().getStartOfFrame();
         timeToBeFired += (long) seconds * 1000;
         _timerQueue.add(new TimerStruct(callback, timeToBeFired));
     }

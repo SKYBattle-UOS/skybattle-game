@@ -25,12 +25,12 @@ public class MatchStateGetReady implements GameState {
 
     MatchStateGetReady(GameStateMatch parent){
         _match = parent;
-        Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
+        Core.get().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _prevCount));
     }
 
     @Override
     public void update(long ms) {
-        InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+        InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
         if (Util.hasMessage(packet)){
@@ -46,7 +46,7 @@ public class MatchStateGetReady implements GameState {
     public void render(Renderer renderer, long ms) {
         if (_prevCount != _count){
             _prevCount = _count;
-            Core.getInstance().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _count));
+            Core.get().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _count));
         }
 
         Collection<GameObject> gameObjects = _match.getWorld();

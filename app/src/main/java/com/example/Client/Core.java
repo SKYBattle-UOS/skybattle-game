@@ -1,7 +1,6 @@
 package com.example.Client;
 
 import android.content.Context;
-import android.os.SystemClock;
 
 import Common.AndroidTime;
 import Common.Camera;
@@ -54,7 +53,7 @@ public class Core {
     private void init(){
         // TODO
         if (!_isInitialized){
-            CoreHost.getInstance().getNetworkManager().open();
+            CoreHost.get().getNetworkManager().open();
             _stateContext.switchState(GameStateType.MAIN);
             _isInitialized = true;
             ((NetworkPacketManager) _packetManager).init("localhost");
@@ -69,7 +68,7 @@ public class Core {
         }
     }
 
-    public static Core getInstance(){
+    public static Core get(){
         return _coreInstance;
     }
 

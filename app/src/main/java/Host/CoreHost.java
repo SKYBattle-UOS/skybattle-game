@@ -21,7 +21,7 @@ public class CoreHost {
         _time = new AndroidTime();
     }
 
-    public static CoreHost getInstance(){
+    public static CoreHost get(){
         if (_instance == null){
             _instance = new CoreHost();
             _instance.init();

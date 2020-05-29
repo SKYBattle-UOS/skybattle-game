@@ -62,7 +62,7 @@ public class InputManager {
     }
 
     public void debugMove(int direction) {
-        Player player = Core.getInstance().getMatch().getThisPlayer();
+        Player player = Core.get().getMatch().getThisPlayer();
 
         if (player == null) return;
 
@@ -104,7 +104,7 @@ public class InputManager {
     }
 
     private void sendInput() {
-        OutputBitStream stream = Core.getInstance().getPakcetManager().getPacketToSend();
+        OutputBitStream stream = Core.get().getPakcetManager().getPacketToSend();
 
         InputState input = _inputStates.poll();
         if (input != null){
@@ -116,7 +116,7 @@ public class InputManager {
             }
 
             input.writeToStream(stream);
-            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+            Core.get().getPakcetManager().shouldSendThisFrame();
         }
         else {
             // sending 0 input in the packet

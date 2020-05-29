@@ -23,13 +23,13 @@ public class GameStateRoom implements GameState {
 
     @Override
     public void start() {
-        Core.getInstance().getUIManager().registerCallback(AndroidUIManager.ROOM_START_PORT,
+        Core.get().getUIManager().registerCallback(AndroidUIManager.ROOM_START_PORT,
                 ()-> _buttonPressed = true
         );
 
         // TODO: close connection
-        Core.getInstance().getUIManager().registerCallback(AndroidUIManager.EXIT_ROOM_PORT,
-                ()-> Core.getInstance().getUIManager().switchScreen(ScreenType.MAIN,
+        Core.get().getUIManager().registerCallback(AndroidUIManager.EXIT_ROOM_PORT,
+                ()-> Core.get().getUIManager().switchScreen(ScreenType.MAIN,
                         ()->_parent.switchState(GameStateType.MAIN))
         );
     }
@@ -38,7 +38,7 @@ public class GameStateRoom implements GameState {
     public void update(long ms) {
         if (_waiting) return;
 
-        OutputBitStream outPacket = Core.getInstance().getPakcetManager().getPacketToSend();
+        OutputBitStream outPacket = Core.get().getPakcetManager().getPacketToSend();
 
         if (_buttonPressed){
             try {
@@ -46,12 +46,12 @@ public class GameStateRoom implements GameState {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Core.getInstance().getPakcetManager().shouldSendThisFrame();
+            Core.get().getPakcetManager().shouldSendThisFrame();
             _buttonPressed = false;
         }
 
         // TODO: might be better if packet is fetched only once
-        InputBitStream packet = Core.getInstance().getPakcetManager().getPacketStream();
+        InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
 //        if (roomTitleChanged(packet)) {
@@ -67,10 +67,10 @@ public class GameStateRoom implements GameState {
         if (hostStartedGame(packet)) {
             // assemble
 //            if (isAbleToStart(packet)) {
-            Core.getInstance().getInputManager().startSending();
+            Core.get().getInputManager().startSending();
             Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
             _waiting = true;
-            Core.getInstance().getUIManager().switchScreen(ScreenType.MAP, ()->_parent.switchState(GameStateType.MATCH));
+            Core.get().getUIManager().switchScreen(ScreenType.MAP, ()->_parent.switchState(GameStateType.MATCH));
 //            }
         }
     }

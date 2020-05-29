@@ -10,12 +10,12 @@ public class HealthUpHost extends HealthUpCommon {
 
     @Override
     public void cast(GameObject caster) {
-        PlayerHost player = (PlayerHost) CoreHost.getInstance()
+        PlayerHost player = (PlayerHost) CoreHost.get()
                 .getMatch().getRegistry().getGameObject(_networkId);
 
         player.setHealth(player.getHealth() + 10000);
 
-        CoreHost.getInstance()
+        CoreHost.get()
                 .getMatch()
                 .getWorldSetterHost()
                 .generateUpdateInstruction(player.getNetworkId(), PlayerHost.healthDirtyFlag);

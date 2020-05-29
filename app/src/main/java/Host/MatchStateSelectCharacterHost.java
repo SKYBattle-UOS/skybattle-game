@@ -1,6 +1,5 @@
 package Host;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import Common.GameState;
@@ -19,7 +18,7 @@ class MatchStateSelectCharacterHost implements GameState {
 
     public MatchStateSelectCharacterHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
-        _clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
+        _clients = CoreHost.get().getNetworkManager().getClientProxies();
         _characterSelected = new boolean[_clients.size()];
     }
 
@@ -47,10 +46,10 @@ class MatchStateSelectCharacterHost implements GameState {
         if (elapsed > 1000)
             allset = true;
 
-        OutputBitStream outputPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
+        OutputBitStream outputPacket = CoreHost.get().getNetworkManager().getPacketToSend();
         Util.sendHas(outputPacket, allset);
         if (allset) {
-            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+            CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.GET_READY);
         }
     }

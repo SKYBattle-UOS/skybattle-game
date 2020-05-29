@@ -42,7 +42,7 @@ public class Player extends PlayerCommon {
     @Override
     public void setHealth(int health) {
         super.setHealth(health);
-        Core.getInstance().getUIManager().setHealth(health);
+        Core.get().getUIManager().setHealth(health);
     }
 
     @Override

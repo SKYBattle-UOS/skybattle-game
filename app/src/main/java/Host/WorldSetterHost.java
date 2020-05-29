@@ -27,7 +27,7 @@ public class WorldSetterHost {
         for (Map.Entry<Integer, WorldSetterHeader> entry : _mappingN2I.entrySet()){
             WorldSetterHeader header = entry.getValue();
             if (header.dirtyFlag != 0){
-                CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+                CoreHost.get().getNetworkManager().shouldSendThisFrame();
 
                 try {
                     packetToSend.write(1, 1);

@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -35,7 +33,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         setContentView(R.layout.activity_room);
         _roomTitle = findViewById(R.id.roomTitle);
 
-        ((AndroidUIManager) Core.getInstance().getUIManager())
+        ((AndroidUIManager) Core.get().getUIManager())
                 .getTitleText().observe(this, text -> _roomTitle.setText(text));
 
         ArrayList<String> items = new ArrayList<>(); //닉네임리스트를 저장할 배열
@@ -78,7 +76,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
         //게임 시작 버튼
         Button btn_start = findViewById(R.id.startButton);
-        btn_start.setOnClickListener(v -> Core.getInstance().getUIManager().invoke(AndroidUIManager.ROOM_START_PORT));
+        btn_start.setOnClickListener(v -> Core.get().getUIManager().invoke(AndroidUIManager.ROOM_START_PORT));
 
         //방 나가기 버튼: 클릭 시, 이전 화면으로 돌아감. 돌아가기 전에 닉네임 삭제여부를 묻는다.
         Button btn_exit= findViewById(R.id.btn_exit);
@@ -92,7 +90,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
             alert.setPositiveButton("예", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Core.getInstance().getUIManager().invoke(AndroidUIManager.EXIT_ROOM_PORT);
+                    Core.get().getUIManager().invoke(AndroidUIManager.EXIT_ROOM_PORT);
                 }
             });
 
@@ -154,13 +152,13 @@ public class RoomActivity extends AppCompatActivity implements Screen {
     @Override
     protected void onResume() {
         super.onResume();
-        Core.getInstance().getUIManager().setCurrentScreen(this, ScreenType.ROOM);
+        Core.get().getUIManager().setCurrentScreen(this, ScreenType.ROOM);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Core.getInstance().getUIManager().setCurrentScreen(null, ScreenType.ROOM);
+        Core.get().getUIManager().setCurrentScreen(null, ScreenType.ROOM);
     }
 
     @Override
