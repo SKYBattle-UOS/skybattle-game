@@ -21,15 +21,15 @@ public class DebugMapFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Button btn_up = view.findViewById(R.id.btn_debugUp);
-        btn_up.setOnClickListener(v -> Core.getInstance().getInputManager().debugMove(0));
+        btn_up.setOnClickListener(v -> Core.get().getInputManager().debugMove(0));
 
         Button btn_down = view.findViewById(R.id.btn_debugDown);
-        btn_down.setOnClickListener(v -> Core.getInstance().getInputManager().debugMove(1));
+        btn_down.setOnClickListener(v -> Core.get().getInputManager().debugMove(1));
 
         Button btn_right = view.findViewById(R.id.btn_debugRight);
-        btn_right.setOnClickListener(v -> Core.getInstance().getInputManager().debugMove(2));
+        btn_right.setOnClickListener(v -> Core.get().getInputManager().debugMove(2));
 
         Button btn_left = view.findViewById(R.id.btn_debugLeft);
-        btn_left.setOnClickListener(v -> Core.getInstance().getInputManager().debugMove(3));
+        btn_left.setOnClickListener(v -> Core.get().getInputManager().debugMove(3));
     }
 }

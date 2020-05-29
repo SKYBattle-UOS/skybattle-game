@@ -14,12 +14,12 @@ public class WazakWazakHost extends WazakWazakCommon {
 
     @Override
     public void cast(GameObject caster){
-        GameObject spawned = caster.getMatch().createGameObject(Util.ItemClassId, true);
+        GameObject spawned = CoreHost.get().getMatch().createGameObject(Util.ItemClassId, true);
         spawned.setName("와작와작 지뢰");
         spawned.setPosition(caster.getPosition()[0], caster.getPosition()[1]);
         spawned.setLook(ImageType.MARKER);
 
-        spawned.getMatch().getWorldSetterHost()
+        CoreHost.get().getMatch().getWorldSetterHost()
                 .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
     }
 }

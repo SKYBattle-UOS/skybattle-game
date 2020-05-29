@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleObserver;
 
 import Common.CoordinateSkill;
 import Common.PlayerTargetSkill;
@@ -21,6 +22,7 @@ public class InGameFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getLifecycle().addObserver((LifecycleObserver) Core.get().getUIManager());
         return inflater.inflate(R.layout.fragment_ingame, container, false);
     }
 
@@ -34,14 +36,14 @@ public class InGameFragment extends Fragment {
         buttons[2] = view.findViewById(R.id.btn_e);
         buttons[3] = view.findViewById(R.id.btn_r);
 
-        AndroidUIManager uiManager = (AndroidUIManager) Core.getInstance().getUIManager();
+        AndroidUIManager uiManager = (AndroidUIManager) Core.get().getUIManager();
         for (int i = 0; i < 4; i++){
             int finalI = i;
             uiManager.getButtonString(i).observe(this, text -> buttons[finalI].setText(text));
             uiManager.getButtonEnabled(i).observe(this, bool -> buttons[finalI].setEnabled(bool));
         }
 
-        Skill[] skills = Core.getInstance().getInputManager().getThisPlayer().getSkills();
+        Skill[] skills = Core.get().getMatch().getThisPlayer().getSkills();
         for (int i = 0 ; i < 4; i++){
             if (skills[i] instanceof PlayerTargetSkill)
                 setPlayerBtnListener(buttons[i], i);
@@ -59,11 +61,11 @@ public class InGameFragment extends Fragment {
     }
 
     private void setCoordBtnListener(Button btn, int i){
-        AndroidUIManager uiManager = (AndroidUIManager) Core.getInstance().getUIManager();
+        AndroidUIManager uiManager = (AndroidUIManager) Core.get().getUIManager();
         btn.setOnClickListener(v -> {
             MatchActivity ma = ((MatchActivity) getActivity());
             ma.showClickMap(
-                    (lat, lon) -> Core.getInstance().getInputManager().qwer(new SkillTarget(i, lat, lon)),
+                    (lat, lon) -> Core.get().getInputManager().qwer(new SkillTarget(i, lat, lon)),
                     () -> uiManager.setTopText(uiManager.getDefaultTopText())
             );
             uiManager.setTopText("시전 위치를 선택하세요");
@@ -72,17 +74,17 @@ public class InGameFragment extends Fragment {
 
     private void setInsantBtnListener(Button btn, int i){
         btn.setOnClickListener(v ->
-                Core.getInstance().getInputManager().qwer(new SkillTarget(i))
+                Core.get().getInputManager().qwer(new SkillTarget(i))
         );
     }
 
     private void setPlayerBtnListener(Button btn, int i){
-        AndroidUIManager uiManager = (AndroidUIManager) Core.getInstance().getUIManager();
+        AndroidUIManager uiManager = (AndroidUIManager) Core.get().getUIManager();
         btn.setOnClickListener(v -> {
             MatchActivity ma = ((MatchActivity) getActivity());
             uiManager.setTopText("시전 대상을 선택하세요");
             ma.showTargetPlayers(
-                networkId -> Core.getInstance().getInputManager().qwer(new SkillTarget(i, networkId)),
+                networkId -> Core.get().getInputManager().qwer(new SkillTarget(i, networkId)),
                 () -> uiManager.setTopText(uiManager.getDefaultTopText())
             );
         });

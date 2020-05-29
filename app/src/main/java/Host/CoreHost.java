@@ -2,7 +2,6 @@ package Host;
 
 import Common.AndroidTime;
 import Common.GameStateType;
-import Common.Match;
 import Common.Time;
 
 public class CoreHost {
@@ -11,7 +10,7 @@ public class CoreHost {
     private boolean _isInitialized;
     private NetworkManager _networkManager;
     private GameStateContextHost _gameStateContext;
-    private Match _match;
+    private MatchHost _match;
     private Time _time;
 
     private CoreHost(){
@@ -21,7 +20,7 @@ public class CoreHost {
         _time = new AndroidTime();
     }
 
-    public static CoreHost getInstance(){
+    public static CoreHost get(){
         if (_instance == null){
             _instance = new CoreHost();
             _instance.init();
@@ -66,11 +65,11 @@ public class CoreHost {
         return _networkManager;
     }
 
-    public void setMatch(Match match) {
+    public void setMatch(MatchHost match) {
         _match = match;
     }
     
-    public Match getMatch(){
+    public MatchHost getMatch(){
         return _match;
     }
 

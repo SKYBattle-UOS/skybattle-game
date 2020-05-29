@@ -56,6 +56,7 @@ public class DynamicLookChangerHost extends GameObject {
 
     public void setLook(int networkId, ImageType type){
         _nid2newImageType.put(networkId, type);
-        _match.getWorldSetterHost().generateUpdateInstruction(getNetworkId(), 1 << 3);
+        CoreHost.get().getMatch()
+                .getWorldSetterHost().generateUpdateInstruction(getNetworkId(), 1 << 3);
     }
 }

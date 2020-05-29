@@ -10,7 +10,7 @@ import Host.CoreHost;
 import Host.DuplicationTrickHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
-import Host.SneakHost;
+import Host.MatchHost;
 import Host.WazakWazakHost;
 
 public class PlayerHost extends PlayerCommon {
@@ -54,7 +54,7 @@ public class PlayerHost extends PlayerCommon {
         if (state.other instanceof Damageable && !state.isExit){
             if (((Damageable) state.other).getTeam() != _team){
                 ((Damageable) state.other).getHurt((int) (_dps * ms / 1000));
-                CoreHost.getInstance().getMatch().getWorldSetterHost()
+                CoreHost.get().getMatch().getWorldSetterHost()
                         .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
             }
         }
@@ -63,7 +63,7 @@ public class PlayerHost extends PlayerCommon {
     protected void networkUpdate(){
         int dirtyFlag = 0;
 
-        ClientProxy client = CoreHost.getInstance().getNetworkManager().getClientById(getPlayerId());
+        ClientProxy client = CoreHost.get().getNetworkManager().getClientById(getPlayerId());
         Queue<InputState> inputs = client.getUnprocessedInputs();
         while (true) {
             InputState input = inputs.poll();
@@ -94,12 +94,13 @@ public class PlayerHost extends PlayerCommon {
             }
         }
 
-        _match.getWorldSetterHost().generateUpdateInstruction(getNetworkId(), dirtyFlag);
+        CoreHost.get().getMatch()
+                .getWorldSetterHost().generateUpdateInstruction(getNetworkId(), dirtyFlag);
     }
 
     @Override
     public void faceDeath() {
-        PlayerHost deadPlayer = (PlayerHost) CoreHost.getInstance().getMatch()
+        PlayerHost deadPlayer = (PlayerHost) CoreHost.get().getMatch()
                 .createGameObject(Util.PlayerClassId, true);
 
         deadPlayer.setPlayerId(getPlayerId());

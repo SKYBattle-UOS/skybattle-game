@@ -7,7 +7,6 @@ import java.util.Collection;
 import Common.CollisionState;
 import Common.GameObject;
 import Common.GameState;
-import Common.PlayerHost;
 import Common.Util;
 import Common.InputBitStream;
 import Common.MatchStateType;
@@ -24,7 +23,7 @@ class MatchStateAssembleHost implements GameState {
 
     public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
-        _clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
+        _clients = CoreHost.get().getNetworkManager().getClientProxies();
         _assembleInit = new boolean[_clients.size()];
     }
 
@@ -37,11 +36,11 @@ class MatchStateAssembleHost implements GameState {
 
         boolean assembled = hasEverybodyAssembled();
 
-        OutputBitStream outPacket = CoreHost.getInstance().getNetworkManager().getPacketToSend();
+        OutputBitStream outPacket = CoreHost.get().getNetworkManager().getPacketToSend();
 
         Util.sendHas(outPacket, _shouldSendAllInit);
         if (_shouldSendAllInit){
-            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+            CoreHost.get().getNetworkManager().shouldSendThisFrame();
 
             if (!_match.isWorldSetterActive()){
                 _match.setWorldSetterActive();
@@ -61,7 +60,7 @@ class MatchStateAssembleHost implements GameState {
         if (assembled){
             _assemblePoint.scheduleDeath();
 
-            CoreHost.getInstance().getNetworkManager().shouldSendThisFrame();
+            CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
         }
     }
@@ -69,8 +68,8 @@ class MatchStateAssembleHost implements GameState {
     private boolean hasEverybodyAssembled() {
         if (_match.isWorldSetterActive()){
             Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
-            if (Core.getInstance().getMatch().getPlayers().size() != 0)
-                return collisions.size() == Core.getInstance().getMatch().getPlayers().size();
+            if (Core.get().getMatch().getPlayers().size() != 0)
+                return collisions.size() == Core.get().getMatch().getPlayers().size();
         }
         return false;
     }

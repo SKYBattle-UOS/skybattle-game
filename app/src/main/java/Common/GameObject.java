@@ -1,20 +1,16 @@
 package Common;
 
-import android.util.Log;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.Client.Core;
-import com.example.Client.GameObjectRegistry;
 import com.example.Client.ImageType;
 import com.example.Client.RenderComponent;
 import com.example.Client.Renderer;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
-import Host.GameStateMatchHost;
-import Host.WorldSetterHost;
+import java.util.ArrayList;
 
 /**
  * 매 프레임 Update 될 필요가 있는 객체들의 base abstract class 입니다.
@@ -52,8 +48,9 @@ public abstract class GameObject {
     private boolean _collision;
     private ImageType _imageType;
     private RenderComponent _renderComponent;
+    private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
 
-    protected Match _match;
+    protected MatchCommon _match;
 
     private double[] _restoreTemp = new double[2];
     private int[] _convertTemp = new int[2];
@@ -128,7 +125,7 @@ public abstract class GameObject {
 
         if ((dirtyFlag & imageTypeDirtyFlag) != 0) {
             ImageType type = ImageType.values()[stream.read(4)];
-            setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(this, type));
+            setRenderComponent(Core.get().getRenderer().createRenderComponent(this, type));
         }
     }
 
@@ -139,6 +136,13 @@ public abstract class GameObject {
     public void faceDeath(){
         if (_renderComponent != null)
             _renderComponent.destroy();
+
+        for (Runnable r : _onDeathListeners)
+            r.run();
+    }
+
+    public void setOnDeathListener(@NonNull Runnable onDeathListener){
+        _onDeathListeners.add(onDeathListener);
     }
 
     public void render(Renderer renderer){
@@ -158,11 +162,11 @@ public abstract class GameObject {
         _collision = true;
     }
 
-    public Match getMatch(){
+    public MatchCommon getMatch(){
         return _match;
     }
 
-    public void setMatch(Match match){
+    public void setMatch(MatchCommon match){
         _match = match;
     }
 

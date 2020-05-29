@@ -10,7 +10,7 @@ import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.LatLonByteConverter;
-import Common.Match;
+import Common.MatchCommon;
 import Common.MatchStateType;
 import Common.PlayerCommon;
 import Common.TimerStruct;
@@ -53,12 +53,12 @@ public class GameStateMatch implements GameState, Match {
 
     @Override
     public void start() {
-        Core.getInstance().setMatch(this);
+        Core.get().setMatch(this);
     }
 
     @Override
     public void update(long ms) {
-        InputBitStream packetStream = Core.getInstance().getPakcetManager().getPacketStream();
+        InputBitStream packetStream = Core.get().getPakcetManager().getPacketStream();
         if (packetStream != null && _worldSetterActive)
             _worldSetter.processInstructions(packetStream);
 
@@ -82,7 +82,7 @@ public class GameStateMatch implements GameState, Match {
             TimerStruct ts = _timerQueue.peek();
             if (ts == null) return;
 
-            if (ts.timeToBeFired < Core.getInstance().getTime().getStartOfFrame()){
+            if (ts.timeToBeFired < Core.get().getTime().getStartOfFrame()){
                 ts.callback.run();
                 _timerQueue.poll();
             }
@@ -129,11 +129,6 @@ public class GameStateMatch implements GameState, Match {
     }
 
     @Override
-    public WorldSetterHost getWorldSetterHost() {
-        return null;
-    }
-
-    @Override
     public GameObjectRegistry getRegistry() { return _gameObjectRegistry; }
 
     @Override
@@ -145,15 +140,24 @@ public class GameStateMatch implements GameState, Match {
     }
 
     @Override
-    public GameObject createGameObject(int classId, boolean addToCollider) {
-        return null;
+    public void setTimer(Runnable callback, float seconds) {
+        long timeToBeFired = Core.get().getTime().getStartOfFrame();
+        timeToBeFired += (long) seconds * 1000;
+        _timerQueue.add(new TimerStruct(callback, timeToBeFired));
     }
 
     @Override
-    public void setTimer(Runnable callback, float seconds) {
-        long timeToBeFired = Core.getInstance().getTime().getStartOfFrame();
-        timeToBeFired += (long) seconds * 1000;
-        _timerQueue.add(new TimerStruct(callback, timeToBeFired));
+    public Player getThisPlayer() {
+        // TODO
+        Player player;
+        List<PlayerCommon> gos = getPlayers();
+        for (PlayerCommon go : gos){
+            if (go.getPlayerId() == 0) {
+                player = (Player) go;
+                return player;
+            }
+        }
+        return null;
     }
 
     private void killGameObjects(){

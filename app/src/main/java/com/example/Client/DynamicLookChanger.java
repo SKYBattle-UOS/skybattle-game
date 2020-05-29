@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Common.GameObject;
-import Common.InputBitStream;
 
 public class DynamicLookChanger extends GameObject {
     private HashMap<Integer, ImageType> _tryLater = new HashMap<>();
@@ -53,7 +52,7 @@ public class DynamicLookChanger extends GameObject {
                 continue;
             }
             _toRemove.add(entry.getKey());
-            go.setRenderComponent(Core.getInstance().getRenderer().createRenderComponent(go, entry.getValue()));
+            go.setRenderComponent(Core.get().getRenderer().createRenderComponent(go, entry.getValue()));
         }
 
         for (int i : _toRemove)

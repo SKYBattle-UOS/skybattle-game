@@ -4,6 +4,7 @@ import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
 import com.example.Client.ImageType;
+import com.example.Client.Player;
 
 import Common.Collider;
 import Common.GameObject;
@@ -18,14 +19,14 @@ import Common.GameState;
 import Common.InputBitStream;
 import Common.InputState;
 import Common.LatLonByteConverter;
-import Common.Match;
+import Common.MatchCommon;
 import Common.MatchStateType;
 import Common.PlayerCommon;
 import Common.PlayerHost;
 import Common.TimerStruct;
 import Common.Util;
 
-public class GameStateMatchHost implements GameState, Match {
+public class GameStateMatchHost implements GameState, MatchHost {
     private GameStateContextHost _parent;
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
@@ -86,7 +87,7 @@ public class GameStateMatchHost implements GameState, Match {
 
     @Override
     public void setTimer(Runnable callback, float seconds) {
-        long timeToBeFired = Core.getInstance().getTime().getStartOfFrame();
+        long timeToBeFired = Core.get().getTime().getStartOfFrame();
         timeToBeFired += (long) seconds * 1000;
         _timerQueue.add(new TimerStruct(callback, timeToBeFired));
     }
@@ -105,7 +106,7 @@ public class GameStateMatchHost implements GameState, Match {
     }
 
     public void createPlayers() {
-        Collection<ClientProxy> clients = CoreHost.getInstance().getNetworkManager().getClientProxies();
+        Collection<ClientProxy> clients = CoreHost.get().getNetworkManager().getClientProxies();
 
         int i = 1;
         int lastPlayerId = 0;
@@ -145,7 +146,7 @@ public class GameStateMatchHost implements GameState, Match {
 
     @Override
     public void start() {
-        CoreHost.getInstance().setMatch(this);
+        CoreHost.get().setMatch(this);
     }
 
     @Override
@@ -153,7 +154,7 @@ public class GameStateMatchHost implements GameState, Match {
         handleInputFromClients();
 
         if (_worldSetterActive)
-            _worldSetter.writeInstructionToStream(CoreHost.getInstance().getNetworkManager().getPacketToSend());
+            _worldSetter.writeInstructionToStream(CoreHost.get().getNetworkManager().getPacketToSend());
 
         for (GameObject go : _gameObjects)
             go.before(ms);
@@ -177,7 +178,7 @@ public class GameStateMatchHost implements GameState, Match {
             TimerStruct ts = _timerQueue.peek();
             if (ts == null) return;
 
-            if (ts.timeToBeFired < Core.getInstance().getTime().getStartOfFrame()){
+            if (ts.timeToBeFired < Core.get().getTime().getStartOfFrame()){
                 ts.callback.run();
                 _timerQueue.poll();
             }
@@ -203,7 +204,7 @@ public class GameStateMatchHost implements GameState, Match {
     }
 
     private void handleInputFromClients() {
-        NetworkManager net = CoreHost.getInstance().getNetworkManager();
+        NetworkManager net = CoreHost.get().getNetworkManager();
         Collection<ClientProxy> clients = net.getClientProxies();
 
         for (ClientProxy client : clients){

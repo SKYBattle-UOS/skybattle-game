@@ -40,7 +40,7 @@ public class WorldSetter {
 
     private void createGO(InputBitStream stream){
         if (_match.getRegistry().getGameObject(_header.networkId) == null){
-            GameObject newGO = Core.getInstance().getGameObjectFactory().createGameObject(_header.classId);
+            GameObject newGO = Core.get().getGameObjectFactory().createGameObject(_header.classId);
 
             if (newGO == null){
                 Log.i("hehe", "what's goign on" + _header.classId);

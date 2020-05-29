@@ -24,7 +24,7 @@ public abstract class CoordinateSkill extends Skill {
 
     @Override
     protected void writeToStream2(OutputBitStream stream) throws IOException {
-        CoreHost.getInstance().getMatch().getConverter().convertLatLon(_lat, _lon, _intTemp);
+        CoreHost.get().getMatch().getConverter().convertLatLon(_lat, _lon, _intTemp);
         stream.write(_intTemp[0], 32);
         stream.write(_intTemp[1], 32);
     }
@@ -33,7 +33,7 @@ public abstract class CoordinateSkill extends Skill {
     protected void readFromStream2(InputBitStream stream) {
         int lat = stream.read(32);
         int lon = stream.read(32);
-        Core.getInstance().getMatch().getConverter().restoreLatLon(lat, lon, _doubleTemp);
+        Core.get().getMatch().getConverter().restoreLatLon(lat, lon, _doubleTemp);
         _lat = _doubleTemp[0];
         _lon = _doubleTemp[1];
     }

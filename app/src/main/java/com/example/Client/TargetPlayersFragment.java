@@ -27,13 +27,13 @@ public class TargetPlayersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.fragment_target_players, container, false);
 
-        for (PlayerCommon player : Core.getInstance().getMatch().getPlayers()){
+        for (PlayerCommon player : Core.get().getMatch().getPlayers()){
             Button btn = new Button(view.getContext());
             btn.setTextSize(20);
             btn.setHeight(200);
             btn.setOnClickListener(v -> _onButtonClick.accept(player.getNetworkId()));
 
-            if (player == Core.getInstance().getInputManager().getThisPlayer())
+            if (player == Core.get().getMatch().getThisPlayer())
                 btn.setText(player.getName() + " (자기 자신)");
             else
                 btn.setText(player.getName());
