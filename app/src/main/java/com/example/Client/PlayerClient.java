@@ -3,12 +3,13 @@ package com.example.Client;
 import Common.GameObject;
 import Common.GlobalWazakWazakCommon;
 import Common.InputBitStream;
+import Common.Player;
 import Common.PlayerProperty;
 import Common.Skill;
 import Common.WazakWazakCommon;
 import Common.HealthUpCommon;
 
-public class Player extends GameObjectClient {
+public class PlayerClient extends GameObjectClient implements Player {
     private PlayerProperty _property = new PlayerProperty(){
         @Override
         public void setHealth(int health) {
@@ -17,7 +18,7 @@ public class Player extends GameObjectClient {
         }
     };
 
-    protected Player(float latitude, float longitude, String name) {
+    protected PlayerClient(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
         _property.getSkills().set(0, new WazakWazakCommon());
         _property.getSkills().set(1, new GlobalWazakWazakCommon());
@@ -26,7 +27,7 @@ public class Player extends GameObjectClient {
     }
 
     public static GameObject createInstance() {
-        return new Player(0, 0, "Player");
+        return new PlayerClient(0, 0, "Player");
     }
 
     @Override
@@ -55,11 +56,17 @@ public class Player extends GameObjectClient {
     }
 
     @Override
-    protected void itemsWereAdded() {
+    protected void onItemsAdded() {
         if (Core.get().getMatch().getThisPlayer() == this)
             Core.get().getUIManager().updateItems();
     }
 
+    @Override
+    public GameObject getGameObject() {
+        return this;
+    }
+
+    @Override
     public PlayerProperty getProperty(){
         return _property;
     }

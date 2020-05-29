@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.OutputBitStream;
+import Common.Player;
 import Host.SkillTarget;
 
 public class InputManager {
@@ -26,7 +27,7 @@ public class InputManager {
     private double destLon = 127.048616;
     private int step = 0;
     private int[] _convertTemp = new int[2];
-    private Player _player;
+    private PlayerClient _player;
     private boolean _startSending;
     private Location location;
 
@@ -66,7 +67,7 @@ public class InputManager {
 
         if (player == null) return;
 
-        double[] _newPos = player.getPosition();
+        double[] _newPos = player.getGameObject().getPosition();
         switch (direction){
             case 0:
                 _newPos[0] += 0.00005;

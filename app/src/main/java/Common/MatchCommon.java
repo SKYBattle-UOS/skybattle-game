@@ -9,6 +9,6 @@ public interface MatchCommon {
     Collider getCollider();
     GameObjectRegistry getRegistry();
     List<GameObject> getWorld();
-    List<GameObject> getPlayers();
+    List<Player> getPlayers();
     void setTimer(Runnable callback, float seconds);
 }

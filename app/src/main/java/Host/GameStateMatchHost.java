@@ -19,6 +19,7 @@ import Common.InputBitStream;
 import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.MatchStateType;
+import Common.Player;
 import Common.PlayerHost;
 import Common.TimerStruct;
 import Common.Util;
@@ -30,7 +31,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     private ArrayList<GameObject> _gameObjects;
     private ArrayList<GameObject> _newGameObjects;
     private ArrayList<Integer> _newGOClassId;
-    private ArrayList<GameObject> _players;
+    private ArrayList<Player> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
     private Collider _collider;
@@ -265,7 +266,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     }
 
     @Override
-    public List<GameObject> getPlayers() { return _players; }
+    public List<Player> getPlayers() { return _players; }
 
     @Override
     public Collider getCollider(){ return _collider; }

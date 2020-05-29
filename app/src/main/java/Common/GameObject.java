@@ -44,7 +44,7 @@ public abstract class GameObject {
     private boolean _collision;
     private ImageType _imageType;
     private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
-    private ArrayList<ItemCommon> _items = new ArrayList<>();
+    private ArrayList<Item> _items = new ArrayList<>();
 
     protected MatchCommon _match;
 
@@ -101,8 +101,8 @@ public abstract class GameObject {
         if ((dirtyFlag & itemsDirtyFlag) != 0){
             try {
                 stream.write(_items.size(), 4);
-                for (ItemCommon item : _items){
-                    stream.write(item.getNetworkId(), 32);
+                for (Item item : _items){
+                    stream.write(item.getGameObject().getNetworkId(), 32);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -140,9 +140,9 @@ public abstract class GameObject {
             int itemsSize = stream.read(4);
             for (int i = 0; i < itemsSize; i++){
                 GameObject item = _match.getRegistry().getGameObject(stream.read(32));
-                _items.add((ItemCommon) item);
+                _items.add((Item) item);
             }
-            itemsWereAdded();
+            onItemsAdded();
         }
     }
 
@@ -238,14 +238,14 @@ public abstract class GameObject {
         _imageType = type;
     }
 
-    public void addItem(ItemCommon item){
+    public void addItem(Item item){
         _items.add(item);
     }
 
-    public List<ItemCommon> getItems(){
+    public List<Item> getItems(){
         return _items;
     }
 
-    protected void itemsWereAdded(){}
+    protected void onItemsAdded(){}
     // endregion
 }

@@ -11,7 +11,7 @@ import Host.WazakWazakHost;
 
 import static Common.PlayerProperty.*;
 
-public class PlayerHost extends GameObject implements Damageable {
+public class PlayerHost extends GameObject implements Damageable, Player{
     private double[] _newPosTemp = new double[2];
 
     private PlayerProperty _property = new PlayerProperty(){
@@ -141,9 +141,9 @@ public class PlayerHost extends GameObject implements Damageable {
     }
 
     @Override
-    public void addItem(ItemCommon item) {
+    public void addItem(Item item) {
         super.addItem(item);
-        _property.getSkills().add(item.getSkill());
+        _property.getSkills().add(item.getProperty().getSkill());
     }
 
     @Override
@@ -157,6 +157,12 @@ public class PlayerHost extends GameObject implements Damageable {
         return _property.getTeam();
     }
 
+    @Override
+    public GameObject getGameObject() {
+        return this;
+    }
+
+    @Override
     public PlayerProperty getProperty(){
         return _property;
     }

@@ -27,7 +27,7 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void start() {
-        Player player = Core.get().getMatch().getThisPlayer();
+        PlayerClient player = Core.get().getMatch().getThisPlayer();
         player.setOnDeathListener(() -> _isPlayerDead = true);
         setButtons(player, true);
         Core.get().getUIManager().switchScreen(ScreenType.INGAME, () -> _waiting = false);
@@ -49,7 +49,7 @@ public class MatchStateInGame implements GameState {
     }
 
     private boolean setGhost() {
-        Player player = Core.get().getMatch().getThisPlayer();
+        PlayerClient player = Core.get().getMatch().getThisPlayer();
         if (player != null && player.getName().equals("현재위치")){
             player.setRenderComponent(
                     Core.get().getRenderer().createRenderComponent(
@@ -85,7 +85,7 @@ public class MatchStateInGame implements GameState {
         }
     }
 
-    private void setButtons(Player player, boolean enable){
+    private void setButtons(PlayerClient player, boolean enable){
         for (int i = 0; i < 4; i++){
             if (player != null) {
                 Core.get().getUIManager()

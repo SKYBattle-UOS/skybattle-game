@@ -11,7 +11,7 @@ import Common.GameState;
 import Common.InputBitStream;
 import Common.LatLonByteConverter;
 import Common.MatchStateType;
-import Common.PlayerProperty;
+import Common.Player;
 import Common.TimerStruct;
 
 /**
@@ -28,7 +28,7 @@ public class GameStateMatch implements GameState, Match {
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
     private Vector<GameObject> _gameObjects;
-    private ArrayList<GameObject> _players;
+    private ArrayList<Player> _players;
     private int _numPlayers;
     private boolean _worldSetterActive = false;
     private double[] _battleGroundLatLon;
@@ -133,7 +133,7 @@ public class GameStateMatch implements GameState, Match {
     public List<GameObject> getWorld() { return _gameObjects; }
 
     @Override
-    public List<GameObject> getPlayers() {
+    public List<Player> getPlayers() {
         return _players;
     }
 
@@ -145,14 +145,12 @@ public class GameStateMatch implements GameState, Match {
     }
 
     @Override
-    public Player getThisPlayer() {
+    public PlayerClient getThisPlayer() {
         // TODO
-        Player player;
-        List<GameObject> gos = getPlayers();
-        for (GameObject go : gos){
-            if (((Player) go).getProperty().getPlayerId() == 0) {
-                player = (Player) go;
-                return player;
+        List<Player> gos = getPlayers();
+        for (Player go : gos){
+            if (go.getProperty().getPlayerId() == 0) {
+                return (PlayerClient) go;
             }
         }
         return null;

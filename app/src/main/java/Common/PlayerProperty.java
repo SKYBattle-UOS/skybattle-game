@@ -14,7 +14,7 @@ public class PlayerProperty {
     public static int endOfFlagPos;
 
     static {
-        int i = GameObject.EndOfFlag;
+        int i = GameObject.EndOfFlagPos;
         playerIdDirtyFlag = 1 << i++;
         healthDirtyFlag = 1 << i++;
         teamDirtyFlag = 1 << i++;

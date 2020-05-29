@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import Common.ItemCommon;
+import Common.Item;
+import Common.ItemProperty;
+import Common.Player;
 
 public class AndroidUIManager implements UIManager, LifecycleObserver {
     private Screen _currentScreen;
@@ -171,11 +173,11 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
         _mainHandler.post(() -> {
             if (_ingameFrag == null) return;
             int i = 5;
-            for (ItemCommon item : thisPlayer.getItems()){
+            for (Item item : thisPlayer.getGameObject().getItems()){
                 int finalI = i;
                 _ingameFrag.addItemButton(btn -> {
-                    btn.setText(item.getName());
-                    _ingameFrag.setButtonListener(item.getSkill(), btn, finalI);
+                    btn.setText(item.getGameObject().getName());
+                    _ingameFrag.setButtonListener(item.getProperty().getSkill(), btn, finalI);
                 });
                 i++;
             }

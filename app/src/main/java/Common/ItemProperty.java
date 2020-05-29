@@ -1,33 +1,28 @@
 package Common;
 
+import com.example.Client.GameObjectRegistry;
+
 import java.io.IOException;
 
-public abstract class ItemCommon extends GameObject implements Pickable {
+public class ItemProperty {
     public static int isPickedUpDirtyFlag;
     public static int ownerDirtyFlag;
-    public static int startFromHereFlag;
+    public static int endOfFlag;
+    public static int endOfFlagPos;
 
     static {
-        int i = GameObject.EndOfFlag;
-        isPickedUpDirtyFlag = i;
-        i *= 2;
-        ownerDirtyFlag = i;
-        i *= 2;
-        startFromHereFlag = i;
+        int i = GameObject.EndOfFlagPos;
+        isPickedUpDirtyFlag = 1 << i++;
+        ownerDirtyFlag = 1 << i++;
+        endOfFlagPos = i;
+        endOfFlag = 1 << i++;
     }
 
-    protected boolean _isPickedUp;
-    protected GameObject _owner;
-    protected Skill _skill;
+    private boolean _isPickedUp;
+    private GameObject _owner;
+    private Skill _skill;
 
-    protected ItemCommon(float latitude, float longitude, String name) {
-        super(latitude, longitude, name);
-    }
-
-    @Override
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
-        super.writeToStream(stream, dirtyFlag);
-
         if ((dirtyFlag & isPickedUpDirtyFlag) != 0){
             try {
                 stream.write(isPickedUp() ? 1 : 0, 1);
@@ -48,20 +43,16 @@ public abstract class ItemCommon extends GameObject implements Pickable {
         }
     }
 
-    @Override
-    public void readFromStream(InputBitStream stream, int dirtyFlag) {
-        super.readFromStream(stream, dirtyFlag);
-
+    public void readFromStream(InputBitStream stream, int dirtyFlag, GameObjectRegistry registry) {
         if ((dirtyFlag & isPickedUpDirtyFlag) != 0){
             setPickedUp(stream.read(1) == 1);
         }
 
         if ((dirtyFlag & ownerDirtyFlag) != 0){
-            _owner = _match.getRegistry().getGameObject(stream.read(32));
+            _owner = registry.getGameObject(stream.read(32));
         }
     }
 
-    @Override
     public boolean isPickedUp() {
         return _isPickedUp;
     }
@@ -70,11 +61,15 @@ public abstract class ItemCommon extends GameObject implements Pickable {
         _isPickedUp = pickedUp;
     }
 
-    @Override
-    public void pickUp(GameObject owner) {
-    }
-
     public Skill getSkill(){
         return _skill;
+    }
+
+    public void setSkill(Skill skill) {
+        _skill = skill;
+    }
+
+    public void setOwner(GameObject owner){
+        _owner = owner;
     }
 }
