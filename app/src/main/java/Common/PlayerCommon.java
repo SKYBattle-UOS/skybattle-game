@@ -122,10 +122,4 @@ public abstract class PlayerCommon extends GameObject implements Damageable {
     public int getMaxHealth() { return _maxHealth; }
 
     public void setMaxHealth(int health) { _maxHealth = health; }
-
-    @Override
-    public void getHurt(int damage) {
-        // 0 defense
-        setHealth(getHealth() - damage);
-    }
 }

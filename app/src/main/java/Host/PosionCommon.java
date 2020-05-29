@@ -13,10 +13,10 @@ public class PosionCommon extends PlayerTargetSkill {
     }
 
     public void cast(GameObject caster){
-        if (caster == Core.getInstance().getInputManager().getThisPlayer()) {
-            String targetName = Core.getInstance().getMatch().getRegistry().getGameObject(_networkId).getName();
-            Core.getInstance().getUIManager().setTopText(targetName + "(을)를 독 공격 했습니다.");
-            Core.getInstance().getUIManager().setButtonActive(indexInArray, false);
+        if (caster == Core.get().getMatch().getThisPlayer()) {
+            String targetName = Core.get().getMatch().getRegistry().getGameObject(_networkId).getName();
+            Core.get().getUIManager().setTopText(targetName + "(을)를 독 공격 했습니다.");
+            Core.get().getUIManager().setButtonActive(indexInArray, false);
         }
     }
 }

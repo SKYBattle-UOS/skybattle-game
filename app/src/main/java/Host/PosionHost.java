@@ -1,4 +1,6 @@
 package Host;
+import com.example.Client.Core;
+
 import Common.GameObject;
 import Common.PlayerHost;
 
@@ -9,19 +11,23 @@ public class PosionHost extends HealthUpCommon {
 
     @Override
     public void cast(GameObject caster) {
-        for (int i= 0; i <10; i++)  // 주기적으로 어떻게 변경해야하는가?
+        for (int i= 0; i <10; i++)
         {
-            PlayerHost player = (PlayerHost) CoreHost.getInstance()
-                    .getMatch().getRegistry().getGameObject(_networkId);
-
-            player.setHealth(player.getHealth() - 5000);
-
-            CoreHost.getInstance()
-                    .getMatch()
-                    .getWorldSetterHost()
-                    .generateUpdateInstruction(player.getNetworkId(), PlayerHost.healthDirtyFlag);
-
-            player.getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
+            CoreHost.get().getMatch().setTimer(() -> todo(),1);
         }
+    }
+
+    public void todo(){
+        PlayerHost player = (PlayerHost) CoreHost.get()
+                .getMatch().getRegistry().getGameObject(_networkId);
+
+        player.setHealth(player.getHealth() - 5000);
+
+        CoreHost.get()
+                .getMatch()
+                .getWorldSetterHost()
+                .generateUpdateInstruction(player.getNetworkId(), PlayerHost.healthDirtyFlag);
+
+        CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), PlayerHost.skillDirtyFlag);
     }
 }
