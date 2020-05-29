@@ -1,6 +1,7 @@
 package Common;
 
 import Host.CoreHost;
+import Host.HealthUpHost;
 import Host.PickUpCondition;
 import Host.PickUpNever;
 
@@ -9,6 +10,7 @@ public class ItemHost extends ItemCommon {
 
     protected ItemHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
+        _skill = new HealthUpHost(4);
     }
 
     public static GameObject createInstance() {
@@ -35,8 +37,11 @@ public class ItemHost extends ItemCommon {
         if (_pickUpCondition.evalulate(owner)){
             _owner = owner;
             _isPickedUp = true;
+            _owner.addItem(this);
             CoreHost.get().getMatch().getWorldSetterHost()
                     .generateUpdateInstruction(getNetworkId(), ownerDirtyFlag | isPickedUpDirtyFlag);
+            CoreHost.get().getMatch().getWorldSetterHost()
+                    .generateUpdateInstruction(owner.getNetworkId(), itemsDirtyFlag);
         }
     }
 }

@@ -151,6 +151,7 @@ public abstract class GameObject {
                 GameObject item = _match.getRegistry().getGameObject(stream.read(32));
                 _items.add((ItemCommon) item);
             }
+            itemsWereAdded();
         }
     }
 
@@ -263,5 +264,11 @@ public abstract class GameObject {
     public void setLook(ImageType type){
         _imageType = type;
     }
+
+    public void addItem(ItemCommon item){
+        _items.add(item);
+    }
+
+    protected void itemsWereAdded(){}
     // endregion
 }

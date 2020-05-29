@@ -3,9 +3,12 @@ package Common;
 import com.example.Client.Core;
 import com.example.Client.ImageType;
 
+import Host.HealthUpCommon;
+
 public class Item extends ItemCommon {
     protected Item(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
+        _skill = new HealthUpCommon(4);
     }
 
     public static GameObject createInstance() {
