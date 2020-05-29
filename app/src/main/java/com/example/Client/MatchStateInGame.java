@@ -81,7 +81,7 @@ public class MatchStateInGame implements GameState {
     public void render(Renderer renderer, long ms) {
         Collection<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
-            ((GameObjectClient) go).render(renderer);
+            ((Renderable) go).render(renderer);
         }
     }
 

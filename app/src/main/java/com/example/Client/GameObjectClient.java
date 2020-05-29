@@ -3,7 +3,7 @@ package com.example.Client;
 import Common.GameObject;
 import Common.ImageType;
 
-public abstract class GameObjectClient extends GameObject {
+public abstract class GameObjectClient extends GameObject implements Renderable {
     private RenderComponent _renderComponent;
 
     protected GameObjectClient(float latitude, float longitude, String name) {
@@ -22,14 +22,17 @@ public abstract class GameObjectClient extends GameObject {
         setRenderComponent(Core.get().getRenderer().createRenderComponent(this, type));
     }
 
+    @Override
     public void render(Renderer renderer){
         renderer.batch(_renderComponent);
     }
 
+    @Override
     public RenderComponent getRenderComponent() {
         return _renderComponent;
     }
 
+    @Override
     public void setRenderComponent(RenderComponent renderComponent) {
         if (_renderComponent != null)
             _renderComponent.destroy();

@@ -51,7 +51,7 @@ public class MatchStateGetReady implements GameState {
 
         Collection<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
-            ((GameObjectClient) go).render(renderer);
+            ((Renderable) go).render(renderer);
         }
     }
 }
