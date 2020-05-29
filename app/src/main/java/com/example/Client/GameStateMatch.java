@@ -10,7 +10,7 @@ import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.LatLonByteConverter;
-import Common.Match;
+import Common.MatchCommon;
 import Common.MatchStateType;
 import Common.PlayerCommon;
 import Common.TimerStruct;
@@ -129,11 +129,6 @@ public class GameStateMatch implements GameState, Match {
     }
 
     @Override
-    public WorldSetterHost getWorldSetterHost() {
-        return null;
-    }
-
-    @Override
     public GameObjectRegistry getRegistry() { return _gameObjectRegistry; }
 
     @Override
@@ -142,11 +137,6 @@ public class GameStateMatch implements GameState, Match {
     @Override
     public List<PlayerCommon> getPlayers() {
         return _players;
-    }
-
-    @Override
-    public GameObject createGameObject(int classId, boolean addToCollider) {
-        return null;
     }
 
     @Override

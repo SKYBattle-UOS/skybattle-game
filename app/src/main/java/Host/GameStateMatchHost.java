@@ -19,14 +19,14 @@ import Common.GameState;
 import Common.InputBitStream;
 import Common.InputState;
 import Common.LatLonByteConverter;
-import Common.Match;
+import Common.MatchCommon;
 import Common.MatchStateType;
 import Common.PlayerCommon;
 import Common.PlayerHost;
 import Common.TimerStruct;
 import Common.Util;
 
-public class GameStateMatchHost implements GameState, Match {
+public class GameStateMatchHost implements GameState, MatchHost {
     private GameStateContextHost _parent;
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
@@ -90,11 +90,6 @@ public class GameStateMatchHost implements GameState, Match {
         long timeToBeFired = Core.get().getTime().getStartOfFrame();
         timeToBeFired += (long) seconds * 1000;
         _timerQueue.add(new TimerStruct(callback, timeToBeFired));
-    }
-
-    @Override
-    public Player getThisPlayer() {
-        return null;
     }
 
     private void addNewGameObjectsToWorld(){

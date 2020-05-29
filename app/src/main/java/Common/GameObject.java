@@ -50,7 +50,7 @@ public abstract class GameObject {
     private RenderComponent _renderComponent;
     private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
 
-    protected Match _match;
+    protected MatchCommon _match;
 
     private double[] _restoreTemp = new double[2];
     private int[] _convertTemp = new int[2];
@@ -162,11 +162,11 @@ public abstract class GameObject {
         _collision = true;
     }
 
-    public Match getMatch(){
+    public MatchCommon getMatch(){
         return _match;
     }
 
-    public void setMatch(Match match){
+    public void setMatch(MatchCommon match){
         _match = match;
     }
 
