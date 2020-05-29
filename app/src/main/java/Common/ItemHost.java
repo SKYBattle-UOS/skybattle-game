@@ -19,6 +19,12 @@ public class ItemHost extends GameObject implements Pickable, Item {
     }
 
     @Override
+    public void writeToStream(OutputBitStream stream, int dirtyFlag) {
+        super.writeToStream(stream, dirtyFlag);
+        _property.writeToStream(stream, dirtyFlag);
+    }
+
+    @Override
     public void before(long ms) {
 
     }
@@ -35,21 +41,23 @@ public class ItemHost extends GameObject implements Pickable, Item {
 
     @Override
     public boolean isPickedUp() {
-        return false;
+        return _property.isPickedUp();
     }
 
     @Override
-    public void pickUp(GameObject owner) {
+    public boolean pickUp(GameObject owner) {
+        if (_property.isPickedUp()) return false;
+
         if (_pickUpCondition.evalulate(owner, this)){
             _property.setOwner(owner);
             _property.setPickedUp(true);
-            owner.addItem(this);
             CoreHost.get().getMatch().getWorldSetterHost()
                     .generateUpdateInstruction(getNetworkId(),
                             ItemProperty.ownerDirtyFlag | ItemProperty.isPickedUpDirtyFlag);
-            CoreHost.get().getMatch().getWorldSetterHost()
-                    .generateUpdateInstruction(owner.getNetworkId(), itemsDirtyFlag);
+            return true;
         }
+
+        return false;
     }
 
     @Override

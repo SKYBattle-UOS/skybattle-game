@@ -140,7 +140,7 @@ public abstract class GameObject {
             int itemsSize = stream.read(4);
             for (int i = 0; i < itemsSize; i++){
                 GameObject item = _match.getRegistry().getGameObject(stream.read(32));
-                _items.add((Item) item);
+                addItem((Item) item);
             }
             onItemsAdded();
         }

@@ -71,8 +71,12 @@ public class PlayerHost extends GameObject implements Damageable, Player{
             }
         }
 
-        if (state.other instanceof Pickable && !((Pickable) state.other).isPickedUp()){
-            ((Pickable) state.other).pickUp(this);
+        if (state.other instanceof Pickable){
+            if (((Pickable) state.other).pickUp(this)){
+                addItem((Item) state.other);
+                CoreHost.get().getMatch().getWorldSetterHost()
+                        .generateUpdateInstruction(getNetworkId(), itemsDirtyFlag);
+            }
         }
     }
 

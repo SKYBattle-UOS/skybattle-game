@@ -3,6 +3,7 @@ package com.example.Client;
 import Common.GameObject;
 import Common.GlobalWazakWazakCommon;
 import Common.InputBitStream;
+import Common.Item;
 import Common.Player;
 import Common.PlayerProperty;
 import Common.Skill;
@@ -59,6 +60,12 @@ public class PlayerClient extends GameObjectClient implements Player {
     protected void onItemsAdded() {
         if (Core.get().getMatch().getThisPlayer() == this)
             Core.get().getUIManager().updateItems();
+
+        while (_property.getSkills().size() > 4)
+            _property.getSkills().remove(_property.getSkills().size() - 1);
+
+        for (int i = 0; i < getItems().size(); i++)
+            _property.getSkills().add(getItems().get(i).getProperty().getSkill());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package Common;
 
+import com.example.Client.Core;
 import com.example.Client.GameObjectClient;
 
 public class ItemClient extends GameObjectClient implements Item {
@@ -19,6 +20,12 @@ public class ItemClient extends GameObjectClient implements Item {
 
     public static GameObject createInstance() {
         return new ItemClient(0, 0, "Item");
+    }
+
+    @Override
+    public void readFromStream(InputBitStream stream, int dirtyFlag) {
+        super.readFromStream(stream, dirtyFlag);
+        _property.readFromStream(stream, dirtyFlag, Core.get().getMatch().getRegistry());
     }
 
     @Override
