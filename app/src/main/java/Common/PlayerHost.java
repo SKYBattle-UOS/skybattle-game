@@ -57,6 +57,10 @@ public class PlayerHost extends PlayerCommon {
                         .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
             }
         }
+
+        if (state.other instanceof Pickable && !((Pickable) state.other).isPickedUp()){
+            ((Pickable) state.other).pickUp(this);
+        }
     }
 
     protected void networkUpdate(){

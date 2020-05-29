@@ -3,10 +3,10 @@ package Common;
 import Host.CoreHost;
 import Host.HealthUpHost;
 import Host.PickUpCondition;
-import Host.PickUpNever;
+import Host.PickUpTest;
 
 public class ItemHost extends ItemCommon {
-    private PickUpCondition _pickUpCondition = new PickUpNever();
+    private PickUpCondition _pickUpCondition = new PickUpTest();
 
     protected ItemHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
@@ -34,7 +34,7 @@ public class ItemHost extends ItemCommon {
 
     @Override
     public void pickUp(GameObject owner) {
-        if (_pickUpCondition.evalulate(owner)){
+        if (_pickUpCondition.evalulate(owner, this)){
             _owner = owner;
             _isPickedUp = true;
             _owner.addItem(this);

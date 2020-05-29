@@ -28,4 +28,13 @@ public class Item extends ItemCommon {
     public void after(long ms) {
 
     }
+
+    @Override
+    public void setPickedUp(boolean pickedUp) {
+        super.setPickedUp(pickedUp);
+        if (pickedUp){
+            setRenderComponent(Core.get().getRenderer()
+                    .createRenderComponent(this, ImageType.INVISIBLE));
+        }
+    }
 }
