@@ -42,9 +42,8 @@ class MatchStateAssembleHost implements GameState {
 
         Util.sendHas(outPacket, _shouldSendAllInit);
         if (_shouldSendAllInit){
-            CoreHost.get().getNetworkManager().shouldSendThisFrame();
-
             if (!_match.isWorldSetterActive()){
+                CoreHost.get().getNetworkManager().shouldSendThisFrame();
                 _match.setWorldSetterActive();
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
                 _match.createPlayers();
@@ -61,7 +60,6 @@ class MatchStateAssembleHost implements GameState {
         Util.sendHas(outPacket, assembled);
         if (assembled){
             _assemblePoint.scheduleDeath();
-
             CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
         }
