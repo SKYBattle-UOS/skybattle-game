@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,8 +17,9 @@ import Common.Util;
 
 public class NetworkPacketManager implements PacketManager {
     private Socket _socket;
-    private OutputBitStream _sendThisFrame = new BitOutputStream();
+    private OutputBitStream _sendInThisFrame = new BitOutputStream();
     private Queue<InputBitStream> _rawPackets = new ConcurrentLinkedQueue<>();
+    private InputBitStream _handleInThisFrame;
     private boolean _shouldSendThisFrame = false;
 
     public void init(String host){
@@ -25,12 +28,12 @@ public class NetworkPacketManager implements PacketManager {
 
     @Override
     public InputBitStream getPacketStream() {
-        return _rawPackets.peek();
+        return _handleInThisFrame;
     }
 
     @Override
     public OutputBitStream getPacketToSend() {
-        return _sendThisFrame;
+        return _sendInThisFrame;
     }
 
     @Override
@@ -40,9 +43,9 @@ public class NetworkPacketManager implements PacketManager {
 
     @Override
     public void update() {
-        _rawPackets.poll();
+        _handleInThisFrame = _rawPackets.poll();
         send();
-        _sendThisFrame.resetPos();
+        _sendInThisFrame.resetPos();
     }
 
     private void send(){
@@ -51,8 +54,15 @@ public class NetworkPacketManager implements PacketManager {
         if (!_shouldSendThisFrame) return;
 
         try {
-            OutputStream outStream = _socket.getOutputStream();
-            outStream.write(_sendThisFrame.getBuffer(), 0, _sendThisFrame.getBufferByteLength());
+            OutputStream stream = _socket.getOutputStream();
+            int packetByteLen = _sendInThisFrame.getBufferByteLength();
+            byte[] sendThis = new byte[packetByteLen + 2];
+            System.arraycopy(_sendInThisFrame.getBuffer(), 0, sendThis, 2, packetByteLen);
+
+            sendThis[0] = (byte) (packetByteLen & 0xFF);
+            sendThis[1] = (byte) ((packetByteLen >>> 8) & 0xFF);
+
+            stream.write(sendThis, 0, sendThis.length);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,11 +80,26 @@ public class NetworkPacketManager implements PacketManager {
 
         while (true) {
             try {
-                InputStream inStream = _socket.getInputStream();
-                InputBitStream newPacket = new BitInputStream();
-                int readBytes = inStream.read(newPacket.getBuffer());
-                newPacket.setBufferLength(readBytes);
-                _rawPackets.offer(newPacket);
+                InputStream stream = _socket.getInputStream();
+                while (true) {
+                    InputBitStream newPacket = new BitInputStream();
+
+                    int lbyte = stream.read();
+                    int hbyte = stream.read();
+                    int packetByteLen = (hbyte << 8) | lbyte;
+
+                    int i = 0;
+                    while (packetByteLen > 0) {
+                        int b = stream.read();
+                        newPacket.getBuffer()[i++] = (byte) b;
+                        packetByteLen--;
+                    }
+
+                    Log.i("hehe", "received " + newPacket.getBuffer()[0]);
+                    newPacket.setBufferLength(i);
+
+                    _rawPackets.offer(newPacket);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
