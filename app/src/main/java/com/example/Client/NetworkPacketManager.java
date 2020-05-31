@@ -95,7 +95,6 @@ public class NetworkPacketManager implements PacketManager {
                         packetByteLen--;
                     }
 
-                    Log.i("hehe", "received " + newPacket.getBuffer()[0]);
                     newPacket.setBufferLength(i);
 
                     _rawPackets.offer(newPacket);

@@ -149,16 +149,16 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
     @Override
     public void update(long ms) {
-        handleInputFromClients();
-
-        if (_worldSetterActive)
-            _worldSetter.writeInstructionToStream(CoreHost.get().getNetworkManager().getPacketToSend());
-
         for (GameObject go : _gameObjects)
             go.before(ms);
 
+        handleInputFromClients();
+
         for (GameObject go : _gameObjects)
             go.update(ms);
+
+        if (_worldSetterActive)
+            _worldSetter.writeInstructionToStream(CoreHost.get().getNetworkManager().getPacketToSend());
 
         for (GameObject go : _gameObjects)
             go.after(ms);

@@ -18,6 +18,8 @@ public class PlayerClient extends GameObjectClient implements Player {
         }
     };
 
+    private boolean _reconstructSkills;
+
     protected PlayerClient(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
         _property.getSkills().set(0, new WazakWazakCommon());
@@ -38,7 +40,6 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void before(long ms) {
-
     }
 
     @Override
@@ -48,23 +49,20 @@ public class PlayerClient extends GameObjectClient implements Player {
                 skill.cast(this);
                 skill.setDirty(false);
             }
+
+        if (_reconstructSkills){
+            reconstructSkills();
+            _reconstructSkills = false;
+        }
     }
 
     @Override
     public void after(long ms) {
-
     }
 
     @Override
-    protected void onItemsAdded() {
-        if (Core.get().getMatch().getThisPlayer() == this)
-            Core.get().getUIManager().updateItems();
-
-        while (_property.getSkills().size() > 4)
-            _property.getSkills().remove(_property.getSkills().size() - 1);
-
-        for (int i = 0; i < getItems().size(); i++)
-            _property.getSkills().add(getItems().get(i).getProperty().getSkill());
+    protected void onItemsDirty() {
+        _reconstructSkills = true;
     }
 
     @Override
@@ -75,6 +73,17 @@ public class PlayerClient extends GameObjectClient implements Player {
     @Override
     public PlayerProperty getProperty(){
         return _property;
+    }
+
+    private void reconstructSkills(){
+        if (Core.get().getMatch().getThisPlayer() == this)
+            Core.get().getUIManager().updateItems();
+
+        while (_property.getSkills().size() > 4)
+            _property.getSkills().remove(_property.getSkills().size() - 1);
+
+        for (int i = 0; i < getItems().size(); i++)
+            _property.getSkills().add(getItems().get(i).getProperty().getSkill());
     }
 
     private void onSetHealth(int health) {

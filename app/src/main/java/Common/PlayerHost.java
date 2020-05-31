@@ -1,5 +1,7 @@
 package Common;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
 
@@ -11,8 +13,9 @@ import Host.WazakWazakHost;
 
 import static Common.PlayerProperty.*;
 
-public class PlayerHost extends GameObject implements Damageable, Player{
+public class PlayerHost extends GameObject implements Damageable, Player {
     private double[] _newPosTemp = new double[2];
+    private ArrayList<Integer> _toRemoveIndices = new ArrayList<>();
 
     private PlayerProperty _property = new PlayerProperty(){
         @Override
@@ -42,24 +45,41 @@ public class PlayerHost extends GameObject implements Damageable, Player{
 
     @Override
     public void before(long ms) {
-        networkUpdate();
     }
 
     @Override
     public void update(long ms) {
+        networkUpdate();
+
         // passive
         Collection<CollisionState> collisions = _match.getCollider().getCollisions(this);
         for (CollisionState collision : collisions){
             processCollision(collision, ms);
         }
 
-        for (Skill skill : _property.getSkills())
-            if (skill.isDirty())
+        for (int i = 0; i < _property.getSkills().size(); i++) {
+            Skill skill = _property.getSkills().get(i);
+            if (skill.isDirty()) {
                 skill.cast(this);
+
+                // if item skill
+                if (i > 3){
+                    _toRemoveIndices.add(i - 4);
+                }
+            }
+        }
     }
 
     @Override
     public void after(long ms) {
+        for (int i : _toRemoveIndices)
+            removeItem(i);
+
+        if (!_toRemoveIndices.isEmpty()){
+            CoreHost.get().getMatch().getWorldSetterHost()
+                    .generateUpdateInstruction(getNetworkId(), itemsDirtyFlag);
+            _toRemoveIndices.clear();
+        }
     }
 
     private void processCollision(CollisionState state, long ms){
@@ -148,6 +168,12 @@ public class PlayerHost extends GameObject implements Damageable, Player{
     public void addItem(Item item) {
         super.addItem(item);
         _property.getSkills().add(item.getProperty().getSkill());
+    }
+
+    @Override
+    public void removeItem(int index) {
+        super.removeItem(index);
+        _property.getSkills().remove(index + 4);
     }
 
     @Override

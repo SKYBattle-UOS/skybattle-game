@@ -56,23 +56,23 @@ public class GameStateMatch implements GameState, Match {
 
     @Override
     public void update(long ms) {
-        InputBitStream packetStream = Core.get().getPakcetManager().getPacketStream();
-        if (packetStream != null && _worldSetterActive)
-            _worldSetter.processInstructions(packetStream);
-
         processTimers();
         killGameObjects();
 
         for (GameObject go : _gameObjects)
             go.before(ms);
 
+        InputBitStream packetStream = Core.get().getPakcetManager().getPacketStream();
+        if (packetStream != null && _worldSetterActive)
+            _worldSetter.processInstructions(packetStream);
+
         for (GameObject go : _gameObjects)
             go.update(ms);
 
+        _currentState.update(ms);
+
         for (GameObject go : _gameObjects)
             go.after(ms);
-
-        _currentState.update(ms);
     }
 
     private void processTimers() {

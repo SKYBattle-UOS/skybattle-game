@@ -142,7 +142,7 @@ public abstract class GameObject {
                 GameObject item = _match.getRegistry().getGameObject(stream.read(32));
                 addItem((Item) item);
             }
-            onItemsAdded();
+            onItemsDirty();
         }
     }
 
@@ -242,10 +242,14 @@ public abstract class GameObject {
         _items.add(item);
     }
 
+    public void removeItem(int index){
+        _items.remove(index);
+    }
+
     public List<Item> getItems(){
         return _items;
     }
 
-    protected void onItemsAdded(){}
+    protected void onItemsDirty(){}
     // endregion
 }

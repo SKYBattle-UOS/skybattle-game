@@ -75,8 +75,6 @@ public class NetworkManager {
                 sendThis[0] = (byte) (packetByteLen & 0xFF);
                 sendThis[1] = (byte) ((packetByteLen >>> 8) & 0xFF);
 
-                Log.i("hehe", "sending " + sendThis[2]);
-
                 stream.write(sendThis, 0, sendThis.length);
             } catch (IOException e) {
                 e.printStackTrace();
