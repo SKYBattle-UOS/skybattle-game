@@ -1,6 +1,5 @@
 package Common;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
@@ -27,10 +26,10 @@ public class PlayerHost extends GameObject implements Damageable, Player {
 
     public PlayerHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _property.getSkills().set(0, new WazakWazakHost());
-        _property.getSkills().set(1, new GlobalWazakWazakHost());
-        _property.getSkills().set(2, new HealthUpHost());
-        _property.getSkills().set(3, new HealthUpHost());
+        _property.getSkills(friend).set(0, new WazakWazakHost());
+        _property.getSkills(friend).set(1, new GlobalWazakWazakHost());
+        _property.getSkills(friend).set(2, new HealthUpHost());
+        _property.getSkills(friend).set(3, new HealthUpHost());
     }
 
     public static GameObject createInstance(){
@@ -167,13 +166,13 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     @Override
     protected void addItem(Item item) {
         super.addItem(item);
-        _property.getSkills().add(item.getProperty().getSkill());
+        _property.getSkills(friend).add(item.getProperty().getSkill());
     }
 
     @Override
     protected void removeItem(int index) {
         super.removeItem(index);
-        _property.getSkills().remove(index + 4);
+        _property.getSkills(friend).remove(index + 4);
     }
 
     @Override

@@ -22,10 +22,10 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     protected PlayerClient(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _property.getSkills().set(0, new WazakWazakCommon());
-        _property.getSkills().set(1, new GlobalWazakWazakCommon());
-        _property.getSkills().set(2, new HealthUpCommon());
-        _property.getSkills().set(3, new HealthUpCommon());
+        _property.getSkills(friend).set(0, new WazakWazakCommon());
+        _property.getSkills(friend).set(1, new GlobalWazakWazakCommon());
+        _property.getSkills(friend).set(2, new HealthUpCommon());
+        _property.getSkills(friend).set(3, new HealthUpCommon());
     }
 
     public static GameObject createInstance() {
@@ -80,10 +80,10 @@ public class PlayerClient extends GameObjectClient implements Player {
             Core.get().getUIManager().updateItems();
 
         while (_property.getSkills().size() > 4)
-            _property.getSkills().remove(_property.getSkills().size() - 1);
+            _property.getSkills(friend).remove(_property.getSkills().size() - 1);
 
         for (int i = 0; i < getItems().size(); i++)
-            _property.getSkills().add(getItems().get(i).getProperty().getSkill());
+            _property.getSkills(friend).add(getItems().get(i).getProperty().getSkill());
     }
 
     private void onSetHealth(int health) {

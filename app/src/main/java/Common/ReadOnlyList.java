@@ -24,6 +24,10 @@ public class ReadOnlyList<T> implements Iterable<T> {
         return _list.isEmpty();
     }
 
+    public int indexOf(T element){
+        return _list.indexOf(element);
+    }
+
     @NonNull
     @Override
     public Iterator<T> iterator() {

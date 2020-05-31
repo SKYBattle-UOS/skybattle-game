@@ -18,6 +18,7 @@ import java.util.List;
 
 import Common.CoordinateSkill;
 import Common.PlayerTargetSkill;
+import Common.ReadOnlyList;
 import Common.Skill;
 import Host.SkillTarget;
 
@@ -48,7 +49,7 @@ public class InGameFragment extends Fragment {
             uiManager.getButtonEnabled(i).observe(this, bool -> _buttons[finalI].setEnabled(bool));
         }
 
-        List<Skill> skills = Core.get().getMatch().getThisPlayer().getProperty().getSkills();
+        ReadOnlyList<Skill> skills = Core.get().getMatch().getThisPlayer().getProperty().getSkills();
         for (int i = 0 ; i < 4; i++){
             setButtonListener(skills.get(i), _buttons[i], i + 1);
         }

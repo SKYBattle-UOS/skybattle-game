@@ -3,6 +3,7 @@ package Common;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PlayerProperty {
     public static int playerIdDirtyFlag;
@@ -25,6 +26,7 @@ public class PlayerProperty {
     }
 
     private ArrayList<Skill> _skills = new ArrayList<>();
+    private ReadOnlyList<Skill> _readOnlySkills = new ReadOnlyList<>(_skills);
     private int _playerId;
     private int _health = 100000;
     private int _maxHealth = 100000;
@@ -80,7 +82,14 @@ public class PlayerProperty {
         }
     }
 
-    public List<Skill> getSkills() { return _skills; }
+    public List<Skill> getSkills(Player.Friend friend) {
+        Objects.requireNonNull(friend);
+        return _skills;
+    }
+
+    public ReadOnlyList<Skill> getSkills(){
+        return _readOnlySkills;
+    }
 
     public int getTeam() {
         return _team;

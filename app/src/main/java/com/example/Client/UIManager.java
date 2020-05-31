@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import Common.Skill;
+
 public interface UIManager {
     int ENTER_ROOM_PORT = 0;
     int ROOM_START_PORT = 0;
@@ -23,4 +25,5 @@ public interface UIManager {
     void setButtonActive(int button, boolean active);
     void setHealth(int health);
     void updateItems();
+    int findButtonIndex(Skill skill);
 }
