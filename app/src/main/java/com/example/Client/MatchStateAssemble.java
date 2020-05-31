@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import android.util.Log;
+
 import java.util.Collection;
 
 import Common.GameObject;
@@ -60,6 +62,10 @@ public class MatchStateAssemble implements GameState {
         }
 
         if (Util.hasMessage(packet)) {
+            // TODO
+            for (int i = 0; i < packet.getBuffer().length; i++){
+                Log.i("hehe", String.format("%d : %d", i, packet.getBuffer()[i]));
+            }
             _waiting = true;
             Core.get().getUIManager().switchScreen(ScreenType.CHARACTERSELECT,
                     ()-> _match.switchState(MatchStateType.SELECT_CHARACTER));
