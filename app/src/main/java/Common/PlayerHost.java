@@ -24,16 +24,11 @@ public class PlayerHost extends GameObject implements Damageable, Player {
         }
     };
 
-    public PlayerHost(float latitude, float longitude, String name) {
-        super(latitude, longitude, name);
+    public PlayerHost() {
         _property.getSkills(friend).set(0, new WazakWazakHost());
         _property.getSkills(friend).set(1, new GlobalWazakWazakHost());
         _property.getSkills(friend).set(2, new HealthUpHost());
         _property.getSkills(friend).set(3, new HealthUpHost());
-    }
-
-    public static GameObject createInstance(){
-        return new PlayerHost(0, 0, "Player");
     }
 
     @Override
