@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -45,10 +46,11 @@ public abstract class GameObject {
     private ImageType _imageType;
     private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
     private ArrayList<Item> _items = new ArrayList<>();
+    private ReadOnlyList<Item> _readOnlyItems = new ReadOnlyList<>(_items);
 
     protected MatchCommon _match;
+    protected double[] _restoreTemp = new double[2];
 
-    private double[] _restoreTemp = new double[2];
     private int[] _convertTemp = new int[2];
 
     protected GameObject(float latitude, float longitude, String name){
@@ -110,40 +112,7 @@ public abstract class GameObject {
         }
     }
 
-    public void readFromStream(InputBitStream stream, int dirtyFlag) {
-        if ((dirtyFlag & posDirtyFlag) != 0) {
-            int lat = stream.read(32);
-            int lon = stream.read(32);
-            _match.getConverter().restoreLatLon(lat, lon, _restoreTemp);
-            setPosition(_restoreTemp[0], _restoreTemp[1]);
-        }
-
-        if ((dirtyFlag & nameDirtyFlag) != 0) {
-            int len = stream.read(8);
-            byte[] b = new byte[len];
-            stream.read(b, len * 8);
-            _name = new String(b, StandardCharsets.UTF_8);
-        }
-
-        if ((dirtyFlag & radiusDirtyFlag) != 0) {
-            int rInt = stream.read(16);
-            setRadius(((float) rInt) / 10f);
-        }
-
-        if ((dirtyFlag & imageTypeDirtyFlag) != 0) {
-            ImageType type = ImageType.values()[stream.read(4)];
-            setLook(type);
-        }
-
-        if ((dirtyFlag & itemsDirtyFlag) != 0){
-            _items.clear();
-            int itemsSize = stream.read(4);
-            for (int i = 0; i < itemsSize; i++){
-                GameObject item = _match.getRegistry().getGameObject(stream.read(32));
-                addItem((Item) item);
-            }
-            onItemsDirty();
-        }
+    public void readFromStream(InputBitStream stream, int dirtyFlag){
     }
 
     public abstract void before(long ms);
@@ -241,18 +210,16 @@ public abstract class GameObject {
         _imageType = type;
     }
 
-    public void addItem(Item item){
+    public ReadOnlyList<Item> getItems(){
+        return _readOnlyItems;
+    }
+
+    protected void addItem(Item item) {
         _items.add(item);
     }
 
-    public void removeItem(int index){
+    protected void removeItem(int index) {
         _items.remove(index);
     }
-
-    public List<Item> getItems(){
-        return _items;
-    }
-
-    protected void onItemsDirty(){}
     // endregion
 }

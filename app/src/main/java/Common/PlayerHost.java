@@ -165,13 +165,13 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     }
 
     @Override
-    public void addItem(Item item) {
+    protected void addItem(Item item) {
         super.addItem(item);
         _property.getSkills().add(item.getProperty().getSkill());
     }
 
     @Override
-    public void removeItem(int index) {
+    protected void removeItem(int index) {
         super.removeItem(index);
         _property.getSkills().remove(index + 4);
     }

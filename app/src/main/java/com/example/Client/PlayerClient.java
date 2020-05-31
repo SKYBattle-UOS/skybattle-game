@@ -61,7 +61,7 @@ public class PlayerClient extends GameObjectClient implements Player {
     }
 
     @Override
-    protected void onItemsDirty() {
+    public void onItemsDirty() {
         _reconstructSkills = true;
     }
 
