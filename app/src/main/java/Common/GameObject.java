@@ -153,6 +153,9 @@ public abstract class GameObject {
     public void faceDeath(){
         for (Runnable r : _onDeathListeners)
             r.run();
+
+        if (_match.getCollider() != null && _collision)
+            _match.getCollider().remove(this);
     }
 
     public void setOnDeathListener(@NonNull Runnable onDeathListener){
