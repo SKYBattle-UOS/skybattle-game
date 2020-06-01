@@ -1,7 +1,5 @@
 package Host;
 
-import com.example.Client.Core;
-import com.example.Client.ImageType;
 
 import Common.DuplicationTrickCommon;
 import Common.GameObject;
@@ -9,12 +7,9 @@ import Common.PlayerHost;
 import Common.Util;
 
 public class DuplicationTrickHost extends DuplicationTrickCommon {
-    public DuplicationTrickHost(int index) {
-        super(index);
-    }
-
     @Override
     public void cast(GameObject caster) {
+        /*
         for(int i=0;i<3;i++) {
             GameObject spawned = CoreHost.get().getMatch().createGameObject(Util.ItemClassId, true);
             spawned.setName(caster.getName());
@@ -27,6 +22,6 @@ public class DuplicationTrickHost extends DuplicationTrickCommon {
             spawned.setLook(ImageType.MARKER);
             CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
             CoreHost.get().getMatch().setTimer(spawned::scheduleDeath,10);
-        }
+        }*/
     }
 }

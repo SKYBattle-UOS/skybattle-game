@@ -1,17 +1,13 @@
 package Host;
 
-import com.example.Client.ImageType;
-import com.example.Client.Player;
 
 import Common.GameObject;
 import Common.PlayerHost;
+import Common.PlayerProperty;
 import Common.SneakCommon;
 import Common.Util;
 
 public class SneakHost extends SneakCommon {
-    public SneakHost(int index) {
-        super(index);
-    }
 
     @Override
     public void cast(GameObject caster){
@@ -26,6 +22,6 @@ public class SneakHost extends SneakCommon {
                 .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.imageTypeDirtyFlag),10);
          */
         CoreHost.get().getMatch().getWorldSetterHost()
-                .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
+                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }
