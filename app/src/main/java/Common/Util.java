@@ -1,7 +1,7 @@
 package Common;
 
 import com.example.Client.GameObjectFactory;
-import com.example.Client.Player;
+import com.example.Client.PlayerClient;
 
 import java.io.IOException;
 
@@ -14,9 +14,9 @@ public class Util {
     public static int DummyPlayerClassId;
 
     public static void registerGameObjects(GameObjectFactory factory){
-        PlayerClassId = factory.registerCreateMethod(Player::createInstance);
-        ItemClassId = factory.registerCreateMethod(Item::createInstance);
-        DummyPlayerClassId = factory.registerCreateMethod(Player::createInstance);
+        PlayerClassId = factory.registerCreateMethod(PlayerClient::createInstance);
+        ItemClassId = factory.registerCreateMethod(ItemClient::createInstance);
+        DummyPlayerClassId = factory.registerCreateMethod(PlayerClient::createInstance);
     }
 
     public static void registerGameObjectsHost(GameObjectFactory factory){

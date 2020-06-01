@@ -4,7 +4,7 @@ import android.util.Log;
 
 import Common.GameObject;
 import Common.InputBitStream;
-import Common.PlayerCommon;
+import Common.Player;
 import Common.WorldSetterHeader;
 
 public class WorldSetter {
@@ -54,7 +54,7 @@ public class WorldSetter {
             _match.getWorld().add(newGO);
 
             if (newGO instanceof Player)
-                _match.getPlayers().add((PlayerCommon) newGO);
+                _match.getPlayers().add((Player) newGO);
         }
     }
 
@@ -71,7 +71,7 @@ public class WorldSetter {
             goToDestroy.scheduleDeath();
             _match.getRegistry().remove(_header.networkId);
 
-            if (goToDestroy instanceof Player)
+            if (goToDestroy instanceof PlayerClient)
                 _match.getPlayers().remove(goToDestroy);
         }
     }

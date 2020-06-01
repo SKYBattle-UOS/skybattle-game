@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import Common.Item;
+import Common.Player;
+import Common.Skill;
 
 public class AndroidUIManager implements UIManager, LifecycleObserver {
     private Screen _currentScreen;
@@ -35,6 +37,8 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     private MutableLiveData<String> _topText = new MutableLiveData<>();
     private MutableLiveData<String> _titleText = new MutableLiveData<>();
     private MutableLiveData<Integer> _health = new MutableLiveData<>();
+
+    private InGameFragment _ingameFrag;
 
     public AndroidUIManager(){
         for (int i = 0; i < 4; i++) {
@@ -144,12 +148,14 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
 
     @Override
     public void setButtonText(int button, String text) {
-        _qwerTexts[button - BUTTON_Q].postValue(text);
+        if (button - BUTTON_Q < 4)
+            _qwerTexts[button - BUTTON_Q].postValue(text);
     }
 
     @Override
     public void setButtonActive(int button, boolean active) {
-        _qwerEnables[button - BUTTON_Q].postValue(active);
+        if (button - BUTTON_Q < 4)
+            _qwerEnables[button - BUTTON_Q].postValue(active);
     }
 
     @Override
@@ -158,16 +164,44 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     }
 
     @Override
-    public void setItems(Item[] items) {
+    public void updateItems() {
+        Player thisPlayer = Core.get().getMatch().getThisPlayer();
 
+        _mainHandler.post(() -> {
+            if (_ingameFrag == null) return;
+            _ingameFrag.clearItemButtons();
+            int i = 5;
+            for (Item item : thisPlayer.getGameObject().getItems()){
+                int finalI = i;
+                _ingameFrag.addItemButton(btn -> {
+                    btn.setText(item.getGameObject().getName());
+                    _ingameFrag.setButtonListener(item.getProperty().getSkill(), btn, finalI);
+                });
+                i++;
+            }
+        });
+    }
+
+    @Override
+    public int findButtonIndex(Skill skill) {
+        Player thisPlayer = Core.get().getMatch().getThisPlayer();
+        int index = thisPlayer.getProperty().getSkills().indexOf(skill);
+        if (index >= 0)
+            return UIManager.BUTTON_Q + index;
+
+        return -1;
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void onResume(LifecycleOwner owner){
+        // TODO: should lock
+        _ingameFrag = (InGameFragment) owner;
+        updateItems();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     public void onPause(LifecycleOwner owner){
+        _ingameFrag = null;
     }
 
     public MutableLiveData<String> getButtonString(int button){

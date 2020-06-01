@@ -3,18 +3,25 @@ package Common;
 import Host.CoreHost;
 import Host.HealthUpHost;
 import Host.PickUpCondition;
-import Host.PickUpNever;
+import Host.PickUpTest;
 
-public class ItemHost extends ItemCommon {
-    private PickUpCondition _pickUpCondition = new PickUpNever();
+public class ItemHost extends GameObject implements Pickable, Item {
+    private ItemProperty _property = new ItemProperty();
+    private PickUpCondition _pickUpCondition = new PickUpTest();
 
     protected ItemHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skill = new HealthUpHost(4);
+        _property.setSkill(new HealthUpHost());
     }
 
     public static GameObject createInstance() {
         return new ItemHost(0, 0, "Item");
+    }
+
+    @Override
+    public void writeToStream(OutputBitStream stream, int dirtyFlag) {
+        super.writeToStream(stream, dirtyFlag);
+        _property.writeToStream(stream, dirtyFlag);
     }
 
     @Override
@@ -33,15 +40,33 @@ public class ItemHost extends ItemCommon {
     }
 
     @Override
-    public void pickUp(GameObject owner) {
-        if (_pickUpCondition.evalulate(owner)){
-            _owner = owner;
-            _isPickedUp = true;
-            _owner.addItem(this);
+    public boolean isPickedUp() {
+        return _property.isPickedUp();
+    }
+
+    @Override
+    public boolean pickUp(GameObject owner) {
+        if (_property.isPickedUp()) return false;
+
+        if (_pickUpCondition.evalulate(owner, this)){
+            _property.setOwner(owner);
+            _property.setPickedUp(true);
             CoreHost.get().getMatch().getWorldSetterHost()
-                    .generateUpdateInstruction(getNetworkId(), ownerDirtyFlag | isPickedUpDirtyFlag);
-            CoreHost.get().getMatch().getWorldSetterHost()
-                    .generateUpdateInstruction(owner.getNetworkId(), itemsDirtyFlag);
+                    .generateUpdateInstruction(getNetworkId(),
+                            ItemProperty.ownerDirtyFlag | ItemProperty.isPickedUpDirtyFlag);
+            return true;
         }
+
+        return false;
+    }
+
+    @Override
+    public GameObject getGameObject() {
+        return this;
+    }
+
+    @Override
+    public ItemProperty getProperty() {
+        return _property;
     }
 }

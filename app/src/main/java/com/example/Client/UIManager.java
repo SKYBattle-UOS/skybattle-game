@@ -1,6 +1,6 @@
 package com.example.Client;
 
-import Common.Item;
+import Common.Skill;
 
 public interface UIManager {
     int ENTER_ROOM_PORT = 0;
@@ -24,5 +24,6 @@ public interface UIManager {
     void setButtonText(int button, String text);
     void setButtonActive(int button, boolean active);
     void setHealth(int health);
-    void setItems(Item[] items);
+    void updateItems();
+    int findButtonIndex(Skill skill);
 }

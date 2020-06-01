@@ -3,14 +3,15 @@ package Common;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Collider {
-    private HashMap<GameObject, ArrayList<CollisionState>> _collisions = new HashMap<>();
+    private HashMap<GameObject, LinkedList<CollisionState>> _collisions = new HashMap<>();
     private ArrayList<GameObject> _allGOs = new ArrayList<>();
     private ArrayList<CollisionState> _toRemove = new ArrayList<>();
 
     public void update(long ms){
-        for (ArrayList<CollisionState> a : _collisions.values()){
+        for (LinkedList<CollisionState> a : _collisions.values()){
             for (CollisionState c : a){
                 c.isEnter = false;
                 if (c.isExit)
@@ -26,15 +27,24 @@ public class Collider {
 
     public void registerNew(GameObject go){
         _allGOs.add(go);
-        _collisions.putIfAbsent(go, new ArrayList<>());
+        _collisions.putIfAbsent(go, new LinkedList<>());
+    }
+
+    public void remove(GameObject go){
+        _allGOs.remove(go);
+        _collisions.remove(go);
+
+        for (LinkedList<CollisionState> a : _collisions.values()){
+            while (a.remove(go));
+        }
     }
 
     public void positionDirty(GameObject go){
         for (GameObject otherGO : _allGOs){
             if (otherGO == go) continue;
 
-            ArrayList<CollisionState> list = _collisions.get(go);
-            ArrayList<CollisionState> otherList = _collisions.get(otherGO);
+            LinkedList<CollisionState> list = _collisions.get(go);
+            LinkedList<CollisionState> otherList = _collisions.get(otherGO);
 
             if (doesCollide(go, otherGO)){
                 if (!list.contains(otherGO)){

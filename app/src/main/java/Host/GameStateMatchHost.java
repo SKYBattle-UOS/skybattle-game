@@ -3,8 +3,7 @@ package Host;
 import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
-import com.example.Client.ImageType;
-import com.example.Client.Player;
+import Common.ImageType;
 
 import Common.Collider;
 import Common.GameObject;
@@ -19,9 +18,8 @@ import Common.GameState;
 import Common.InputBitStream;
 import Common.InputState;
 import Common.LatLonByteConverter;
-import Common.MatchCommon;
 import Common.MatchStateType;
-import Common.PlayerCommon;
+import Common.Player;
 import Common.PlayerHost;
 import Common.TimerStruct;
 import Common.Util;
@@ -33,7 +31,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     private ArrayList<GameObject> _gameObjects;
     private ArrayList<GameObject> _newGameObjects;
     private ArrayList<Integer> _newGOClassId;
-    private ArrayList<PlayerCommon> _players;
+    private ArrayList<Player> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
     private Collider _collider;
@@ -113,7 +111,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
         for (ClientProxy client : clients){
             PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId, true);
             lastPlayerId = client.getPlayerId();
-            newPlayer.setPlayerId(client.getPlayerId());
+            newPlayer.getProperty().setPlayerId(client.getPlayerId());
             newPlayer.setPosition(37.714580, 127.045195);
             newPlayer.setName("플레이어" + i++);
             newPlayer.setLook(ImageType.MARKER);
@@ -121,11 +119,11 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
         for (int j = 0; j < 3; j++){
             DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
-            dummy.setPlayerId(lastPlayerId + j + 1);
+            dummy.getProperty().setPlayerId(lastPlayerId + j + 1);
             dummy.setPosition(37.715583 + 0.0005 * j, 127.048421 + 0.0005 * j);
             dummy.setName("플레이어" + i++ + " (가짜)");
             dummy.setLook(ImageType.MARKER);
-            dummy.setTeam(1);
+            dummy.getProperty().setTeam(1);
         }
 
         // create temp item
@@ -151,16 +149,16 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
     @Override
     public void update(long ms) {
-        handleInputFromClients();
-
-        if (_worldSetterActive)
-            _worldSetter.writeInstructionToStream(CoreHost.get().getNetworkManager().getPacketToSend());
-
         for (GameObject go : _gameObjects)
             go.before(ms);
 
+        handleInputFromClients();
+
         for (GameObject go : _gameObjects)
             go.update(ms);
+
+        if (_worldSetterActive)
+            _worldSetter.writeInstructionToStream(CoreHost.get().getNetworkManager().getPacketToSend());
 
         for (GameObject go : _gameObjects)
             go.after(ms);
@@ -268,7 +266,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     }
 
     @Override
-    public List<PlayerCommon> getPlayers() { return _players; }
+    public List<Player> getPlayers() { return _players; }
 
     @Override
     public Collider getCollider(){ return _collider; }

@@ -1,17 +1,13 @@
 package Host;
 
-import com.example.Client.ImageType;
+import Common.ImageType;
 
 import Common.GameObject;
-import Common.PlayerHost;
+import Common.PlayerProperty;
 import Common.WazakWazakCommon;
 import Common.Util;
 
 public class WazakWazakHost extends WazakWazakCommon {
-    public WazakWazakHost(int index) {
-        super(index);
-    }
-
     @Override
     public void cast(GameObject caster){
         GameObject spawned = CoreHost.get().getMatch().createGameObject(Util.ItemClassId, true);
@@ -20,6 +16,6 @@ public class WazakWazakHost extends WazakWazakCommon {
         spawned.setLook(ImageType.MARKER);
 
         CoreHost.get().getMatch().getWorldSetterHost()
-                .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
+                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }

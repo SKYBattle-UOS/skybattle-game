@@ -10,11 +10,9 @@ import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.LatLonByteConverter;
-import Common.MatchCommon;
 import Common.MatchStateType;
-import Common.PlayerCommon;
+import Common.Player;
 import Common.TimerStruct;
-import Host.WorldSetterHost;
 
 /**
  * 앱의 각 화면에 대한 상태패턴의 상태 객체 중 매치화면.
@@ -30,7 +28,7 @@ public class GameStateMatch implements GameState, Match {
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
     private Vector<GameObject> _gameObjects;
-    private ArrayList<PlayerCommon> _players;
+    private ArrayList<Player> _players;
     private int _numPlayers;
     private boolean _worldSetterActive = false;
     private double[] _battleGroundLatLon;
@@ -58,23 +56,23 @@ public class GameStateMatch implements GameState, Match {
 
     @Override
     public void update(long ms) {
-        InputBitStream packetStream = Core.get().getPakcetManager().getPacketStream();
-        if (packetStream != null && _worldSetterActive)
-            _worldSetter.processInstructions(packetStream);
-
         processTimers();
         killGameObjects();
 
         for (GameObject go : _gameObjects)
             go.before(ms);
 
+        InputBitStream packetStream = Core.get().getPakcetManager().getPacketStream();
+        if (packetStream != null && _worldSetterActive)
+            _worldSetter.processInstructions(packetStream);
+
         for (GameObject go : _gameObjects)
             go.update(ms);
 
+        _currentState.update(ms);
+
         for (GameObject go : _gameObjects)
             go.after(ms);
-
-        _currentState.update(ms);
     }
 
     private void processTimers() {
@@ -135,7 +133,7 @@ public class GameStateMatch implements GameState, Match {
     public List<GameObject> getWorld() { return _gameObjects; }
 
     @Override
-    public List<PlayerCommon> getPlayers() {
+    public List<Player> getPlayers() {
         return _players;
     }
 
@@ -149,12 +147,10 @@ public class GameStateMatch implements GameState, Match {
     @Override
     public Player getThisPlayer() {
         // TODO
-        Player player;
-        List<PlayerCommon> gos = getPlayers();
-        for (PlayerCommon go : gos){
-            if (go.getPlayerId() == 0) {
-                player = (Player) go;
-                return player;
+        List<Player> gos = getPlayers();
+        for (Player go : gos){
+            if (go.getProperty().getPlayerId() == 0) {
+                return (PlayerClient) go;
             }
         }
         return null;

@@ -3,15 +3,11 @@ package Common;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.Client.Core;
-import com.example.Client.ImageType;
-import com.example.Client.RenderComponent;
-import com.example.Client.Renderer;
-
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 매 프레임 Update 될 필요가 있는 객체들의 base abstract class 입니다.
@@ -26,21 +22,18 @@ public abstract class GameObject {
     public static int radiusDirtyFlag;
     public static int imageTypeDirtyFlag;
     public static int itemsDirtyFlag;
-    public static int startFromHereFlag;
+    public static int EndOfFlag;
+    public static int EndOfFlagPos;
 
     static {
-        int i = 1;
-        posDirtyFlag = i;
-        i *= 2;
-        nameDirtyFlag = i;
-        i *= 2;
-        radiusDirtyFlag = i;
-        i *= 2;
-        imageTypeDirtyFlag = i;
-        i *= 2;
-        itemsDirtyFlag = i;
-        i *= 2;
-        startFromHereFlag = i;
+        int i = 0;
+        posDirtyFlag = 1 << i++;
+        nameDirtyFlag = 1 << i++;
+        radiusDirtyFlag = 1 << i++;
+        imageTypeDirtyFlag = 1 << i++;
+        itemsDirtyFlag = 1 << i++;
+        EndOfFlagPos = i;
+        EndOfFlag = 1 << i++;
     }
 
     private float _radius = 2.5f;
@@ -51,13 +44,13 @@ public abstract class GameObject {
     private boolean _wantsToDie;
     private boolean _collision;
     private ImageType _imageType;
-    private RenderComponent _renderComponent;
     private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
-    private ArrayList<ItemCommon> _items = new ArrayList<>();
+    private ArrayList<Item> _items = new ArrayList<>();
+    private ReadOnlyList<Item> _readOnlyItems = new ReadOnlyList<>(_items);
 
     protected MatchCommon _match;
+    protected double[] _restoreTemp = new double[2];
 
-    private double[] _restoreTemp = new double[2];
     private int[] _convertTemp = new int[2];
 
     protected GameObject(float latitude, float longitude, String name){
@@ -110,8 +103,8 @@ public abstract class GameObject {
         if ((dirtyFlag & itemsDirtyFlag) != 0){
             try {
                 stream.write(_items.size(), 4);
-                for (ItemCommon item : _items){
-                    stream.write(item.getNetworkId(), 32);
+                for (Item item : _items){
+                    stream.write(item.getGameObject().getNetworkId(), 32);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -119,40 +112,7 @@ public abstract class GameObject {
         }
     }
 
-    public void readFromStream(InputBitStream stream, int dirtyFlag) {
-        if ((dirtyFlag & posDirtyFlag) != 0) {
-            int lat = stream.read(32);
-            int lon = stream.read(32);
-            _match.getConverter().restoreLatLon(lat, lon, _restoreTemp);
-            setPosition(_restoreTemp[0], _restoreTemp[1]);
-        }
-
-        if ((dirtyFlag & nameDirtyFlag) != 0) {
-            int len = stream.read(8);
-            byte[] b = new byte[len];
-            stream.read(b, len * 8);
-            _name = new String(b, StandardCharsets.UTF_8);
-        }
-
-        if ((dirtyFlag & radiusDirtyFlag) != 0) {
-            int rInt = stream.read(16);
-            setRadius(((float) rInt) / 10f);
-        }
-
-        if ((dirtyFlag & imageTypeDirtyFlag) != 0) {
-            ImageType type = ImageType.values()[stream.read(4)];
-            setRenderComponent(Core.get().getRenderer().createRenderComponent(this, type));
-        }
-
-        if ((dirtyFlag & itemsDirtyFlag) != 0){
-            _items.clear();
-            int itemsSize = stream.read(4);
-            for (int i = 0; i < itemsSize; i++){
-                GameObject item = _match.getRegistry().getGameObject(stream.read(32));
-                _items.add((ItemCommon) item);
-            }
-            itemsWereAdded();
-        }
+    public void readFromStream(InputBitStream stream, int dirtyFlag){
     }
 
     public abstract void before(long ms);
@@ -160,20 +120,15 @@ public abstract class GameObject {
     public abstract void after(long ms);
 
     public void faceDeath(){
-        if (_renderComponent != null)
-            _renderComponent.destroy();
-
         for (Runnable r : _onDeathListeners)
             r.run();
+
+        if (_match.getCollider() != null && _collision)
+            _match.getCollider().remove(this);
     }
 
     public void setOnDeathListener(@NonNull Runnable onDeathListener){
         _onDeathListeners.add(onDeathListener);
-    }
-
-    public void render(Renderer renderer){
-        if (_renderComponent != null)
-            renderer.batch(_renderComponent);
     }
 
     @Override
@@ -232,16 +187,6 @@ public abstract class GameObject {
         return _indexInWorld;
     }
 
-    public RenderComponent getRenderComponent() {
-        return _renderComponent;
-    }
-
-    public void setRenderComponent(RenderComponent renderComponent) {
-        if (_renderComponent != null)
-            _renderComponent.destroy();
-        this._renderComponent = renderComponent;
-    }
-
     public int getNetworkId(){
         return _networkId;
     }
@@ -265,10 +210,16 @@ public abstract class GameObject {
         _imageType = type;
     }
 
-    public void addItem(ItemCommon item){
+    public ReadOnlyList<Item> getItems(){
+        return _readOnlyItems;
+    }
+
+    protected void addItem(Item item) {
         _items.add(item);
     }
 
-    protected void itemsWereAdded(){}
+    protected void removeItem(int index) {
+        _items.remove(index);
+    }
     // endregion
 }

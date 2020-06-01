@@ -11,7 +11,7 @@ public class InputState {
     public void writeToStream(OutputBitStream stream){
         // TODO
         try {
-            stream.write(qwer, 3);
+            stream.write(qwer, 4);
             stream.write(lat * lon != 0 ? 1 : 0, 1);
             if (lat * lon != 0){
                 stream.write(lat, 32);
@@ -27,7 +27,7 @@ public class InputState {
 
     public void readFromStream(InputBitStream stream){
         // TODO
-        qwer = stream.read(3);
+        qwer = stream.read(4);
         if (stream.read(1) == 1){
             lat = stream.read(32);
             lon = stream.read(32);
