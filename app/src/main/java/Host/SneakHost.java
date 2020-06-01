@@ -15,7 +15,7 @@ public class SneakHost extends SneakCommon {
 
     @Override
     public void cast(GameObject caster){
-
+        /*
         caster.setLook(ImageType.INVISIBLE);
         CoreHost.get().getMatch().getWorldSetterHost() //기존에 존재하는 object 수정시
                 .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag | PlayerHost.imageTypeDirtyFlag);
@@ -24,5 +24,8 @@ public class SneakHost extends SneakCommon {
         CoreHost.get().getMatch().setTimer(
                 () -> CoreHost.get().getMatch().getWorldSetterHost() //기존에 존재하는 object 수정시
                 .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.imageTypeDirtyFlag),10);
+         */
+        CoreHost.get().getMatch().getWorldSetterHost()
+                .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
     }
 }

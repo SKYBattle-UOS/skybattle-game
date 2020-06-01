@@ -19,8 +19,8 @@ public class PlayerHost extends PlayerCommon {
 
     public PlayerHost(float latitude, float longitude, String name) {
         super(latitude, longitude, name);
-        _skills[0] = new WazakWazakHost(0);//new SneakHost(0);//new WazakWazakHost(0);
-        _skills[1] = new GlobalWazakWazakHost(1);//new DuplicationTrickHost(1);//new GlobalWazakWazakHost(1);
+        _skills[0] = new SneakHost(0);//new WazakWazakHost(0);
+        _skills[1] = new DuplicationTrickHost(1);//new GlobalWazakWazakHost(1);
         _skills[2] = new HealthUpHost(2);
         _skills[3] = new HealthUpHost(3);
     }
