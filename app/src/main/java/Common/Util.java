@@ -6,6 +6,9 @@ import com.example.Client.PlayerClient;
 import java.io.IOException;
 
 import Host.DummyPlayerHost;
+import Host.GlobalWazakWazakHost;
+import Host.HealthUpHost;
+import Host.WazakWazakHost;
 
 public class Util {
     public static final int PORT = 9998;
@@ -33,6 +36,10 @@ public class Util {
         factory.registerGameObject(PlayerHost::new);
         factory.registerGameObject(ItemHost::new);
         factory.registerGameObject(DummyPlayerHost::new);
+
+        factory.registerSkill(WazakWazakHost::new);
+        factory.registerSkill(GlobalWazakWazakHost::new);
+        factory.registerSkill(HealthUpHost::new);
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {
