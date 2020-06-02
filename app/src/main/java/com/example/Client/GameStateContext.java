@@ -55,4 +55,8 @@ public class GameStateContext {
     public LatLonByteConverter getConverter(){
         return _converter;
     }
+
+    public GameState getState(){
+        return _currentState;
+    }
 }

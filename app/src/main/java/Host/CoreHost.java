@@ -7,34 +7,36 @@ import Common.Time;
 public class CoreHost {
     private static CoreHost _instance;
 
-    private boolean _isInitialized;
     private NetworkManager _networkManager;
     private GameStateContextHost _gameStateContext;
     private MatchHost _match;
     private Time _time;
 
     private CoreHost(){
-        _isInitialized = false;
         _networkManager = new NetworkManager();
         _gameStateContext = new GameStateContextHost();
         _time = new AndroidTime();
     }
 
-    public static CoreHost get(){
-        if (_instance == null){
-            _instance = new CoreHost();
-            _instance.init();
-            (new Thread(()->_instance.run())).start();
-        }
+    public static void createInstance(){
+        if (_instance != null) return;
 
+        _instance = new CoreHost();
+        _instance.init();
+        (new Thread(()->_instance.run())).start();
+    }
+
+    public void destroyInstance(){
+        // TODO
+    }
+
+    public static CoreHost get(){
         return _instance;
     }
 
     private void init(){
-        if (!_isInitialized){
-            _gameStateContext.switchState(GameStateType.ROOM);
-            _isInitialized = true;
-        }
+        _gameStateContext.switchState(GameStateType.ROOM);
+        _networkManager.open();
     }
 
     private void run(){
@@ -55,10 +57,6 @@ public class CoreHost {
     private void run(long ms){
         _gameStateContext.update(ms);
         _networkManager.update();
-    }
-
-    public void destroy(){
-        // TODO
     }
 
     public NetworkManager getNetworkManager(){

@@ -37,10 +37,10 @@ public abstract class GameObject {
     }
 
     private float _radius = 2.5f;
-    private String _name;
     private int _networkId;
     private int _indexInWorld;
-    private double[] _position;
+    private String _name = "GameObject";
+    private double[] _position = new double[2];
     private boolean _wantsToDie;
     private boolean _collision;
     private ImageType _imageType;
@@ -52,11 +52,6 @@ public abstract class GameObject {
     protected double[] _restoreTemp = new double[2];
 
     private int[] _convertTemp = new int[2];
-
-    protected GameObject(float latitude, float longitude, String name){
-        _position = new double[]{ latitude, longitude };
-        _name = name;
-    }
 
     public void writeToStream(OutputBitStream stream, int dirtyFlag){
         if ((dirtyFlag & posDirtyFlag) != 0) {

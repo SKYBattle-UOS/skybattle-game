@@ -11,10 +11,6 @@ import Common.Item;
 public abstract class GameObjectClient extends GameObject implements Renderable {
     private RenderComponent _renderComponent;
 
-    protected GameObjectClient(float latitude, float longitude, String name) {
-        super(latitude, longitude, name);
-    }
-
     @Override
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
         if ((dirtyFlag & posDirtyFlag) != 0) {

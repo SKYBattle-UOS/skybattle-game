@@ -9,13 +9,8 @@ public class ItemHost extends GameObject implements Pickable, Item {
     private ItemProperty _property = new ItemProperty();
     private PickUpCondition _pickUpCondition = new PickUpTest();
 
-    protected ItemHost(float latitude, float longitude, String name) {
-        super(latitude, longitude, name);
+    public ItemHost() {
         _property.setSkill(new HealthUpHost());
-    }
-
-    public static GameObject createInstance() {
-        return new ItemHost(0, 0, "Item");
     }
 
     @Override

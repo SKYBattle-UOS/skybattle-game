@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
 
 import Common.BitInputStream;
 import Common.BitOutputStream;
@@ -22,8 +23,8 @@ public class NetworkPacketManager implements PacketManager {
     private InputBitStream _handleInThisFrame;
     private boolean _shouldSendThisFrame = false;
 
-    public void init(String host){
-        (new Thread(()->receive(host))).start();
+    public void init(String host, Consumer<Boolean> onConnected){
+        (new Thread(()->receive(host, onConnected))).start();
     }
 
     @Override
@@ -70,12 +71,13 @@ public class NetworkPacketManager implements PacketManager {
         _shouldSendThisFrame = false;
     }
 
-    private void receive(String host) {
+    private void receive(String host, Consumer<Boolean> onConnected) {
         try {
-            while (_socket == null)
-                _socket = new Socket(host, Util.PORT);
+            _socket = new Socket(host, Util.PORT);
+            onConnected.accept(true);
         } catch (IOException e) {
-            e.printStackTrace();
+            onConnected.accept(false);
+            return;
         }
 
         while (true) {

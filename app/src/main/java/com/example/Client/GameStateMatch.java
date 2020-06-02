@@ -12,6 +12,7 @@ import Common.InputBitStream;
 import Common.LatLonByteConverter;
 import Common.MatchStateType;
 import Common.Player;
+import Common.ReadOnlyList;
 import Common.TimerStruct;
 
 /**
@@ -29,6 +30,8 @@ public class GameStateMatch implements GameState, Match {
     private GameObjectRegistry _gameObjectRegistry;
     private Vector<GameObject> _gameObjects;
     private ArrayList<Player> _players;
+    private ReadOnlyList<GameObject> _readOnlyGameObjects;
+    private ReadOnlyList<Player> _readOnlyPlayers;
     private int _numPlayers;
     private boolean _worldSetterActive = false;
     private double[] _battleGroundLatLon;
@@ -45,8 +48,11 @@ public class GameStateMatch implements GameState, Match {
         _gameObjectRegistry = new GameObjectRegistry();
         _gameObjects = new Vector<>();
         _players = new ArrayList<>();
-        _worldSetter = new WorldSetter(this);
+        _worldSetter = new WorldSetter(this, _gameObjects, _players);
         _battleGroundLatLon = new double[2];
+
+        _readOnlyGameObjects = new ReadOnlyList<>(_gameObjects);
+        _readOnlyPlayers = new ReadOnlyList<>(_players);
     }
 
     @Override
@@ -130,11 +136,11 @@ public class GameStateMatch implements GameState, Match {
     public GameObjectRegistry getRegistry() { return _gameObjectRegistry; }
 
     @Override
-    public List<GameObject> getWorld() { return _gameObjects; }
+    public ReadOnlyList<GameObject> getWorld() { return _readOnlyGameObjects; }
 
     @Override
-    public List<Player> getPlayers() {
-        return _players;
+    public ReadOnlyList<Player> getPlayers() {
+        return _readOnlyPlayers;
     }
 
     @Override
@@ -147,10 +153,10 @@ public class GameStateMatch implements GameState, Match {
     @Override
     public Player getThisPlayer() {
         // TODO
-        List<Player> gos = getPlayers();
+        ReadOnlyList<Player> gos = getPlayers();
         for (Player go : gos){
             if (go.getProperty().getPlayerId() == 0) {
-                return (PlayerClient) go;
+                return go;
             }
         }
         return null;

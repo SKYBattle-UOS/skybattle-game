@@ -8,7 +8,6 @@ import Common.GameStateType;
 import Common.LatLonByteConverter;
 import Common.Time;
 import Common.Util;
-import Host.CoreHost;
 
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
@@ -38,7 +37,6 @@ public class Core {
     private Core(Context context){
         _appContext = context;
         _isInitialized = false;
-        _packetManager = new NetworkPacketManager();
         _gameObjectFactory = new GameObjectFactory();
         _uiManager = new AndroidUIManager();
         _converter = new LatLonByteConverter();
@@ -50,12 +48,9 @@ public class Core {
     }
 
     private void init(){
-        // TODO
         if (!_isInitialized){
-            CoreHost.get().getNetworkManager().open();
             _stateContext.switchState(GameStateType.MAIN);
             _isInitialized = true;
-            ((NetworkPacketManager) _packetManager).init("localhost");
         }
     }
 
@@ -63,12 +58,27 @@ public class Core {
         if (_coreInstance == null){
             _coreInstance = new Core(context);
             _coreInstance.init();
-            (new Thread(() -> _coreInstance.run())).start();
         }
     }
 
     public static Core get(){
         return _coreInstance;
+    }
+
+    public void open(String host){
+        _packetManager = new NetworkPacketManager();
+        ((NetworkPacketManager) _packetManager).init(host,
+            b -> {
+                if (b){
+                    (new Thread(() -> _coreInstance.run())).start();
+                    ((GameStateMain) _stateContext.getState()).enterRoom();
+                }
+                else {
+                    _packetManager = null;
+                    _uiManager.failConnection();
+                }
+            }
+        );
     }
 
     private void run(){

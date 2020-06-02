@@ -6,24 +6,40 @@ import com.example.Client.PlayerClient;
 import java.io.IOException;
 
 import Host.DummyPlayerHost;
+import Host.GlobalWazakWazakHost;
+import Host.HealthUpHost;
+import Host.WazakWazakHost;
 
 public class Util {
     public static final int PORT = 9998;
+
     public static int PlayerClassId;
     public static int ItemClassId;
     public static int DummyPlayerClassId;
 
+    public static int WazakWazakClassId;
+    public static int GlobalWazakWazakClassId;
+    public static int HealthUpClassId;
+
     public static void registerGameObjects(GameObjectFactory factory){
-        PlayerClassId = factory.registerCreateMethod(PlayerClient::createInstance);
-        ItemClassId = factory.registerCreateMethod(ItemClient::createInstance);
-        DummyPlayerClassId = factory.registerCreateMethod(PlayerClient::createInstance);
+        PlayerClassId = factory.registerGameObject(PlayerClient::new);
+        ItemClassId = factory.registerGameObject(ItemClient::new);
+        DummyPlayerClassId = factory.registerGameObject(PlayerClient::new);
+
+        WazakWazakClassId = factory.registerSkill(WazakWazakCommon::new);
+        GlobalWazakWazakClassId = factory.registerSkill(GlobalWazakWazakCommon::new);
+        HealthUpClassId = factory.registerSkill(HealthUpCommon::new);
     }
 
     public static void registerGameObjectsHost(GameObjectFactory factory){
         // should be same order as registerGameObjects !!!!!!!!!!
-        factory.registerCreateMethod(PlayerHost::createInstance);
-        factory.registerCreateMethod(ItemHost::createInstance);
-        factory.registerCreateMethod(DummyPlayerHost::createInstance);
+        factory.registerGameObject(PlayerHost::new);
+        factory.registerGameObject(ItemHost::new);
+        factory.registerGameObject(DummyPlayerHost::new);
+
+        factory.registerSkill(WazakWazakHost::new);
+        factory.registerSkill(GlobalWazakWazakHost::new);
+        factory.registerSkill(HealthUpHost::new);
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {

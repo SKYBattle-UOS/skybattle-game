@@ -13,13 +13,8 @@ public class ItemClient extends GameObjectClient implements Item {
         }
     };
 
-    protected ItemClient(float latitude, float longitude, String name) {
-        super(latitude, longitude, name);
+    public ItemClient() {
         _property.setSkill(new HealthUpCommon());
-    }
-
-    public static GameObject createInstance() {
-        return new ItemClient(0, 0, "Item");
     }
 
     @Override
