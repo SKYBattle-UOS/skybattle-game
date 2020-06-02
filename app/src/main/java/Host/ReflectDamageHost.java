@@ -2,8 +2,8 @@ package Host;
 import Common.GameObject;
 import Common.PlayerHost;
 
-public class CantAttackHost extends CantAttackCommon {
-    public CantAttackHost(int index) {
+public class ReflectDamageHost extends CantAttackCommon {
+    public ReflectDamageHost(int index) {
         super(index);
     }
 
@@ -17,8 +17,8 @@ public class CantAttackHost extends CantAttackCommon {
         PlayerHost player = (PlayerHost) CoreHost.get()
                 .getMatch().getRegistry().getGameObject(_networkId);
 
-        player.getProperty().setCantAttack(value);
+        player.getProperty().setReflectAttack(value);
 
-        CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), player.getProperty().cantAttackFlag);
+        CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), player.getProperty().reflectAttackFlag);
     }
 }
