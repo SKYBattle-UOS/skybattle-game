@@ -6,6 +6,8 @@ import java.util.Queue;
 
 import Host.ClientProxy;
 import Host.CoreHost;
+import Host.GetDistanceHost;
+import Host.GetYourHPHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
 import Host.WazakWazakHost;

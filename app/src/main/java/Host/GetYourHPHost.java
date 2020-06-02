@@ -1,15 +1,14 @@
 package Host;
-import com.example.Client.OracleClient;
+import com.example.Client.GetYourHPClient;
 import Common.GameObject;
-import Common.PlayerHost;
 import Common.PlayerProperty;
 
-public class OracleHost extends OracleClient {
-    public OracleHost(int index) {
+public class GetYourHPHost extends GetYourHPClient {
+    public GetYourHPHost(int index) {
         super(index);
     }
 
-    public OracleHost() {
+    public GetYourHPHost() {
     }
 
     @Override

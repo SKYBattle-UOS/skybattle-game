@@ -5,19 +5,19 @@ import Common.PlayerHost;
 import Common.PlayerTargetSkill;
 import Common.Util;
 import Host.CoreHost;
-import Host.OracleHost;
+import Host.GetDistanceHost;
 
-public class OracleClient extends PlayerTargetSkill {
-    public OracleClient(int index) {
+public class GetDistanceClient extends PlayerTargetSkill {
+    public GetDistanceClient(int index) {
         super();
     }
 
-    public OracleClient() {
+    public GetDistanceClient() {
     }
 
     @Override
     public String getName() {
-        return "오라클(거리 파악)";
+        return "오라클";
     }
 
     @Override
@@ -29,10 +29,8 @@ public class OracleClient extends PlayerTargetSkill {
         if (caster == Core.get().getMatch().getThisPlayer()){
             String targetName = Core.get()
                     .getMatch().getRegistry().getGameObject(_networkId).getName();
-            Core.get().getUIManager().setTopText(targetName + "(와)과의 거리는"+ distance + "입니다", 3);
 
-            int btnIndex = Core.get().getUIManager().findButtonIndex(this);
-            Core.get().getUIManager().setButtonActive(btnIndex, false);
+            Core.get().getUIManager().setTopText(targetName + "(와)과의 거리는"+ distance + "입니다", 3);
         }
     }
 }
