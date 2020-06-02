@@ -163,13 +163,14 @@ public class GameStateMatchHost implements GameState, MatchHost {
         for (GameObject go : _gameObjects)
             go.update(ms);
 
+        addNewGameObjectsToWorld();
+
         if (_worldSetterActive)
             _worldSetter.writeInstructionToStream(CoreHost.get().getNetworkManager().getPacketToSend());
 
         for (GameObject go : _gameObjects)
             go.after(ms);
 
-        addNewGameObjectsToWorld();
         processTimers();
         killGameObjects();
 
