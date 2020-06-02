@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.ReadOnlyList;
 import Common.Util;
 import Common.InputBitStream;
 import Common.MatchStateType;
@@ -75,7 +76,7 @@ public class MatchStateAssemble implements GameState {
     @Override
     public void render(Renderer renderer, long ms) {
         if (_isInitialized) {
-            Collection<GameObject> gameObjects = _match.getWorld();
+            ReadOnlyList<GameObject> gameObjects = _match.getWorld();
             for (GameObject go : gameObjects) {
                 ((Renderable) go).render(renderer);
             }

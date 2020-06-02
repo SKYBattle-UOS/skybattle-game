@@ -10,7 +10,6 @@ import Common.GameObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -21,6 +20,7 @@ import Common.LatLonByteConverter;
 import Common.MatchStateType;
 import Common.Player;
 import Common.PlayerHost;
+import Common.ReadOnlyList;
 import Common.TimerStruct;
 import Common.Util;
 
@@ -39,6 +39,9 @@ public class GameStateMatchHost implements GameState, MatchHost {
     private boolean _worldSetterActive = false;
     private PriorityQueue<TimerStruct> _timerQueue = new PriorityQueue<>();
 
+    private ReadOnlyList<GameObject> _readOnlyGameObjects;
+    private ReadOnlyList<Player> _readOnlyPlayers;
+
     // TODO
     private double[] _battleGroundLatLon;
     private final int GET_READY_COUNT;
@@ -54,6 +57,9 @@ public class GameStateMatchHost implements GameState, MatchHost {
         _newGOClassId = new ArrayList<>();
         _players = new ArrayList<>();
         _collider = new Collider();
+
+        _readOnlyGameObjects = new ReadOnlyList<>(_gameObjects);
+        _readOnlyPlayers = new ReadOnlyList<>(_players);
 
         _battleGroundLatLon = new double[2];
         GET_READY_COUNT = 1000;
@@ -266,7 +272,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     }
 
     @Override
-    public List<Player> getPlayers() { return _players; }
+    public ReadOnlyList<Player> getPlayers() { return _readOnlyPlayers; }
 
     @Override
     public Collider getCollider(){ return _collider; }
@@ -283,7 +289,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     public GameObjectRegistry getRegistry(){ return _registry; }
 
     @Override
-    public List<GameObject> getWorld() {
-        return _gameObjects;
+    public ReadOnlyList<GameObject> getWorld() {
+        return _readOnlyGameObjects;
     }
 }

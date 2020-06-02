@@ -7,6 +7,7 @@ import Common.GameObject;
 import Common.GameState;
 import Common.ImageType;
 import Common.Player;
+import Common.ReadOnlyList;
 
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 매치 진행 중 화면.
@@ -63,7 +64,7 @@ public class MatchStateInGame implements GameState {
         uiManager.setDefaultTopText("당신은 죽었습니다. 부활지점으로 이동하세요.");
         uiManager.switchScreen(ScreenType.MAP, null);
 
-        List<GameObject> world = _match.getWorld();
+        ReadOnlyList<GameObject> world = _match.getWorld();
         for (GameObject go : world) {
             if (go.getName().equals("부활지점")) {
                 go.setLook(ImageType.CIRCLE_WITH_MARKER);
@@ -76,7 +77,7 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void render(Renderer renderer, long ms) {
-        Collection<GameObject> gameObjects = _match.getWorld();
+        ReadOnlyList<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
             ((Renderable) go).render(renderer);
         }

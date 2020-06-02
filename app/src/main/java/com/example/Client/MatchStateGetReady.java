@@ -7,6 +7,7 @@ import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
+import Common.ReadOnlyList;
 import Common.Util;
 
 /**
@@ -49,7 +50,7 @@ public class MatchStateGetReady implements GameState {
             Core.get().getUIManager().setTopText(String.format(Locale.getDefault(), TOP_TEXT, _count));
         }
 
-        Collection<GameObject> gameObjects = _match.getWorld();
+        ReadOnlyList<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
             ((Renderable) go).render(renderer);
         }
