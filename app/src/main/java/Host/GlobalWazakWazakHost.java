@@ -1,28 +1,29 @@
 package Host;
 
-import com.example.Client.ImageType;
+import Common.ImageType;
 
 import Common.GameObject;
 import Common.GlobalWazakWazakCommon;
-import Common.PlayerHost;
+import Common.ItemHost;
+import Common.Pickable;
+import Common.PlayerProperty;
 import Common.Util;
 
 public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
-    public GlobalWazakWazakHost(int index) {
-        super(index);
-    }
-
     @Override
     public void cast(GameObject caster) {
         MatchHost match = CoreHost.get().getMatch();
 
-        GameObject spawned = match.createGameObject(Util.ItemClassId, true);
+        ItemHost spawned = (ItemHost) match.createGameObject(Util.ItemClassId, true);
         spawned.setName("원격 와작와작 지뢰");
         spawned.setPosition(_lat, _lon);
         spawned.setLook(ImageType.MARKER);
 
         match.getWorldSetterHost()
-                .generateUpdateInstruction(caster.getNetworkId(), PlayerHost.skillDirtyFlag);
-        match.setTimer(spawned::scheduleDeath, 3);
+                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
+        match.setTimer(() -> {
+            if (!spawned.isPickedUp())
+                spawned.scheduleDeath();
+        }, 10);
     }
 }

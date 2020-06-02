@@ -7,34 +7,36 @@ import Common.Time;
 public class CoreHost {
     private static CoreHost _instance;
 
-    private boolean _isInitialized;
     private NetworkManager _networkManager;
     private GameStateContextHost _gameStateContext;
     private MatchHost _match;
     private Time _time;
+    private Thread _runThread;
 
     private CoreHost(){
-        _isInitialized = false;
         _networkManager = new NetworkManager();
         _gameStateContext = new GameStateContextHost();
         _time = new AndroidTime();
     }
 
-    public static CoreHost get(){
-        if (_instance == null){
-            _instance = new CoreHost();
-            _instance.init();
-            (new Thread(()->_instance.run())).start();
-        }
+    public static void createInstance(){
+        if (_instance != null) return;
 
-        return _instance;
+        _instance = new CoreHost();
+        _instance._gameStateContext.switchState(GameStateType.ROOM);
+        _instance._networkManager.open();
+        _instance._runThread = new Thread(()->_instance.run());
+        _instance._runThread.start();
     }
 
-    private void init(){
-        if (!_isInitialized){
-            _gameStateContext.switchState(GameStateType.ROOM);
-            _isInitialized = true;
-        }
+    public static void destroyInstance(){
+        _instance._networkManager.close();
+        _instance._runThread.interrupt();
+        _instance = null;
+    }
+
+    public static CoreHost get(){
+        return _instance;
     }
 
     private void run(){
@@ -47,7 +49,8 @@ public class CoreHost {
                 try {
                     Thread.sleep(33 - elapsed);
                 } catch (InterruptedException e) {
-                    // nothing
+                    // room exit
+                    return;
                 }
         }
     }
@@ -55,10 +58,6 @@ public class CoreHost {
     private void run(long ms){
         _gameStateContext.update(ms);
         _networkManager.update();
-    }
-
-    public void destroy(){
-        // TODO
     }
 
     public NetworkManager getNetworkManager(){

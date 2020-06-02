@@ -1,9 +1,12 @@
 package com.example.Client;
 
+import android.util.Log;
+
 import java.util.Collection;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.ReadOnlyList;
 import Common.Util;
 import Common.InputBitStream;
 import Common.MatchStateType;
@@ -41,7 +44,6 @@ public class MatchStateAssemble implements GameState {
         if (!sentInitComplete) {
             sentInitComplete = true;
             Core.get().getPakcetManager().shouldSendThisFrame();
-
             Util.sendHas(outPacket, sentInitComplete);
         }
         else
@@ -50,17 +52,21 @@ public class MatchStateAssemble implements GameState {
         if (packet == null) return;
 
         if (Util.hasMessage(packet)) {
-            _match.activateWorldSetter();
             if (!_isInitialized){
+                _match.activateWorldSetter();
                 Core.get().getUIManager().setTopText("집합하세요");
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
                 Core.get().getCamera().move(37.714617, 127.045170);
                 Core.get().getCamera().zoom(17);
+                _isInitialized = true;
             }
-            _isInitialized = true;
         }
 
         if (Util.hasMessage(packet)) {
+            // TODO
+            for (int i = 0; i < packet.getBuffer().length; i++){
+                Log.i("hehe", String.format("%d : %d", i, packet.getBuffer()[i]));
+            }
             _waiting = true;
             Core.get().getUIManager().switchScreen(ScreenType.CHARACTERSELECT,
                     ()-> _match.switchState(MatchStateType.SELECT_CHARACTER));
@@ -70,9 +76,9 @@ public class MatchStateAssemble implements GameState {
     @Override
     public void render(Renderer renderer, long ms) {
         if (_isInitialized) {
-            Collection<GameObject> gameObjects = _match.getWorld();
+            ReadOnlyList<GameObject> gameObjects = _match.getWorld();
             for (GameObject go : gameObjects) {
-                go.render(renderer);
+                ((Renderable) go).render(renderer);
             }
         }
     }

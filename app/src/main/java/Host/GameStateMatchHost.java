@@ -3,15 +3,13 @@ package Host;
 import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
-import com.example.Client.ImageType;
-import com.example.Client.Player;
+import Common.ImageType;
 
 import Common.Collider;
 import Common.GameObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -19,10 +17,10 @@ import Common.GameState;
 import Common.InputBitStream;
 import Common.InputState;
 import Common.LatLonByteConverter;
-import Common.MatchCommon;
 import Common.MatchStateType;
-import Common.PlayerCommon;
+import Common.Player;
 import Common.PlayerHost;
+import Common.ReadOnlyList;
 import Common.TimerStruct;
 import Common.Util;
 
@@ -33,13 +31,16 @@ public class GameStateMatchHost implements GameState, MatchHost {
     private ArrayList<GameObject> _gameObjects;
     private ArrayList<GameObject> _newGameObjects;
     private ArrayList<Integer> _newGOClassId;
-    private ArrayList<PlayerCommon> _players;
+    private ArrayList<Player> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
     private Collider _collider;
     private int _nextNetworkId = 1;
     private boolean _worldSetterActive = false;
     private PriorityQueue<TimerStruct> _timerQueue = new PriorityQueue<>();
+
+    private ReadOnlyList<GameObject> _readOnlyGameObjects;
+    private ReadOnlyList<Player> _readOnlyPlayers;
 
     // TODO
     private double[] _battleGroundLatLon;
@@ -56,6 +57,9 @@ public class GameStateMatchHost implements GameState, MatchHost {
         _newGOClassId = new ArrayList<>();
         _players = new ArrayList<>();
         _collider = new Collider();
+
+        _readOnlyGameObjects = new ReadOnlyList<>(_gameObjects);
+        _readOnlyPlayers = new ReadOnlyList<>(_players);
 
         _battleGroundLatLon = new double[2];
         GET_READY_COUNT = 1000;
@@ -113,7 +117,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
         for (ClientProxy client : clients){
             PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId, true);
             lastPlayerId = client.getPlayerId();
-            newPlayer.setPlayerId(client.getPlayerId());
+            newPlayer.getProperty().setPlayerId(client.getPlayerId());
             newPlayer.setPosition(37.714580, 127.045195);
             newPlayer.setName("플레이어" + i++);
             newPlayer.setLook(ImageType.MARKER);
@@ -121,11 +125,11 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
         for (int j = 0; j < 3; j++){
             DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
-            dummy.setPlayerId(lastPlayerId + j + 1);
+            dummy.getProperty().setPlayerId(lastPlayerId + j + 1);
             dummy.setPosition(37.715583 + 0.0005 * j, 127.048421 + 0.0005 * j);
             dummy.setName("플레이어" + i++ + " (가짜)");
             dummy.setLook(ImageType.MARKER);
-            dummy.setTeam(1);
+            dummy.getProperty().setTeam(1);
         }
 
         // create temp item
@@ -151,21 +155,22 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
     @Override
     public void update(long ms) {
+        for (GameObject go : _gameObjects)
+            go.before(ms);
+
         handleInputFromClients();
+
+        for (GameObject go : _gameObjects)
+            go.update(ms);
+
+        addNewGameObjectsToWorld();
 
         if (_worldSetterActive)
             _worldSetter.writeInstructionToStream(CoreHost.get().getNetworkManager().getPacketToSend());
 
         for (GameObject go : _gameObjects)
-            go.before(ms);
-
-        for (GameObject go : _gameObjects)
-            go.update(ms);
-
-        for (GameObject go : _gameObjects)
             go.after(ms);
 
-        addNewGameObjectsToWorld();
         processTimers();
         killGameObjects();
 
@@ -268,7 +273,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     }
 
     @Override
-    public List<PlayerCommon> getPlayers() { return _players; }
+    public ReadOnlyList<Player> getPlayers() { return _readOnlyPlayers; }
 
     @Override
     public Collider getCollider(){ return _collider; }
@@ -285,7 +290,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     public GameObjectRegistry getRegistry(){ return _registry; }
 
     @Override
-    public List<GameObject> getWorld() {
-        return _gameObjects;
+    public ReadOnlyList<GameObject> getWorld() {
+        return _readOnlyGameObjects;
     }
 }

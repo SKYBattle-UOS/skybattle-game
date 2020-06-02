@@ -51,6 +51,18 @@ public class NetworkManager {
         }
     }
 
+    public void close(){
+        closeAccept();
+
+        for (Socket socket : _clientSockets) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void closeAccept(){
         try {
             _socket.close();
@@ -66,8 +78,14 @@ public class NetworkManager {
         for (Socket socket : _clientSockets){
             try {
                 OutputStream stream = socket.getOutputStream();
-                if (_sendThisFrame.getBufferByteLength() > 0)
-                    stream.write(_sendThisFrame.getBuffer(), 0, _sendThisFrame.getBufferByteLength());
+                int packetByteLen = _sendThisFrame.getBufferByteLength();
+                byte[] sendThis = new byte[packetByteLen + 2];
+                System.arraycopy(_sendThisFrame.getBuffer(), 0, sendThis, 2, packetByteLen);
+
+                sendThis[0] = (byte) (packetByteLen & 0xFF);
+                sendThis[1] = (byte) ((packetByteLen >>> 8) & 0xFF);
+
+                stream.write(sendThis, 0, sendThis.length);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -81,6 +99,10 @@ public class NetworkManager {
             try {
                 Socket newSocket = _socket.accept();
                 ClientProxy client = new ClientProxy(_newPlayerId);
+
+                if (_hostClient == null)
+                    _hostClient = client;
+
                 _mappingAddr2Proxy.put(newSocket.getInetAddress(), client);
                 _mappingPlayer2Proxy.put(_newPlayerId++, client);
                 _clientSockets.add(newSocket);
@@ -94,19 +116,41 @@ public class NetworkManager {
     }
 
     private void receive(Socket socket, ClientProxy client){
-        int numBytes;
         try {
             InputStream stream = socket.getInputStream();
             while (true){
-                InputBitStream packetStream = new BitInputStream();
-                numBytes = stream.read(packetStream.getBuffer());
-                packetStream.setBufferLength(numBytes);
-                client.getRawPacketQueue().offer(packetStream);
+                InputBitStream newPacket = new BitInputStream();
+
+                int lbyte = stream.read();
+                int hbyte = stream.read();
+
+                if (lbyte < 0 || hbyte < 0)
+                    throw new IOException();
+
+                int packetByteLen = (hbyte << 8) | lbyte;
+
+                int i = 0;
+                while (packetByteLen > 0){
+                    int b = stream.read();
+
+                    newPacket.getBuffer()[i++] = (byte) b;
+                    packetByteLen--;
+                }
+
+                newPacket.setBufferLength(i);
+                client.getRawPacketQueue().offer(newPacket);
             }
         } catch (IOException e) {
-            // socket closed; thread exit
             ClientProxy disconnected = _mappingAddr2Proxy.get(socket.getInetAddress());
             disconnected.setDisconnected(true);
+            _mappingAddr2Proxy.remove(socket.getInetAddress());
+            _mappingPlayer2Proxy.remove(disconnected.getPlayerId());
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

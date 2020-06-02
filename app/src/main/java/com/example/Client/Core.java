@@ -1,6 +1,5 @@
 package com.example.Client;
 
-import android.app.Activity;
 import android.content.Context;
 
 import Common.AndroidTime;
@@ -9,7 +8,6 @@ import Common.GameStateType;
 import Common.LatLonByteConverter;
 import Common.Time;
 import Common.Util;
-import Host.CoreHost;
 
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
@@ -35,41 +33,62 @@ public class Core {
     private LatLonByteConverter _converter;
     private Match _match;
     private Time _time;
+    private Thread _runThread;
+    private boolean _isHost;
 
-    private Core(Activity activity, Context context){
+    private Core(Context context){
         _appContext = context;
         _isInitialized = false;
-        _packetManager = new NetworkPacketManager();
         _gameObjectFactory = new GameObjectFactory();
         _uiManager = new AndroidUIManager();
         _converter = new LatLonByteConverter();
-        _inputManager = new InputManager( activity,context, _converter);
+        _inputManager = new InputManager(context, _converter);
         _stateContext = new GameStateContext(_converter);
         _time = new AndroidTime();
 
         Util.registerGameObjects(_gameObjectFactory);
     }
 
-    private void init(){
-        // TODO
-        if (!_isInitialized){
-            CoreHost.get().getNetworkManager().open();
-            _stateContext.switchState(GameStateType.MAIN);
-            _isInitialized = true;
-            ((NetworkPacketManager) _packetManager).init("localhost");
-        }
-    }
-
-    public static void createInstance(Activity activity, Context context){
+    public static void createInstance(Context context){
         if (_coreInstance == null){
-            _coreInstance = new Core(activity, context);
-            _coreInstance.init();
-            (new Thread(() -> _coreInstance.run())).start();
+            _coreInstance = new Core(context);
+
+            if (!_coreInstance._isInitialized){
+                _coreInstance._stateContext.switchState(GameStateType.MAIN);
+                _coreInstance._isInitialized = true;
+            }
         }
     }
 
     public static Core get(){
         return _coreInstance;
+    }
+
+    public void open(String host, boolean isHost){
+        _packetManager = new NetworkPacketManager();
+        ((NetworkPacketManager) _packetManager).init(host,
+            b -> {
+                if (b){
+                    _runThread = new Thread(() -> _coreInstance.run());
+                    _runThread.start();
+                    ((GameStateMain) _stateContext.getState()).enterRoom();
+                    _isHost = isHost;
+                }
+                else {
+                    _isHost = false;
+                    _packetManager = null;
+                    _uiManager.failConnection();
+                }
+            }
+        );
+    }
+
+    public void close(){
+        ((GameStateRoom) _stateContext.getState()).exitRoom();
+        ((NetworkPacketManager) _packetManager).close();
+        _runThread.interrupt();
+        _packetManager = null;
+        _isHost = false;
     }
 
     private void run(){
@@ -82,7 +101,8 @@ public class Core {
                 try {
                     Thread.sleep(33 - elapsed);
                 } catch (InterruptedException e) {
-                    // nothing
+                    // room exit
+                    return;
                 }
         }
     }
@@ -129,4 +149,6 @@ public class Core {
     public void setMatch(Match match){ _match = match; }
 
     public Time getTime(){ return _time; }
+
+    public boolean isHost(){ return _isHost; }
 }

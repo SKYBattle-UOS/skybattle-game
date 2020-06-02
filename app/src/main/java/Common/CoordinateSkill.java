@@ -13,10 +13,6 @@ public abstract class CoordinateSkill extends Skill {
     private int[] _intTemp = new int[2];
     private double[] _doubleTemp = new double[2];
 
-    public CoordinateSkill(int index) {
-        super(index);
-    }
-
     public void setTargetCoord(double lat, double lon) {
         _lat = lat;
         _lon = lon;

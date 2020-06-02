@@ -10,11 +10,10 @@ import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.LatLonByteConverter;
-import Common.MatchCommon;
 import Common.MatchStateType;
-import Common.PlayerCommon;
+import Common.Player;
+import Common.ReadOnlyList;
 import Common.TimerStruct;
-import Host.WorldSetterHost;
 
 /**
  * 앱의 각 화면에 대한 상태패턴의 상태 객체 중 매치화면.
@@ -30,7 +29,9 @@ public class GameStateMatch implements GameState, Match {
     private WorldSetter _worldSetter;
     private GameObjectRegistry _gameObjectRegistry;
     private Vector<GameObject> _gameObjects;
-    private ArrayList<PlayerCommon> _players;
+    private ArrayList<Player> _players;
+    private ReadOnlyList<GameObject> _readOnlyGameObjects;
+    private ReadOnlyList<Player> _readOnlyPlayers;
     private int _numPlayers;
     private boolean _worldSetterActive = false;
     private double[] _battleGroundLatLon;
@@ -47,8 +48,11 @@ public class GameStateMatch implements GameState, Match {
         _gameObjectRegistry = new GameObjectRegistry();
         _gameObjects = new Vector<>();
         _players = new ArrayList<>();
-        _worldSetter = new WorldSetter(this);
+        _worldSetter = new WorldSetter(this, _gameObjects, _players);
         _battleGroundLatLon = new double[2];
+
+        _readOnlyGameObjects = new ReadOnlyList<>(_gameObjects);
+        _readOnlyPlayers = new ReadOnlyList<>(_players);
     }
 
     @Override
@@ -58,23 +62,23 @@ public class GameStateMatch implements GameState, Match {
 
     @Override
     public void update(long ms) {
-        InputBitStream packetStream = Core.get().getPakcetManager().getPacketStream();
-        if (packetStream != null && _worldSetterActive)
-            _worldSetter.processInstructions(packetStream);
-
         processTimers();
         killGameObjects();
 
         for (GameObject go : _gameObjects)
             go.before(ms);
 
+        InputBitStream packetStream = Core.get().getPakcetManager().getPacketStream();
+        if (packetStream != null && _worldSetterActive)
+            _worldSetter.processInstructions(packetStream);
+
         for (GameObject go : _gameObjects)
             go.update(ms);
 
+        _currentState.update(ms);
+
         for (GameObject go : _gameObjects)
             go.after(ms);
-
-        _currentState.update(ms);
     }
 
     private void processTimers() {
@@ -132,11 +136,11 @@ public class GameStateMatch implements GameState, Match {
     public GameObjectRegistry getRegistry() { return _gameObjectRegistry; }
 
     @Override
-    public List<GameObject> getWorld() { return _gameObjects; }
+    public ReadOnlyList<GameObject> getWorld() { return _readOnlyGameObjects; }
 
     @Override
-    public List<PlayerCommon> getPlayers() {
-        return _players;
+    public ReadOnlyList<Player> getPlayers() {
+        return _readOnlyPlayers;
     }
 
     @Override
@@ -149,12 +153,10 @@ public class GameStateMatch implements GameState, Match {
     @Override
     public Player getThisPlayer() {
         // TODO
-        Player player;
-        List<PlayerCommon> gos = getPlayers();
-        for (PlayerCommon go : gos){
-            if (go.getPlayerId() == 0) {
-                player = (Player) go;
-                return player;
+        ReadOnlyList<Player> gos = getPlayers();
+        for (Player go : gos){
+            if (go.getProperty().getPlayerId() == 0) {
+                return go;
             }
         }
         return null;

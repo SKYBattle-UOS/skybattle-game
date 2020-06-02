@@ -2,17 +2,24 @@ package com.example.Client;
 
 import android.util.Log;
 
+import java.util.List;
+
 import Common.GameObject;
 import Common.InputBitStream;
-import Common.PlayerCommon;
+import Common.Player;
 import Common.WorldSetterHeader;
 
 public class WorldSetter {
     private GameStateMatch _match;
     private WorldSetterHeader _header = new WorldSetterHeader();
+    private List<GameObject> _world;
+    private List<Player> _players;
 
-    public WorldSetter(GameStateMatch match){
+
+    public WorldSetter(GameStateMatch match, List<GameObject> world, List<Player> players){
         _match = match;
+        _world = world;
+        _players = players;
     }
 
     public void processInstructions(InputBitStream stream){
@@ -51,10 +58,10 @@ public class WorldSetter {
             newGO.readFromStream(stream, _header.dirtyFlag);
             _match.getRegistry().add(_header.networkId, newGO);
             newGO.setIndexInWorld(_match.getWorld().size());
-            _match.getWorld().add(newGO);
+            _world.add(newGO);
 
             if (newGO instanceof Player)
-                _match.getPlayers().add((PlayerCommon) newGO);
+                _players.add((Player) newGO);
         }
     }
 
@@ -71,8 +78,8 @@ public class WorldSetter {
             goToDestroy.scheduleDeath();
             _match.getRegistry().remove(_header.networkId);
 
-            if (goToDestroy instanceof Player)
-                _match.getPlayers().remove(goToDestroy);
+            if (goToDestroy instanceof PlayerClient)
+                _players.remove(goToDestroy);
         }
     }
 }

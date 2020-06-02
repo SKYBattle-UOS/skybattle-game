@@ -1,57 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_height="wrap_content"
     android:background="@drawable/sky"
-    android:clickable="true"
-    android:focusable="true">
+    android:id="@+id/ingame_fragment"
+    android:fillViewport="true">
 
-    <Button
-        android:id="@+id/btn_q"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:text="Q"
-        android:textSize="20sp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="1000dp"
+        android:id="@+id/ingame_linlayout">
 
-    <Button
-        android:id="@+id/btn_w"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:text="W"
-        android:textSize="20sp" />
+        <Button
+            android:id="@+id/btn_q"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:text="Q"
+            android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/btn_e"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:text="E"
-        android:textSize="20sp" />
+        <Button
+            android:id="@+id/btn_w"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:text="W"
+            android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/btn_r"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:text="R"
-        android:textSize="20sp" />
+        <Button
+            android:id="@+id/btn_e"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:text="E"
+            android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/btn_map"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:text="DEBUG: 지도보기"
-        android:textSize="20sp" />
+        <Button
+            android:id="@+id/btn_r"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:text="R"
+            android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/health_text"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:background="#676767"
-        android:gravity="center"
-        android:text="Health Text"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:typeface="normal" />
+        <Button
+            android:id="@+id/btn_map"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:text="DEBUG: 지도보기"
+            android:textSize="20sp" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/health_text"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:background="#676767"
+            android:gravity="center"
+            android:text="Health Text"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:typeface="normal" />
+
+    </LinearLayout>
+</ScrollView>

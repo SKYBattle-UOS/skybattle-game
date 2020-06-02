@@ -10,9 +10,9 @@ import Common.CollisionState;
 
 public class EqualsTest {
     ArrayList<CollisionState> _array = new ArrayList<>();
-    Player _p = new Player(0, 0, "he");
-    Player _p2 = new Player(0, 0, "he");
-    Player _p3 = new Player(0, 0, "he");
+    PlayerClient _p = new PlayerClient(0, 0, "he");
+    PlayerClient _p2 = new PlayerClient(0, 0, "he");
+    PlayerClient _p3 = new PlayerClient(0, 0, "he");
 
     @Before
     public void b(){

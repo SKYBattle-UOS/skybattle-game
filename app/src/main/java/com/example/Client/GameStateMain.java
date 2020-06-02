@@ -19,13 +19,6 @@ public class GameStateMain implements GameState {
     }
 
     @Override
-    public void start() {
-        Core.get().getUIManager().registerCallback(AndroidUIManager.ENTER_ROOM_PORT, () -> {
-            Core.get().getUIManager().switchScreen(ScreenType.ROOM, () -> _parent.switchState(GameStateType.ROOM));
-        } );
-    }
-
-    @Override
     public void update(long ms) {
         // TODO
     }
@@ -33,5 +26,9 @@ public class GameStateMain implements GameState {
     @Override
     public void render(Renderer renderer, long ms) {
 //        Log.i("Stub", "GameStateMain: Showing Main Screen UI");
+    }
+
+    public void enterRoom() {
+        Core.get().getUIManager().switchScreen(ScreenType.ROOM, () -> _parent.switchState(GameStateType.ROOM));
     }
 }

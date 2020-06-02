@@ -4,12 +4,6 @@ import java.io.IOException;
 public abstract class Skill {
     private boolean _isDirty;
 
-    protected int _indexInArray;
-
-    public Skill(int index){
-        _indexInArray = index;
-    }
-
     public abstract String getName();
     public abstract void cast(GameObject caster);
 
@@ -45,5 +39,5 @@ public abstract class Skill {
 
     public boolean isDirty(){
         return _isDirty;
-    };
+    }
 }

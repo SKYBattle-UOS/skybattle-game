@@ -5,6 +5,9 @@ import java.util.List;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.ImageType;
+import Common.Player;
+import Common.ReadOnlyList;
 
 /**
  * 매치의 각 화면에 대한 상태패턴의 상태 객체 중 매치 진행 중 화면.
@@ -27,7 +30,7 @@ public class MatchStateInGame implements GameState {
     @Override
     public void start() {
         Player player = Core.get().getMatch().getThisPlayer();
-        player.setOnDeathListener(() -> _isPlayerDead = true);
+        player.getGameObject().setOnDeathListener(() -> _isPlayerDead = true);
         setButtons(player, true);
         Core.get().getUIManager().switchScreen(ScreenType.INGAME, () -> _waiting = false);
     }
@@ -48,13 +51,9 @@ public class MatchStateInGame implements GameState {
     }
 
     private boolean setGhost() {
-        Player player = Core.get().getMatch().getThisPlayer();
+        GameObject player = Core.get().getMatch().getThisPlayer().getGameObject();
         if (player != null && player.getName().equals("현재위치")){
-            player.setRenderComponent(
-                    Core.get().getRenderer().createRenderComponent(
-                            player, ImageType.MARKER
-                    )
-            );
+            player.setLook(ImageType.MARKER);
             return true;
         }
         return false;
@@ -65,14 +64,10 @@ public class MatchStateInGame implements GameState {
         uiManager.setDefaultTopText("당신은 죽었습니다. 부활지점으로 이동하세요.");
         uiManager.switchScreen(ScreenType.MAP, null);
 
-        List<GameObject> world = _match.getWorld();
+        ReadOnlyList<GameObject> world = _match.getWorld();
         for (GameObject go : world) {
             if (go.getName().equals("부활지점")) {
-                go.setRenderComponent(
-                        Core.get().getRenderer().createRenderComponent(
-                                go, ImageType.CIRCLE_WITH_MARKER
-                        )
-                );
+                go.setLook(ImageType.CIRCLE_WITH_MARKER);
 
                 double[] respawnLatLon = go.getPosition();
                 Core.get().getCamera().move(respawnLatLon[0], respawnLatLon[1]);
@@ -82,9 +77,9 @@ public class MatchStateInGame implements GameState {
 
     @Override
     public void render(Renderer renderer, long ms) {
-        Collection<GameObject> gameObjects = _match.getWorld();
+        ReadOnlyList<GameObject> gameObjects = _match.getWorld();
         for (GameObject go : gameObjects){
-            go.render(renderer);
+            ((Renderable) go).render(renderer);
         }
     }
 
@@ -92,7 +87,8 @@ public class MatchStateInGame implements GameState {
         for (int i = 0; i < 4; i++){
             if (player != null) {
                 Core.get().getUIManager()
-                        .setButtonText(UIManager.BUTTON_Q + i, player.getSkills()[i].getName());
+                        .setButtonText(UIManager.BUTTON_Q + i,
+                                player.getProperty().getSkills().get(i).getName());
             }
             Core.get().getUIManager().setButtonActive(UIManager.BUTTON_Q + i, enable);
         }

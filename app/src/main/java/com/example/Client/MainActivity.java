@@ -1,49 +1,48 @@
 package com.example.Client;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.pedro.library.AutoPermissions;
 import com.pedro.library.AutoPermissionsListener;
 
-public class MainActivity extends AppCompatActivity implements Screen, AutoPermissionsListener {
+import Host.CoreHost;
+
+public class MainActivity extends AppCompatActivity implements MainScreen, AutoPermissionsListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Core.createInstance(getApplicationContext());
-
         Button btn_entrance = findViewById(R.id.btn_entrance);
 
-        btn_entrance.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View v){
-                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                alert.setTitle("IP주소 입력");
-                alert.setMessage("IP주소를 입력하시오.");
+        btn_entrance.setOnClickListener(v -> {
+            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+            alert.setTitle("IP주소 입력");
+            alert.setMessage("IP주소를 입력하시오.");
 
-                final EditText ip_addr = new EditText(MainActivity.this);
-                alert.setView(ip_addr);
+            final EditText ip_addr = new EditText(MainActivity.this);
+            ip_addr.setId(R.id.IPAddrDialog);
+            alert.setView(ip_addr);
 
-                alert.setPositiveButton("입력", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        /*"입력" 버튼 클릭 시 실행하는 메소드*/
-                        Core.get().getUIManager().invoke(AndroidUIManager.ENTER_ROOM_PORT);
-                    }
-                });
-                alert.show();
-            }
+            alert.setPositiveButton("입력", (dialog, which) -> {
+                String host = ((EditText) ((AlertDialog) dialog).findViewById(R.id.IPAddrDialog))
+                        .getText().toString();
+                Core.get().open(host, false);
+            });
+            alert.show();
         });
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
-        btn_makeroom.setOnClickListener(v -> Core.get().getUIManager().invoke(AndroidUIManager.ENTER_ROOM_PORT));
+        btn_makeroom.setOnClickListener(v -> {
+            CoreHost.createInstance();
+            Core.get().open("localhost", true);
+        });
     }
 
     @Override
@@ -69,6 +68,11 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
     }
 
     @Override
+    public void onHostNotFound(){
+        Log.i("hehe", "not connected");
+    }
+
+    @Override
     public void onDenied(int i, String[] strings) {
     }
 
@@ -82,6 +86,4 @@ public class MainActivity extends AppCompatActivity implements Screen, AutoPermi
         AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
         Toast.makeText(this, "requestCode : "+requestCode+"  permissions : "+permissions+"  grantResults :"+grantResults, Toast.LENGTH_SHORT).show();
     }
-
-
 }
