@@ -1,7 +1,5 @@
 package Host;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,6 +51,18 @@ public class NetworkManager {
         }
     }
 
+    public void close(){
+        closeAccept();
+
+        for (Socket socket : _clientSockets) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void closeAccept(){
         try {
             _socket.close();
@@ -89,6 +99,10 @@ public class NetworkManager {
             try {
                 Socket newSocket = _socket.accept();
                 ClientProxy client = new ClientProxy(_newPlayerId);
+
+                if (_hostClient == null)
+                    _hostClient = client;
+
                 _mappingAddr2Proxy.put(newSocket.getInetAddress(), client);
                 _mappingPlayer2Proxy.put(_newPlayerId++, client);
                 _clientSockets.add(newSocket);
@@ -109,11 +123,16 @@ public class NetworkManager {
 
                 int lbyte = stream.read();
                 int hbyte = stream.read();
+
+                if (lbyte < 0 || hbyte < 0)
+                    throw new IOException();
+
                 int packetByteLen = (hbyte << 8) | lbyte;
 
                 int i = 0;
                 while (packetByteLen > 0){
                     int b = stream.read();
+
                     newPacket.getBuffer()[i++] = (byte) b;
                     packetByteLen--;
                 }
@@ -122,10 +141,16 @@ public class NetworkManager {
                 client.getRawPacketQueue().offer(newPacket);
             }
         } catch (IOException e) {
-            // TODO
-            // socket closed; thread exit
             ClientProxy disconnected = _mappingAddr2Proxy.get(socket.getInetAddress());
             disconnected.setDisconnected(true);
+            _mappingAddr2Proxy.remove(socket.getInetAddress());
+            _mappingPlayer2Proxy.remove(disconnected.getPlayerId());
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

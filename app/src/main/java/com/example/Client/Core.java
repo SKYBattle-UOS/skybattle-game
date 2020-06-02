@@ -33,6 +33,8 @@ public class Core {
     private LatLonByteConverter _converter;
     private Match _match;
     private Time _time;
+    private Thread _runThread;
+    private boolean _isHost;
 
     private Core(Context context){
         _appContext = context;
@@ -47,17 +49,14 @@ public class Core {
         Util.registerGameObjects(_gameObjectFactory);
     }
 
-    private void init(){
-        if (!_isInitialized){
-            _stateContext.switchState(GameStateType.MAIN);
-            _isInitialized = true;
-        }
-    }
-
     public static void createInstance(Context context){
         if (_coreInstance == null){
             _coreInstance = new Core(context);
-            _coreInstance.init();
+
+            if (!_coreInstance._isInitialized){
+                _coreInstance._stateContext.switchState(GameStateType.MAIN);
+                _coreInstance._isInitialized = true;
+            }
         }
     }
 
@@ -65,20 +64,31 @@ public class Core {
         return _coreInstance;
     }
 
-    public void open(String host){
+    public void open(String host, boolean isHost){
         _packetManager = new NetworkPacketManager();
         ((NetworkPacketManager) _packetManager).init(host,
             b -> {
                 if (b){
-                    (new Thread(() -> _coreInstance.run())).start();
+                    _runThread = new Thread(() -> _coreInstance.run());
+                    _runThread.start();
                     ((GameStateMain) _stateContext.getState()).enterRoom();
+                    _isHost = isHost;
                 }
                 else {
+                    _isHost = false;
                     _packetManager = null;
                     _uiManager.failConnection();
                 }
             }
         );
+    }
+
+    public void close(){
+        ((GameStateRoom) _stateContext.getState()).exitRoom();
+        ((NetworkPacketManager) _packetManager).close();
+        _runThread.interrupt();
+        _packetManager = null;
+        _isHost = false;
     }
 
     private void run(){
@@ -91,7 +101,8 @@ public class Core {
                 try {
                     Thread.sleep(33 - elapsed);
                 } catch (InterruptedException e) {
-                    // nothing
+                    // room exit
+                    return;
                 }
         }
     }
@@ -138,4 +149,6 @@ public class Core {
     public void setMatch(Match match){ _match = match; }
 
     public Time getTime(){ return _time; }
+
+    public boolean isHost(){ return _isHost; }
 }

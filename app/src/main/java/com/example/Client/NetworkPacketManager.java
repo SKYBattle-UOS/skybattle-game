@@ -27,6 +27,14 @@ public class NetworkPacketManager implements PacketManager {
         (new Thread(()->receive(host, onConnected))).start();
     }
 
+    public void close(){
+        try {
+            _socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public InputBitStream getPacketStream() {
         return _handleInThisFrame;
@@ -80,30 +88,29 @@ public class NetworkPacketManager implements PacketManager {
             return;
         }
 
-        while (true) {
-            try {
-                InputStream stream = _socket.getInputStream();
-                while (true) {
-                    InputBitStream newPacket = new BitInputStream();
+        try {
+            InputStream stream = _socket.getInputStream();
+            while (true) {
+                InputBitStream newPacket = new BitInputStream();
 
-                    int lbyte = stream.read();
-                    int hbyte = stream.read();
-                    int packetByteLen = (hbyte << 8) | lbyte;
+                int lbyte = stream.read();
+                int hbyte = stream.read();
+                int packetByteLen = (hbyte << 8) | lbyte;
 
-                    int i = 0;
-                    while (packetByteLen > 0) {
-                        int b = stream.read();
-                        newPacket.getBuffer()[i++] = (byte) b;
-                        packetByteLen--;
-                    }
-
-                    newPacket.setBufferLength(i);
-
-                    _rawPackets.offer(newPacket);
+                int i = 0;
+                while (packetByteLen > 0) {
+                    int b = stream.read();
+                    newPacket.getBuffer()[i++] = (byte) b;
+                    packetByteLen--;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+
+                newPacket.setBufferLength(i);
+
+                _rawPackets.offer(newPacket);
             }
+        } catch (IOException e) {
+            // socket closed
+            Log.i("hehe", "client closing");
         }
     }
 }

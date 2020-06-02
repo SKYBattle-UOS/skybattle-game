@@ -11,6 +11,7 @@ public class CoreHost {
     private GameStateContextHost _gameStateContext;
     private MatchHost _match;
     private Time _time;
+    private Thread _runThread;
 
     private CoreHost(){
         _networkManager = new NetworkManager();
@@ -22,21 +23,20 @@ public class CoreHost {
         if (_instance != null) return;
 
         _instance = new CoreHost();
-        _instance.init();
-        (new Thread(()->_instance.run())).start();
+        _instance._gameStateContext.switchState(GameStateType.ROOM);
+        _instance._networkManager.open();
+        _instance._runThread = new Thread(()->_instance.run());
+        _instance._runThread.start();
     }
 
-    public void destroyInstance(){
-        // TODO
+    public static void destroyInstance(){
+        _instance._networkManager.close();
+        _instance._runThread.interrupt();
+        _instance = null;
     }
 
     public static CoreHost get(){
         return _instance;
-    }
-
-    private void init(){
-        _gameStateContext.switchState(GameStateType.ROOM);
-        _networkManager.open();
     }
 
     private void run(){
@@ -49,7 +49,8 @@ public class CoreHost {
                 try {
                     Thread.sleep(33 - elapsed);
                 } catch (InterruptedException e) {
-                    // nothing
+                    // room exit
+                    return;
                 }
         }
     }
