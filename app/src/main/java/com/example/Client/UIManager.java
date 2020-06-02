@@ -3,7 +3,6 @@ package com.example.Client;
 import Common.Skill;
 
 public interface UIManager {
-    int ENTER_ROOM_PORT = 0;
     int ROOM_START_PORT = 0;
     int EXIT_ROOM_PORT = 1;
     int BUTTON_Q = 0;
@@ -26,4 +25,6 @@ public interface UIManager {
     void setHealth(int health);
     void updateItems();
     int findButtonIndex(Skill skill);
+
+    void failConnection();
 }

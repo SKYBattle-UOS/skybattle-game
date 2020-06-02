@@ -192,6 +192,11 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
         return -1;
     }
 
+    @Override
+    public void failConnection() {
+        _mainHandler.post(() -> ((MainScreen) _currentScreen).onHostNotFound());
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void onResume(LifecycleOwner owner){
         // TODO: should lock

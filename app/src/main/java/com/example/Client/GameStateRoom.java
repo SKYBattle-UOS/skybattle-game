@@ -23,12 +23,12 @@ public class GameStateRoom implements GameState {
 
     @Override
     public void start() {
-        Core.get().getUIManager().registerCallback(AndroidUIManager.ROOM_START_PORT,
+        Core.get().getUIManager().registerCallback(UIManager.ROOM_START_PORT,
                 ()-> _buttonPressed = true
         );
 
         // TODO: close connection
-        Core.get().getUIManager().registerCallback(AndroidUIManager.EXIT_ROOM_PORT,
+        Core.get().getUIManager().registerCallback(UIManager.EXIT_ROOM_PORT,
                 ()-> Core.get().getUIManager().switchScreen(ScreenType.MAIN,
                         ()->_parent.switchState(GameStateType.MAIN))
         );
