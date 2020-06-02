@@ -11,31 +11,33 @@ import Common.OutputBitStream;
 
 public class GameStateRoom implements GameState {
     private final int MAX_NUM_PLAYERS = 6;
+    private final int MSG_TYPE_LEN = 2;
     private GameStateContext _parent;
+    private boolean switchingToNextScreen; // 화면 전환 중 패킷 처리를 멈추기 위한 상태 체크 변수
 
     private boolean playerIsHost;
-    private boolean switchingToNextScreen; // 화면 전환 중 패킷 처리를 멈추기 위한 변수
-
-    private boolean playerStartedGame;
-    private boolean playerExited;
-    private boolean playerChangedTeam;
-    private boolean playerChangedName;
-
     private int playerTeam; // TODO: UI에서 가져오기
     private String playerName; // TODO: UI에서 가져오기
 
+    private boolean playerStartedGame;
+    private boolean playerLeft;
+    private boolean playerChangedTeam;
+    private boolean playerChangedName;
+
     GameStateRoom(GameStateContext stateContext){
         _parent = stateContext;
-        this.playerIsHost = false;
         this.switchingToNextScreen = false;
 
+        this.playerIsHost = false;
+        this.playerTeam = 0; // 0: team A    1: team B
+        this.playerName = "Amugae";
+
         this.playerStartedGame = false;
-        this.playerExited = false;
+        this.playerLeft = false;
         this.playerChangedTeam = false;
         this.playerChangedName = false;
 
-        this.playerTeam = 0;
-        this.playerName = "Amugae";
+
     }
 
 
@@ -51,102 +53,102 @@ public class GameStateRoom implements GameState {
                 ()-> Core.get().getUIManager().switchScreen(ScreenType.MAIN,
                         ()->_parent.switchState(GameStateType.MAIN))
         );
-
-        // TODO: 플레이어 입장 후 어플 동작
-        //      1. 방장 여부 체크 -> UI에서 메인에서 방만들기/입장하기에서 넘어가는 액티비티를 다르게 설정
-        //      2. 플레이어 디폴트 닉네임 설정 (Optional)
-        //      3. 플레이어 리스트에 현재 플레이어 추가
-
-        this.playerIsHost = true; // 일단 방장이라고 가정
     }
 
     @Override
     public void update(long ms) {
         if (!this.switchingToNextScreen) {
             /*
-             *  메시지 전송 포맷:
-             *      플래그 비트 (앞부분)
-             *          playerStartedGame (1비트)
-             *          playerExited (1비트)
-             *          playerChangedTeam (1비트)
-             *          playerChangedName (1비트)
-             * --------------------------------------
-             *      내용 비트 (뒷부분)
-             *          thisClientIsHost (1비트)      0: false  |   1: true
-             *          playerTeam (1비트)            0: A팀    |   1: B팀
-             *          playerName (?비트)            한영 닉네임, UTF-8 인코딩  <-- 아직 미구현
+             *  메시지 전송 포맷
+             *      MsgType (2비트) | MsgBody (가변)
+             *
+             *  MsgType
+             *      00: playerStartedGame
+             *      01: playerLeft
+             *      10: playerChangedTeam
+             *      11: playerChangedName
+             *
+             *  MsgBody
+             *      if MsgType == 00    playerIsHost (1비트)
+             *      if MsgType == 01    playerTeam (1비트)
+             *      if MsgType == 10    없음
+             *      if MsgType == 11    playerName (미구현)
+             *
+             *  한 틱당 하나의 메시지만 전송
              */
-
-
-            // 메시지 전송
-            OutputBitStream out = Core.get().getPakcetManager().getPacketToSend();
-
-            this.writeFlagBits(out);
-            this.writeContentBits(out);
-
-            if (this.playerStartedGame || this.playerExited || this.playerChangedTeam
-                    || this.playerChangedName) {
-                Core.get().getPakcetManager().shouldSendThisFrame();
-            }
-
-
-            // 메시지 수신
-            InputBitStream in = Core.get().getPakcetManager().getPacketStream();
-            this.processMessage(in); // 이 메소드 내부에서 화면 전환 일어남
+            this.sendMsg();
+            this.rcvMsg();
         }
     }
 
-
-    // 플래그 비트 패턴을 쓰기하는 내부 메소드
-    private void writeFlagBits(OutputBitStream out) {
-        try {
-
-            out.write(playerChangedName ? 1 : 0, 1);
-            out.write(playerChangedTeam ? 1 : 0, 1);
-            out.write(playerStartedGame ? 1 : 0, 1);
-            out.write(playerExited ? 1 : 0, 1);
-            playerStartedGame = false;
-            playerChangedName = false;
-            playerChangedTeam = false;
-            playerExited = false;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setPlayerIsHost() {
+        this.playerIsHost = true;
     }
 
-    // 내용 비트 패턴을 쓰기하는 내부 메소드
-    private void writeContentBits(OutputBitStream out) {
-        // 플레이어 게임 시작
+    public void setPlayerLeft() {
+        this.playerLeft = true;
+    }
+
+    public void setPlayerChangedTeam(int playerTeam) {
+        this.playerChangedTeam = true;
+        this.playerTeam = playerTeam;
+    }
+
+    public void setPlayerChangedName(String playerName) {
+        this.playerChangedName = true;
+        // this.playerName = playerName;
+    }
+
+
+    private void sendMsg() {
+        OutputBitStream out = Core.get().getPakcetManager().getPacketToSend();
+
+        // 메시지 생성
+        int msgType = -1;
+        int msgBody = -1;
+        int numBodyBits = 0;
+
         if (this.playerStartedGame) {
+            msgType = 0;
+            msgBody = this.playerIsHost? 1 : 0;
+            numBodyBits = 1;
+
+            this.playerStartedGame = false;
+        } else if (this.playerLeft) {
+            msgType = 1;
+
+            this.playerLeft = false;
+        } else if (this.playerChangedTeam) {
+            msgType = 2;
+            msgBody = playerTeam;
+            numBodyBits = 1;
+
+            this.playerChangedTeam = false;
+        } else if (this.playerChangedName) {
+            msgType = 3;
+            // 이름 수정 처리 미구현
+
+            this.playerChangedName = false;
+        }
+
+        // 메시지 존재하면 전송
+        if (msgType != -1) {
+            int msg = combineMsg(msgType, msgBody, numBodyBits);
             try {
-                out.write(this.playerIsHost? 1 : 0, 1); // 시작 메시지 전송
+                out.write(msg, MSG_TYPE_LEN + numBodyBits);
+                Core.get().getPakcetManager().shouldSendThisFrame();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-
-        // 플레이어 팀 변경
-        if (this.playerChangedTeam) {
-            try {
-                out.write((this.playerTeam == 0)? 0 : 1, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // 플레이어 이름 변경 (미구현)
-        if (this.playerChangedName) {
-
         }
     }
 
     // 수신된 메시지를 처리하는 내부 메소드
-    private void processMessage(InputBitStream in) {
-        boolean hostStartedGame;
-        // boolean hostKickedPlayer; // 현재 프로그램 구조상 구현 불가
+    private void rcvMsg() {
+        InputBitStream in = Core.get().getPakcetManager().getPacketStream();
 
-        // 각 클라이언트에 대한 메시지를 순차적으로 전송받아 처리
-        for (int i = 0; i < MAX_NUM_PLAYERS; i++) {
+        // 각 클라이언트에 대한 메시지를 순차적으로 전송받아 처리 --> 현재 프로그램 구조에 맞지 않음)
+        // for (int i = 0; i < MAX_NUM_PLAYERS; i++) {
             if (in == null) {
                 return;
             }
@@ -178,6 +180,15 @@ public class GameStateRoom implements GameState {
             if (somePlayerChangedName) {
                 // TODO: 변경된 이름 화면 표시 (미구현)
             }
+        //}
+    }
+
+    // 메시지 타입과 메시지 내용을 받아서 메시지 형태로 반환하는 내부 메소드
+    private int combineMsg(int msgType, int msgBody, int numBodyBits) {
+        if (numBodyBits > 0) {
+            return (msgType << numBodyBits) + msgBody;
+        } else {
+            return msgType;
         }
     }
 
@@ -188,29 +199,4 @@ public class GameStateRoom implements GameState {
         this.switchingToNextScreen = true;
         Core.get().getUIManager().switchScreen(ScreenType.MAP, ()->_parent.switchState(GameStateType.MATCH));
     }
-
-
-    /*
-
-    방제 수정 사용하지 않음; 만약의 경우 UTF-8 인코딩 필요하게 되면 참조
-
-    // reads room title that is encoded in UTF-8
-    private String getRoomTitle(InputBitStream packet) {
-        byte[] bytesHolder = new byte[MAX_TITLE_LENGTH * 4]; // UTF-8: max 4 bytes per character
-        packet.read(bytesHolder, bytesHolder.length);
-        return new String(bytesHolder, StandardCharsets.UTF_8);
-    }
-
-    // reads players' info as a String that is encoded in UTF-8
-    private String getPlayersInfo(InputBitStream packet) {
-        // TO-DO: should determine the number of bytes required for each player info
-        // assumes 10 bytes for now; might want to include: [player name], [isHost]
-
-        byte[] bytesHolder = new byte[MAX_NUM_PLAYERS * 10]; // UTF-8 Encoding: max 4 bytes
-        packet.read(bytesHolder, bytesHolder.length);
-        return new String(bytesHolder, StandardCharsets.UTF_8);
-    }
-
-
-     */
 }
