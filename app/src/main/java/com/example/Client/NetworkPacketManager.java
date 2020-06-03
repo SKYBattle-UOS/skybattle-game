@@ -93,7 +93,9 @@ public class NetworkPacketManager implements PacketManager {
     private void receive(String host, Consumer<Boolean> onConnected) {
         try {
             _socket = new Socket();
-            _socket.connect(new InetSocketAddress("10.0.2.2", Util.PORT), 2000);
+            _socket.connect(
+                    new InetSocketAddress(
+                            host.equals("localhost") ? "localhost" : "10.0.2.2", Util.PORT), 2000);
         } catch (IOException e) {
             onConnected.accept(false);
             return;
