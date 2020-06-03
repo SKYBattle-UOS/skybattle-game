@@ -116,19 +116,10 @@ public class GameStateMatchHost implements GameState, MatchHost {
         for (ClientProxy client : clients){
             PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId, true);
             newPlayer.getProperty().setPlayerId(client.getPlayerId());
-            newPlayer.setPosition(37.714580, 127.045195);
+            newPlayer.setPosition(37.716140, 127.046620);
             newPlayer.setName("플레이어" + i++);
             newPlayer.setLook(ImageType.MARKER);
         }
-
-//        for (int j = 0; j < 3; j++){
-//            DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
-//            dummy.getProperty().setPlayerId(lastPlayerId + j + 1);
-//            dummy.setPosition(37.715583 + 0.0005 * j, 127.048421 + 0.0005 * j);
-//            dummy.setName("플레이어" + i++ + " (가짜)");
-//            dummy.setLook(ImageType.MARKER);
-//            dummy.getProperty().setTeam(1);
-//        }
 
         // create temp item
         GameObject assemblePoint = createGameObject(Util.ItemClassId, true);

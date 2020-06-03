@@ -49,7 +49,7 @@ public class MatchStateAssemble implements GameState {
                 _match.activateWorldSetter();
                 Core.get().getUIManager().setTopText("집합하세요");
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
-                Core.get().getCamera().move(37.714617, 127.045170);
+                Core.get().getCamera().move(37.716140, 127.046620);
                 Core.get().getCamera().zoom(17);
                 _activatedWorldSetter = true;
             }
