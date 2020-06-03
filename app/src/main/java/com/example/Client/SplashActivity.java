@@ -40,26 +40,27 @@ public class SplashActivity  extends AppCompatActivity {
 
         while (!checkRunTimePermission());
 
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                check();
                 startActivity(intent);
                 finish();
             }
         }, 500);
-/* 500 부분 말고 권한 확인 후 넘어가도록 수정 필요
+        //500 부분 말고 권한 확인 후 넘어가도록 수정 필요
+    }
+
+    public synchronized void check(){
         if (!checkLocationServicesStatus()) {   //gps 기능이 켜져있는지 확인
             showDialogForLocationServiceSetting();
         }
 
         checkRunTimePermission();
-        */
-
     }
-
-
 
     //런타임 퍼미션 처리 0
     private boolean checkRunTimePermission(){

@@ -13,6 +13,10 @@ public class PlayerProperty {
     public static int skillDirtyFlag;
     public static int endOfFlag;
     public static int endOfFlagPos;
+    public static int startFromHereFlag;
+    public static int invincibilityFlag;
+    public static int cantAttackFlag;
+    public static int reflectAttackFlag;
 
     static {
         int i = GameObject.EndOfFlagPos;
@@ -23,6 +27,9 @@ public class PlayerProperty {
         maxHealthDirtyFlag = 1 << i++;
         endOfFlagPos = i;
         endOfFlag = 1 << i++;
+        invincibilityFlag = 1 << i++;
+        cantAttackFlag = 1 << i++;
+        reflectAttackFlag= 1 << i++;
     }
 
     private ArrayList<Skill> _skills = new ArrayList<>();
@@ -32,6 +39,9 @@ public class PlayerProperty {
     private int _maxHealth = 100000;
     private int _team;
     private int _dps = 20000;
+    protected boolean _invincibility;
+    protected boolean _cantAttack;
+    protected boolean _reflectAttack;
 
     public PlayerProperty() {
         while (_skills.size() < 4) _skills.add(null);
@@ -49,6 +59,15 @@ public class PlayerProperty {
 
         if ((dirtyFlag & teamDirtyFlag) != 0)
             setTeam(stream.read(1));
+
+        if ((dirtyFlag & invincibilityFlag) != 0)
+            setInvincibility(stream.read(1)==1?true:false);
+
+        if ((dirtyFlag & cantAttackFlag) != 0)
+            setCantAttack(stream.read(1)==1?true:false);
+
+        if ((dirtyFlag & reflectAttackFlag) != 0)
+            setReflectAttack(stream.read(1)==1?true:false);
 
         if ((dirtyFlag & skillDirtyFlag) != 0){
             for (Skill skill : _skills){
@@ -70,6 +89,15 @@ public class PlayerProperty {
 
             if ((dirtyFlag & teamDirtyFlag) != 0)
                 stream.write(getTeam(), 1);
+
+            if ((dirtyFlag & invincibilityFlag) != 0)
+                stream.write(getInvincibility()==true ? 1:0, 1);
+
+            if ((dirtyFlag & cantAttackFlag) != 0)
+                stream.write(getCantAttack()==true ? 1:0, 1);
+
+            if ((dirtyFlag & reflectAttackFlag) != 0)
+                stream.write(getReflectAttack()==true ? 1:0, 1);
 
             if ((dirtyFlag & skillDirtyFlag) != 0) {
                 for (Skill skill : getSkills()){
@@ -114,6 +142,32 @@ public class PlayerProperty {
     public void setHealth(int health) {
         this._health = health;
     }
+
+    public boolean getInvincibility() {
+        return _invincibility;
+    }
+
+    public void setInvincibility(boolean invincibility){
+        _invincibility = invincibility;
+    }
+
+    public boolean getCantAttack() {
+        return _cantAttack;
+    }
+
+    public void setCantAttack(boolean cantAttack){
+        _cantAttack = cantAttack;
+    }
+
+    public void setReflectAttack(boolean reflectAttack){
+        _reflectAttack = reflectAttack;
+    }
+
+    public boolean getReflectAttack() {
+        return _reflectAttack;
+    }
+
+
 
     public int getMaxHealth() { return _maxHealth; }
 
