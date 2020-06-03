@@ -27,7 +27,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     };
 
     public PlayerHost() {
-        _property.getSkills(friend).set(0, new DuplicationTrickHost());
+        _property.getSkills(friend).set(0, new WazakWazakHost());
         _property.getSkills(friend).set(1, new GlobalWazakWazakHost());
         _property.getSkills(friend).set(2, new HealthUpHost());
         _property.getSkills(friend).set(3, new HealthUpHost());

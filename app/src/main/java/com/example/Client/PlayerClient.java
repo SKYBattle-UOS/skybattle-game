@@ -7,8 +7,10 @@ import Common.InputBitStream;
 import Common.Player;
 import Common.PlayerProperty;
 import Common.Skill;
+import Common.SneakCommon;
 import Common.WazakWazakCommon;
 import Common.HealthUpCommon;
+import Host.WazakWazakHost;
 
 public class PlayerClient extends GameObjectClient implements Player {
     private PlayerProperty _property = new PlayerProperty(){
@@ -22,7 +24,7 @@ public class PlayerClient extends GameObjectClient implements Player {
     private boolean _reconstructSkills;
 
     public PlayerClient() {
-        _property.getSkills(friend).set(0, new DuplicationTrickCommon());
+        _property.getSkills(friend).set(0, new WazakWazakCommon());
         _property.getSkills(friend).set(1, new GlobalWazakWazakCommon());
         _property.getSkills(friend).set(2, new HealthUpCommon());
         _property.getSkills(friend).set(3, new HealthUpCommon());

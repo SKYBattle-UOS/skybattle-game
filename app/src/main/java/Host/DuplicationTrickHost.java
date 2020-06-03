@@ -20,7 +20,7 @@ public class DuplicationTrickHost extends DuplicationTrickCommon {
             else
                 spawned.setPosition(caster.getPosition()[0] -Math.random()*0.005, caster.getPosition()[1] +Math.random()*0.005);
             spawned.setLook(ImageType.INVISIBLE);
-            CoreHost.get().getMatch().setTimer(spawned::scheduleDeath,15);
+            CoreHost.get().getMatch().setTimer(spawned::scheduleDeath,60);
         }
         CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
