@@ -1,6 +1,6 @@
 package Common;
 
 public interface Damageable {
-    void getHurt(int damage);
+    void getHurt(GameObject attacker, int damage);
     int getTeam();
 }

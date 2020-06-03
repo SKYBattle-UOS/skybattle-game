@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ import Common.Util;
 public class NetworkManager {
     private int _newPlayerId;
     private ServerSocket _socket;
-    private Map<InetAddress, ClientProxy> _mappingAddr2Proxy;
     private Map<Integer, ClientProxy> _mappingPlayer2Proxy;
     private ArrayList<Socket> _clientSockets;
     private ClientProxy _hostClient;
@@ -33,7 +33,6 @@ public class NetworkManager {
     public NetworkManager(){
         _newPlayerId = 0;
         _sendThisFrame = new BitOutputStream();
-        _mappingAddr2Proxy = new HashMap<>();
         _mappingPlayer2Proxy = new HashMap<>();
         _clientSockets = new ArrayList<>();
         _shoudSendThisFrame = false;
@@ -50,6 +49,18 @@ public class NetworkManager {
             (new Thread(this::acceptor)).start();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void close(){
+        closeAccept();
+
+        for (Socket socket : _clientSockets) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -89,7 +100,11 @@ public class NetworkManager {
             try {
                 Socket newSocket = _socket.accept();
                 ClientProxy client = new ClientProxy(_newPlayerId);
-                _mappingAddr2Proxy.put(newSocket.getInetAddress(), client);
+
+                if (_hostClient == null)
+                    _hostClient = client;
+
+                newSocket.getOutputStream().write(client.getPlayerId());
                 _mappingPlayer2Proxy.put(_newPlayerId++, client);
                 _clientSockets.add(newSocket);
                 (new Thread(() -> receive(newSocket, client))).start();
@@ -109,11 +124,16 @@ public class NetworkManager {
 
                 int lbyte = stream.read();
                 int hbyte = stream.read();
+
+                if (lbyte < 0 || hbyte < 0)
+                    throw new IOException();
+
                 int packetByteLen = (hbyte << 8) | lbyte;
 
                 int i = 0;
                 while (packetByteLen > 0){
                     int b = stream.read();
+
                     newPacket.getBuffer()[i++] = (byte) b;
                     packetByteLen--;
                 }
@@ -122,10 +142,14 @@ public class NetworkManager {
                 client.getRawPacketQueue().offer(newPacket);
             }
         } catch (IOException e) {
-            // TODO
-            // socket closed; thread exit
-            ClientProxy disconnected = _mappingAddr2Proxy.get(socket.getInetAddress());
-            disconnected.setDisconnected(true);
+            client.setDisconnected(true);
+            _mappingPlayer2Proxy.remove(client.getPlayerId());
+
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -142,11 +166,11 @@ public class NetworkManager {
     }
 
     public int getNumConnections(){
-        return _mappingAddr2Proxy.size();
+        return _mappingPlayer2Proxy.size();
     }
 
     public Collection<ClientProxy> getClientProxies(){
-        return _mappingAddr2Proxy.values();
+        return _mappingPlayer2Proxy.values();
     }
 
     public ClientProxy getClientById(int id){

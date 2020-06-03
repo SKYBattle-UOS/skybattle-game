@@ -54,8 +54,8 @@ public class InputManager {
             state.lon = _convertTemp[1];
             _inputStates.offer(state);
         }
-        else
-            debugMoveToAssemblePoint();
+//        else
+//            debugMoveToAssemblePoint();
 
 
         // TODO

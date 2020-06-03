@@ -22,6 +22,7 @@ class MatchStateAssembleHost implements GameState {
 
     // TODO
     private GameObject _assemblePoint;
+    private boolean _sentPlayerId;
 
     public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
@@ -83,14 +84,14 @@ class MatchStateAssembleHost implements GameState {
     }
 
     private void updateAssembleInit() {
-        int i = 0;
+        int i = -1;
         for (ClientProxy client : _clients){
+            i++;
             InputBitStream packet = client.getPacketQueue().poll();
             if (packet == null || _assembleInit[i])
                 continue;
 
             _assembleInit[i] = Util.hasMessage(packet);
-            i++;
         }
     }
 }

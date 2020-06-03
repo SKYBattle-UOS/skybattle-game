@@ -116,21 +116,19 @@ public class GameStateMatchHost implements GameState, MatchHost {
         int lastPlayerId = 0;
         for (ClientProxy client : clients){
             PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId, true);
-            lastPlayerId = client.getPlayerId();
             newPlayer.getProperty().setPlayerId(client.getPlayerId());
-            newPlayer.setPosition(37.714580, 127.045195);
+            lastPlayerId = client.getPlayerId();
+            newPlayer.setPosition(37.716140, 127.046620);
             newPlayer.setName("플레이어" + i++);
             newPlayer.setLook(ImageType.MARKER);
         }
 
-        for (int j = 0; j < 3; j++){
-            DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
-            dummy.getProperty().setPlayerId(lastPlayerId + j + 1);
-            dummy.setPosition(37.715583 + 0.0005 * j, 127.048421 + 0.0005 * j);
-            dummy.setName("플레이어" + i++ + " (가짜)");
-            dummy.setLook(ImageType.MARKER);
-            dummy.getProperty().setTeam(1);
-        }
+        DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
+        dummy.getProperty().setPlayerId(lastPlayerId + 1);
+        dummy.setPosition(37.716109 - 0.0005, 127.048926 - 0.0005);
+        dummy.setName("플레이어" + i + " (가짜)");
+        dummy.setLook(ImageType.MARKER);
+        dummy.getProperty().setTeam(1);
 
         // create temp item
         GameObject assemblePoint = createGameObject(Util.ItemClassId, true);
@@ -163,15 +161,16 @@ public class GameStateMatchHost implements GameState, MatchHost {
         for (GameObject go : _gameObjects)
             go.update(ms);
 
+        addNewGameObjectsToWorld();
+        killGameObjects();
+
         if (_worldSetterActive)
             _worldSetter.writeInstructionToStream(CoreHost.get().getNetworkManager().getPacketToSend());
 
         for (GameObject go : _gameObjects)
             go.after(ms);
 
-        addNewGameObjectsToWorld();
         processTimers();
-        killGameObjects();
 
         _collider.update(ms);
         _currentState.update(ms);

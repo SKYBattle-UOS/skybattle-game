@@ -4,7 +4,6 @@ import Common.Skill;
 
 public interface UIManager {
     int ROOM_START_PORT = 0;
-    int EXIT_ROOM_PORT = 1;
     int BUTTON_Q = 0;
     int BUTTON_W = 1;
     int BUTTON_E = 2;

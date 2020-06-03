@@ -32,6 +32,7 @@ public class MatchStateInGame implements GameState {
         Player player = Core.get().getMatch().getThisPlayer();
         player.getGameObject().setOnDeathListener(() -> _isPlayerDead = true);
         setButtons(player, true);
+        Core.get().getUIManager().setHealth(player.getProperty().getHealth());
         Core.get().getUIManager().switchScreen(ScreenType.INGAME, () -> _waiting = false);
     }
 
