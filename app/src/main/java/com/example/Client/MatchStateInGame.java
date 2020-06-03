@@ -22,7 +22,7 @@ public class MatchStateInGame implements GameState {
     private boolean _waiting = true;
     private boolean _isDeathScreen;
 
-    MatchStateInGame(GameStateMatch gameStateMatch) {com
+    MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
         Core.get().getUIManager().setDefaultTopText("게임이 시작되었습니다");
     }
