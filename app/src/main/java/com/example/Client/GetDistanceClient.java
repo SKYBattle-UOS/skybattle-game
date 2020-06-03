@@ -12,9 +12,6 @@ public class GetDistanceClient extends PlayerTargetSkill {
         super();
     }
 
-    public GetDistanceClient() {
-    }
-
     @Override
     public String getName() {
         return "오라클";
