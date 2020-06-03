@@ -19,12 +19,15 @@ public class PlayerClient extends GameObjectClient implements Player {
     };
 
     private boolean _reconstructSkills;
+    private PlayerStateBase _playerState;
+    private boolean _shouldChangeState;
 
     public PlayerClient() {
         _property.getSkills(friend).set(0, new WazakWazakCommon());
         _property.getSkills(friend).set(1, new GlobalWazakWazakCommon());
         _property.getSkills(friend).set(2, new HealthUpCommon());
         _property.getSkills(friend).set(3, new HealthUpCommon());
+        _property.setOnPlayerStateChangeListener(this::onPlayerStateChange);
     }
 
     @Override
@@ -39,6 +42,11 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void update(long ms) {
+        if (_shouldChangeState){
+            changeState();
+            _shouldChangeState = false;
+        }
+
         for (Skill skill : _property.getSkills())
             if (skill.isDirty()){
                 skill.cast(this);
@@ -49,6 +57,8 @@ public class PlayerClient extends GameObjectClient implements Player {
             reconstructSkills();
             _reconstructSkills = false;
         }
+
+        _playerState.update(ms);
     }
 
     @Override
@@ -84,5 +94,23 @@ public class PlayerClient extends GameObjectClient implements Player {
     private void onSetHealth(int health) {
         if (Core.get().getMatch().getThisPlayer() == this)
             Core.get().getUIManager().setHealth(health);
+    }
+
+    private void onPlayerStateChange(PlayerState state){
+        _shouldChangeState = true;
+    }
+
+    private void changeState(){
+        PlayerState state = getProperty().getPlayerState();
+        switch (state){
+            case GHOST:
+                _playerState = new PlayerStateGhost(this);
+                break;
+
+            case NORMAL:
+                _playerState = new PlayerStateNormal(this);
+                break;
+        }
+        _playerState.start();
     }
 }

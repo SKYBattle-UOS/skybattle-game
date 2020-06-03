@@ -1,9 +1,14 @@
 package Common;
 
+import androidx.annotation.NonNull;
+
+import com.example.Client.PlayerState;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class PlayerProperty {
     public static int playerIdDirtyFlag;
@@ -16,6 +21,7 @@ public class PlayerProperty {
     public static int invincibilityFlag;
     public static int cantAttackFlag;
     public static int reflectAttackFlag;
+    public static int playerStateFlag;
 
     static {
         int i = GameObject.EndOfFlagPos;
@@ -26,7 +32,8 @@ public class PlayerProperty {
         maxHealthDirtyFlag = 1 << i++;
         invincibilityFlag = 1 << i++;
         cantAttackFlag = 1 << i++;
-        reflectAttackFlag= 1 << i++;
+        reflectAttackFlag = 1 << i++;
+        playerStateFlag = 1 << i++;
         endOfFlagPos = i;
         endOfFlag = 1 << i++;
     }
@@ -41,6 +48,10 @@ public class PlayerProperty {
     private boolean _isInvincible;
     private boolean _cantAttack;
     private boolean _reflectAttack;
+    private PlayerState _playerState = PlayerState.NORMAL;
+    private Consumer<PlayerState> _onPlayerStateChange = playerState -> {
+        // nothing
+    };
 
     public PlayerProperty() {
         while (_skills.size() < 4) _skills.add(null);
@@ -73,6 +84,10 @@ public class PlayerProperty {
                 skill.readFromStream(stream);
             }
         }
+
+        if ((dirtyFlag & playerStateFlag) != 0){
+            setPlayerState(PlayerState.values()[stream.read(4)]);
+        }
     }
 
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
@@ -102,6 +117,10 @@ public class PlayerProperty {
                 for (Skill skill : getSkills()){
                     skill.writeToStream(stream);
                 }
+            }
+
+            if ((dirtyFlag & playerStateFlag) != 0){
+                stream.write(_playerState.ordinal(), 4);
             }
 
         } catch (IOException e){
@@ -172,5 +191,18 @@ public class PlayerProperty {
 
     public int getDPS(){
         return _dps;
+    }
+
+    public void setPlayerState(PlayerState state){
+        _playerState = state;
+        _onPlayerStateChange.accept(state);
+    }
+
+    public void setOnPlayerStateChangeListener(@NonNull Consumer<PlayerState> listener){
+        _onPlayerStateChange = listener;
+    }
+
+    public PlayerState getPlayerState() {
+        return _playerState;
     }
 }

@@ -115,9 +115,6 @@ public abstract class GameObject {
     public abstract void after(long ms);
 
     public void faceDeath(){
-        for (Runnable r : _onDeathListeners)
-            r.run();
-
         if (_match.getCollider() != null && _collision)
             _match.getCollider().remove(this);
     }
@@ -148,6 +145,9 @@ public abstract class GameObject {
 
     public void scheduleDeath(){
         _wantsToDie = true;
+
+        for (Runnable r : _onDeathListeners)
+            r.run();
     }
 
     public boolean wantsToDie(){

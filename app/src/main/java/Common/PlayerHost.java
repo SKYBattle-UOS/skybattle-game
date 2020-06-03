@@ -1,5 +1,7 @@
 package Common;
 
+import com.example.Client.PlayerState;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
@@ -76,6 +78,21 @@ public class PlayerHost extends GameObject implements Damageable, Player {
         }
     }
 
+    @Override
+    public boolean wantsToDie() {
+        return false;
+    }
+
+    @Override
+    public void scheduleDeath() {
+        super.scheduleDeath();
+        getProperty().setHealth(100000);
+        getProperty().setInvincibility(true);
+        getProperty().setPlayerState(PlayerState.GHOST);
+        CoreHost.get().getMatch().getWorldSetterHost()
+                .generateUpdateInstruction(getNetworkId(), playerStateFlag);
+    }
+
     private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
             if (((Damageable) state.other).getTeam() != _property.getTeam()){
@@ -135,18 +152,6 @@ public class PlayerHost extends GameObject implements Damageable, Player {
 
         CoreHost.get().getMatch()
                 .getWorldSetterHost().generateUpdateInstruction(getNetworkId(), dirtyFlag);
-    }
-
-    @Override
-    public void faceDeath() {
-        PlayerHost deadPlayer = (PlayerHost) CoreHost.get().getMatch()
-                .createGameObject(Util.PlayerClassId, true);
-
-        PlayerProperty deadPlayerProperty = deadPlayer.getProperty();
-        deadPlayerProperty.setPlayerId(_property.getPlayerId());
-        deadPlayer.setName("현재위치");
-        deadPlayer.setLook(ImageType.INVISIBLE);
-        deadPlayer.setPosition(getPosition()[0], getPosition()[1]);
     }
 
     private int checkHealth(int health) {

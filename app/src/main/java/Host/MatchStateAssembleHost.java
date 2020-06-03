@@ -1,7 +1,5 @@
 package Host;
 
-import android.util.Log;
-
 import com.example.Client.Core;
 
 import java.util.Collection;
@@ -19,10 +17,7 @@ class MatchStateAssembleHost implements GameState {
     private boolean[] _assembleInit;
     private Collection<ClientProxy> _clients;
     private boolean _shouldSendAllInit;
-
-    // TODO
     private GameObject _assemblePoint;
-    private boolean _sentPlayerId;
 
     public MatchStateAssembleHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
