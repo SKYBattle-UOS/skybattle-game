@@ -6,9 +6,6 @@ import Common.GameObject;
 import Common.PlayerTargetSkill;
 
 public class PosionCommon extends PlayerTargetSkill {
-
-    public PosionCommon(int index){setTargetPlayer(index);}
-
     public String getName(){
         return "독공격";
     }

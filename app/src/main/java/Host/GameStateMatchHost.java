@@ -125,7 +125,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
         DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
         dummy.getProperty().setPlayerId(lastPlayerId + 1);
-        dummy.setPosition(37.716109 + 0.0005, 127.048926 + 0.0005);
+        dummy.setPosition(37.716109 - 0.0005, 127.048926 - 0.0005);
         dummy.setName("플레이어" + i + " (가짜)");
         dummy.setLook(ImageType.MARKER);
         dummy.getProperty().setTeam(1);

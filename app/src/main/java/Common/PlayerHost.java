@@ -79,11 +79,11 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
             if (((Damageable) state.other).getTeam() != _property.getTeam()){
-                if(getProperty()._cantAttack == false){
-                ((Damageable) state.other).getHurt(this,(int) (_property.getDPS() * ms / 1000));
-                CoreHost.get().getMatch().getWorldSetterHost()
-                        .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
-            }
+                if(!getProperty().getCantAttack()){
+                    ((Damageable) state.other).getHurt(this,(int) (_property.getDPS() * ms / 1000));
+                    CoreHost.get().getMatch().getWorldSetterHost()
+                            .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
+                }
             }
         }
 
@@ -173,9 +173,9 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     }
 
     @Override
-    public void getHurt(GameObject attacker,int damage) {
+    public void getHurt(GameObject attacker, int damage) {
         // 0 defense
-        if(getProperty()._invincibility == false)
+        if(!getProperty().isInvincible())
             _property.setHealth(_property.getHealth() - damage);
     }
 

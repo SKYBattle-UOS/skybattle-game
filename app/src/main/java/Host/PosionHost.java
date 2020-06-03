@@ -1,19 +1,15 @@
 package Host;
-import com.example.Client.Core;
 
 import Common.GameObject;
 import Common.PlayerHost;
+import Common.PlayerProperty;
 
-public class PosionHost extends HealthUpCommon {
-    public PosionHost(int index) {
-        super(index);
-    }
-
+public class PosionHost extends PosionCommon {
     @Override
     public void cast(GameObject caster) {
-        for (int i= 0; i <10; i++)
+        for (int i= 0; i < 10; i++)
         {
-            CoreHost.get().getMatch().setTimer(() -> todo(),1);
+            CoreHost.get().getMatch().setTimer(this::todo, 1);
         }
     }
 
@@ -21,13 +17,14 @@ public class PosionHost extends HealthUpCommon {
         PlayerHost player = (PlayerHost) CoreHost.get()
                 .getMatch().getRegistry().getGameObject(_networkId);
 
-        player.setHealth(player.getHealth() - 5000);
+        player.getProperty().setHealth(player.getProperty().getHealth() - 5000);
 
         CoreHost.get()
                 .getMatch()
                 .getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), PlayerHost.healthDirtyFlag);
+                .generateUpdateInstruction(player.getNetworkId(), PlayerProperty.healthDirtyFlag);
 
-        CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), PlayerHost.skillDirtyFlag);
+        CoreHost.get().getMatch().getWorldSetterHost()
+                .generateUpdateInstruction(player.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }
