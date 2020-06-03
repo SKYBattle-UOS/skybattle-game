@@ -8,9 +8,6 @@ public class GetYourHPHost extends GetYourHPClient {
         super(index);
     }
 
-    public GetYourHPHost() {
-    }
-
     @Override
     public void cast(GameObject caster) {
 
