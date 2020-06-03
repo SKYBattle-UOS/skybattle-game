@@ -10,9 +10,6 @@ public class GetYourHPClient extends PlayerTargetSkill {
         super();
     }
 
-    public GetYourHPClient() {
-    }
-
     @Override
     public String getName() {
         return "마인드스톤";
