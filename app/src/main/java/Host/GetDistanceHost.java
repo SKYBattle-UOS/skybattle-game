@@ -11,9 +11,6 @@ public class GetDistanceHost extends GetDistanceClient {
         super(index);
     }
 
-    public GetDistanceHost() {
-    }
-
     @Override
     public void cast(GameObject caster) {
 
