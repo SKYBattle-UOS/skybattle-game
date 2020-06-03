@@ -150,6 +150,11 @@ public class ReplayPacketManager implements PacketManager {
         // TODO
     }
 
+    @Override
+    public int getPlayerId() {
+        return 0;
+    }
+
     public void update(long ms){
         if (_packetNum >= _packets.length)
             return;

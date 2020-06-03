@@ -8,4 +8,5 @@ public interface PacketManager {
     OutputBitStream getPacketToSend();
     void shouldSendThisFrame();
     void update();
+    int getPlayerId();
 }

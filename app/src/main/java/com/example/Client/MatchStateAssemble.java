@@ -2,8 +2,6 @@ package com.example.Client;
 
 import android.util.Log;
 
-import java.util.Collection;
-
 import Common.GameObject;
 import Common.GameState;
 import Common.ReadOnlyList;
@@ -21,16 +19,13 @@ import Common.OutputBitStream;
  */
 public class MatchStateAssemble implements GameState {
     private GameStateMatch _match;
-    private boolean _isInitialized;
-    private boolean sentInitComplete;
-    private int _numPlayers;
+    private boolean _activatedWorldSetter;
+    private boolean _isInitComplete;
     private boolean _waiting = false;
 
-    public MatchStateAssemble(GameStateMatch parentMatch, int numPlayers) {
+    public MatchStateAssemble(GameStateMatch parentMatch) {
         _match = parentMatch;
-        _isInitialized = false;
-        sentInitComplete = false;
-        _numPlayers = numPlayers;
+        _activatedWorldSetter = false;
         Core.get().getUIManager().setTopText("다른 플레이어를 기다리는중...");
     }
 
@@ -41,32 +36,26 @@ public class MatchStateAssemble implements GameState {
         InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         OutputBitStream outPacket = Core.get().getPakcetManager().getPacketToSend();
 
-        if (!sentInitComplete) {
-            sentInitComplete = true;
+        Util.sendHas(outPacket, !_isInitComplete);
+        if (!_isInitComplete){
             Core.get().getPakcetManager().shouldSendThisFrame();
-            Util.sendHas(outPacket, sentInitComplete);
+            _isInitComplete = true;
         }
-        else
-            Util.sendHas(outPacket, sentInitComplete);
 
         if (packet == null) return;
 
         if (Util.hasMessage(packet)) {
-            if (!_isInitialized){
+            if (!_activatedWorldSetter){
                 _match.activateWorldSetter();
                 Core.get().getUIManager().setTopText("집합하세요");
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
                 Core.get().getCamera().move(37.714617, 127.045170);
                 Core.get().getCamera().zoom(17);
-                _isInitialized = true;
+                _activatedWorldSetter = true;
             }
         }
 
         if (Util.hasMessage(packet)) {
-            // TODO
-            for (int i = 0; i < packet.getBuffer().length; i++){
-                Log.i("hehe", String.format("%d : %d", i, packet.getBuffer()[i]));
-            }
             _waiting = true;
             Core.get().getUIManager().switchScreen(ScreenType.CHARACTERSELECT,
                     ()-> _match.switchState(MatchStateType.SELECT_CHARACTER));
@@ -75,7 +64,7 @@ public class MatchStateAssemble implements GameState {
 
     @Override
     public void render(Renderer renderer, long ms) {
-        if (_isInitialized) {
+        if (_activatedWorldSetter) {
             ReadOnlyList<GameObject> gameObjects = _match.getWorld();
             for (GameObject go : gameObjects) {
                 ((Renderable) go).render(renderer);

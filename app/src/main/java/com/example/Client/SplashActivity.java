@@ -20,7 +20,12 @@ import java.util.ArrayList;
 public class SplashActivity  extends AppCompatActivity {
 
     public static final int PERMISSIONS_REQUEST_CODE = 100;    //앱 위치 사용 requestCode
-    String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    String[] REQUIRED_PERMISSIONS  = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceStare) {
@@ -32,6 +37,8 @@ public class SplashActivity  extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        while (!checkRunTimePermission());
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -55,7 +62,7 @@ public class SplashActivity  extends AppCompatActivity {
 
 
     //런타임 퍼미션 처리 0
-    void checkRunTimePermission(){
+    private boolean checkRunTimePermission(){
         // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
 
         ArrayList<String> targetList = new ArrayList<String>();
@@ -68,16 +75,20 @@ public class SplashActivity  extends AppCompatActivity {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[i])) {
                     // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있다.
                     Toast.makeText(this, currentPermission + " 어플 사용을 위하여 위치권한이 필요합니다.",Toast.LENGTH_LONG).show();
-                }else
+                } else
                     targetList.add(currentPermission);
             }
         }
+
+        if (targetList.isEmpty()) return true;
 
         String[] targets = new String[targetList.size()];
         targetList.toArray(targets);
 
         if(targets.length > 0)
             ActivityCompat.requestPermissions(this, targets, PERMISSIONS_REQUEST_CODE);
+
+        return false;
     }
 
     //위치 서비스 사용이 가능한지 불가능한지 0

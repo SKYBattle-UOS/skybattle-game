@@ -32,7 +32,6 @@ public class GameStateMatch implements GameState, Match {
     private ArrayList<Player> _players;
     private ReadOnlyList<GameObject> _readOnlyGameObjects;
     private ReadOnlyList<Player> _readOnlyPlayers;
-    private int _numPlayers;
     private boolean _worldSetterActive = false;
     private double[] _battleGroundLatLon;
     private PriorityQueue<TimerStruct> _timerQueue = new PriorityQueue<>();
@@ -40,11 +39,8 @@ public class GameStateMatch implements GameState, Match {
     private GameState _currentState;
 
     GameStateMatch(GameStateContext parent){
-        // TODO: for now, only 1 player
-        _numPlayers = 1;
-
         _parent = parent;
-        _currentState = new MatchStateAssemble(this, _numPlayers);
+        _currentState = new MatchStateAssemble(this);
         _gameObjectRegistry = new GameObjectRegistry();
         _gameObjects = new Vector<>();
         _players = new ArrayList<>();
@@ -107,7 +103,7 @@ public class GameStateMatch implements GameState, Match {
     public void switchState(MatchStateType matchState) {
         switch (matchState) {
             case ASSEMBLE:
-                _currentState = new MatchStateAssemble(this, _numPlayers);
+                _currentState = new MatchStateAssemble(this);
                 break;
             case SELECT_CHARACTER:
                 _currentState = new MatchStateSelectCharacter(this);
@@ -152,10 +148,9 @@ public class GameStateMatch implements GameState, Match {
 
     @Override
     public Player getThisPlayer() {
-        // TODO
         ReadOnlyList<Player> gos = getPlayers();
         for (Player go : gos){
-            if (go.getProperty().getPlayerId() == 0) {
+            if (go.getProperty().getPlayerId() == Core.get().getPakcetManager().getPlayerId()) {
                 return go;
             }
         }
@@ -189,5 +184,9 @@ public class GameStateMatch implements GameState, Match {
         _battleGroundLatLon[0] = lat;
         _battleGroundLatLon[1] = lon;
         _parent.getConverter().setOffset(lat, lon);
+    }
+
+    public void setPlayerId(int playerId){
+
     }
 }
