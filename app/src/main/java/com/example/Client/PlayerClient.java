@@ -1,5 +1,6 @@
 package com.example.Client;
 
+import Common.DuplicationTrickCommon;
 import Common.GameObject;
 import Common.GlobalWazakWazakCommon;
 import Common.InputBitStream;
@@ -7,8 +8,10 @@ import Common.Player;
 import Common.PlayerProperty;
 import Common.Skill;
 import Common.SuicideCommon;
+import Common.SneakCommon;
 import Common.WazakWazakCommon;
 import Common.HealthUpCommon;
+import Host.WazakWazakHost;
 
 public class PlayerClient extends GameObjectClient implements Player {
     private PlayerProperty _property = new PlayerProperty(){

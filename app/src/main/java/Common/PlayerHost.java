@@ -8,10 +8,12 @@ import java.util.Queue;
 
 import Host.ClientProxy;
 import Host.CoreHost;
+import Host.DuplicationTrickHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
 import Host.SuicideHost;
 import Host.WazakWazakHost;
+import Host.SneakHost;
 
 import static Common.PlayerProperty.*;
 
