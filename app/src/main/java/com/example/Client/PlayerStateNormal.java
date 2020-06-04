@@ -15,11 +15,6 @@ public class PlayerStateNormal extends PlayerStateBase {
         }
     }
 
-    @Override
-    public void update(long ms) {
-
-    }
-
     private void setButtons(){
         for (int i = 0; i < 4; i++){
             Core.get().getUIManager()

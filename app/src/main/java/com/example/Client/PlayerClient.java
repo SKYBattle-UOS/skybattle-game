@@ -19,7 +19,7 @@ public class PlayerClient extends GameObjectClient implements Player {
     };
 
     private boolean _reconstructSkills;
-    private PlayerStateBase _playerState;
+    private PlayerStateBase _playerState = new PlayerStateBase(this);
     private boolean _shouldChangeState;
 
     public PlayerClient() {
@@ -101,16 +101,19 @@ public class PlayerClient extends GameObjectClient implements Player {
     }
 
     private void changeState(){
+        _playerState.finish();
+
         PlayerState state = getProperty().getPlayerState();
         switch (state){
-            case GHOST:
-                _playerState = new PlayerStateGhost(this);
-                break;
-
             case NORMAL:
                 _playerState = new PlayerStateNormal(this);
                 break;
+
+            case GHOST:
+                _playerState = new PlayerStateGhost(this);
+                break;
         }
+
         _playerState.start();
     }
 }

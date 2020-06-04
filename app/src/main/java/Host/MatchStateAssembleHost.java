@@ -64,8 +64,8 @@ class MatchStateAssembleHost implements GameState {
     private boolean hasEverybodyAssembled() {
         if (_match.isWorldSetterActive()){
             Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
-            if (Core.get().getMatch().getPlayers().size() != 0)
-                return collisions.size() == Core.get().getMatch().getPlayers().size();
+            if (CoreHost.get().getMatch().getPlayers().size() != 0)
+                return collisions.size() == CoreHost.get().getMatch().getPlayers().size();
         }
         return false;
     }

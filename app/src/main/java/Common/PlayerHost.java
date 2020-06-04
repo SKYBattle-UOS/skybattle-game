@@ -50,7 +50,8 @@ public class PlayerHost extends GameObject implements Damageable, Player {
         // passive
         Collection<CollisionState> collisions = _match.getCollider().getCollisions(this);
         for (CollisionState collision : collisions){
-            processCollision(collision, ms);
+            if (getProperty().getPlayerState() != PlayerState.GHOST)
+                processCollision(collision, ms);
         }
 
         for (int i = 0; i < _property.getSkills().size(); i++) {
@@ -76,25 +77,6 @@ public class PlayerHost extends GameObject implements Damageable, Player {
                     .generateUpdateInstruction(getNetworkId(), itemsDirtyFlag);
             _toRemoveIndices.clear();
         }
-    }
-
-    @Override
-    public boolean wantsToDie() {
-        return false;
-    }
-
-    @Override
-    public void scheduleDeath() {
-        super.scheduleDeath();
-        getProperty().setHealth(100000);
-        getProperty().setInvincibility(true);
-        getProperty().setPlayerState(PlayerState.GHOST);
-        setLook(ImageType.INVISIBLE);
-
-        int flag = healthDirtyFlag | invincibilityFlag | playerStateFlag | imageTypeDirtyFlag;
-
-        CoreHost.get().getMatch().getWorldSetterHost()
-                .generateUpdateInstruction(getNetworkId(), flag);
     }
 
     private void processCollision(CollisionState state, long ms){
@@ -161,8 +143,8 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     private int checkHealth(int health) {
         if (health > _property.getMaxHealth())
             health = _property.getMaxHealth();
-        else if (health < 0){
-            scheduleDeath();
+        else if (health <= 0){
+            makeGhost();
             health = 0;
         }
 
@@ -201,5 +183,17 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     @Override
     public PlayerProperty getProperty(){
         return _property;
+    }
+
+    private void makeGhost(){
+        getProperty().setHealth(100000);
+        getProperty().setInvincibility(true);
+        getProperty().setPlayerState(PlayerState.GHOST);
+        setLook(ImageType.INVISIBLE);
+
+        int flag = healthDirtyFlag | invincibilityFlag | playerStateFlag | imageTypeDirtyFlag;
+
+        CoreHost.get().getMatch().getWorldSetterHost()
+                .generateUpdateInstruction(getNetworkId(), flag);
     }
 }
