@@ -5,7 +5,12 @@ import Common.GameStateType;
 import Common.LatLonByteConverter;
 
 public class GameStateContextHost {
-    private GameState _currentState;
+    private GameState _currentState = new GameState() {
+        @Override
+        public void start() {
+            // nothing
+        }
+    };
     private LatLonByteConverter _converter = new LatLonByteConverter();
 
     public void update(long ms){
@@ -13,6 +18,7 @@ public class GameStateContextHost {
     }
 
     public void switchState(GameStateType gameState){
+        _currentState.finish();
         switch (gameState){
             case ROOM:
                 _currentState = new GameStateRoomHost(this);

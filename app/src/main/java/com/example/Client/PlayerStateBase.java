@@ -9,6 +9,4 @@ public class PlayerStateBase implements GameState {
     public PlayerStateBase(Player player){
         _player = player;
     }
-
-    public void finish(){}
 }

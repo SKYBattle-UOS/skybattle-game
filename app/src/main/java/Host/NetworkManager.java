@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import Common.BitInputStream;
 import Common.BitOutputStream;
@@ -29,6 +30,7 @@ public class NetworkManager {
     private OutputBitStream _sendThisFrame;
     private boolean _shoudSendThisFrame;
 
+    private ArrayList<ConnectionListener> _listeners = new ArrayList<>();
 
     public NetworkManager(){
         _newPlayerId = 0;
@@ -107,6 +109,10 @@ public class NetworkManager {
                 newSocket.getOutputStream().write(client.getPlayerId());
                 _mappingPlayer2Proxy.put(_newPlayerId++, client);
                 _clientSockets.add(newSocket);
+
+                for (ConnectionListener cl : _listeners)
+                    cl.onNewConnection(client);
+
                 (new Thread(() -> receive(newSocket, client))).start();
             } catch (IOException e) {
                 // socket closed; thread exit
@@ -145,6 +151,9 @@ public class NetworkManager {
             client.setDisconnected(true);
             _mappingPlayer2Proxy.remove(client.getPlayerId());
 
+            for (ConnectionListener cl : _listeners)
+                cl.onConnectionLost(client);
+
             try {
                 socket.close();
             } catch (IOException ex) {
@@ -175,5 +184,13 @@ public class NetworkManager {
 
     public ClientProxy getClientById(int id){
         return _mappingPlayer2Proxy.get(id);
+    }
+
+    public void setConnectionListener(ConnectionListener listener){
+        _listeners.add(listener);
+    }
+
+    public void removeConnectionListener(ConnectionListener listener){
+        _listeners.remove(listener);
     }
 }
