@@ -8,10 +8,12 @@ import java.util.Collection;
 import Common.GameState;
 import Common.GameStateType;
 import Common.InputBitStream;
+import Common.OutputBitStream;
+import Common.RoomSettings;
 
 public class GameStateRoomHost implements GameState {
     private GameStateContextHost _parent;
-    private boolean _buttonPressed;
+    private RoomSettings _settingsToSend = new RoomSettings();
 
     public GameStateRoomHost(GameStateContextHost parent){
         _parent = parent;
@@ -19,30 +21,35 @@ public class GameStateRoomHost implements GameState {
 
     @Override
     public void update(long ms) {
-        NetworkManager net = CoreHost.get().getNetworkManager();
-        Collection<ClientProxy> clients = CoreHost.get().getNetworkManager().getClientProxies();
+        receive();
+        send();
+    }
 
+    private void send() {
+        OutputBitStream packetToSend = CoreHost.get().getNetworkManager().getPacketToSend();
+        if (_settingsToSend.writeToStream(packetToSend))
+            CoreHost.get().getNetworkManager().shouldSendThisFrame();
+
+        _settingsToSend = new RoomSettings();
+    }
+
+    private void receive(){
+        Collection<ClientProxy> clients = CoreHost.get().getNetworkManager().getClientProxies();
         for (ClientProxy client : clients){
             InputBitStream packet = client.getRawPacketQueue().poll();
             if (packet == null)
                 continue;
 
-            _buttonPressed = packet.read(1) == 1;
-        }
+            if (client == CoreHost.get().getNetworkManager().getHostClientProxy()){
+                _settingsToSend.readFromStream(packet);
 
-        // host sent start
-        if (_buttonPressed){
-            Log.i("Stub", "RoomHost: start button press received");
-            net.closeAccept();
-
-            try {
-                net.getPacketToSend().write(1, 1);
-                net.shouldSendThisFrame();
-            } catch (IOException e) {
-                e.printStackTrace();
+                if (_settingsToSend.startButtonPressed)
+                    onStartButtonPressed();
             }
-
-            _parent.switchState(GameStateType.MATCH);
         }
+    }
+
+    private void onStartButtonPressed() {
+        _parent.switchState(GameStateType.MATCH);
     }
 }

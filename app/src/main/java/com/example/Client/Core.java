@@ -4,6 +4,7 @@ import android.content.Context;
 
 import Common.AndroidTime;
 import Common.Camera;
+import Common.GameState;
 import Common.GameStateType;
 import Common.LatLonByteConverter;
 import Common.Time;
@@ -151,4 +152,6 @@ public class Core {
     public Time getTime(){ return _time; }
 
     public boolean isHost(){ return _isHost; }
+
+    public GameState getState() { return _stateContext.getState(); }
 }

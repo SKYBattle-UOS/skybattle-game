@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
@@ -22,7 +21,7 @@
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:hint="닉네임을 입력하시오"
+        android:hint="닉네임을 입력하세요"
         android:textSize="13sp"
         android:textStyle="bold" />
 
@@ -32,7 +31,24 @@
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_weight="0.5"
-        android:text="등록" />
+        android:text="변경" />
+
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/editTitleButton"
+        android:layout_width="130dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.5"
+        android:text="방제변경" />
 
     <TextView
         android:layout_width="match_parent"
@@ -42,14 +58,14 @@
         android:textSize="30sp" />
 
     <ListView
-    android:id="@+id/playerlist"
-    android:layout_width="match_parent"
-    android:layout_height="500dp"
-    android:layout_gravity="bottom"
-    android:entries="@array/reboot_screen_items" />
+        android:id="@+id/playerlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:entries="@array/reboot_screen_items" />
 
     <LinearLayout
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal">
 
@@ -61,10 +77,25 @@
             android:text="시작" />
 
         <Button
-        android:id="@+id/btn_exit"
+            android:id="@+id/exitButton"
             android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_weight="1"
-        android:text="나가기" />
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="나가기" />
+
+        <Button
+            android:id="@+id/teamAButton"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="팀 A" />
+
+        <Button
+            android:id="@+id/teamBButton"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="팀 B" />
     </LinearLayout>
+
 </LinearLayout>

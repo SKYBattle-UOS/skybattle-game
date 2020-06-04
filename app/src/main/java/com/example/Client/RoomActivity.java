@@ -4,14 +4,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +25,7 @@ import Host.CoreHost;
 
 public class RoomActivity extends AppCompatActivity implements Screen {
     private TextView _roomTitle;
+    private ListView _listView;
     ListView listView;
 
     @Override
@@ -37,6 +36,13 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
         ((AndroidUIManager) Core.get().getUIManager())
                 .getTitleText().observe(this, text -> _roomTitle.setText(text));
+
+        EditText editTitle = findViewById((R.id.editTitle));
+        findViewById(R.id.editTitleButton).setOnClickListener(v -> {
+            ((GameStateRoom) Core.get().getState()).changeRoomTitle(
+                    editTitle.getText().toString()
+            );
+        });
 
         ArrayList<String> items = new ArrayList<>(); //닉네임리스트를 저장할 배열
 
@@ -77,12 +83,12 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         //게임 시작 버튼
         Button btn_start = findViewById(R.id.startButton);
         btn_start.setOnClickListener(
-                v -> Core.get().getUIManager().invoke(AndroidUIManager.ROOM_START_PORT));
+                v -> ((GameStateRoom) Core.get().getState()).startGame());
 
         if (!Core.get().isHost()) btn_start.setEnabled(false);
 
         //방 나가기 버튼: 클릭 시, 이전 화면으로 돌아감. 돌아가기 전에 닉네임 삭제여부를 묻는다.
-        Button btn_exit = findViewById(R.id.btn_exit);
+        Button btn_exit = findViewById(R.id.exitButton);
         btn_exit.setOnClickListener(v -> {
             AlertDialog.Builder alert = new AlertDialog.Builder(RoomActivity.this);
             alert.setTitle("잠깐!");

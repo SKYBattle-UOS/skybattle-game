@@ -11,7 +11,6 @@ import androidx.lifecycle.OnLifecycleEvent;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import Common.Item;
 import Common.Player;
@@ -98,20 +97,6 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
                 _onComplete = null;
             }
         }
-    }
-
-    @Override
-    public void invoke(int port){
-        Runnable func = _callbackMapping.get(port);
-        if (func != null) {
-            func.run();
-        }
-    }
-
-    @Override
-    public void registerCallback(int port, Runnable func){
-        Objects.requireNonNull(func);
-        _callbackMapping.put(port, func);
     }
 
     @Override
