@@ -75,7 +75,6 @@ public class GameStateRoomHost implements GameState, ConnectionListener {
             packetToSend.write(_users.size(), 8);
             CoreHost.get().getNetworkManager().shouldSendThisFrame();
             for (Map.Entry<ClientProxy, RoomUserInfo> e : _users.entrySet()){
-                packetToSend.write(e.getKey().getPlayerId(), 32);
                 e.getValue().writeToStream(packetToSend);
             }
             _usersDirty = false;
@@ -93,6 +92,7 @@ public class GameStateRoomHost implements GameState, ConnectionListener {
         RoomUserInfo info = new RoomUserInfo();
         info.name = String.format("익명%d", _tempNameNumber++);
         info.team = 0;
+        info.playerId = client.getPlayerId();
         _users.put(client, info);
         _usersDirty = true;
     }

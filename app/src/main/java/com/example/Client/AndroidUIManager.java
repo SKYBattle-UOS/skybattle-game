@@ -9,11 +9,13 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.OnLifecycleEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import Common.Item;
 import Common.Player;
+import Common.RoomUserInfo;
 import Common.Skill;
 
 public class AndroidUIManager implements UIManager, LifecycleObserver {
@@ -36,6 +38,7 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     private MutableLiveData<String> _topText = new MutableLiveData<>();
     private MutableLiveData<String> _titleText = new MutableLiveData<>();
     private MutableLiveData<Integer> _health = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<RoomUserInfo>> _roomInfos = new MutableLiveData<>();
 
     private InGameFragment _ingameFrag;
 
@@ -44,6 +47,8 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
             _qwerTexts[i] = new MutableLiveData<>();
             _qwerEnables[i] = new MutableLiveData<>();
         }
+
+        _roomInfos.postValue(new ArrayList<>());
     }
 
     @Override
@@ -149,6 +154,11 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     }
 
     @Override
+    public void setRoomUserInfos(ArrayList<RoomUserInfo> roomInfos) {
+        _roomInfos.postValue(roomInfos);
+    }
+
+    @Override
     public void updateItems() {
         Player thisPlayer = Core.get().getMatch().getThisPlayer();
 
@@ -225,5 +235,7 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     }
 
     public MutableLiveData<Integer> getHealth() { return _health; }
+
+    public MutableLiveData<ArrayList<RoomUserInfo>> getRoomUserInfos(){ return _roomInfos; }
 
 }

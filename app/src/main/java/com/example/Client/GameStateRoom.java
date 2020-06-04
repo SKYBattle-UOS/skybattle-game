@@ -1,7 +1,6 @@
 package com.example.Client;
 
-import android.util.Log;
-
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,7 +19,8 @@ public class GameStateRoom implements GameState {
     private RoomSettings _settingsToSend = new RoomSettings();
     private boolean _infoDirty;
 
-    private HashMap<Integer, RoomUserInfo> _roomUsers = new HashMap<>();
+    private ArrayList<RoomUserInfo> _roomUserInfos = new ArrayList<>();
+    private RoomUserInfo _myRoomUserInfo;
 
     GameStateRoom(GameStateContext stateContext){
         _parent = stateContext;
@@ -43,7 +43,7 @@ public class GameStateRoom implements GameState {
         Util.sendHas(packet, _infoDirty);
         if (_infoDirty){
             Core.get().getPakcetManager().shouldSendThisFrame();
-            _roomUsers.get(Core.get().getPakcetManager().getPlayerId()).writeToStream(packet);
+            _myRoomUserInfo.writeToStream(packet);
             _infoDirty = false;
         }
     }
@@ -63,14 +63,17 @@ public class GameStateRoom implements GameState {
         _settings = new RoomSettings();
 
         if (Util.hasMessage(packet)){
-            _roomUsers.clear();
+            _roomUserInfos.clear();
             int numUsers = packet.read(8);
             for (int i = 0; i < numUsers; i++){
                 RoomUserInfo info = new RoomUserInfo();
-                int playerId = packet.read(32);
                 info.readFromStream(packet);
-                _roomUsers.put(playerId, info);
+                if (info.playerId == Core.get().getPakcetManager().getPlayerId())
+                    _myRoomUserInfo = info;
+
+                _roomUserInfos.add(info);
             }
+            Core.get().getUIManager().setRoomUserInfos(_roomUserInfos);
         }
     }
 
@@ -109,10 +112,12 @@ public class GameStateRoom implements GameState {
     }
 
     public void setUserName(String name){
-        _roomUsers.get(Core.get().getPakcetManager().getPlayerId()).name = name;
+        _myRoomUserInfo.name = name;
+        _infoDirty = true;
     }
 
     public void setTeam(int team){
-        _roomUsers.get(Core.get().getPakcetManager().getPlayerId()).team = team;
+        _myRoomUserInfo.team = team;
+        _infoDirty = true;
     }
 }
