@@ -14,7 +14,8 @@ public class PosionCommon extends PlayerTargetSkill {
         if (caster == Core.get().getMatch().getThisPlayer()) {
             String targetName = Core.get().getMatch().getRegistry().getGameObject(_networkId).getName();
             Core.get().getUIManager().setTopText(targetName + "(을)를 독 공격 했습니다.");
-           // Core.get().getUIManager().setButtonActive(indexInArray, false);
+            int btnIndex = Core.get().getUIManager().findButtonIndex(this);
+            Core.get().getUIManager().setButtonActive(btnIndex, false);
         }
     }
 }
