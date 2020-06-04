@@ -58,7 +58,7 @@ public class InGameFragment extends Fragment {
         btn_map.setOnClickListener(v -> ((MatchActivity) getActivity()).showDebugMap());
 
         TextView health = view.findViewById(R.id.health_text);
-        uiManager.getHealth().observe(this, i -> health.setText("체력 : " + (i / 1000)));
+        uiManager.getHealth().observe(this, i -> health.setText(String.format("체력 : %.1f", (float)(i / 1000))));
     }
 
     public void addItemButton(OnButtonCreatedListener callback){

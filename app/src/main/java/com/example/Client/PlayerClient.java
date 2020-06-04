@@ -6,6 +6,7 @@ import Common.InputBitStream;
 import Common.Player;
 import Common.PlayerProperty;
 import Common.Skill;
+import Common.SuicideCommon;
 import Common.WazakWazakCommon;
 import Common.HealthUpCommon;
 
@@ -26,7 +27,7 @@ public class PlayerClient extends GameObjectClient implements Player {
         _property.getSkills(friend).set(0, new WazakWazakCommon());
         _property.getSkills(friend).set(1, new GlobalWazakWazakCommon());
         _property.getSkills(friend).set(2, new HealthUpCommon());
-        _property.getSkills(friend).set(3, new HealthUpCommon());
+        _property.getSkills(friend).set(3, new SuicideCommon());
         _property.setOnPlayerStateChangeListener(this::onPlayerStateChange);
     }
 

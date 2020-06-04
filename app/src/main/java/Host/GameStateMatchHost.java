@@ -62,7 +62,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
         _readOnlyPlayers = new ReadOnlyList<>(_players);
 
         _battleGroundLatLon = new double[2];
-        GET_READY_COUNT = 1000;
+        GET_READY_COUNT = 3000;
         NUM_PACKET_PER_FRAME = 3;
 
         // TODO
@@ -103,6 +103,9 @@ public class GameStateMatchHost implements GameState, MatchHost {
             go.setIndexInWorld(_gameObjects.size());
             _gameObjects.add(go);
             _worldSetter.generateCreateInstruction(_newGOClassId.get(i++), go.getNetworkId(), -1);
+
+            if (go instanceof Player)
+                _players.add((Player) go);
         }
 
         _newGameObjects.clear();
