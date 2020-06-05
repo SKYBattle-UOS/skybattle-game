@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import android.util.Log;
+
 import Common.GameState;
 import Common.GameStateType;
 import Common.LatLonByteConverter;
@@ -39,14 +41,14 @@ public class GameStateContext {
      */
     public void switchState(GameStateType gameState){
         switch (gameState){
-            case MAIN:
-                _currentState = new GameStateMain(this);
-                break;
             case ROOM:
                 _currentState = new GameStateRoom(this);
                 break;
             case MATCH:
                 _currentState = new GameStateMatch(this);
+                break;
+            default:
+                Log.i("hehe", "wtf");
                 break;
         }
         _currentState.start();
