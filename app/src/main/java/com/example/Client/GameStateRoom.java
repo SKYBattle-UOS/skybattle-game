@@ -1,10 +1,6 @@
 package com.example.Client;
 
-import android.util.Log;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import Common.GameState;
 import Common.GameStateType;

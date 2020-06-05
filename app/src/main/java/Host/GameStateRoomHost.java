@@ -2,7 +2,6 @@ package Host;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import Common.GameState;
@@ -16,7 +15,6 @@ import Common.Util;
 public class GameStateRoomHost implements GameState, ConnectionListener {
     private GameStateContextHost _parent;
     private RoomSettings _settingsToSend = new RoomSettings();
-    private HashMap<ClientProxy, RoomUserInfo> _users = new HashMap<>();
     private int _tempNameNumber = 1;
     private boolean _usersDirty;
 
@@ -59,7 +57,7 @@ public class GameStateRoomHost implements GameState, ConnectionListener {
             }
 
             if (packet.read(1) == 1){
-                _users.get(client).readFromStream(packet);
+                _parent.getUsers().get(client).readFromStream(packet);
                 _usersDirty = true;
             }
         }
@@ -72,9 +70,9 @@ public class GameStateRoomHost implements GameState, ConnectionListener {
 
         Util.sendHas(packetToSend, _usersDirty);
         if (_usersDirty){
-            packetToSend.write(_users.size(), 8);
+            packetToSend.write(_parent.getUsers().size(), 8);
             CoreHost.get().getNetworkManager().shouldSendThisFrame();
-            for (Map.Entry<ClientProxy, RoomUserInfo> e : _users.entrySet()){
+            for (Map.Entry<ClientProxy, RoomUserInfo> e : _parent.getUsers().entrySet()){
                 e.getValue().writeToStream(packetToSend);
             }
             _usersDirty = false;
@@ -93,13 +91,13 @@ public class GameStateRoomHost implements GameState, ConnectionListener {
         info.name = String.format("익명%d", _tempNameNumber++);
         info.team = 0;
         info.playerId = client.getPlayerId();
-        _users.put(client, info);
+        _parent.getUsers().put(client, info);
         _usersDirty = true;
     }
 
     @Override
     public void onConnectionLost(ClientProxy client){
-        _users.remove(client);
+        _parent.getUsers().remove(client);
         _usersDirty = true;
     }
 }
