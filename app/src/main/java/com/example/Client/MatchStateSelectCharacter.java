@@ -1,9 +1,13 @@
 package com.example.Client;
 
+import java.io.IOException;
+
+import Common.CharacterFactory;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
 import Common.OutputBitStream;
+import Common.Player;
 import Common.Util;
 
 /**
@@ -15,36 +19,67 @@ import Common.Util;
  */
 public class MatchStateSelectCharacter implements GameState {
     private GameStateMatch _match;
-    private boolean _selectedCharacter;
-    private boolean _sentSelected;
     private boolean _waiting;
+    private CharacterFactory _charFactory;
+    private int _selectedCharacter = -1;
+    private boolean _sentCharacter;
 
     MatchStateSelectCharacter(GameStateMatch match) {
         _match = match;
+        _charFactory = new CharacterFactory(Core.get().getGameObjectFactory());
         Core.get().getUIManager().setTopText("집합 완료 : 캐릭터를 선택하세요");
-        _selectedCharacter = false;
-        _sentSelected = false;
     }
 
     @Override
     public void update(long ms) {
         if (_waiting) return;
 
+        receive();
+        send();
+    }
+
+    public void selectCharacter(int index){
+        _selectedCharacter = index;
+    }
+
+    private void send() {
+        OutputBitStream packetToSend = Core.get().getPakcetManager().getPacketToSend();
+        boolean shouldSend = (_selectedCharacter >= 0 && !_sentCharacter);
+        Util.sendHas(packetToSend, shouldSend);
+        if (shouldSend){
+            try {
+                packetToSend.write(_selectedCharacter, 8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Core.get().getPakcetManager().shouldSendThisFrame();
+            _sentCharacter = true;
+        }
+    }
+
+    private void receive() {
         InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
-        if (_selectedCharacter && !_sentSelected) {
-            Core.get().getPakcetManager().shouldSendThisFrame();
-            _sentSelected = true;
-            return;
-        }
-
-        OutputBitStream packetToSend = Core.get().getPakcetManager().getPacketToSend();
-        Util.sendHas(packetToSend, _selectedCharacter);
-
+        // character select complete
         if (Util.hasMessage(packet)){
+            int numPlayers = packet.read(8);
+            for (int i = 0; i < numPlayers; i++){
+                int playerId = packet.read(32);
+                int character = packet.read(8);
+                Player player = findPlayer(playerId);
+                _charFactory.setCharacterProperty(player, character);
+            }
+
             _waiting = true;
             Core.get().getUIManager().switchScreen(ScreenType.MAP, ()->_match.switchState(MatchStateType.GET_READY));
         }
+    }
+
+    private Player findPlayer(int playerId) {
+        for (Player p : _match.getPlayers())
+            if (p.getProperty().getPlayerId() == playerId)
+                return p;
+        return null;
     }
 }

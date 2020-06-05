@@ -31,8 +31,6 @@ public class MatchStateAssemble implements GameState {
 
     @Override
     public void update(long ms) {
-        if (_waiting) return;
-
         InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         OutputBitStream outPacket = Core.get().getPakcetManager().getPacketToSend();
 
@@ -56,9 +54,8 @@ public class MatchStateAssemble implements GameState {
         }
 
         if (Util.hasMessage(packet)) {
-            _waiting = true;
-            Core.get().getUIManager().switchScreen(ScreenType.CHARACTERSELECT,
-                    ()-> _match.switchState(MatchStateType.SELECT_CHARACTER));
+            _match.switchState(MatchStateType.SELECT_CHARACTER);
+            Core.get().getUIManager().switchScreen(ScreenType.CHARACTERSELECT, null);
         }
     }
 

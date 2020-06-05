@@ -14,7 +14,13 @@ import Common.HealthUpCommon;
 import Host.WazakWazakHost;
 
 public class PlayerClient extends GameObjectClient implements Player {
-    private PlayerProperty _property = new PlayerProperty(){
+    public static class Friend {
+        private Friend(){}
+    }
+
+    private static final Friend friend = new Friend();
+
+    private PlayerProperty _property = new PlayerProperty(this){
         @Override
         public void setHealth(int health) {
             super.setHealth(health);
@@ -31,7 +37,6 @@ public class PlayerClient extends GameObjectClient implements Player {
         _property.getSkills(friend).set(1, new GlobalWazakWazakCommon());
         _property.getSkills(friend).set(2, new HealthUpCommon());
         _property.getSkills(friend).set(3, new SuicideCommon());
-        _property.setOnPlayerStateChangeListener(this::onPlayerStateChange);
     }
 
     @Override
@@ -84,6 +89,16 @@ public class PlayerClient extends GameObjectClient implements Player {
         return _property;
     }
 
+    @Override
+    public void setProperty(PlayerProperty property) {
+        _property.move(property);
+    }
+
+    @Override
+    public void onPlayerStateChange(PlayerState state){
+        _shouldChangeState = true;
+    }
+
     private void reconstructSkills(){
         if (Core.get().getMatch().getThisPlayer() == this)
             Core.get().getUIManager().updateItems();
@@ -100,9 +115,6 @@ public class PlayerClient extends GameObjectClient implements Player {
             Core.get().getUIManager().setHealth(health);
     }
 
-    private void onPlayerStateChange(PlayerState state){
-        _shouldChangeState = true;
-    }
 
     private void changeState(){
         _playerState.finish();

@@ -8,38 +8,9 @@
     android:focusable="true">
 
     <Button
-        android:id="@+id/btn_character1"
+        android:id="@+id/characterButton0"
         android:layout_width="match_parent"
         android:layout_height="95dp"
         android:text="멋쟁이"
         android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/btn_character2"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:text="돌팔이"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/btn_character3"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:text="깐깐이"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/btn_character4"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:text="진심이"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/btn_character5"
-        android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:text="날쌘돌이"
-        android:textSize="20sp" />
-
 </LinearLayout>
