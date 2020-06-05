@@ -13,6 +13,7 @@ import Common.GameStateType;
  */
 public class GameStateMain implements GameState {
     private GameStateContext _parent;
+    private boolean _goodToGo;
 
     GameStateMain(GameStateContext parent){
         _parent = parent;
@@ -20,15 +21,11 @@ public class GameStateMain implements GameState {
 
     @Override
     public void update(long ms) {
-        // TODO
-    }
-
-    @Override
-    public void render(Renderer renderer, long ms) {
-//        Log.i("Stub", "GameStateMain: Showing Main Screen UI");
+        if (_goodToGo)
+            _parent.switchState(GameStateType.ROOM);
     }
 
     public void enterRoom() {
-        Core.get().getUIManager().switchScreen(ScreenType.ROOM, () -> _parent.switchState(GameStateType.ROOM));
+        Core.get().getUIManager().switchScreen(ScreenType.ROOM, () -> _goodToGo = true);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import android.util.Log;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,8 +109,7 @@ public class GameStateRoom implements GameState {
     }
 
     public void exitRoom() {
-        Core.get().getUIManager().switchScreen(ScreenType.MAIN,
-                ()->_parent.switchState(GameStateType.MAIN));
+        Core.get().getUIManager().switchScreen(ScreenType.MAIN, null);
     }
 
     public void setUserName(String name){

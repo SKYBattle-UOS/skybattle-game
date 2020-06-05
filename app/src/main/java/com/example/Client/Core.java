@@ -55,7 +55,7 @@ public class Core {
             _coreInstance = new Core(context);
 
             if (!_coreInstance._isInitialized){
-                _coreInstance._stateContext.switchState(GameStateType.MAIN);
+                _coreInstance._stateContext.switchState(GameStateType.ROOM);
                 _coreInstance._isInitialized = true;
             }
         }
@@ -70,9 +70,9 @@ public class Core {
         ((NetworkPacketManager) _packetManager).init(host,
             b -> {
                 if (b){
+                    _uiManager.switchScreen(ScreenType.ROOM, null);
                     _runThread = new Thread(() -> _coreInstance.run());
                     _runThread.start();
-                    ((GameStateMain) _stateContext.getState()).enterRoom();
                     _isHost = isHost;
                 }
                 else {
@@ -119,7 +119,7 @@ public class Core {
             _renderer.render(ms);
 
         _uiManager.update(ms);
-    }
+}
 
     public PacketManager getPakcetManager(){
         return _packetManager;
