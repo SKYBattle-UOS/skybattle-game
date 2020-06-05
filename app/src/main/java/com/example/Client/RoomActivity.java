@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import Common.GameState;
 import Common.RoomUserInfo;
 import Host.CoreHost;
 
@@ -34,15 +35,18 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         _roomTitle = findViewById(R.id.roomTitle);
 
         AndroidUIManager uiManager = (AndroidUIManager) Core.get().getUIManager();
+        GameStateRoom roomState = (GameStateRoom) Core.get().getState();
+
         uiManager.getTitleText().observe(this, text -> _roomTitle.setText(text));
-        uiManager.getRoomUserInfos().observe(this, infos -> _listViewAdapter.notifyDataSetChanged());
+        uiManager.getRoomUserInfos().observe(this, infos -> {
+            _listViewAdapter.clear();
+            _listViewAdapter.addAll(infos);
+            _listViewAdapter.notifyDataSetChanged();
+        });
 
         EditText editTitle = findViewById((R.id.editTitle));
-        findViewById(R.id.editTitleButton).setOnClickListener(v -> {
-            ((GameStateRoom) Core.get().getState()).changeRoomTitle(
-                    editTitle.getText().toString()
-            );
-        });
+        findViewById(R.id.editTitleButton).setOnClickListener(
+                v -> roomState.changeRoomTitle(editTitle.getText().toString()));
 
         if (!Core.get().isHost()){
             LinearLayout roomLinLayout = findViewById(R.id.roomLinLayout);
@@ -51,7 +55,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         }
 
         _listView = findViewById(R.id.playerlist);
-        _listViewAdapter = new CustomAdapter(this, 0, uiManager.getRoomUserInfos().getValue());
+        _listViewAdapter = new CustomAdapter(this, 0, new ArrayList<>());
         _listView.setAdapter(_listViewAdapter);
 
         Button userNameButton = findViewById(R.id.btn_nickname);
@@ -67,17 +71,22 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
         //게임 시작 버튼
         Button startButton = findViewById(R.id.startButton);
-        startButton.setOnClickListener(
-                v -> ((GameStateRoom) Core.get().getState()).startGame());
+        startButton.setOnClickListener(v -> roomState.startGame());
 
         if (!Core.get().isHost()) startButton.setEnabled(false);
 
+        // 나가기 버튼
         Button btn_exit = findViewById(R.id.exitButton);
         btn_exit.setOnClickListener(v -> {
             if (Core.get().isHost())
                 CoreHost.destroyInstance();
             Core.get().close();
         });
+
+        Button teamA = findViewById(R.id.teamAButton);
+        Button teamB = findViewById(R.id.teamBButton);
+        teamA.setOnClickListener(v -> roomState.setTeam(0));
+        teamB.setOnClickListener(v -> roomState.setTeam(1));
 }
 
   /*한 화면에 리스트뷰, 텍스트뷰, 버튼을 표현하기 위해 커스텀 어댑터 사용*/
