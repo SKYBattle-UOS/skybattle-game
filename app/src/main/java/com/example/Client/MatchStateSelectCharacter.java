@@ -42,6 +42,10 @@ public class MatchStateSelectCharacter implements GameState {
         _selectedCharacter = index;
     }
 
+    public CharacterFactory getCharacterFactory(){
+        return _charFactory;
+    }
+
     private void send() {
         OutputBitStream packetToSend = Core.get().getPakcetManager().getPacketToSend();
         boolean shouldSend = (_selectedCharacter >= 0 && !_sentCharacter);

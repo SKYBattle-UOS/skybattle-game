@@ -35,4 +35,16 @@ public class CharacterFactory {
         skills.set(3, _goFactory.createSkill(Util.SuicideClassId));
         return property;
     }
+
+    public String getCharacterName(int index){
+        switch (index){
+            case 0:
+                return "테스트 캐릭터";
+        }
+        return "No Name";
+    }
+
+    public int size(){
+        return 1;
+    }
 }

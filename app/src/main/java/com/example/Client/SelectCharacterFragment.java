@@ -5,10 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import Common.CharacterFactory;
 
 public class SelectCharacterFragment extends Fragment {
     @Override
@@ -23,8 +26,14 @@ public class SelectCharacterFragment extends Fragment {
         MatchStateSelectCharacter matchState =
                 (MatchStateSelectCharacter) ((GameStateMatch) Core.get().getState()).getState();
 
-        Button button = view.findViewById(R.id.characterButton0);
-        button.setText("멋쟁이");
-        button.setOnClickListener(v -> matchState.selectCharacter(0));
+        CharacterFactory factory = matchState.getCharacterFactory();
+        for (int i = 0; i < factory.size(); i++){
+            Button button = (Button) LayoutInflater
+                    .from(getContext()).inflate(R.layout.button_simple, (ViewGroup) view, false);
+            button.setText(factory.getCharacterName(i));
+            int finalI = i;
+            button.setOnClickListener(v -> matchState.selectCharacter(finalI));
+            ((LinearLayout) view).addView(button);
+        }
     }
 }
