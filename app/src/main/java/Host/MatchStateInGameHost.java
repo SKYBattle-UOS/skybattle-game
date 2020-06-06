@@ -1,5 +1,7 @@
 package Host;
 
+import com.example.Client.PlayerState;
+
 import Common.GameState;
 import Common.Player;
 import Common.PlayerProperty;
@@ -27,9 +29,11 @@ class MatchStateInGameHost implements GameState {
         for (Player p : players){
             p.getProperty().setInvincibility(false);
             p.getProperty().setCantAttack(false);
+            p.getProperty().setPlayerState(PlayerState.NORMAL);
             _match.getWorldSetterHost().generateUpdateInstruction(
                     p.getGameObject().getNetworkId(),
                     PlayerProperty.invincibilityFlag | PlayerProperty.cantAttackFlag
+                    | PlayerProperty.playerStateFlag
             );
         }
     }

@@ -1,17 +1,10 @@
 package com.example.Client;
 
-import Common.DuplicationTrickCommon;
 import Common.GameObject;
-import Common.GlobalWazakWazakCommon;
 import Common.InputBitStream;
 import Common.Player;
 import Common.PlayerProperty;
 import Common.Skill;
-import Common.SuicideCommon;
-import Common.SneakCommon;
-import Common.WazakWazakCommon;
-import Common.HealthUpCommon;
-import Host.WazakWazakHost;
 
 public class PlayerClient extends GameObjectClient implements Player {
     public static class Friend {
@@ -31,13 +24,6 @@ public class PlayerClient extends GameObjectClient implements Player {
     private boolean _reconstructSkills;
     private PlayerStateBase _playerState = new PlayerStateBase(this);
     private boolean _shouldChangeState;
-
-    public PlayerClient() {
-        _property.getSkills(friend).set(0, new WazakWazakCommon());
-        _property.getSkills(friend).set(1, new GlobalWazakWazakCommon());
-        _property.getSkills(friend).set(2, new HealthUpCommon());
-        _property.getSkills(friend).set(3, new SuicideCommon());
-    }
 
     @Override
     public void readFromStream(InputBitStream stream, int dirtyFlag) {

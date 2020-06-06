@@ -8,10 +8,6 @@ import java.util.Queue;
 
 import Host.ClientProxy;
 import Host.CoreHost;
-import Host.GlobalWazakWazakHost;
-import Host.HealthUpHost;
-import Host.SuicideHost;
-import Host.WazakWazakHost;
 
 import static Common.PlayerProperty.*;
 
@@ -30,13 +26,6 @@ public class PlayerHost extends GameObject implements Damageable, Player {
             super.setHealth(health);
         }
     };
-
-    public PlayerHost() {
-        _property.getSkills(friend).set(0, new WazakWazakHost());
-        _property.getSkills(friend).set(1, new GlobalWazakWazakHost());
-        _property.getSkills(friend).set(2, new HealthUpHost());
-        _property.getSkills(friend).set(3, new SuicideHost());
-    }
 
     @Override
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
@@ -83,6 +72,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
             _toRemoveIndices.clear();
         }
     }
+
 
     private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
