@@ -19,8 +19,6 @@ public class PlayerProperty {
     public static int skillDirtyFlag;
     public static int endOfFlag;
     public static int endOfFlagPos;
-    public static int invincibilityFlag;
-    public static int cantAttackFlag;
     public static int reflectOnFlag;
     public static int cantSkillFlag;
     public static int playerStateFlag;
