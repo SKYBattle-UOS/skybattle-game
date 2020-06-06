@@ -229,7 +229,6 @@ public class PlayerProperty {
         _readOnlySkills = other._readOnlySkills;
         _team = other._team;
         _playerState = other._playerState;
-        _playerId = other._playerId;
         _isInvincible = other._isInvincible;
         _health = other._health;
         _maxHealth = other._maxHealth;

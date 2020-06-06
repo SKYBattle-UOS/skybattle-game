@@ -150,6 +150,7 @@ public class NetworkManager {
         } catch (IOException e) {
             client.setDisconnected(true);
             _mappingPlayer2Proxy.remove(client.getPlayerId());
+            _clientSockets.remove(socket);
 
             for (ConnectionListener cl : _listeners)
                 cl.onConnectionLost(client);
