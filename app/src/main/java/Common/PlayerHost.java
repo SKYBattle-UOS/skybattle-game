@@ -23,7 +23,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     }
     private static final Friend friend = new Friend();
     private double[] _newPosTemp = new double[2];
-    private ArrayList<Integer> _toRemoveIndices = new ArrayList<>();
+    private ArrayList<Item> _itemsToRemove = new ArrayList<>();
     private DamageApplier _damageApplier = new ZeroDamageApplier();
     private DamageCalculator _damageCalculator = new ZeroDamageCalculator();
 
@@ -60,24 +60,27 @@ public class PlayerHost extends GameObject implements Damageable, Player {
             Skill skill = _property.getSkills().get(i);
             if (skill.isDirty()) {
                 skill.cast(this);
+            }
+        }
 
-                // if item skill
-                if (i > 3){
-                    _toRemoveIndices.add(i - 4);
-                }
+        for (Item item : getItems()){
+            Skill skill = item.getProperty().getSkill();
+            if (skill.isDirty()){
+                skill.cast(this);
+                _itemsToRemove.add(item);
             }
         }
     }
 
     @Override
     public void after(long ms) {
-        for (int i : _toRemoveIndices)
-            removeItem(i);
-
-        if (!_toRemoveIndices.isEmpty()){
+        for (Item item : _itemsToRemove){
+            removeItem(item);
+        }
+        if (!_itemsToRemove.isEmpty()){
             CoreHost.get().getMatch().getWorldSetterHost()
                     .generateUpdateInstruction(getNetworkId(), itemsDirtyFlag);
-            _toRemoveIndices.clear();
+            _itemsToRemove.clear();
         }
     }
 
@@ -154,18 +157,6 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     }
 
     @Override
-    protected void addItem(Item item) {
-        super.addItem(item);
-        _property.getSkills(friend).add(item.getProperty().getSkill());
-    }
-
-    @Override
-    protected void removeItem(int index) {
-        super.removeItem(index);
-        _property.getSkills(friend).remove(index + 4);
-    }
-
-    @Override
     public void takeDamage(Player attacker, int damage) {
         _damageApplier.applyDamage(this, attacker, damage);
     }
@@ -187,12 +178,13 @@ public class PlayerHost extends GameObject implements Damageable, Player {
 
     @Override
     public void setProperty(PlayerProperty property) {
-        _property.move(property);
+        _property.getFromFactory(property);
     }
 
     private void makeGhost(){
         getProperty().setHealth(100000);
-        getProperty().setInvincibility(true);
+        setDamageApplier(new ZeroDamageApplier());
+        setDamageCalculator(new ZeroDamageCalculator());
         getProperty().setPlayerState(PlayerState.GHOST);
         setLook(ImageType.INVISIBLE);
 

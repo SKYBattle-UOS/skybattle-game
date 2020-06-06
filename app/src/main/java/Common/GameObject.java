@@ -213,8 +213,8 @@ public abstract class GameObject {
         _items.add(item);
     }
 
-    protected void removeItem(int index) {
-        _items.remove(index);
+    protected void removeItem(Item item) {
+        _items.remove(item);
     }
     // endregion
 }

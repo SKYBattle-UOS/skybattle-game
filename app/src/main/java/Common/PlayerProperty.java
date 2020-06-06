@@ -21,7 +21,6 @@ public class PlayerProperty {
     public static int endOfFlagPos;
     public static int invincibilityFlag;
     public static int cantAttackFlag;
-    public static int reflectAttackFlag;
     public static int reflectOnFlag;
     public static int cantSkillFlag;
     public static int playerStateFlag;
@@ -33,9 +32,6 @@ public class PlayerProperty {
         teamDirtyFlag = 1 << i++;
         skillDirtyFlag = 1 << i++;
         maxHealthDirtyFlag = 1 << i++;
-        invincibilityFlag = 1 << i++;
-        cantAttackFlag = 1 << i++;
-        reflectAttackFlag = 1 << i++;
         reflectOnFlag = 1 << i++;
         cantSkillFlag = 1 << i++;
         playerStateFlag = 1 << i++;
@@ -50,9 +46,6 @@ public class PlayerProperty {
     private int _maxHealth = 100000;
     private int _team;
     private int _dps = 20000;
-    private boolean _isInvincible = true;
-    private boolean _cantAttack = true;
-    private boolean _reflectAttack;
     private boolean _reflectOn;
     private boolean _cantSkill;
     private PlayerState _playerState = PlayerState.NORMAL;
@@ -86,15 +79,6 @@ public class PlayerProperty {
         if ((dirtyFlag & teamDirtyFlag) != 0)
             setTeam(stream.read(1));
 
-        if ((dirtyFlag & invincibilityFlag) != 0)
-            setInvincibility(stream.read(1) == 1);
-
-        if ((dirtyFlag & cantAttackFlag) != 0)
-            setCantAttack(stream.read(1) == 1);
-
-        if ((dirtyFlag & reflectAttackFlag) != 0)
-            setReflectAttack(stream.read(1) == 1);
-
         if ((dirtyFlag & reflectOnFlag) != 0)
             setReflectOn(stream.read(1) == 1);
 
@@ -125,15 +109,6 @@ public class PlayerProperty {
 
             if ((dirtyFlag & teamDirtyFlag) != 0)
                 stream.write(getTeam(), 1);
-
-            if ((dirtyFlag & invincibilityFlag) != 0)
-                stream.write(isInvincible() ? 1 : 0, 1);
-
-            if ((dirtyFlag & cantAttackFlag) != 0)
-                stream.write(isCantAttack() ? 1 : 0, 1);
-
-            if ((dirtyFlag & reflectAttackFlag) != 0)
-                stream.write(isReflectAttack() ? 1 : 0, 1);
 
             if ((dirtyFlag & reflectOnFlag) != 0)
                 stream.write(isReflectOn() ? 1 : 0, 1);
@@ -199,30 +174,6 @@ public class PlayerProperty {
         this._health = health;
     }
 
-    public boolean isInvincible() {
-        return _isInvincible;
-    }
-
-    public void setInvincibility(boolean invincibility){
-        _isInvincible = invincibility;
-    }
-
-    public boolean isCantAttack() {
-        return _cantAttack;
-    }
-
-    public void setCantAttack(boolean cantAttack){
-        _cantAttack = cantAttack;
-    }
-
-    public void setReflectAttack(boolean reflectAttack){
-        _reflectAttack = reflectAttack;
-    }
-
-    public boolean isReflectAttack() {
-        return _reflectAttack;
-    }
-
     public void setReflectOn(boolean reflectOn){
         _reflectOn = reflectOn;
     }
@@ -258,17 +209,14 @@ public class PlayerProperty {
         return _playerState;
     }
 
-    public void move(PlayerProperty other) {
-        _skills = other._skills;
-        _readOnlySkills = other._readOnlySkills;
-        _playerState = other._playerState;
-        _isInvincible = other._isInvincible;
-        _health = other._health;
-        _maxHealth = other._maxHealth;
-        _cantAttack = other._cantAttack;
-        _reflectAttack = other._reflectAttack;
-        _reflectOn = other._reflectOn;
-        _cantSkill = other._cantSkill;
-        _dps = other._dps;
+    public void getFromFactory(PlayerProperty fromFactory) {
+        _skills = fromFactory._skills;
+        _readOnlySkills = fromFactory._readOnlySkills;
+        _playerState = fromFactory._playerState;
+        _health = fromFactory._health;
+        _maxHealth = fromFactory._maxHealth;
+        _reflectOn = fromFactory._reflectOn;
+        _cantSkill = fromFactory._cantSkill;
+        _dps = fromFactory._dps;
     }
 }

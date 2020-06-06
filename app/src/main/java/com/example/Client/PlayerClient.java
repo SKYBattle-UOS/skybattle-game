@@ -77,7 +77,7 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void setProperty(PlayerProperty property) {
-        _property.move(property);
+        _property.getFromFactory(property);
     }
 
     @Override
