@@ -4,11 +4,6 @@ import com.example.Client.Core;
 import com.example.Client.UIManager;
 
 public class InvincibilityCommon extends PlayerTargetSkill {
-
-    public InvincibilityCommon(int index) {
-        setTargetPlayer(index);
-    }
-
     @Override
     public String getName() {
         return "무적 !!";

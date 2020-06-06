@@ -5,10 +5,6 @@ import Common.InvincibilityCommon;
 import Common.PlayerProperty;
 
 public class InvincibilityHost extends InvincibilityCommon {
-    public InvincibilityHost(int index) {
-        super(index);
-    }
-
     @Override
     public void cast(GameObject caster){
         todo(caster,true);
