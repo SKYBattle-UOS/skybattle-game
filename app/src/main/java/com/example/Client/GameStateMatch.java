@@ -189,4 +189,8 @@ public class GameStateMatch implements GameState, Match {
     public void setPlayerId(int playerId){
 
     }
+
+    public GameState getState() {
+        return _currentState;
+    }
 }

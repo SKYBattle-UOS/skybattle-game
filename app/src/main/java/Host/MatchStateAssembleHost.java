@@ -7,6 +7,8 @@ import java.util.Collection;
 import Common.CollisionState;
 import Common.GameObject;
 import Common.GameState;
+import Common.ImageType;
+import Common.Player;
 import Common.Util;
 import Common.InputBitStream;
 import Common.MatchStateType;
@@ -34,19 +36,26 @@ class MatchStateAssembleHost implements GameState {
 
         boolean assembled = hasEverybodyAssembled();
 
-        OutputBitStream outPacket = CoreHost.get().getNetworkManager().getPacketToSend();
+        NetworkManager netManager = CoreHost.get().getNetworkManager();
+        OutputBitStream outPacket = netManager.getPacketToSend();
 
         Util.sendHas(outPacket, _shouldSendAllInit);
         if (_shouldSendAllInit){
             if (!_match.isWorldSetterActive()){
-                CoreHost.get().getNetworkManager().shouldSendThisFrame();
+                netManager.shouldSendThisFrame();
                 _match.setWorldSetterActive();
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
                 _match.createPlayers();
 
-                for (GameObject go : _match.getWorld()){
-                    if (go.getName().equals("여기여기 모여라")) {
-                        _assemblePoint = go;
+                for (Player p : _match.getPlayers()){
+                    if (p.getProperty().getPlayerId() == 0) {
+                        _assemblePoint = p.getGameObject();
+                        _assemblePoint.setLook(ImageType.CIRCLE_WITH_MARKER);
+                        _assemblePoint.setRadius(100);
+                        _match.getWorldSetterHost()
+                                .generateUpdateInstruction(
+                                        _assemblePoint.getNetworkId(),
+                                        GameObject.imageTypeDirtyFlag | GameObject.radiusDirtyFlag);
                         return;
                     }
                 }
@@ -55,7 +64,12 @@ class MatchStateAssembleHost implements GameState {
 
         Util.sendHas(outPacket, assembled);
         if (assembled){
-            _assemblePoint.scheduleDeath();
+            _assemblePoint.setLook(ImageType.MARKER);
+            _assemblePoint.setRadius(2.5f);
+            _match.getWorldSetterHost()
+                    .generateUpdateInstruction(
+                            _assemblePoint.getNetworkId(),
+                            GameObject.imageTypeDirtyFlag | GameObject.radiusDirtyFlag);
             CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
         }
@@ -65,7 +79,7 @@ class MatchStateAssembleHost implements GameState {
         if (_match.isWorldSetterActive()){
             Collection<CollisionState> collisions = _match.getCollider().getCollisions(_assemblePoint);
             if (CoreHost.get().getMatch().getPlayers().size() != 0)
-                return collisions.size() == CoreHost.get().getMatch().getPlayers().size();
+                return collisions.size() + 1 == CoreHost.get().getMatch().getPlayers().size();
         }
         return false;
     }

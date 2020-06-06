@@ -8,33 +8,24 @@ import java.util.Queue;
 
 import Host.ClientProxy;
 import Host.CoreHost;
-import Host.DuplicationTrickHost;
-import Host.GlobalWazakWazakHost;
-import Host.HealthUpHost;
-import Host.SuicideHost;
-import Host.WazakWazakHost;
-import Host.SneakHost;
 
 import static Common.PlayerProperty.*;
 
 public class PlayerHost extends GameObject implements Damageable, Player {
+    public static class Friend {
+        private Friend(){}
+    }
+    private static final Friend friend = new Friend();
     private double[] _newPosTemp = new double[2];
     private ArrayList<Integer> _toRemoveIndices = new ArrayList<>();
 
-    private PlayerProperty _property = new PlayerProperty(){
+    private PlayerProperty _property = new PlayerProperty(this){
         @Override
         public void setHealth(int health) {
             health = checkHealth(health);
             super.setHealth(health);
         }
     };
-
-    public PlayerHost() {
-        _property.getSkills(friend).set(0, new WazakWazakHost());
-        _property.getSkills(friend).set(1, new GlobalWazakWazakHost());
-        _property.getSkills(friend).set(2, new HealthUpHost());
-        _property.getSkills(friend).set(3, new SuicideHost());
-    }
 
     @Override
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
@@ -81,6 +72,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
             _toRemoveIndices.clear();
         }
     }
+
 
     private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
@@ -186,6 +178,11 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     @Override
     public PlayerProperty getProperty(){
         return _property;
+    }
+
+    @Override
+    public void setProperty(PlayerProperty property) {
+        _property.move(property);
     }
 
     private void makeGhost(){

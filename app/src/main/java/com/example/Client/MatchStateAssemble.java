@@ -4,6 +4,7 @@ import android.util.Log;
 
 import Common.GameObject;
 import Common.GameState;
+import Common.Player;
 import Common.ReadOnlyList;
 import Common.Util;
 import Common.InputBitStream;
@@ -22,6 +23,7 @@ public class MatchStateAssemble implements GameState {
     private boolean _activatedWorldSetter;
     private boolean _isInitComplete;
     private boolean _waiting = false;
+    private boolean _shouldSetTopText;
 
     public MatchStateAssemble(GameStateMatch parentMatch) {
         _match = parentMatch;
@@ -31,8 +33,6 @@ public class MatchStateAssemble implements GameState {
 
     @Override
     public void update(long ms) {
-        if (_waiting) return;
-
         InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         OutputBitStream outPacket = Core.get().getPakcetManager().getPacketToSend();
 
@@ -47,7 +47,7 @@ public class MatchStateAssemble implements GameState {
         if (Util.hasMessage(packet)) {
             if (!_activatedWorldSetter){
                 _match.activateWorldSetter();
-                Core.get().getUIManager().setTopText("집합하세요");
+                _shouldSetTopText = true;
                 _match.setBattleGroundLatLon(37.714617, 127.045170);
                 Core.get().getCamera().move(37.716140, 127.046620);
                 Core.get().getCamera().zoom(17);
@@ -56,10 +56,21 @@ public class MatchStateAssemble implements GameState {
         }
 
         if (Util.hasMessage(packet)) {
-            _waiting = true;
-            Core.get().getUIManager().switchScreen(ScreenType.CHARACTERSELECT,
-                    ()-> _match.switchState(MatchStateType.SELECT_CHARACTER));
+            _match.switchState(MatchStateType.SELECT_CHARACTER);
+            Core.get().getUIManager().switchScreen(ScreenType.CHARACTERSELECT, null);
         }
+
+        if (_shouldSetTopText)
+            setTopText();
+    }
+
+    private void setTopText() {
+        ReadOnlyList<Player> players = _match.getPlayers();
+        for (Player p : players)
+            if (p.getProperty().getPlayerId() == 0){
+                Core.get().getUIManager().setTopText(p.getGameObject().getName() + "에게 모이세요");
+                _shouldSetTopText = false;
+            }
     }
 
     @Override

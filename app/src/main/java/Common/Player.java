@@ -1,12 +1,10 @@
 package Common;
 
+import com.example.Client.PlayerState;
+
 public interface Player {
-    class Friend {
-        private Friend(){}
-    }
-
-    Friend friend = new Friend();
-
     GameObject getGameObject();
     PlayerProperty getProperty();
+    void setProperty(PlayerProperty property);
+    default void onPlayerStateChange(PlayerState state){}
 }

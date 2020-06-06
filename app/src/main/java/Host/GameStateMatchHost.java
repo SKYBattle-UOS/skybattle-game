@@ -53,7 +53,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
         _parent = parent;
         _registry = new GameObjectRegistry();
         _worldSetter = new WorldSetterHost(_registry);
-        _factory = new GameObjectFactory();
+        _factory = CoreHost.get().getGameObjectFactory();
         _gameObjects = new ArrayList<>();
         _newGameObjects = new ArrayList<>();
         _newGOClassId = new ArrayList<>();
@@ -67,8 +67,6 @@ public class GameStateMatchHost implements GameState, MatchHost {
         GET_READY_COUNT = 3000;
         NUM_PACKET_PER_FRAME = 3;
 
-        // TODO
-        Util.registerGameObjectsHost(_factory);
         switchState(MatchStateType.ASSEMBLE);
     }
 
@@ -139,14 +137,6 @@ public class GameStateMatchHost implements GameState, MatchHost {
         dummy2.setName("테스트용 팀 B");
         dummy2.setLook(ImageType.MARKER);
         dummy2.getProperty().setTeam(1);
-
-
-        // create temp item
-        GameObject assemblePoint = createGameObject(Util.ItemClassId, true);
-        assemblePoint.setPosition(37.716109, 127.048926);
-        assemblePoint.setName("여기여기 모여라");
-        assemblePoint.setRadius(100);
-        assemblePoint.setLook(ImageType.CIRCLE_WITH_MARKER);
 
         GameObject respawnPoint = createGameObject(Util.ItemClassId, true);
         respawnPoint.setPosition(37.715151, 127.045780);

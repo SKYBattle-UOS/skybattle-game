@@ -8,6 +8,7 @@ import java.io.IOException;
 import Host.DummyPlayerHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
+import Host.SuicideHost;
 import Host.WazakWazakHost;
 
 public class Util {
@@ -20,6 +21,7 @@ public class Util {
     public static int WazakWazakClassId;
     public static int GlobalWazakWazakClassId;
     public static int HealthUpClassId;
+    public static int SuicideClassId;
 
     public static void registerGameObjects(GameObjectFactory factory){
         PlayerClassId = factory.registerGameObject(PlayerClient::new);
@@ -29,6 +31,7 @@ public class Util {
         WazakWazakClassId = factory.registerSkill(WazakWazakCommon::new);
         GlobalWazakWazakClassId = factory.registerSkill(GlobalWazakWazakCommon::new);
         HealthUpClassId = factory.registerSkill(HealthUpCommon::new);
+        SuicideClassId = factory.registerSkill(SuicideCommon::new);
     }
 
     public static void registerGameObjectsHost(GameObjectFactory factory){
@@ -40,6 +43,7 @@ public class Util {
         factory.registerSkill(WazakWazakHost::new);
         factory.registerSkill(GlobalWazakWazakHost::new);
         factory.registerSkill(HealthUpHost::new);
+        factory.registerSkill(SuicideHost::new);
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {

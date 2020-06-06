@@ -2,6 +2,7 @@ package Common;
 
 import androidx.annotation.NonNull;
 
+import com.example.Client.PlayerClient;
 import com.example.Client.PlayerState;
 
 import java.io.IOException;
@@ -45,16 +46,25 @@ public class PlayerProperty {
     private int _maxHealth = 100000;
     private int _team;
     private int _dps = 20000;
-    private boolean _isInvincible;
-    private boolean _cantAttack;
+    private boolean _isInvincible = true;
+    private boolean _cantAttack = true;
     private boolean _reflectAttack;
     private PlayerState _playerState = PlayerState.NORMAL;
-    private Consumer<PlayerState> _onPlayerStateChange = playerState -> {
-        // nothing
-    };
+    private Player _player;
 
-    public PlayerProperty() {
-        while (_skills.size() < 4) _skills.add(null);
+    public PlayerProperty(Player player) {
+        _player = player;
+        while (_skills.size() < 4) _skills.add(new InstantSkill() {
+            @Override
+            public String getName() {
+                return "Skill";
+            }
+
+            @Override
+            public void cast(GameObject caster) {
+
+            }
+        });
     }
 
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
@@ -128,7 +138,17 @@ public class PlayerProperty {
         }
     }
 
-    public List<Skill> getSkills(Player.Friend friend) {
+    public List<Skill> getSkills(PlayerHost.Friend friend) {
+        Objects.requireNonNull(friend);
+        return _skills;
+    }
+
+    public List<Skill> getSkills(PlayerClient.Friend friend) {
+        Objects.requireNonNull(friend);
+        return _skills;
+    }
+
+    public List<Skill> getSkills(CharacterFactory.Friend friend) {
         Objects.requireNonNull(friend);
         return _skills;
     }
@@ -193,16 +213,26 @@ public class PlayerProperty {
         return _dps;
     }
 
+    public void setDPS(int dps){ _dps = dps; }
+
     public void setPlayerState(PlayerState state){
         _playerState = state;
-        _onPlayerStateChange.accept(state);
-    }
-
-    public void setOnPlayerStateChangeListener(@NonNull Consumer<PlayerState> listener){
-        _onPlayerStateChange = listener;
+        _player.onPlayerStateChange(state);
     }
 
     public PlayerState getPlayerState() {
         return _playerState;
+    }
+
+    public void move(PlayerProperty other) {
+        _skills = other._skills;
+        _readOnlySkills = other._readOnlySkills;
+        _playerState = other._playerState;
+        _isInvincible = other._isInvincible;
+        _health = other._health;
+        _maxHealth = other._maxHealth;
+        _cantAttack = other._cantAttack;
+        _reflectAttack = other._reflectAttack;
+        _dps = other._dps;
     }
 }

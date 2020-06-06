@@ -1,14 +1,18 @@
 package Host;
 
+import com.example.Client.GameObjectFactory;
+
 import Common.AndroidTime;
 import Common.GameStateType;
 import Common.Time;
+import Common.Util;
 
 public class CoreHost {
     private static CoreHost _instance;
 
     private NetworkManager _networkManager;
     private GameStateContextHost _gameStateContext;
+    private GameObjectFactory _factory;
     private MatchHost _match;
     private Time _time;
     private Thread _runThread;
@@ -17,6 +21,9 @@ public class CoreHost {
         _networkManager = new NetworkManager();
         _gameStateContext = new GameStateContextHost();
         _time = new AndroidTime();
+        _factory = new GameObjectFactory();
+
+        Util.registerGameObjectsHost(_factory);
     }
 
     public static void createInstance(){
@@ -73,4 +80,6 @@ public class CoreHost {
     }
 
     public Time getTime(){ return _time; }
+
+    public GameObjectFactory getGameObjectFactory(){ return _factory; }
 }

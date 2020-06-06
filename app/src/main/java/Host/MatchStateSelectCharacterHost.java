@@ -1,56 +1,103 @@
 package Host;
 
-import java.util.Collection;
+import com.example.Client.Core;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import Common.CharacterFactory;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
 import Common.OutputBitStream;
+import Common.Player;
 import Common.Util;
 
-class MatchStateSelectCharacterHost implements GameState {
+class MatchStateSelectCharacterHost implements GameState, ConnectionListener {
     private GameStateMatchHost _match;
-    private boolean[] _characterSelected;
-    private Collection<ClientProxy> _clients;
-
-    // TODO
-    private long elapsed;
+    private HashMap<Integer, Integer> _characters = new HashMap<>();
+    private CharacterFactory _charFactory;
 
     public MatchStateSelectCharacterHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
-        _clients = CoreHost.get().getNetworkManager().getClientProxies();
-        _characterSelected = new boolean[_clients.size()];
+        _charFactory = new CharacterFactory(CoreHost.get().getGameObjectFactory());
+    }
+
+    @Override
+    public void start() {
+        CoreHost.get().getNetworkManager().setConnectionListener(this);
+    }
+
+    @Override
+    public void finish() {
+        CoreHost.get().getNetworkManager().removeConnectionListener(this);
     }
 
     @Override
     public void update(long ms) {
-        int i = 0;
-        for (ClientProxy client : _clients){
+        receive();
+        send();
+    }
+
+    private void send() {
+        OutputBitStream outputPacket = CoreHost.get().getNetworkManager().getPacketToSend();
+        int numClients = CoreHost.get().getNetworkManager().getClientProxies().size();
+        boolean allset = _characters.size() == numClients;
+        Util.sendHas(outputPacket, allset);
+        if (allset) {
+            createCharacters();
+            try {
+                outputPacket.write(_characters.size(), 8);
+                for (Map.Entry<Integer, Integer> e : _characters.entrySet()){
+                    outputPacket.write(e.getKey(), 32);
+                    outputPacket.write(e.getValue(), 8);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            CoreHost.get().getNetworkManager().shouldSendThisFrame();
+            _match.switchState(MatchStateType.GET_READY);
+        }
+    }
+
+    private void createCharacters() {
+        for (Map.Entry<Integer, Integer> e : _characters.entrySet()){
+            Player player = findPlayer(e.getKey());
+            _charFactory.setCharacterProperty(player, e.getValue());
+        }
+    }
+
+    private Player findPlayer(int playerId) {
+        for (Player p : _match.getPlayers()){
+            if (p.getProperty().getPlayerId() == playerId)
+                return p;
+        }
+
+        return null;
+    }
+
+    private void receive() {
+        for (ClientProxy client : CoreHost.get().getNetworkManager().getClientProxies()){
             InputBitStream packet = client.getPacketQueue().poll();
             if (packet == null)
                 continue;
 
-            _characterSelected[i] = Util.hasMessage(packet);
-            i++;
-        }
-
-        boolean allset = true;
-        for (boolean b : _characterSelected) {
-            if (!b) {
-                allset = false;
-                break;
+            if (Util.hasMessage(packet)){
+                _characters.put(client.getPlayerId(), packet.read(8));
             }
         }
+    }
 
-        elapsed += ms;
-        if (elapsed > 1000)
-            allset = true;
+    @Override
+    public void onConnectionLost(ClientProxy client) {
+        _characters.remove(client.getPlayerId());
+    }
 
-        OutputBitStream outputPacket = CoreHost.get().getNetworkManager().getPacketToSend();
-        Util.sendHas(outputPacket, allset);
-        if (allset) {
-            CoreHost.get().getNetworkManager().shouldSendThisFrame();
-            _match.switchState(MatchStateType.GET_READY);
-        }
+    @Override
+    public void onNewConnection(ClientProxy client) {
+
     }
 }
