@@ -22,7 +22,6 @@ public class PlayerClient extends GameObjectClient implements Player {
         }
     };
 
-    private boolean _reconstructSkills;
     private PlayerStateBase _playerState = new PlayerStateBase(this);
     private boolean _shouldChangeState;
 
