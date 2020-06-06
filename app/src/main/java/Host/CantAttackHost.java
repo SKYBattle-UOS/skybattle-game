@@ -1,6 +1,7 @@
 package Host;
 import Common.GameObject;
 import Common.PlayerHost;
+import Common.PlayerProperty;
 
 public class CantAttackHost extends CantAttackCommon {
     public CantAttackHost(int index) {
@@ -9,11 +10,11 @@ public class CantAttackHost extends CantAttackCommon {
 
     @Override
     public void cast(GameObject caster) {
-        todo(true);
-        CoreHost.get().getMatch().setTimer(() -> todo(false),10);
+        todo(caster,true);
+        CoreHost.get().getMatch().setTimer(() -> todo(caster,false),10);
     }
 
-    public void todo(boolean value){
+    public void todo(GameObject caster, boolean value){
         PlayerHost player = (PlayerHost) CoreHost.get()
                 .getMatch().getRegistry().getGameObject(_networkId);
 
@@ -22,5 +23,8 @@ public class CantAttackHost extends CantAttackCommon {
         CoreHost.get().getMatch()
                 .getWorldSetterHost()
                 .generateUpdateInstruction(player.getNetworkId(), player.getProperty().cantAttackFlag);
+
+        WorldSetterHost wsh = CoreHost.get().getMatch().getWorldSetterHost();
+        wsh.generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }

@@ -77,7 +77,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
             if (((Damageable) state.other).getTeam() != _property.getTeam()){
-                if(!getProperty().getCantAttack()){
+                if(!getProperty().isCantAttack()){
                     ((Damageable) state.other).getHurt(this,(int) (_property.getDPS() * ms / 1000));
                     CoreHost.get().getMatch().getWorldSetterHost()
                             .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);

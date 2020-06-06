@@ -18,7 +18,8 @@ public class InvincibilityCommon extends PlayerTargetSkill {
     public void cast(GameObject caster) {
         if (caster == Core.get().getMatch().getThisPlayer()){
             Core.get().getUIManager().setTopText("무적을 사용 했습니다", 10);
-         // Core.get().getUIManager().setButtonActive(UIManager.findButtonIndex(Skill) , false);
+            int btnIndex = Core.get().getUIManager().findButtonIndex(this);
+            Core.get().getUIManager().setButtonActive(btnIndex, false);
         }
     }
 }
