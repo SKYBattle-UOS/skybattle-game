@@ -129,16 +129,6 @@ public class PlayerProperty {
         }
     }
 
-    public List<Skill> getSkills(PlayerHost.Friend friend) {
-        Objects.requireNonNull(friend);
-        return _skills;
-    }
-
-    public List<Skill> getSkills(PlayerClient.Friend friend) {
-        Objects.requireNonNull(friend);
-        return _skills;
-    }
-
     public List<Skill> getSkills(CharacterFactory.Friend friend) {
         Objects.requireNonNull(friend);
         return _skills;

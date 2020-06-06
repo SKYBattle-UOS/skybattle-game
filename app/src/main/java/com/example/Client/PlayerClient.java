@@ -12,8 +12,6 @@ public class PlayerClient extends GameObjectClient implements Player {
         private Friend(){}
     }
 
-    private static final Friend friend = new Friend();
-
     private PlayerProperty _property = new PlayerProperty(this){
         @Override
         public void setHealth(int health) {

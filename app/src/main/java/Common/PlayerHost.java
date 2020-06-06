@@ -21,7 +21,6 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     public static class Friend {
         private Friend(){}
     }
-    private static final Friend friend = new Friend();
     private double[] _newPosTemp = new double[2];
     private ArrayList<Item> _itemsToRemove = new ArrayList<>();
     private DamageApplier _damageApplier = new ZeroDamageApplier();
