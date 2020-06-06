@@ -75,7 +75,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     @Override
     public void after(long ms) {
         for (Item item : _itemsToRemove){
-            removeItem(item);
+            getItems().remove(item);
         }
         if (!_itemsToRemove.isEmpty()){
             CoreHost.get().getMatch().getWorldSetterHost()
@@ -97,7 +97,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
 
         if (state.other instanceof Pickable){
             if (((Pickable) state.other).getPickedUpBy(this)){
-                addItem((Item) state.other);
+                getItems().add((Item) state.other);
                 CoreHost.get().getMatch().getWorldSetterHost()
                         .generateUpdateInstruction(getNetworkId(), itemsDirtyFlag);
             }
@@ -123,19 +123,23 @@ public class PlayerHost extends GameObject implements Damageable, Player {
 
                 default:
                     int skillIndex = input.qwer - 1;
-                    _property.getSkills().get(skillIndex).setDirty(true);
+                    Skill skill;
+                    if (skillIndex < 4)
+                        skill = _property.getSkills().get(skillIndex);
+                    else
+                        skill = getItems().get(skillIndex - 4).getProperty().getSkill();
+
+                    skill.setDirty(true);
                     dirtyFlag |= skillDirtyFlag;
 
                     // target is coordinate
                     if (input.lat * input.lon != 0){
                         _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
-                        ((CoordinateSkill) _property.getSkills().get(skillIndex))
-                                .setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
+                        ((CoordinateSkill) skill).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
                     }
                     // target is player
                     else if (input.playerId >= 0){
-                        ((PlayerTargetSkill) _property.getSkills().get(skillIndex))
-                                .setTargetPlayer(input.playerId);
+                        ((PlayerTargetSkill) skill).setTargetPlayer(input.playerId);
                     }
                     break;
             }
@@ -200,6 +204,10 @@ public class PlayerHost extends GameObject implements Damageable, Player {
 
     public DamageApplier getDamageApplier() {
         return _damageApplier;
+    }
+
+    public DamageCalculator getDamageCalculator(){
+        return _damageCalculator;
     }
 
     public void setDamageCalculator(@NonNull DamageCalculator calculator){

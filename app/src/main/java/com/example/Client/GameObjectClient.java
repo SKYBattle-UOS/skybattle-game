@@ -38,11 +38,11 @@ public abstract class GameObjectClient extends GameObject implements Renderable 
         }
 
         if ((dirtyFlag & itemsDirtyFlag) != 0){
-            while (!getItems().isEmpty()) removeItem(0);
+            getItems().clear();
             int itemsSize = stream.read(4);
             for (int i = 0; i < itemsSize; i++){
                 GameObject item = _match.getRegistry().getGameObject(stream.read(32));
-                addItem((Item) item);
+                getItems().add((Item) item);
             }
             onItemsDirty();
         }

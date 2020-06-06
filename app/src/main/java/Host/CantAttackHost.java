@@ -4,27 +4,18 @@ import Common.PlayerHost;
 import Common.PlayerProperty;
 
 public class CantAttackHost extends CantAttackCommon {
-    public CantAttackHost(int index) {
-        super(index);
-    }
-
     @Override
     public void cast(GameObject caster) {
-        todo(caster,true);
-        CoreHost.get().getMatch().setTimer(() -> todo(caster,false),10);
-    }
-
-    public void todo(GameObject caster, boolean value){
         PlayerHost player = (PlayerHost) CoreHost.get()
                 .getMatch().getRegistry().getGameObject(_networkId);
 
-        player.getProperty().setCantAttack(value);
+        DamageCalculator originalDC = player.getDamageCalculator();
+        player.setDamageCalculator(new ZeroDamageCalculator());
 
         CoreHost.get().getMatch()
                 .getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), player.getProperty().cantAttackFlag);
+                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
 
-        WorldSetterHost wsh = CoreHost.get().getMatch().getWorldSetterHost();
-        wsh.generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
+        CoreHost.get().getMatch().setTimer(() -> player.setDamageCalculator(originalDC), 3f);
     }
 }

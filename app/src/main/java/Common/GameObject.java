@@ -46,7 +46,6 @@ public abstract class GameObject {
     private ImageType _imageType;
     private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
     private ArrayList<Item> _items = new ArrayList<>();
-    private ReadOnlyList<Item> _readOnlyItems = new ReadOnlyList<>(_items);
 
     protected MatchCommon _match;
     protected double[] _restoreTemp = new double[2];
@@ -205,16 +204,8 @@ public abstract class GameObject {
         _imageType = type;
     }
 
-    public ReadOnlyList<Item> getItems(){
-        return _readOnlyItems;
-    }
-
-    protected void addItem(Item item) {
-        _items.add(item);
-    }
-
-    protected void removeItem(Item item) {
-        _items.remove(item);
+    public List<Item> getItems(){
+        return _items;
     }
     // endregion
 }

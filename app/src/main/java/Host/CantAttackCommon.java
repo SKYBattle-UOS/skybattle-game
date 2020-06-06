@@ -6,9 +6,6 @@ import Common.Player;
 import Common.PlayerTargetSkill;
 
 public class CantAttackCommon extends PlayerTargetSkill {
-
-    public CantAttackCommon(int index){setTargetPlayer(index);}
-
     public String getName(){
         return "공격 무력화";
     }
