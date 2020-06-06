@@ -2,6 +2,7 @@ package com.example.Client;
 
 import Common.GameObject;
 import Common.InputBitStream;
+import Common.Item;
 import Common.Player;
 import Common.PlayerProperty;
 import Common.Skill;
@@ -48,9 +49,12 @@ public class PlayerClient extends GameObjectClient implements Player {
                 skill.setDirty(false);
             }
 
-        if (_reconstructSkills){
-            reconstructSkills();
-            _reconstructSkills = false;
+        for (Item item : getItems()){
+            Skill skill = item.getProperty().getSkill();
+            if (skill.isDirty()){
+                skill.cast(this);
+                skill.setDirty(false);
+            }
         }
 
         _playerState.update(ms);
@@ -62,7 +66,8 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void onItemsDirty() {
-        _reconstructSkills = true;
+        if (Core.get().getMatch().getThisPlayer() == this)
+            Core.get().getUIManager().updateItems();
     }
 
     @Override
@@ -83,17 +88,6 @@ public class PlayerClient extends GameObjectClient implements Player {
     @Override
     public void onPlayerStateChange(PlayerState state){
         _shouldChangeState = true;
-    }
-
-    private void reconstructSkills(){
-        if (Core.get().getMatch().getThisPlayer() == this)
-            Core.get().getUIManager().updateItems();
-
-        while (_property.getSkills().size() > 4)
-            _property.getSkills(friend).remove(_property.getSkills().size() - 1);
-
-        for (int i = 0; i < getItems().size(); i++)
-            _property.getSkills(friend).add(getItems().get(i).getProperty().getSkill());
     }
 
     private void onSetHealth(int health) {
