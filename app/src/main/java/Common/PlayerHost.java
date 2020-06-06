@@ -52,8 +52,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
                 processCollision(collision, ms);
         }
 
-        for (int i = 0; i < _property.getSkills().size(); i++) {
-            Skill skill = _property.getSkills().get(i);
+        for (Skill skill : _property.getSkills()) {
             if (skill.isDirty()) {
                 skill.cast(this);
             }
