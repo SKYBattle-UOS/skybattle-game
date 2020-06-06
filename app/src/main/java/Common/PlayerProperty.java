@@ -46,8 +46,8 @@ public class PlayerProperty {
     private int _maxHealth = 100000;
     private int _team;
     private int _dps = 20000;
-    private boolean _isInvincible;
-    private boolean _cantAttack;
+    private boolean _isInvincible = true;
+    private boolean _cantAttack = true;
     private boolean _reflectAttack;
     private PlayerState _playerState = PlayerState.NORMAL;
     private Player _player;
@@ -227,7 +227,6 @@ public class PlayerProperty {
     public void move(PlayerProperty other) {
         _skills = other._skills;
         _readOnlySkills = other._readOnlySkills;
-        _team = other._team;
         _playerState = other._playerState;
         _isInvincible = other._isInvincible;
         _health = other._health;
