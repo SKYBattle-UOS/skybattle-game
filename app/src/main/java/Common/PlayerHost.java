@@ -53,17 +53,14 @@ public class PlayerHost extends GameObject implements Damageable, Player {
                 processCollision(collision, ms);
         }
 
-
         for (int i = 0; i < _property.getSkills().size(); i++) {
-                    // if item skill
-            if (i > 3){
-                _toRemoveIndices.add(i - 4);
-            }else{
-                if(!_property.isCantSkill()){
-                    Skill skill = _property.getSkills().get(i);
-                    if (skill.isDirty()) {
-                        skill.cast(this);
-                    }
+            Skill skill = _property.getSkills().get(i);
+            if (skill.isDirty()) {
+                skill.cast(this);
+
+                // if item skill
+                if (i > 3){
+                    _toRemoveIndices.add(i - 4);
                 }
             }
         }
@@ -94,7 +91,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
         }
 
         if (state.other instanceof Pickable){
-            if (((Pickable) state.other).pickUp(this)){
+            if (((Pickable) state.other).getPickedUpBy(this)){
                 addItem((Item) state.other);
                 CoreHost.get().getMatch().getWorldSetterHost()
                         .generateUpdateInstruction(getNetworkId(), itemsDirtyFlag);

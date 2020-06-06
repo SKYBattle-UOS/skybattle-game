@@ -40,7 +40,7 @@ public class ItemHost extends GameObject implements Pickable, Item {
     }
 
     @Override
-    public boolean pickUp(GameObject owner) {
+    public boolean getPickedUpBy(GameObject owner) {
         if (_property.isPickedUp()) return false;
 
         if (_pickUpCondition.evalulate(owner, this)){
