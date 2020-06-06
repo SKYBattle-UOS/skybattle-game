@@ -1,9 +1,11 @@
 package com.example.Client;
 
+import java.util.ArrayList;
+
+import Common.RoomUserInfo;
 import Common.Skill;
 
 public interface UIManager {
-    int ROOM_START_PORT = 0;
     int BUTTON_Q = 0;
     int BUTTON_W = 1;
     int BUTTON_E = 2;
@@ -12,8 +14,6 @@ public interface UIManager {
     void update(long ms);
     void switchScreen(ScreenType type, Runnable onComplete);
     void setCurrentScreen(Screen screen, ScreenType type);
-    void invoke(int port);
-    void registerCallback(int port, Runnable func);
     void setTitle(String title);
     String getDefaultTopText();
     void setDefaultTopText(String text);
@@ -22,6 +22,7 @@ public interface UIManager {
     void setButtonText(int button, String text);
     void setButtonActive(int button, boolean active);
     void setHealth(int health);
+    void setRoomUserInfos(ArrayList<RoomUserInfo> roomInfos);
     void updateItems();
     int findButtonIndex(Skill skill);
 

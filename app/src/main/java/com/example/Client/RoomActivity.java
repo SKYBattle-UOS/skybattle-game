@@ -1,33 +1,32 @@
 package com.example.Client;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import Common.GameState;
+import Common.RoomUserInfo;
 import Host.CoreHost;
-
 
 public class RoomActivity extends AppCompatActivity implements Screen {
     private TextView _roomTitle;
-    ListView listView;
+    private ListView _listView;
+    private CustomAdapter _listViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,78 +34,65 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         setContentView(R.layout.activity_room);
         _roomTitle = findViewById(R.id.roomTitle);
 
-        ((AndroidUIManager) Core.get().getUIManager())
-                .getTitleText().observe(this, text -> _roomTitle.setText(text));
+        AndroidUIManager uiManager = (AndroidUIManager) Core.get().getUIManager();
+        GameStateRoom roomState = (GameStateRoom) Core.get().getState();
 
-        ArrayList<String> items = new ArrayList<>(); //닉네임리스트를 저장할 배열
-
-        listView = this.findViewById(R.id.playerlist);
-
-        //닉네임 길게 누르면 삭제됨
-        listView.setOnItemLongClickListener((parent, view, position, id) -> {
-            CustomAdapter adapter = new CustomAdapter(RoomActivity.this, 0, items);
-            listView.setAdapter((adapter));
-            items.remove(position);
-            Toast.makeText(getApplicationContext(), "닉네임이 삭제되었습니다.", Toast.LENGTH_LONG).show();
-            adapter.notifyDataSetChanged();
-            return true;
+        uiManager.getTitleText().observe(this, text -> _roomTitle.setText(text));
+        uiManager.getRoomUserInfos().observe(this, infos -> {
+            _listViewAdapter.clear();
+            _listViewAdapter.addAll(infos);
+            _listViewAdapter.notifyDataSetChanged();
         });
 
-        //닉네임 등록 버튼
-        Button btn_nickname = findViewById(R.id.btn_nickname);
+        EditText editTitle = findViewById((R.id.editTitle));
+        findViewById(R.id.editTitleButton).setOnClickListener(
+                v -> roomState.changeRoomTitle(editTitle.getText().toString()));
 
-        //입력란에 닉네임 입력 후, '등록'버튼을 누르면 실행하는 메소드
-        btn_nickname.setOnClickListener(v -> {
-            CustomAdapter adapter = new CustomAdapter(RoomActivity.this, 0, items);
-            listView.setAdapter((adapter));
-            EditText edit_nickname = findViewById(R.id.edit_nickname);
-            if (edit_nickname.getText().toString().replace(" ", "").equals("")) { }
-            else {
-                items.add(edit_nickname.getText().toString()); //배열에 입력란에서 받은 닉네임 등록
-                adapter.notifyDataSetChanged();
+        if (!Core.get().isHost()){
+            LinearLayout roomLinLayout = findViewById(R.id.roomLinLayout);
+            roomLinLayout.removeView(editTitle);
+            roomLinLayout.removeView(findViewById(R.id.editTitleButton));
+        }
 
-                //등록 후, 키보드가 숨겨지도록 함
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(edit_nickname.getWindowToken(), 0);
+        _listView = findViewById(R.id.playerlist);
+        _listViewAdapter = new CustomAdapter(this, 0, new ArrayList<>());
+        _listView.setAdapter(_listViewAdapter);
 
-                edit_nickname.setText(null); //닉네임 입력 후, 다음 입력 시에 리셋
+        Button userNameButton = findViewById(R.id.btn_nickname);
+        userNameButton.setOnClickListener(v -> {
+            EditText userName = findViewById(R.id.edit_nickname);
+            //등록 후, 키보드가 숨겨지도록 함
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(userName.getWindowToken(), 0);
 
-            }
+            ((GameStateRoom) Core.get().getState()).setUserName(userName.getText().toString());
+            userName.setText(null);
         });
 
         //게임 시작 버튼
-        Button btn_start = findViewById(R.id.startButton);
-        btn_start.setOnClickListener(
-                v -> Core.get().getUIManager().invoke(AndroidUIManager.ROOM_START_PORT));
+        Button startButton = findViewById(R.id.startButton);
+        startButton.setOnClickListener(v -> roomState.startGame());
 
-        if (!Core.get().isHost()) btn_start.setEnabled(false);
+        if (!Core.get().isHost()) startButton.setEnabled(false);
 
-        //방 나가기 버튼: 클릭 시, 이전 화면으로 돌아감. 돌아가기 전에 닉네임 삭제여부를 묻는다.
-        Button btn_exit = findViewById(R.id.btn_exit);
+        // 나가기 버튼
+        Button btn_exit = findViewById(R.id.exitButton);
         btn_exit.setOnClickListener(v -> {
-            AlertDialog.Builder alert = new AlertDialog.Builder(RoomActivity.this);
-            alert.setTitle("잠깐!");
-            alert.setMessage("닉네임을 삭제하셨습니까?           (닉네임을 길게 누르면 삭제됩니다.)");
-
-            alert.setPositiveButton("예",
-                    (dialog, which) -> {
-                        if (Core.get().isHost())
-                            CoreHost.destroyInstance();
-                        Core.get().close();
-                    });
-
-            alert.setNegativeButton("아니오", (dialog, id) -> dialog.cancel());
-            alert.show();
+            if (Core.get().isHost())
+                CoreHost.destroyInstance();
+            Core.get().close();
         });
+
+        Button teamA = findViewById(R.id.teamAButton);
+        Button teamB = findViewById(R.id.teamBButton);
+        teamA.setOnClickListener(v -> roomState.setTeam(0));
+        teamB.setOnClickListener(v -> roomState.setTeam(1));
 }
 
   /*한 화면에 리스트뷰, 텍스트뷰, 버튼을 표현하기 위해 커스텀 어댑터 사용*/
-    private class CustomAdapter extends ArrayAdapter<String> {
-        private ArrayList<String> items;
-
-        public CustomAdapter(Context context, int textViewResourcedId, ArrayList<String> objects) {
+    private class CustomAdapter extends ArrayAdapter<RoomUserInfo> {
+        public CustomAdapter(Context context, int textViewResourcedId, ArrayList<RoomUserInfo> objects) {
             super(context, textViewResourcedId, objects);
-            this.items = objects;
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -116,28 +102,11 @@ public class RoomActivity extends AppCompatActivity implements Screen {
                 v = v1.inflate(R.layout.listview_player, null);
             }
 
-            final TextView nicknamelist = (TextView) v.findViewById(R.id.nicknamelist);
-            nicknamelist.setText(items.get(position)); //닉네임 리스트를 리스트뷰에 보여줌
+            final TextView userName = v.findViewById(R.id.userName);
+            userName.setText(getItem(position).name);
 
-            final TextView roleView = (TextView) v.findViewById(R.id.rolelist);
-
-            final String text = items.get(position);
-            //팀A 또는 B 버튼 클릭 시, 닉네임 리스트 옆에 팀 표시됨
-            Button btn_teamA = (Button) v.findViewById(R.id.btn_teamA);
-            btn_teamA.setOnClickListener(new View.OnClickListener() { 
-                @Override
-                public void onClick(View v) {
-                    roleView.setText("팀A");
-                }
-            });
-
-            Button btn_teamB = (Button) v.findViewById(R.id.btn_teamB);
-            btn_teamB.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    roleView.setText("팀B");
-                }
-            });
+            final TextView roleView = v.findViewById(R.id.rolelist);
+            roleView.setText(getItem(position).team == 0 ? "팀A" : "팀B");
 
             return v;
         }
@@ -168,5 +137,4 @@ public class RoomActivity extends AppCompatActivity implements Screen {
             finish();
         }
     }
-
 }

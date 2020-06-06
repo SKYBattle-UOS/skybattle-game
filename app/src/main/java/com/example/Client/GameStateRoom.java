@@ -1,119 +1,120 @@
 package com.example.Client;
 
-import android.util.Log;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import Common.GameState;
 import Common.GameStateType;
 import Common.InputBitStream;
 import Common.OutputBitStream;
+import Common.RoomSettings;
+import Common.RoomUserInfo;
+import Common.Util;
 
 public class GameStateRoom implements GameState {
-    private final int MAX_TITLE_LENGTH = 10;
-    private final int MAX_NUM_PLAYERS = 6;
     private GameStateContext _parent;
     private boolean _waiting = false;
-    private boolean _buttonPressed;
+    private RoomSettings _settings = new RoomSettings();
+    private RoomSettings _settingsToSend = new RoomSettings();
+    private boolean _infoDirty;
+
+    private ArrayList<RoomUserInfo> _roomUserInfos = new ArrayList<>();
+    private RoomUserInfo _myRoomUserInfo;
 
     GameStateRoom(GameStateContext stateContext){
         _parent = stateContext;
     }
 
     @Override
-    public void start() {
-        Core.get().getUIManager().registerCallback(UIManager.ROOM_START_PORT,
-                ()-> _buttonPressed = true
-        );
-    }
-
-    @Override
     public void update(long ms) {
         if (_waiting) return;
 
-        OutputBitStream outPacket = Core.get().getPakcetManager().getPacketToSend();
+        receive();
 
-        if (_buttonPressed){
-            try {
-                outPacket.write(1, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (Core.get().isHost())
+            sendHost();
+
+        send();
+    }
+
+    private void send() {
+        OutputBitStream packet = Core.get().getPakcetManager().getPacketToSend();
+        Util.sendHas(packet, _infoDirty);
+        if (_infoDirty){
             Core.get().getPakcetManager().shouldSendThisFrame();
-            _buttonPressed = false;
+            _myRoomUserInfo.writeToStream(packet);
+            _infoDirty = false;
         }
+    }
 
-        // TODO: might be better if packet is fetched only once
+    private void receive() {
         InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
-//        if (roomTitleChanged(packet)) {
-//            Log.i("Stub", "GameStateRoom: Room Title Changed - " +
-//                    getRoomTitle(packet));
-//        }
-//
-//        if (playersInfoChanged(packet)) {
-//            Log.i("Stub", "GameStateRoom: Room Title Changed - " +
-//                    getPlayersInfo(packet));
-//        }
+        _settings.readFromStream(packet);
 
-        if (hostStartedGame(packet)) {
-            // assemble
-//            if (isAbleToStart(packet)) {
-            Core.get().getInputManager().startSending();
-            Log.i("Stub", "GameStateRoom: Start Button Pressed by Host");
-            _waiting = true;
-            Core.get().getUIManager().switchScreen(ScreenType.MAP, ()->_parent.switchState(GameStateType.MATCH));
-//            }
+        if (_settings.roomTitleChanged)
+            onRoomTitleChanged();
+
+        if (_settings.startButtonPressed)
+            onGameStarted();
+
+        _settings = new RoomSettings();
+
+        if (Util.hasMessage(packet)){
+            _roomUserInfos.clear();
+            int numUsers = packet.read(8);
+            for (int i = 0; i < numUsers; i++){
+                RoomUserInfo info = new RoomUserInfo();
+                info.readFromStream(packet);
+                if (info.playerId == Core.get().getPakcetManager().getPlayerId())
+                    _myRoomUserInfo = info;
+
+                _roomUserInfos.add(info);
+            }
+            Core.get().getUIManager().setRoomUserInfos(_roomUserInfos);
         }
     }
 
-    // returns if the room title has changed
-    private boolean roomTitleChanged(InputBitStream packet) {
-        return packet.read(1) == 1;
+    private void sendHost() {
+        OutputBitStream outPacket = Core.get().getPakcetManager().getPacketToSend();
+        if ((_settingsToSend.writeToStream(outPacket)))
+            Core.get().getPakcetManager().shouldSendThisFrame();
+
+        _settingsToSend = new RoomSettings();
     }
 
-    private boolean playersInfoChanged(InputBitStream packet) {
-        return packet.read(1) == 1;
+    private void onRoomTitleChanged() {
+        Core.get().getUIManager().setTitle(_settings.roomTitle);
+        _settings.roomTitleChanged = false;
     }
 
-    // returns if room host started game
-    private boolean hostStartedGame(InputBitStream packet) {
-        return packet.read(1) == 1;
+    private void onGameStarted() {
+        _waiting = true;
+        Core.get().getInputManager().startSending();
+        Core.get().getUIManager().switchScreen(ScreenType.MAP,
+                ()->_parent.switchState(GameStateType.MATCH));
     }
 
-    // returns if game is able to start; checks the number of players
-    private boolean isAbleToStart(InputBitStream packet) {
-        /*
-         * 'packet received' semantics (in binary):
-         *      00 == not enough players && players in one place
-         *      01 == not enough players && players in one place
-         *      10 == enough players && players not in one place
-         *      11 == enough players && players not in one place
-         */
-        return packet.read(2) == 3;
+    public void startGame(){
+        _settingsToSend.startButtonPressed = true;
     }
 
-    // reads room title that is encoded in UTF-8
-    private String getRoomTitle(InputBitStream packet) {
-        byte[] bytesHolder = new byte[MAX_TITLE_LENGTH * 4]; // UTF-8: max 4 bytes per character
-        packet.read(bytesHolder, bytesHolder.length);
-        return new String(bytesHolder, StandardCharsets.UTF_8);
-    }
-
-    // reads players' info as a String that is encoded in UTF-8
-    private String getPlayersInfo(InputBitStream packet) {
-        // TODO: should determine the number of bytes required for each player info
-        // assumes 10 bytes for now; might want to include: [player name], [isHost]
-
-        byte[] bytesHolder = new byte[MAX_NUM_PLAYERS * 10]; // UTF-8 Encoding: max 4 bytes
-        packet.read(bytesHolder, bytesHolder.length);
-        return new String(bytesHolder, StandardCharsets.UTF_8);
+    public void changeRoomTitle(String newTitle){
+        _settingsToSend.roomTitleChanged = true;
+        _settingsToSend.roomTitle = newTitle;
     }
 
     public void exitRoom() {
-        Core.get().getUIManager().switchScreen(ScreenType.MAIN,
-                ()->_parent.switchState(GameStateType.MAIN));
+        Core.get().getUIManager().switchScreen(ScreenType.MAIN, null);
+    }
+
+    public void setUserName(String name){
+        _myRoomUserInfo.name = name;
+        _infoDirty = true;
+    }
+
+    public void setTeam(int team){
+        _myRoomUserInfo.team = team;
+        _infoDirty = true;
     }
 }

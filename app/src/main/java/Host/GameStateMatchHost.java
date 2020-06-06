@@ -10,6 +10,7 @@ import Common.GameObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -21,6 +22,7 @@ import Common.MatchStateType;
 import Common.Player;
 import Common.PlayerHost;
 import Common.ReadOnlyList;
+import Common.RoomUserInfo;
 import Common.TimerStruct;
 import Common.Util;
 
@@ -113,25 +115,31 @@ public class GameStateMatchHost implements GameState, MatchHost {
     }
 
     public void createPlayers() {
-        Collection<ClientProxy> clients = CoreHost.get().getNetworkManager().getClientProxies();
-
-        int i = 1;
         int lastPlayerId = 0;
-        for (ClientProxy client : clients){
+        for (RoomUserInfo info : _parent.getUsers().values()){
             PlayerHost newPlayer = (PlayerHost) createGameObject(Util.PlayerClassId, true);
-            newPlayer.getProperty().setPlayerId(client.getPlayerId());
-            lastPlayerId = client.getPlayerId();
+            newPlayer.getProperty().setPlayerId(info.playerId);
+            lastPlayerId = info.playerId;
             newPlayer.setPosition(37.716140, 127.046620);
-            newPlayer.setName("플레이어" + i++);
+            newPlayer.setName(info.name);
+            newPlayer.getProperty().setTeam(info.team);
             newPlayer.setLook(ImageType.MARKER);
         }
 
         DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
         dummy.getProperty().setPlayerId(lastPlayerId + 1);
         dummy.setPosition(37.716109 - 0.0005, 127.048926 - 0.0005);
-        dummy.setName("플레이어" + i + " (가짜)");
+        dummy.setName("테스트용 팀 A");
         dummy.setLook(ImageType.MARKER);
-        dummy.getProperty().setTeam(1);
+        dummy.getProperty().setTeam(0);
+
+        DummyPlayerHost dummy2 = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
+        dummy2.getProperty().setPlayerId(lastPlayerId + 2);
+        dummy2.setPosition(37.716109 - 0.0005, 127.048926 + 0.0005);
+        dummy2.setName("테스트용 팀 B");
+        dummy2.setLook(ImageType.MARKER);
+        dummy2.getProperty().setTeam(1);
+
 
         // create temp item
         GameObject assemblePoint = createGameObject(Util.ItemClassId, true);
