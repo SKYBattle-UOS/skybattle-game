@@ -11,7 +11,9 @@ import java.util.Queue;
 import Host.ClientProxy;
 import Host.CoreHost;
 import Host.DamageApplier;
+import Host.DamageCalculator;
 import Host.ZeroDamageApplier;
+import Host.ZeroDamageCalculator;
 
 import static Common.PlayerProperty.*;
 
@@ -23,6 +25,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     private double[] _newPosTemp = new double[2];
     private ArrayList<Integer> _toRemoveIndices = new ArrayList<>();
     private DamageApplier _damageApplier = new ZeroDamageApplier();
+    private DamageCalculator _damageCalculator = new ZeroDamageCalculator();
 
     private PlayerProperty _property = new PlayerProperty(this){
         @Override
@@ -82,12 +85,11 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     private void processCollision(CollisionState state, long ms){
         if (state.other instanceof Damageable && !state.isExit){
             if (((Damageable) state.other).getTeam() != _property.getTeam()){
-                if(!getProperty().isCantAttack()){
-                    ((Damageable) state.other).takeDamage(this,(int) (_property.getDPS() * ms / 1000));
-                    CoreHost.get().getMatch().getWorldSetterHost()
-                            .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
+                int damage = _damageCalculator.calculateDamage(this, ms);
+                ((Damageable) state.other).takeDamage(this, damage);
+                CoreHost.get().getMatch().getWorldSetterHost()
+                        .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
                 }
-            }
         }
 
         if (state.other instanceof Pickable){
@@ -206,5 +208,9 @@ public class PlayerHost extends GameObject implements Damageable, Player {
 
     public DamageApplier getDamageApplier() {
         return _damageApplier;
+    }
+
+    public void setDamageCalculator(@NonNull DamageCalculator calculator){
+        _damageCalculator = calculator;
     }
 }
