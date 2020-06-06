@@ -19,6 +19,8 @@ public class CantAttackHost extends CantAttackCommon {
 
         player.getProperty().setCantAttack(value);
 
-        CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), player.getProperty().cantAttackFlag);
+        CoreHost.get().getMatch()
+                .getWorldSetterHost()
+                .generateUpdateInstruction(player.getNetworkId(), player.getProperty().cantAttackFlag);
     }
 }

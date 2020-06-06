@@ -138,13 +138,6 @@ public class GameStateMatchHost implements GameState, MatchHost {
         dummy2.setLook(ImageType.MARKER);
         dummy2.getProperty().setTeam(1);
 
-        // create temp item
-        GameObject assemblePoint = createGameObject(Util.ItemClassId, true);
-        assemblePoint.setPosition(37.716109, 127.048926);
-        assemblePoint.setName("여기여기 모여라");
-        assemblePoint.setRadius(100);
-        assemblePoint.setLook(ImageType.CIRCLE_WITH_MARKER);
-
         GameObject respawnPoint = createGameObject(Util.ItemClassId, true);
         respawnPoint.setPosition(37.715151, 127.045780);
         respawnPoint.setName("부활지점");
