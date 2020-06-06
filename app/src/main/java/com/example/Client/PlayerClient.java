@@ -8,10 +8,6 @@ import Common.PlayerProperty;
 import Common.Skill;
 
 public class PlayerClient extends GameObjectClient implements Player {
-    public static class Friend {
-        private Friend(){}
-    }
-
     private PlayerProperty _property = new PlayerProperty(this){
         @Override
         public void setHealth(int health) {
