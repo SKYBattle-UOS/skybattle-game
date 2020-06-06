@@ -192,7 +192,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
         getProperty().setPlayerState(PlayerState.GHOST);
         setLook(ImageType.INVISIBLE);
 
-        int flag = healthDirtyFlag | invincibilityFlag | playerStateFlag | imageTypeDirtyFlag;
+        int flag = healthDirtyFlag | playerStateFlag | imageTypeDirtyFlag;
 
         CoreHost.get().getMatch().getWorldSetterHost()
                 .generateUpdateInstruction(getNetworkId(), flag);
