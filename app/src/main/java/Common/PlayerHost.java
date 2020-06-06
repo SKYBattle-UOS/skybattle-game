@@ -1,5 +1,7 @@
 package Common;
 
+import androidx.annotation.NonNull;
+
 import com.example.Client.PlayerState;
 
 import java.util.ArrayList;
@@ -8,6 +10,8 @@ import java.util.Queue;
 
 import Host.ClientProxy;
 import Host.CoreHost;
+import Host.DamageApplier;
+import Host.ZeroDamageApplier;
 
 import static Common.PlayerProperty.*;
 
@@ -18,6 +22,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     private static final Friend friend = new Friend();
     private double[] _newPosTemp = new double[2];
     private ArrayList<Integer> _toRemoveIndices = new ArrayList<>();
+    private DamageApplier _damageApplier = new ZeroDamageApplier();
 
     private PlayerProperty _property = new PlayerProperty(this){
         @Override
@@ -81,7 +86,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
         if (state.other instanceof Damageable && !state.isExit){
             if (((Damageable) state.other).getTeam() != _property.getTeam()){
                 if(!getProperty().isCantAttack()){
-                    ((Damageable) state.other).getHurt(this,(int) (_property.getDPS() * ms / 1000));
+                    ((Damageable) state.other).takeDamage(this,(int) (_property.getDPS() * ms / 1000));
                     CoreHost.get().getMatch().getWorldSetterHost()
                             .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
                 }
@@ -162,10 +167,8 @@ public class PlayerHost extends GameObject implements Damageable, Player {
     }
 
     @Override
-    public void getHurt(GameObject attacker, int damage) {
-        // 0 defense
-        if (!getProperty().isInvincible())
-            _property.setHealth(_property.getHealth() - damage);
+    public void takeDamage(Player attacker, int damage) {
+        _damageApplier.applyDamage(this, attacker, damage);
     }
 
     @Override
@@ -198,5 +201,13 @@ public class PlayerHost extends GameObject implements Damageable, Player {
 
         CoreHost.get().getMatch().getWorldSetterHost()
                 .generateUpdateInstruction(getNetworkId(), flag);
+    }
+
+    public void setDamageApplier(@NonNull DamageApplier applier){
+        _damageApplier = applier;
+    }
+
+    public DamageApplier getDamageApplier() {
+        return _damageApplier;
     }
 }

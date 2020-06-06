@@ -4,9 +4,6 @@ import Common.GameObject;
 import Common.PlayerTargetSkill;
 
 public class ReflectDamageCommon extends PlayerTargetSkill {
-
-    public ReflectDamageCommon(int index){setTargetPlayer(index);}
-
     public String getName(){
         return "공격 반사";
     }
