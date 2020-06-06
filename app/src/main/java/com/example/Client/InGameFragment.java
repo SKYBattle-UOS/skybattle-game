@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleObserver;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import Common.CoordinateSkill;
 import Common.PlayerTargetSkill;
@@ -51,7 +50,7 @@ public class InGameFragment extends Fragment {
 
         ReadOnlyList<Skill> skills = Core.get().getMatch().getThisPlayer().getProperty().getSkills();
         for (int i = 0 ; i < 4; i++){
-            setButtonListener(skills.get(i), _buttons[i], i + 1);
+            setButtonListener(skills.get(i), _buttons[i], i);
         }
 
         Button btn_map = view.findViewById(R.id.btn_map);
@@ -91,7 +90,7 @@ public class InGameFragment extends Fragment {
         btn.setOnClickListener(v -> {
             MatchActivity ma = ((MatchActivity) getActivity());
             ma.showClickMap(
-                    (lat, lon) -> Core.get().getInputManager().qwer(new SkillTarget(i, lat, lon)),
+                    (lat, lon) -> Core.get().getInputManager().castSkill(i, new SkillTarget(lat, lon)),
                     () -> uiManager.setTopText(uiManager.getDefaultTopText())
             );
             uiManager.setTopText("시전 위치를 선택하세요");
@@ -100,7 +99,7 @@ public class InGameFragment extends Fragment {
 
     private void setInsantBtnListener(Button btn, int i){
         btn.setOnClickListener(v ->
-                Core.get().getInputManager().qwer(new SkillTarget(i))
+                Core.get().getInputManager().castSkill(i, new SkillTarget())
         );
     }
 
@@ -110,7 +109,7 @@ public class InGameFragment extends Fragment {
             MatchActivity ma = ((MatchActivity) getActivity());
             uiManager.setTopText("시전 대상을 선택하세요");
             ma.showTargetPlayers(
-                networkId -> Core.get().getInputManager().qwer(new SkillTarget(i, networkId)),
+                networkId -> Core.get().getInputManager().castSkill(i, new SkillTarget(networkId)),
                 () -> uiManager.setTopText(uiManager.getDefaultTopText())
             );
         });

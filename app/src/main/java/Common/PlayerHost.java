@@ -108,7 +108,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
             InputState input = inputs.poll();
             if (input == null) break;
 
-            switch (input.qwer){
+            switch (input.command){
                 // just new position
                 case 0:
                     _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
@@ -117,7 +117,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
                     break;
 
                 default:
-                    int skillIndex = input.qwer - 1;
+                    int skillIndex = input.command - 1;
                     Skill skill;
                     if (skillIndex < 4)
                         skill = _property.getSkills().get(skillIndex);

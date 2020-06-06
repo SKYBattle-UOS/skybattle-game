@@ -165,7 +165,7 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
         _mainHandler.post(() -> {
             if (_ingameFrag == null) return;
             _ingameFrag.clearItemButtons();
-            int i = 5;
+            int i = 4;
             for (Item item : thisPlayer.getGameObject().getItems()){
                 int finalI = i;
                 _ingameFrag.addItemButton(btn -> {
