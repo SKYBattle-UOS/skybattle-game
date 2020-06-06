@@ -17,8 +17,10 @@ public class ReflectDamageHost extends CantAttackCommon {
         PlayerHost player = (PlayerHost) CoreHost.get()
                 .getMatch().getRegistry().getGameObject(_networkId);
 
+        player.getProperty().setReflectOn(value);
         player.getProperty().setReflectAttack(value);
 
+        CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), player.getProperty().reflectOnFlag);
         CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(player.getNetworkId(), player.getProperty().reflectAttackFlag);
     }
 }

@@ -267,6 +267,8 @@ public class PlayerProperty {
         _maxHealth = other._maxHealth;
         _cantAttack = other._cantAttack;
         _reflectAttack = other._reflectAttack;
+        _reflectOn = other._reflectOn;
+        _cantSkill = other._cantSkill;
         _dps = other._dps;
     }
 }
