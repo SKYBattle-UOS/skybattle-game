@@ -1,15 +1,11 @@
 package Common;
 
-import androidx.annotation.NonNull;
-
-import com.example.Client.PlayerClient;
 import com.example.Client.PlayerState;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 public class PlayerProperty {
     public static int playerIdDirtyFlag;
@@ -20,7 +16,6 @@ public class PlayerProperty {
     public static int endOfFlag;
     public static int endOfFlagPos;
     public static int reflectOnFlag;
-    public static int cantSkillFlag;
     public static int playerStateFlag;
 
     static {
@@ -31,7 +26,6 @@ public class PlayerProperty {
         skillDirtyFlag = 1 << i++;
         maxHealthDirtyFlag = 1 << i++;
         reflectOnFlag = 1 << i++;
-        cantSkillFlag = 1 << i++;
         playerStateFlag = 1 << i++;
         endOfFlagPos = i;
         endOfFlag = 1 << i++;
@@ -45,7 +39,6 @@ public class PlayerProperty {
     private int _team;
     private int _dps = 20000;
     private boolean _reflectOn;
-    private boolean _cantSkill;
     private PlayerState _playerState = PlayerState.NORMAL;
     private Player _player;
 
@@ -80,9 +73,6 @@ public class PlayerProperty {
         if ((dirtyFlag & reflectOnFlag) != 0)
             setReflectOn(stream.read(1) == 1);
 
-        if ((dirtyFlag & cantSkillFlag) != 0)
-            setCantSkill(stream.read(1) == 1);
-
         if ((dirtyFlag & skillDirtyFlag) != 0){
             for (Skill skill : _skills){
                 skill.readFromStream(stream);
@@ -110,9 +100,6 @@ public class PlayerProperty {
 
             if ((dirtyFlag & reflectOnFlag) != 0)
                 stream.write(isReflectOn() ? 1 : 0, 1);
-
-            if ((dirtyFlag & cantSkillFlag) != 0)
-                stream.write(isCantSkill() ? 1 : 0, 1);
 
             if ((dirtyFlag & skillDirtyFlag) != 0) {
                 for (Skill skill : getSkills()){
@@ -170,14 +157,6 @@ public class PlayerProperty {
         return _reflectOn;
     }
 
-    public boolean isCantSkill() {
-        return _cantSkill;
-    }
-
-    public void setCantSkill(boolean cantSkill){
-        _cantSkill = cantSkill;
-    }
-
     public int getMaxHealth() { return _maxHealth; }
 
     public void setMaxHealth(int health) { _maxHealth = health; }
@@ -204,7 +183,6 @@ public class PlayerProperty {
         _health = fromFactory._health;
         _maxHealth = fromFactory._maxHealth;
         _reflectOn = fromFactory._reflectOn;
-        _cantSkill = fromFactory._cantSkill;
         _dps = fromFactory._dps;
     }
 }
