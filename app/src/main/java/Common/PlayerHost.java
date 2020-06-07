@@ -12,12 +12,13 @@ import Host.ClientProxy;
 import Host.CoreHost;
 import Host.DamageApplier;
 import Host.DamageCalculator;
+import Host.GameObjectHost;
 import Host.ZeroDamageApplier;
 import Host.ZeroDamageCalculator;
 
 import static Common.PlayerProperty.*;
 
-public class PlayerHost extends GameObject implements Damageable, Player {
+public class PlayerHost extends GameObjectHost implements Damageable, Player {
     private double[] _newPosTemp = new double[2];
     private ArrayList<Item> _itemsToRemove = new ArrayList<>();
     private DamageApplier _damageApplier = new ZeroDamageApplier();
@@ -28,6 +29,31 @@ public class PlayerHost extends GameObject implements Damageable, Player {
         public void setHealth(int health) {
             health = checkHealth(health);
             super.setHealth(health);
+            getHeader().dirtyFlag |= healthDirtyFlag;
+        }
+
+        @Override
+        public void setMaxHealth(int health) {
+            super.setMaxHealth(health);
+            getHeader().dirtyFlag |= maxHealthDirtyFlag;
+        }
+
+        @Override
+        public void setPlayerId(int playerId) {
+            super.setPlayerId(playerId);
+            getHeader().dirtyFlag |= playerIdDirtyFlag;
+        }
+
+        @Override
+        public void setPlayerState(PlayerState state) {
+            super.setPlayerState(state);
+            getHeader().dirtyFlag |= playerStateDirtyFlag;
+        }
+
+        @Override
+        public void setTeam(int team) {
+            super.setTeam(team);
+            getHeader().dirtyFlag |= teamDirtyFlag;
         }
     };
 
@@ -55,6 +81,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
         for (Skill skill : _property.getSkills()) {
             if (skill.isDirty()) {
                 skill.cast(this);
+                getHeader().dirtyFlag |= skillDirtyFlag;
             }
         }
 
@@ -62,6 +89,7 @@ public class PlayerHost extends GameObject implements Damageable, Player {
             Skill skill = item.getProperty().getSkill();
             if (skill.isDirty()){
                 skill.cast(this);
+                getHeader().dirtyFlag |= skillDirtyFlag;
                 _itemsToRemove.add(item);
             }
         }
@@ -73,36 +101,31 @@ public class PlayerHost extends GameObject implements Damageable, Player {
             getItems().remove(item);
         }
         if (!_itemsToRemove.isEmpty()){
-            CoreHost.get().getMatch().getWorldSetterHost()
-                    .generateUpdateInstruction(getNetworkId(), itemsDirtyFlag);
+            getHeader().dirtyFlag |= itemsDirtyFlag;
             _itemsToRemove.clear();
         }
     }
 
 
     private void processCollision(CollisionState state, long ms){
-        if (state.other instanceof Damageable && !state.isExit){
+        if (state.other instanceof Damageable){
             if (((Damageable) state.other).getTeam() != _property.getTeam()){
                 int damage = _damageCalculator.calculateDamage(this, ms);
                 ((Damageable) state.other).takeDamage(this, damage);
-                CoreHost.get().getMatch().getWorldSetterHost()
-                        .generateUpdateInstruction(state.other.getNetworkId(), healthDirtyFlag);
                 }
         }
 
         if (state.other instanceof Pickable){
             if (((Pickable) state.other).getPickedUpBy(this)){
                 getItems().add((Item) state.other);
-                CoreHost.get().getMatch().getWorldSetterHost()
-                        .generateUpdateInstruction(getNetworkId(), itemsDirtyFlag);
+                getHeader().dirtyFlag |= itemsDirtyFlag;
             }
         }
     }
 
     protected void networkUpdate(){
-        int dirtyFlag = 0;
-
-        ClientProxy client = CoreHost.get().getNetworkManager().getClientById(_property.getPlayerId());
+        ClientProxy client = CoreHost.get().getNetworkManager()
+                .getClientById(_property.getPlayerId());
         Queue<InputState> inputs = client.getUnprocessedInputs();
         while (true) {
             InputState input = inputs.poll();
@@ -113,7 +136,6 @@ public class PlayerHost extends GameObject implements Damageable, Player {
                 case 0:
                     _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
                     setPosition(_newPosTemp[0], _newPosTemp[1]);
-                    dirtyFlag |= PlayerHost.posDirtyFlag;
                     break;
 
                 default:
@@ -125,7 +147,6 @@ public class PlayerHost extends GameObject implements Damageable, Player {
                         skill = getItems().get(skillIndex - 4).getProperty().getSkill();
 
                     skill.setDirty(true);
-                    dirtyFlag |= skillDirtyFlag;
 
                     // target is coordinate
                     if (input.lat * input.lon != 0){
@@ -139,9 +160,6 @@ public class PlayerHost extends GameObject implements Damageable, Player {
                     break;
             }
         }
-
-        CoreHost.get().getMatch()
-                .getWorldSetterHost().generateUpdateInstruction(getNetworkId(), dirtyFlag);
     }
 
     private int checkHealth(int health) {
@@ -186,11 +204,6 @@ public class PlayerHost extends GameObject implements Damageable, Player {
         setDamageCalculator(new ZeroDamageCalculator());
         getProperty().setPlayerState(PlayerState.GHOST);
         setLook(ImageType.INVISIBLE);
-
-        int flag = healthDirtyFlag | playerStateFlag | imageTypeDirtyFlag;
-
-        CoreHost.get().getMatch().getWorldSetterHost()
-                .generateUpdateInstruction(getNetworkId(), flag);
     }
 
     public void setDamageApplier(@NonNull DamageApplier applier){

@@ -15,9 +15,6 @@ public class ReflectDamageHost extends ReflectDamageCommon {
         DamageApplier originalDA = castingPlayer.getDamageApplier();
         castingPlayer.setDamageApplier(new ReverseDamageApplier(target, originalDA));
 
-        match.getWorldSetterHost()
-                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
-
         match.setTimer(() -> castingPlayer.setDamageApplier(originalDA), 3f);
     }
 }

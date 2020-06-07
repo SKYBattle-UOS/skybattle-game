@@ -12,9 +12,5 @@ public class HealthUpHost extends HealthUpCommon {
                 .getMatch().getRegistry().getGameObject(_networkId);
 
         player.getProperty().setHealth(player.getProperty().getHealth() + 10000);
-
-        WorldSetterHost wsh = CoreHost.get().getMatch().getWorldSetterHost();
-        wsh.generateUpdateInstruction(player.getNetworkId(), PlayerProperty.healthDirtyFlag);
-        wsh.generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }

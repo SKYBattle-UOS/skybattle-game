@@ -16,7 +16,7 @@ public class PlayerProperty {
     public static int endOfFlag;
     public static int endOfFlagPos;
     public static int reflectOnFlag;
-    public static int playerStateFlag;
+    public static int playerStateDirtyFlag;
 
     static {
         int i = GameObject.EndOfFlagPos;
@@ -26,7 +26,7 @@ public class PlayerProperty {
         skillDirtyFlag = 1 << i++;
         maxHealthDirtyFlag = 1 << i++;
         reflectOnFlag = 1 << i++;
-        playerStateFlag = 1 << i++;
+        playerStateDirtyFlag = 1 << i++;
         endOfFlagPos = i;
         endOfFlag = 1 << i++;
     }
@@ -79,7 +79,7 @@ public class PlayerProperty {
             }
         }
 
-        if ((dirtyFlag & playerStateFlag) != 0){
+        if ((dirtyFlag & playerStateDirtyFlag) != 0){
             setPlayerState(PlayerState.values()[stream.read(4)]);
         }
     }
@@ -107,7 +107,7 @@ public class PlayerProperty {
                 }
             }
 
-            if ((dirtyFlag & playerStateFlag) != 0){
+            if ((dirtyFlag & playerStateDirtyFlag) != 0){
                 stream.write(_playerState.ordinal(), 4);
             }
 

@@ -52,10 +52,6 @@ class MatchStateAssembleHost implements GameState {
                         _assemblePoint = p.getGameObject();
                         _assemblePoint.setLook(ImageType.CIRCLE_WITH_MARKER);
                         _assemblePoint.setRadius(100);
-                        _match.getWorldSetterHost()
-                                .generateUpdateInstruction(
-                                        _assemblePoint.getNetworkId(),
-                                        GameObject.imageTypeDirtyFlag | GameObject.radiusDirtyFlag);
                         return;
                     }
                 }
@@ -66,10 +62,6 @@ class MatchStateAssembleHost implements GameState {
         if (assembled){
             _assemblePoint.setLook(ImageType.MARKER);
             _assemblePoint.setRadius(2.5f);
-            _match.getWorldSetterHost()
-                    .generateUpdateInstruction(
-                            _assemblePoint.getNetworkId(),
-                            GameObject.imageTypeDirtyFlag | GameObject.radiusDirtyFlag);
             CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
         }

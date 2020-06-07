@@ -31,9 +31,6 @@ class MatchStateInGameHost implements GameState {
             ((PlayerHost) p).setDamageApplier(new TrueDamageApplier());
             ((PlayerHost) p).setDamageCalculator(new SimpleDamageCalculator());
             p.getProperty().setPlayerState(PlayerState.NORMAL);
-            _match.getWorldSetterHost().generateUpdateInstruction(
-                    p.getGameObject().getNetworkId(), PlayerProperty.playerStateFlag
-            );
         }
     }
 }

@@ -25,14 +25,14 @@ import Common.ReadOnlyList;
 import Common.RoomUserInfo;
 import Common.TimerStruct;
 import Common.Util;
+import Common.WorldSetterHeader;
 
 public class GameStateMatchHost implements GameState, MatchHost {
     private GameStateContextHost _parent;
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
     private ArrayList<GameObject> _gameObjects;
-    private ArrayList<GameObject> _newGameObjects;
-    private ArrayList<Integer> _newGOClassId;
+    private ArrayList<GameObjectHost> _newGameObjects;
     private ArrayList<Player> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
@@ -56,7 +56,6 @@ public class GameStateMatchHost implements GameState, MatchHost {
         _factory = CoreHost.get().getGameObjectFactory();
         _gameObjects = new ArrayList<>();
         _newGameObjects = new ArrayList<>();
-        _newGOClassId = new ArrayList<>();
         _players = new ArrayList<>();
         _collider = new Collider();
 
@@ -71,8 +70,8 @@ public class GameStateMatchHost implements GameState, MatchHost {
     }
 
     @Override
-    public GameObject createGameObject(int classId, boolean addToCollider){
-        GameObject ret = _factory.createGameObject(classId);
+    public GameObjectHost createGameObject(int classId, boolean addToCollider){
+        GameObjectHost ret = (GameObjectHost) _factory.createGameObject(classId);
         int networkId = _nextNetworkId++;
 
         ret.setMatch(this);
@@ -84,7 +83,10 @@ public class GameStateMatchHost implements GameState, MatchHost {
         }
 
         _newGameObjects.add(ret);
-        _newGOClassId.add(classId);
+
+        WorldSetterHeader header = _worldSetter
+                .generateCreateInstruction(classId, networkId, -1);
+        ret.setHeader(header);
 
         return ret;
     }
@@ -97,19 +99,16 @@ public class GameStateMatchHost implements GameState, MatchHost {
     }
 
     private void addNewGameObjectsToWorld(){
-        int i = 0;
-        for (GameObject go : _newGameObjects){
+        for (GameObjectHost go : _newGameObjects){
             _registry.add(go.getNetworkId(), go);
-            go.setIndexInWorld(_gameObjects.size());
             _gameObjects.add(go);
-            _worldSetter.generateCreateInstruction(_newGOClassId.get(i++), go.getNetworkId(), -1);
+            go.setIndexInWorld(_gameObjects.size());
 
             if (go instanceof Player)
                 _players.add((Player) go);
         }
 
         _newGameObjects.clear();
-        _newGOClassId.clear();
     }
 
     public void createPlayers() {

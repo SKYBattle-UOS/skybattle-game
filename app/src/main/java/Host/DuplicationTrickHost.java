@@ -22,6 +22,5 @@ public class DuplicationTrickHost extends DuplicationTrickCommon {
             spawned.setLook(ImageType.INVISIBLE);
             CoreHost.get().getMatch().setTimer(spawned::scheduleDeath,60);
         }
-        CoreHost.get().getMatch().getWorldSetterHost().generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }

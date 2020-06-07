@@ -71,7 +71,7 @@ public class WorldSetterHost {
         header.dirtyFlag = 0;
     }
 
-    public void generateCreateInstruction(int classId, int networkId, int dirtyFlag) {
+    public WorldSetterHeader generateCreateInstruction(int classId, int networkId, int dirtyFlag) {
         WorldSetterHeader header = new WorldSetterHeader();
         header.action = WorldSetterAction.CREATE;
         header.networkId = networkId;
@@ -79,13 +79,7 @@ public class WorldSetterHost {
         header.dirtyFlag = dirtyFlag;
 
         _mappingN2I.put(networkId, header);
-    }
-
-    public void generateUpdateInstruction(int networkId, int dirtyFlag){
-        WorldSetterHeader header = _mappingN2I.get(networkId);
-        if (header == null || header.action != WorldSetterAction.UPDATE) return;
-
-        header.dirtyFlag |= dirtyFlag;
+        return header;
     }
 
     public void generateDestroyInstruction(int networkId){

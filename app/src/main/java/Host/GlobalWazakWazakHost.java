@@ -19,8 +19,6 @@ public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
         spawned.setPosition(_lat, _lon);
         spawned.setLook(ImageType.MARKER);
 
-        match.getWorldSetterHost()
-                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
         match.setTimer(() -> {
             if (!spawned.isPickedUp())
                 spawned.scheduleDeath();

@@ -11,9 +11,5 @@ public class SuicideHost extends SuicideCommon {
         PlayerHost player = (PlayerHost) caster;
 
         player.getProperty().setHealth(player.getProperty().getHealth() - 10000);
-
-        WorldSetterHost wsh = CoreHost.get().getMatch().getWorldSetterHost();
-        wsh.generateUpdateInstruction(player.getNetworkId(), PlayerProperty.healthDirtyFlag);
-        wsh.generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }

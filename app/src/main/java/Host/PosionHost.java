@@ -18,13 +18,5 @@ public class PosionHost extends PosionCommon {
                 .getMatch().getRegistry().getGameObject(_networkId);
 
         player.getProperty().setHealth(player.getProperty().getHealth() - 5000);
-
-        CoreHost.get()
-                .getMatch()
-                .getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), PlayerProperty.healthDirtyFlag);
-
-        CoreHost.get().getMatch().getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }

@@ -11,11 +11,6 @@ public class CantAttackHost extends CantAttackCommon {
 
         DamageCalculator originalDC = player.getDamageCalculator();
         player.setDamageCalculator(new ZeroDamageCalculator());
-
-        CoreHost.get().getMatch()
-                .getWorldSetterHost()
-                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
-
         CoreHost.get().getMatch().setTimer(() -> player.setDamageCalculator(originalDC), 3f);
     }
 }

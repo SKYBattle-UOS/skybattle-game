@@ -11,7 +11,5 @@ public class SneakHost extends SneakCommon {
 
     @Override
     public void cast(GameObject caster){
-        CoreHost.get().getMatch().getWorldSetterHost()
-                .generateUpdateInstruction(caster.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }
