@@ -63,6 +63,6 @@ public class CharacterFactory {
     }
 
     public int[] getAvailableCharacterIndices(){
-        return new int[]{ 0, 1 };
+        return new int[]{ 0 };
     }
 }
