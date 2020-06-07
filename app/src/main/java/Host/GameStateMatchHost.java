@@ -10,7 +10,6 @@ import Common.GameObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -275,11 +274,6 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
     @Override
     public Collider getCollider(){ return _collider; }
-
-    @Override
-    public WorldSetterHost getWorldSetterHost() {
-        return _worldSetter;
-    }
 
     @Override
     public LatLonByteConverter getConverter(){ return _parent.getConverter(); }
