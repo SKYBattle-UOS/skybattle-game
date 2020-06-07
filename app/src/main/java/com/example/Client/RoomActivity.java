@@ -46,9 +46,14 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
         EditText editTitle = findViewById((R.id.editTitle));
         findViewById(R.id.editTitleButton).setOnClickListener(
-                v -> {roomState.changeRoomTitle(editTitle.getText().toString());
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(editTitle.getWindowToken(), 0);
+                v -> {
+                    if (editTitle.getText().toString().replace(" ", "").equals("")) { }
+                    else{
+                        roomState.changeRoomTitle(editTitle.getText().toString());
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(editTitle.getWindowToken(), 0);
+                        editTitle.setText(null);
+                    }
                 });
 
         if (!Core.get().isHost()){
