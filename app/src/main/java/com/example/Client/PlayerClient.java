@@ -5,6 +5,7 @@ import Common.InputBitStream;
 import Common.Item;
 import Common.Player;
 import Common.PlayerProperty;
+import Common.IngameInfoListener;
 import Common.Skill;
 
 public class PlayerClient extends GameObjectClient implements Player {
@@ -14,10 +15,24 @@ public class PlayerClient extends GameObjectClient implements Player {
             super.setHealth(health);
             onSetHealth(health);
         }
+
+        @Override
+        public void setPlayerState(PlayerState state) {
+            super.setPlayerState(state);
+            _ingameInfoListener.onPlayerStateChange(state);
+        }
     };
 
-    private PlayerStateBase _playerState = new PlayerStateBase(this);
-    private boolean _shouldChangeState;
+    // dummy
+    private IngameInfoListener _ingameInfoListener = new IngameInfoListener() {
+        @Override
+        public void onPlayerStateChange(PlayerState state) {
+        }
+
+        @Override
+        public void onItemsChange() {
+        }
+    };
 
     @Override
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
@@ -31,11 +46,6 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void update(long ms) {
-        if (_shouldChangeState){
-            changeState();
-            _shouldChangeState = false;
-        }
-
         for (Skill skill : _property.getSkills())
             if (skill.isDirty()){
                 skill.cast(this);
@@ -49,8 +59,6 @@ public class PlayerClient extends GameObjectClient implements Player {
                 skill.setDirty(false);
             }
         }
-
-        _playerState.update(ms);
     }
 
     @Override
@@ -59,8 +67,7 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void onItemsDirty() {
-        if (Core.get().getMatch().getThisPlayer() == this)
-            Core.get().getUIManager().updateItems();
+        _ingameInfoListener.onItemsChange();
     }
 
     @Override
@@ -78,31 +85,12 @@ public class PlayerClient extends GameObjectClient implements Player {
         _property.getFromFactory(property);
     }
 
-    @Override
-    public void onPlayerStateChange(PlayerState state){
-        _shouldChangeState = true;
+    public void setIngameInfoListener(IngameInfoListener listener){
+        _ingameInfoListener = listener;
     }
 
     private void onSetHealth(int health) {
         if (Core.get().getMatch().getThisPlayer() == this)
             Core.get().getUIManager().setHealth(health);
-    }
-
-
-    private void changeState(){
-        _playerState.finish();
-
-        PlayerState state = getProperty().getPlayerState();
-        switch (state){
-            case NORMAL:
-                _playerState = new PlayerStateNormal(this);
-                break;
-
-            case GHOST:
-                _playerState = new PlayerStateGhost(this);
-                break;
-        }
-
-        _playerState.start();
     }
 }
