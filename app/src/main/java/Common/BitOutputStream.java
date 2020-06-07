@@ -1,8 +1,6 @@
 package Common;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -58,13 +56,7 @@ public class BitOutputStream implements OutputBitStream {
         return buff.getInt();
     }
 
-    /**
-     * 비트들을 쓴다.
-     * @param data          비트값인 data 를 저장한다..
-     * @param numBits       쓰여질 비트 개수
-     * @throws IOException  if an I/O error occurs.
-     */
-    public void write(int data, int numBits) throws IOException {
+    public void write(int data, int numBits) {
         while (numBits > 0) {
             int rest = BITS_PER_BYTE - bufferBitCount;  //여유공간 bit
 
@@ -74,7 +66,12 @@ public class BitOutputStream implements OutputBitStream {
                 numBits = 0;
             } else {    //여유공간이 없는 경우
                 buffer = ((data & MASKS[rest]) << bufferBitCount) | buffer;
-                out.write(buffer);  // 쓸 수 있는 공간이 없기에 꽉찬 버퍼를 씀.
+                try {
+                    out.write(buffer);  // 쓸 수 있는 공간이 없기에 꽉찬 버퍼를 씀.
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Util.exit();
+                }
                 byteSize++;
                 numBits -= rest;    //쓴 만큼 개수를 감소.
                 data >>>= rest;
@@ -84,13 +81,7 @@ public class BitOutputStream implements OutputBitStream {
         }
     }
 
-    /**
-     * 비트들을 쓴다.
-     * @param data   쓰여질 바이트들
-     * @param numBits       쓰여질 비트 개수
-     * @throws IOException  if an I/O error occurs.
-     */
-    public void write(byte[] data, int numBits) throws IOException {
+    public void write(byte[] data, int numBits) {
         int byteCount = 0;
 
         //바이트를 하나씩 모두 기록

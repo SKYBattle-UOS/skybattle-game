@@ -59,6 +59,11 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
         Core.get().getUIManager().updateItems();
     }
 
+    @Override
+    public void onHealthChange(int health) {
+        Core.get().getUIManager().setHealth(health);
+    }
+
     private void setGameUI(){
         UIManager uiManager = Core.get().getUIManager();
         int i = 0;

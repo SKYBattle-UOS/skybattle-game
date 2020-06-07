@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.example.Client.GameObjectRegistry;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,21 +42,13 @@ public class WorldSetterHost {
 
         _toRemove.clear();
 
-        try {
-            packetToSend.write(0, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        packetToSend.write(0, 1);
     }
 
     private void writeInstruction(WorldSetterHeader header, OutputBitStream packetToSend){
         CoreHost.get().getNetworkManager().shouldSendThisFrame();
 
-        try {
-            packetToSend.write(1, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        packetToSend.write(1, 1);
 
         header.writeToStream(packetToSend);
 

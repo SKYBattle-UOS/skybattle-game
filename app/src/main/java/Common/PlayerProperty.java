@@ -2,7 +2,6 @@ package Common;
 
 import com.example.Client.PlayerState;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -63,32 +62,28 @@ public class PlayerProperty {
     }
 
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
-        try {
-            if ((dirtyFlag & playerIdDirtyFlag) != 0)
-                stream.write(getPlayerId(), 32);
+        if ((dirtyFlag & playerIdDirtyFlag) != 0)
+            stream.write(getPlayerId(), 32);
 
-            if ((dirtyFlag & healthDirtyFlag) != 0)
-                stream.write(getHealth(), 32);
+        if ((dirtyFlag & healthDirtyFlag) != 0)
+            stream.write(getHealth(), 32);
 
-            if ((dirtyFlag & maxHealthDirtyFlag) != 0)
-                stream.write(getMaxHealth(), 32);
+        if ((dirtyFlag & maxHealthDirtyFlag) != 0)
+            stream.write(getMaxHealth(), 32);
 
-            if ((dirtyFlag & teamDirtyFlag) != 0)
-                stream.write(getTeam(), 1);
+        if ((dirtyFlag & teamDirtyFlag) != 0)
+            stream.write(getTeam(), 1);
 
-            if ((dirtyFlag & skillDirtyFlag) != 0) {
-                for (Skill skill : getSkills()){
-                    skill.writeToStream(stream);
-                }
+        if ((dirtyFlag & skillDirtyFlag) != 0) {
+            for (Skill skill : getSkills()){
+                skill.writeToStream(stream);
             }
-
-            if ((dirtyFlag & playerStateDirtyFlag) != 0){
-                stream.write(_playerState.ordinal(), 4);
-            }
-
-        } catch (IOException e){
-            e.printStackTrace();
         }
+
+        if ((dirtyFlag & playerStateDirtyFlag) != 0){
+            stream.write(_playerState.ordinal(), 4);
+        }
+
     }
 
     public List<Skill> getSkills(CharacterFactory.Friend friend) {

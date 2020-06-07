@@ -2,7 +2,6 @@ package com.example.Client;
 
 import android.content.Context;
 
-import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -110,22 +109,14 @@ public class InputManager {
         InputState input = _inputStates.poll();
         if (input != null){
             // sending one input in the packet
-            try {
-                stream.write(1, 2);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(1, 2);
 
             input.writeToStream(stream);
             Core.get().getPakcetManager().shouldSendThisFrame();
         }
         else {
             // sending 0 input in the packet
-            try {
-                stream.write(0, 2);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(0, 2);
         }
     }
 

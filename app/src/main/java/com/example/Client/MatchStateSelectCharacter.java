@@ -1,8 +1,5 @@
 package com.example.Client;
 
-import java.io.IOException;
-
-import Common.CharacterFactory;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
@@ -45,11 +42,7 @@ public class MatchStateSelectCharacter implements GameState {
         boolean shouldSend = (_selectedCharacter >= 0 && !_sentCharacter);
         Util.sendHas(packetToSend, shouldSend);
         if (shouldSend){
-            try {
-                packetToSend.write(_selectedCharacter, 8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            packetToSend.write(_selectedCharacter, 8);
             Core.get().getPakcetManager().shouldSendThisFrame();
             _sentCharacter = true;
         }

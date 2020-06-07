@@ -31,7 +31,7 @@ public class SelectCharacterFragment extends Fragment {
         mFactory = Core.get().getMatch().getCharacterFactory();
         mButtons = new Button[mFactory.size()];
 
-        for (int i = 0; i < mFactory.size(); i++){
+        for (int i : mFactory.getAvailableCharacterIndices()){
             Button button = (Button) LayoutInflater
                     .from(getContext()).inflate(R.layout.button_simple, (ViewGroup) view, false);
             setUpSimpleButton(button, i);

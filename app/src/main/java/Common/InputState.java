@@ -1,7 +1,5 @@
 package Common;
 
-import java.io.IOException;
-
 public class InputState {
     public int command;
     public int playerId = -1;
@@ -10,19 +8,15 @@ public class InputState {
 
     public void writeToStream(OutputBitStream stream){
         // TODO
-        try {
-            stream.write(command, 4);
-            stream.write(lat * lon != 0 ? 1 : 0, 1);
-            if (lat * lon != 0){
-                stream.write(lat, 32);
-                stream.write(lon, 32);
-            }
-            stream.write(playerId >= 0 ? 1 : 0, 1);
-            if (playerId >= 0)
-                stream.write(playerId, 8);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        stream.write(command, 4);
+        stream.write(lat * lon != 0 ? 1 : 0, 1);
+        if (lat * lon != 0){
+            stream.write(lat, 32);
+            stream.write(lon, 32);
         }
+        stream.write(playerId >= 0 ? 1 : 0, 1);
+        if (playerId >= 0)
+            stream.write(playerId, 8);
     }
 
     public void readFromStream(InputBitStream stream){

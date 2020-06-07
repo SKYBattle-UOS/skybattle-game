@@ -13,7 +13,7 @@ public class PlayerClient extends GameObjectClient implements Player {
         @Override
         public void setHealth(int health) {
             super.setHealth(health);
-            onSetHealth(health);
+            _ingameInfoListener.onHealthChange(health);
         }
 
         @Override
@@ -31,6 +31,10 @@ public class PlayerClient extends GameObjectClient implements Player {
 
         @Override
         public void onItemsChange() {
+        }
+
+        @Override
+        public void onHealthChange(int health) {
         }
     };
 
@@ -87,10 +91,5 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     public void setIngameInfoListener(IngameInfoListener listener){
         _ingameInfoListener = listener;
-    }
-
-    private void onSetHealth(int health) {
-        if (Core.get().getMatch().getThisPlayer() == this)
-            Core.get().getUIManager().setHealth(health);
     }
 }

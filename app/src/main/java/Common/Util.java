@@ -3,8 +3,6 @@ package Common;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.PlayerClient;
 
-import java.io.IOException;
-
 import Host.DummyPlayerHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
@@ -47,11 +45,7 @@ public class Util {
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {
-        try {
-            outPacket.write(has ? 1 : 0, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        outPacket.write(has ? 1 : 0, 1);
     }
 
     public static boolean hasMessage(InputBitStream packet) {
@@ -62,5 +56,18 @@ public class Util {
         float[] results = new float[3];
         android.location.Location.distanceBetween(lat0, lon0, lat1, lon1, results);
         return results[0];
+    }
+
+    public static void exit() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
+    }
+
+    public static Player findPlayerById(MatchCommon match, int playerId) {
+        for (Player p : match.getPlayers())
+            if (p.getProperty().getPlayerId() == playerId)
+                return p;
+
+        return null;
     }
 }

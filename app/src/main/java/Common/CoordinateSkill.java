@@ -19,7 +19,7 @@ public abstract class CoordinateSkill extends Skill {
     }
 
     @Override
-    protected void writeToStream2(OutputBitStream stream) throws IOException {
+    protected void writeToStream2(OutputBitStream stream) {
         CoreHost.get().getMatch().getConverter().convertLatLon(_lat, _lon, _intTemp);
         stream.write(_intTemp[0], 32);
         stream.write(_intTemp[1], 32);

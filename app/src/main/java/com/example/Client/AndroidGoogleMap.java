@@ -110,6 +110,16 @@ public class AndroidGoogleMap implements Map {
     }
 
     @Override
+    public void setMarkerName(MapMarkerHandle marker, String name) {
+        SavedMarker saved = _savedMarkers.get(((GoogleMarkerHandle) marker).index);
+        saved.name = name;
+
+        if (_googleMap != null)
+            _mainHandler.post(() -> _setMarkerName(marker, name));
+    }
+
+
+    @Override
     public void setCirclePosition(MapCircleHandle circle, double lat, double lon){
         SavedCircle saved = _savedCircles.get(((GoogleCircleHandle) circle).index);
         saved.lat = lat;
@@ -191,21 +201,33 @@ public class AndroidGoogleMap implements Map {
         _animateCamera(_savedCamera.zoom);
     }
 
+    private synchronized void _setMarkerName(MapMarkerHandle marker, String name) {
+        if (_googleMap == null) return;
+
+        _tv_marker.setText(name);
+        _tv_marker.setBackgroundResource(R.drawable.marker_mask);
+        _tv_marker.setTextColor(Color.WHITE);
+
+        int index = ((GoogleMarkerHandle) marker).index;
+        Marker realMarker = _markers.get(index);
+        realMarker.setIcon(BitmapDescriptorFactory
+                .fromBitmap(createDrawableFromView(_matchActivity, _marker_root_view)));
+    }
+
     private synchronized void _setMarkerPosition(MapMarkerHandle marker, double lat, double lon) {
         if (_googleMap == null) return;
 
         int index = ((GoogleMarkerHandle) marker).index;
         Marker cur_marker = _markers.get(index);
         cur_marker.setPosition(new LatLng(lat, lon));
-        cur_marker.showInfoWindow();
     }
+
     private synchronized void _setCirclePosition(MapCircleHandle circle, double lat, double lon){
         if (_googleMap == null) return;
 
         int index = ((GoogleCircleHandle) circle).index;
         Circle cur_circle = _circles.get(index);
         cur_circle.setCenter(new LatLng(lat,lon));
-        //cur_circle.setVisible(true);
     }
 
     private synchronized void _setCircleRadius(MapCircleHandle circle, float radius){
@@ -213,8 +235,7 @@ public class AndroidGoogleMap implements Map {
 
         int index = ((GoogleCircleHandle) circle).index;
         Circle cur_circle = _circles.get(index);
-        cur_circle.setRadius((double)radius);
-        //cur_circle.setVisible(true);
+        cur_circle.setRadius(radius);
     }
 
     private synchronized void _addMarker(int number, double latitude, double longitude,

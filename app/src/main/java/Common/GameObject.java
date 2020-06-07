@@ -3,10 +3,8 @@ package Common;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -58,50 +56,30 @@ public abstract class GameObject {
             _match.getConverter().convertLatLon(pos[0], pos[1], _convertTemp);
             int lat = _convertTemp[0];
             int lon = _convertTemp[1];
-            try {
-                stream.write(lat, 32);
-                stream.write(lon, 32);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(lat, 32);
+            stream.write(lon, 32);
         }
 
         if ((dirtyFlag & nameDirtyFlag) != 0){
             byte[] b = _name.getBytes(StandardCharsets.UTF_8);
-            try {
-                stream.write(b.length, 8);
-                stream.write(b, b.length * 8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(b.length, 8);
+            stream.write(b, b.length * 8);
         }
 
         if ((dirtyFlag & radiusDirtyFlag) != 0){
             float r = getRadius();
             int rInt = (int) r * 10;
-            try {
-                stream.write(rInt, 16);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(rInt, 16);
         }
 
         if ((dirtyFlag & imageTypeDirtyFlag) != 0){
-            try {
-                stream.write(_imageType.ordinal(), 4);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(_imageType.ordinal(), 4);
         }
 
         if ((dirtyFlag & itemsDirtyFlag) != 0){
-            try {
-                stream.write(_items.size(), 4);
-                for (Item item : _items){
-                    stream.write(item.getGameObject().getNetworkId(), 32);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            stream.write(_items.size(), 4);
+            for (Item item : _items){
+                stream.write(item.getGameObject().getNetworkId(), 32);
             }
         }
     }

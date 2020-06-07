@@ -2,8 +2,6 @@ package Common;
 
 import com.example.Client.GameObjectRegistry;
 
-import java.io.IOException;
-
 public class ItemProperty {
     public static int isPickedUpDirtyFlag;
     public static int ownerDirtyFlag;
@@ -24,22 +22,14 @@ public class ItemProperty {
 
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
         if ((dirtyFlag & isPickedUpDirtyFlag) != 0){
-            try {
-                stream.write(isPickedUp() ? 1 : 0, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(isPickedUp() ? 1 : 0, 1);
         }
 
         if ((dirtyFlag & ownerDirtyFlag) != 0){
-            try {
-                if (_owner == null)
-                    stream.write(0, 32);
-                else
-                    stream.write(_owner.getNetworkId(), 32);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if (_owner == null)
+                stream.write(0, 32);
+            else
+                stream.write(_owner.getNetworkId(), 32);
         }
     }
 

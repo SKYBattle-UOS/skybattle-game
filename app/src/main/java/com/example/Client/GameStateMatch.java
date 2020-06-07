@@ -15,6 +15,7 @@ import Common.MatchStateType;
 import Common.Player;
 import Common.ReadOnlyList;
 import Common.TimerStruct;
+import Common.Util;
 
 /**
  * 앱의 각 화면에 대한 상태패턴의 상태 객체 중 매치화면.
@@ -156,13 +157,7 @@ public class GameStateMatch implements GameState, Match {
 
     @Override
     public Player getThisPlayer() {
-        ReadOnlyList<Player> gos = getPlayers();
-        for (Player go : gos){
-            if (go.getProperty().getPlayerId() == Core.get().getPakcetManager().getPlayerId()) {
-                return go;
-            }
-        }
-        return null;
+        return Util.findPlayerById(this, Core.get().getPakcetManager().getPlayerId());
     }
 
     private void killGameObjects(){

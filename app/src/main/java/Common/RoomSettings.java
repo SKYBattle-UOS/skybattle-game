@@ -1,6 +1,5 @@
 package Common;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class RoomSettings {
@@ -16,16 +15,12 @@ public class RoomSettings {
         if (startButtonPressed)
             dirtyFlag |= 2;
 
-        try {
-            stream.write(dirtyFlag, 10);
+        stream.write(dirtyFlag, 10);
 
-            if (roomTitleChanged) {
-                byte[] b = roomTitle.getBytes(StandardCharsets.UTF_8);
-                stream.write(b.length, 8);
-                stream.write(b, b.length * 8);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (roomTitleChanged) {
+            byte[] b = roomTitle.getBytes(StandardCharsets.UTF_8);
+            stream.write(b.length, 8);
+            stream.write(b, b.length * 8);
         }
 
         return dirtyFlag != 0;

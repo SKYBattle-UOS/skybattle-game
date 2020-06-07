@@ -7,6 +7,7 @@ import Common.GameObject;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
+import Common.Player;
 import Common.ReadOnlyList;
 import Common.Util;
 
@@ -36,6 +37,16 @@ public class MatchStateGetReady implements GameState {
 
         InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         if (packet == null) return;
+
+        if (Util.hasMessage(packet)){
+            int numZombies = packet.read(8);
+            for (int i = 0; i < numZombies; i++){
+                int playerId = packet.read(8);
+                Player player = Util.findPlayerById(_match, playerId);
+                _match.getCharacterFactory().setCharacterProperty(player, 1);
+                player.getGameObject().setName(player.getGameObject().getName() + " (좀비)");
+            }
+        }
 
         if (Util.hasMessage(packet)){
             _count = packet.read(8);
