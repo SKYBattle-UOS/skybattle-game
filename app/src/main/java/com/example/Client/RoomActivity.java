@@ -46,7 +46,10 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
         EditText editTitle = findViewById((R.id.editTitle));
         findViewById(R.id.editTitleButton).setOnClickListener(
-                v -> roomState.changeRoomTitle(editTitle.getText().toString()));
+                v -> {roomState.changeRoomTitle(editTitle.getText().toString());
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(editTitle.getWindowToken(), 0);
+                });
 
         if (!Core.get().isHost()){
             LinearLayout roomLinLayout = findViewById(R.id.roomLinLayout);
@@ -61,12 +64,16 @@ public class RoomActivity extends AppCompatActivity implements Screen {
         Button userNameButton = findViewById(R.id.btn_nickname);
         userNameButton.setOnClickListener(v -> {
             EditText userName = findViewById(R.id.edit_nickname);
-            //등록 후, 키보드가 숨겨지도록 함
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(userName.getWindowToken(), 0);
+            if (userName.getText().toString().replace(" ", "").equals("")) { }
 
-            ((GameStateRoom) Core.get().getState()).setUserName(userName.getText().toString());
-            userName.setText(null);
+            else {
+                //등록 후, 키보드가 숨겨지도록 함
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(userName.getWindowToken(), 0);
+
+                ((GameStateRoom) Core.get().getState()).setUserName(userName.getText().toString());
+                userName.setText(null);
+            }
         });
 
         //게임 시작 버튼
