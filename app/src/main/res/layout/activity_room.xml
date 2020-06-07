@@ -25,48 +25,12 @@
         android:layout_weight="1"
         android:textSize="30sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="50dp"
-            android:layout_weight="1"
-            android:textSize="30sp"
-            android:layout_height="40dp" />
-
-        <Button
-            android:id="@+id/teamAButton"
-            android:fontFamily="@font/bmeuljirottf"
-            android:padding="0dp"
-            android:background="@drawable/btn_teama"
-            android:textColor="#37474F"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:bottomLeftRadius="12dp"
-            android:text="팀 A" />
-
-        <Button
-            android:id="@+id/teamBButton"
-            android:fontFamily="@font/bmeuljirottf"
-            android:padding="0dp"
-            android:background="@drawable/btn_teamb"
-            android:textColor="#37474F"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:text="팀 B" />
-
-        <TextView
-            android:layout_width="50dp"
-            android:layout_weight="1"
-            android:textSize="30sp"
-            android:layout_height="40dp" />
-    </LinearLayout>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:id="@+id/imageView1"
+        android:src="@drawable/zombie"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -116,37 +80,37 @@
             android:layout_weight="1"
             android:textSize="30sp" />
 
-    <Button
-        android:id="@+id/btn_nickname"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_weight="0.5"
-        android:background="@drawable/btn"
-        android:fontFamily="@font/bmeuljirottf"
-        android:padding="0dp"
-        android:text="닉네임 변경"
-        android:textColor="#37474F" />
+        <Button
+            android:id="@+id/btn_nickname"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:background="@drawable/btn"
+            android:fontFamily="@font/bmeuljirottf"
+            android:padding="0dp"
+            android:text="닉네임 변경"
+            android:textColor="#37474F" />
 
         <Button
-        android:id="@+id/editTitleButton"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
+            android:id="@+id/editTitleButton"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="20dp"
-        android:layout_gravity="center"
-        android:layout_weight="0.5"
-        android:background="@drawable/btn"
-        android:fontFamily="@font/bmeuljirottf"
-        android:padding="0dp"
-        android:text="방 제목 변경"
-        android:textColor="#37474F" />
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:background="@drawable/btn"
+            android:fontFamily="@font/bmeuljirottf"
+            android:padding="0dp"
+            android:text="방 제목 변경"
+            android:textColor="#37474F" />
 
         <TextView
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:textSize="30sp" />
-</LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -158,9 +122,9 @@
     <ListView
         android:id="@+id/playerlist"
         android:layout_width="match_parent"
-        android:dividerHeight="2dp"
-        android:layout_height="398dp"
+        android:layout_height="376dp"
         android:layout_gravity="bottom"
+        android:dividerHeight="2dp"
         android:entries="@array/reboot_screen_items"
         android:fontFamily="@font/bmeuljirottf" />
 
@@ -173,8 +137,8 @@
             android:id="@+id/exitButton"
             android:fontFamily="@font/bmeuljirottf"
             android:padding="0dp"
-            android:background="@drawable/btn"
-            android:textColor="#37474F"
+            android:background="#00FF0000"
+            android:textColor="#FFFFFF"
             android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_gravity="left"
@@ -191,8 +155,8 @@
             android:id="@+id/startButton"
             android:fontFamily="@font/bmeuljirottf"
             android:padding="0dp"
-            android:background="@drawable/btn"
-            android:textColor="#37474F"
+            android:background="#00FF0000"
+            android:textColor="#F7B633"
             android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_gravity="right"

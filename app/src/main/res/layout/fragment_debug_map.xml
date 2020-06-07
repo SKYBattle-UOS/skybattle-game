@@ -7,30 +7,48 @@
 
     <Button
         android:id="@+id/btn_debugUp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_up"
+        android:fontFamily="@font/bmeuljirottf"
+        android:textColor="#37474F"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="5dp"
+        android:text="▲" />
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="95dp"
-        android:text="위"
-        android:textSize="20sp" />
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_debugLeft"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_left"
+            android:fontFamily="@font/bmeuljirottf"
+            android:textColor="#37474F"
+            android:text="◀" />
+
+        <Button
+            android:id="@+id/btn_debugRight"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_right"
+            android:fontFamily="@font/bmeuljirottf"
+            android:textColor="#37474F"
+            android:layout_marginLeft="40dp"
+            android:text="▶" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_debugDown"
-        android:layout_width="wrap_content"
-        android:layout_height="95dp"
-        android:text="아래"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/btn_debugRight"
-        android:layout_width="wrap_content"
-        android:layout_height="95dp"
-        android:text="오른쪽"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/btn_debugLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="95dp"
-        android:text="왼쪾"
-        android:textSize="20sp" />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_down"
+        android:fontFamily="@font/bmeuljirottf"
+        android:textColor="#37474F"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="40dp"
+        android:text="▼" />
 
 </LinearLayout>
