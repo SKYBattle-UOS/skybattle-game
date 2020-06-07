@@ -62,6 +62,13 @@ class MatchStateAssembleHost implements GameState {
         if (assembled){
             _assemblePoint.setLook(ImageType.MARKER);
             _assemblePoint.setRadius(2.5f);
+
+            GameObject respawnPoint = _match.createGameObject(Util.ItemClassId, true);
+            respawnPoint.setPosition(_assemblePoint.getPosition());
+            respawnPoint.setName("부활지점");
+            respawnPoint.setRadius(20);
+            respawnPoint.setLook(ImageType.INVISIBLE);
+
             CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
         }

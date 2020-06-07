@@ -147,6 +147,10 @@ public abstract class GameObject {
             _match.getCollider().positionDirty(this);
     }
 
+    public void setPosition(double[] position){
+        setPosition(position[0], position[1]);
+    }
+
     public void setName(String name){
         _name = name;
     }

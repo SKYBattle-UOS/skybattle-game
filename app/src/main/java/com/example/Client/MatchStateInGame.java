@@ -11,7 +11,6 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
     private GameStateMatch _match;
     private PlayerClient _thisPlayer;
     private String _originalName;
-    private PlayerState _playerState;
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
@@ -56,8 +55,6 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
                 makeGhost();
                 break;
         }
-
-        _playerState = state;
     }
 
     @Override

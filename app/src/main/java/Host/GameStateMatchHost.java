@@ -136,12 +136,6 @@ public class GameStateMatchHost implements GameState, MatchHost {
         dummy2.setName("연습용 봇 2");
         dummy2.setLook(ImageType.MARKER);
 
-        GameObject respawnPoint = createGameObject(Util.ItemClassId, true);
-        respawnPoint.setPosition(37.715151, 127.045780);
-        respawnPoint.setName("부활지점");
-        respawnPoint.setRadius(20);
-        respawnPoint.setLook(ImageType.INVISIBLE);
-
         addNewGameObjectsToWorld();
     }
 
