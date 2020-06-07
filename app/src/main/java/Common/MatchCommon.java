@@ -8,5 +8,6 @@ public interface MatchCommon {
     GameObjectRegistry getRegistry();
     ReadOnlyList<GameObject> getWorld();
     ReadOnlyList<Player> getPlayers();
+    CharacterFactory getCharacterFactory();
     void setTimer(Runnable callback, float seconds);
 }

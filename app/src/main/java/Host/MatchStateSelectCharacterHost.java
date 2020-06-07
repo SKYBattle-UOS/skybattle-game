@@ -19,11 +19,9 @@ import Common.Util;
 class MatchStateSelectCharacterHost implements GameState, ConnectionListener {
     private GameStateMatchHost _match;
     private HashMap<Integer, Integer> _characters = new HashMap<>();
-    private CharacterFactory _charFactory;
 
     public MatchStateSelectCharacterHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
-        _charFactory = new CharacterFactory(CoreHost.get().getGameObjectFactory());
     }
 
     @Override
@@ -66,7 +64,7 @@ class MatchStateSelectCharacterHost implements GameState, ConnectionListener {
     private void createCharacters() {
         for (Map.Entry<Integer, Integer> e : _characters.entrySet()){
             Player player = findPlayer(e.getKey());
-            _charFactory.setCharacterProperty(player, e.getValue());
+            _match.getCharacterFactory().setCharacterProperty(player, e.getValue());
         }
     }
 

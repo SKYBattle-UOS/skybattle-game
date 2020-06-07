@@ -20,13 +20,11 @@ import Common.Util;
 public class MatchStateSelectCharacter implements GameState {
     private GameStateMatch _match;
     private boolean _waiting;
-    private CharacterFactory _charFactory;
     private int _selectedCharacter = -1;
     private boolean _sentCharacter;
 
     MatchStateSelectCharacter(GameStateMatch match) {
         _match = match;
-        _charFactory = new CharacterFactory(Core.get().getGameObjectFactory());
         Core.get().getUIManager().setTopText("집합 완료 : 캐릭터를 선택하세요");
     }
 
@@ -40,10 +38,6 @@ public class MatchStateSelectCharacter implements GameState {
 
     public void selectCharacter(int index){
         _selectedCharacter = index;
-    }
-
-    public CharacterFactory getCharacterFactory(){
-        return _charFactory;
     }
 
     private void send() {
@@ -72,7 +66,7 @@ public class MatchStateSelectCharacter implements GameState {
                 int playerId = packet.read(32);
                 int character = packet.read(8);
                 Player player = findPlayer(playerId);
-                _charFactory.setCharacterProperty(player, character);
+                _match.getCharacterFactory().setCharacterProperty(player, character);
             }
 
             _waiting = true;

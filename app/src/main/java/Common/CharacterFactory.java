@@ -20,19 +20,31 @@ public class CharacterFactory {
         PlayerProperty property = null;
         switch (index){
             case 0:
-                property = getPlayer0();
+                property = makeTestChar();
+                break;
+            case 1:
+                property = makeZombie();
                 break;
         }
         player.setProperty(property);
     }
 
-    private PlayerProperty getPlayer0(){
-        PlayerProperty property = new PlayerProperty(null);
+    private PlayerProperty makeZombie() {
+        PlayerProperty property = new PlayerProperty();
+        property.setHealth(99999000);
+        property.setMaxHealth(99999000);
+
         List<Skill> skills = property.getSkills(friend);
-        skills.set(0, _goFactory.createSkill(Util.WazakWazakClassId));
-        skills.set(1, _goFactory.createSkill(Util.GlobalWazakWazakClassId));
-        skills.set(2, _goFactory.createSkill(Util.HealthUpClassId));
-        skills.set(3, _goFactory.createSkill(Util.SuicideClassId));
+        skills.add(_goFactory.createSkill(Util.SuicideClassId));
+        return property;
+    }
+
+    private PlayerProperty makeTestChar(){
+        PlayerProperty property = new PlayerProperty();
+        List<Skill> skills = property.getSkills(friend);
+        skills.add(_goFactory.createSkill(Util.GlobalWazakWazakClassId));
+        skills.add(_goFactory.createSkill(Util.HealthUpClassId));
+        skills.add(_goFactory.createSkill(Util.SuicideClassId));
         return property;
     }
 
@@ -40,11 +52,17 @@ public class CharacterFactory {
         switch (index){
             case 0:
                 return "테스트 캐릭터";
+            case 1:
+                return "좀비";
         }
         return "No Name";
     }
 
     public int size(){
-        return 1;
+        return getAvailableCharacterIndices().length;
+    }
+
+    public int[] getAvailableCharacterIndices(){
+        return new int[]{ 0, 1 };
     }
 }

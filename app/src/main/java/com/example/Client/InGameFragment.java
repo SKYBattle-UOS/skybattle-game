@@ -35,21 +35,20 @@ public class InGameFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        _buttons = new Button[4];
-        _buttons[0] = view.findViewById(R.id.btn_q);
-        _buttons[1] = view.findViewById(R.id.btn_w);
-        _buttons[2] = view.findViewById(R.id.btn_e);
-        _buttons[3] = view.findViewById(R.id.btn_r);
-
+        ReadOnlyList<Skill> skills = Core.get().getMatch().getThisPlayer().getProperty().getSkills();
         AndroidUIManager uiManager = (AndroidUIManager) Core.get().getUIManager();
-        for (int i = 0; i < 4; i++){
+        LinearLayout linLayout = view.findViewById(R.id.ingame_linlayout);
+
+        _buttons = new Button[skills.size()];
+        for (int i = 0; i < _buttons.length; i++){
+            _buttons[i] = (Button) LayoutInflater
+                    .from(getContext()).inflate(R.layout.button_simple, linLayout, false);
+            linLayout.addView(_buttons[i], i);
+
             int finalI = i;
             uiManager.getButtonString(i).observe(this, text -> _buttons[finalI].setText(text));
             uiManager.getButtonEnabled(i).observe(this, bool -> _buttons[finalI].setEnabled(bool));
-        }
 
-        ReadOnlyList<Skill> skills = Core.get().getMatch().getThisPlayer().getProperty().getSkills();
-        for (int i = 0 ; i < 4; i++){
             setButtonListener(skills.get(i), _buttons[i], i);
         }
 
@@ -62,7 +61,8 @@ public class InGameFragment extends Fragment {
 
     public void addItemButton(OnButtonCreatedListener callback){
         LinearLayout layout = getActivity().findViewById(R.id.ingame_linlayout);
-        Button btn = new Button(getActivity());
+        Button btn = (Button) LayoutInflater
+                .from(getContext()).inflate(R.layout.button_simple, layout, false);
         layout.addView(btn);
         _items.add(btn);
         callback.onButtonCreated(btn);

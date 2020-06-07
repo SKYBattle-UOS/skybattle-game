@@ -24,7 +24,7 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
     private DamageApplier _damageApplier = new ZeroDamageApplier();
     private DamageCalculator _damageCalculator = new ZeroDamageCalculator();
 
-    private PlayerProperty _property = new PlayerProperty(this){
+    private PlayerProperty _property = new PlayerProperty(){
         @Override
         public void setHealth(int health) {
             health = checkHealth(health);

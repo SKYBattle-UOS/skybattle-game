@@ -15,7 +15,6 @@ public class PlayerProperty {
     public static int skillDirtyFlag;
     public static int endOfFlag;
     public static int endOfFlagPos;
-    public static int reflectOnFlag;
     public static int playerStateDirtyFlag;
 
     static {
@@ -25,7 +24,6 @@ public class PlayerProperty {
         teamDirtyFlag = 1 << i++;
         skillDirtyFlag = 1 << i++;
         maxHealthDirtyFlag = 1 << i++;
-        reflectOnFlag = 1 << i++;
         playerStateDirtyFlag = 1 << i++;
         endOfFlagPos = i;
         endOfFlag = 1 << i++;
@@ -38,24 +36,7 @@ public class PlayerProperty {
     private int _maxHealth = 100000;
     private int _team;
     private int _dps = 20000;
-    private boolean _reflectOn;
     private PlayerState _playerState = PlayerState.NORMAL;
-    private Player _player;
-
-    public PlayerProperty(Player player) {
-        _player = player;
-        while (_skills.size() < 4) _skills.add(new InstantSkill() {
-            @Override
-            public String getName() {
-                return "Skill";
-            }
-
-            @Override
-            public void cast(GameObject caster) {
-
-            }
-        });
-    }
 
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
         if ((dirtyFlag & playerIdDirtyFlag) != 0)
@@ -69,9 +50,6 @@ public class PlayerProperty {
 
         if ((dirtyFlag & teamDirtyFlag) != 0)
             setTeam(stream.read(1));
-
-        if ((dirtyFlag & reflectOnFlag) != 0)
-            setReflectOn(stream.read(1) == 1);
 
         if ((dirtyFlag & skillDirtyFlag) != 0){
             for (Skill skill : _skills){
@@ -97,9 +75,6 @@ public class PlayerProperty {
 
             if ((dirtyFlag & teamDirtyFlag) != 0)
                 stream.write(getTeam(), 1);
-
-            if ((dirtyFlag & reflectOnFlag) != 0)
-                stream.write(isReflectOn() ? 1 : 0, 1);
 
             if ((dirtyFlag & skillDirtyFlag) != 0) {
                 for (Skill skill : getSkills()){
@@ -149,14 +124,6 @@ public class PlayerProperty {
         this._health = health;
     }
 
-    public void setReflectOn(boolean reflectOn){
-        _reflectOn = reflectOn;
-    }
-
-    public boolean isReflectOn() {
-        return _reflectOn;
-    }
-
     public int getMaxHealth() { return _maxHealth; }
 
     public void setMaxHealth(int health) { _maxHealth = health; }
@@ -169,7 +136,6 @@ public class PlayerProperty {
 
     public void setPlayerState(PlayerState state){
         _playerState = state;
-        _player.onPlayerStateChange(state);
     }
 
     public PlayerState getPlayerState() {
@@ -182,7 +148,6 @@ public class PlayerProperty {
         _playerState = fromFactory._playerState;
         _health = fromFactory._health;
         _maxHealth = fromFactory._maxHealth;
-        _reflectOn = fromFactory._reflectOn;
         _dps = fromFactory._dps;
     }
 }

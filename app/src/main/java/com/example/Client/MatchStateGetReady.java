@@ -23,6 +23,7 @@ public class MatchStateGetReady implements GameState {
     private int _count;
     private int _prevCount;
     private GameStateMatch _match;
+    private boolean _waiting;
 
     MatchStateGetReady(GameStateMatch parent){
         _match = parent;
@@ -31,6 +32,8 @@ public class MatchStateGetReady implements GameState {
 
     @Override
     public void update(long ms) {
+        if (_waiting) return;
+
         InputBitStream packet = Core.get().getPakcetManager().getPacketStream();
         if (packet == null) return;
 
@@ -39,7 +42,8 @@ public class MatchStateGetReady implements GameState {
         }
 
         if (Util.hasMessage(packet)){
-            _match.switchState(MatchStateType.INGAME);
+            Core.get().getUIManager().switchScreen(ScreenType.INGAME, () -> _match.switchState(MatchStateType.INGAME));
+            _waiting = true;
         }
     }
 

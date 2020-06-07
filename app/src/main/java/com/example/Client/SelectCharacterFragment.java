@@ -28,7 +28,7 @@ public class SelectCharacterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mMatchState = (MatchStateSelectCharacter) ((GameStateMatch) Core.get().getState()).getState();
-        mFactory = mMatchState.getCharacterFactory();
+        mFactory = Core.get().getMatch().getCharacterFactory();
         mButtons = new Button[mFactory.size()];
 
         for (int i = 0; i < mFactory.size(); i++){

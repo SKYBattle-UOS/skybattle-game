@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Vector;
 
+import Common.CharacterFactory;
 import Common.Collider;
 import Common.GameObject;
 import Common.GameState;
@@ -37,6 +38,7 @@ public class GameStateMatch implements GameState, Match {
     private PriorityQueue<TimerStruct> _timerQueue = new PriorityQueue<>();
 
     private GameState _currentState;
+    private CharacterFactory _charFactory;
 
     GameStateMatch(GameStateContext parent){
         _parent = parent;
@@ -46,6 +48,7 @@ public class GameStateMatch implements GameState, Match {
         _players = new ArrayList<>();
         _worldSetter = new WorldSetter(this, _gameObjects, _players);
         _battleGroundLatLon = new double[2];
+        _charFactory = new CharacterFactory(Core.get().getGameObjectFactory());
 
         _readOnlyGameObjects = new ReadOnlyList<>(_gameObjects);
         _readOnlyPlayers = new ReadOnlyList<>(_players);
@@ -137,6 +140,11 @@ public class GameStateMatch implements GameState, Match {
     @Override
     public ReadOnlyList<Player> getPlayers() {
         return _readOnlyPlayers;
+    }
+
+    @Override
+    public CharacterFactory getCharacterFactory() {
+        return _charFactory;
     }
 
     @Override
