@@ -5,11 +5,11 @@ import Common.GameState;
 import Common.ImageType;
 import Common.IngameInfoListener;
 import Common.ReadOnlyList;
+import Common.Skill;
 
 public class MatchStateInGame implements GameState, IngameInfoListener {
     private GameStateMatch _match;
     private PlayerClient _thisPlayer;
-    private boolean _waiting = true;
     private String _originalName;
     private PlayerState _playerState;
 
@@ -22,14 +22,11 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
         _thisPlayer = (PlayerClient) Core.get().getMatch().getThisPlayer();
         _thisPlayer.setIngameInfoListener(this);
         Core.get().getUIManager().setDefaultTopText("게임이 시작되었습니다");
-        Core.get().getUIManager().switchScreen(ScreenType.INGAME, () -> _waiting = false);
     }
 
     @Override
     public void update(long ms) {
-        if (_waiting) return;
     }
-
 
     @Override
     public void render(Renderer renderer, long ms) {
@@ -64,10 +61,10 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
 
     private void setGameUI(){
         UIManager uiManager = Core.get().getUIManager();
-        for (int i = 0; i < 4; i++){
-            uiManager.setButtonText(UIManager.BUTTON_Q + i,
-                            _thisPlayer.getProperty().getSkills().get(i).getName());
-            uiManager.setButtonActive(UIManager.BUTTON_Q + i, true);
+        int i = 0;
+        for (Skill skill : _thisPlayer.getProperty().getSkills()){
+            uiManager.setButtonText(UIManager.BUTTON_Q + i, skill.getName());
+            uiManager.setButtonActive(UIManager.BUTTON_Q + i++, true);
         }
         uiManager.setHealth(_thisPlayer.getProperty().getHealth());
     }

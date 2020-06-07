@@ -37,22 +37,6 @@ public class PlayerProperty {
     private int _team;
     private int _dps = 20000;
     private PlayerState _playerState = PlayerState.NORMAL;
-    private Player _player;
-
-    public PlayerProperty(Player player) {
-        _player = player;
-        while (_skills.size() < 4) _skills.add(new InstantSkill() {
-            @Override
-            public String getName() {
-                return "Skill";
-            }
-
-            @Override
-            public void cast(GameObject caster) {
-
-            }
-        });
-    }
 
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
         if ((dirtyFlag & playerIdDirtyFlag) != 0)

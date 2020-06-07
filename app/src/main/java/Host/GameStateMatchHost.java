@@ -3,6 +3,8 @@ package Host;
 import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
+
+import Common.CharacterFactory;
 import Common.ImageType;
 
 import Common.Collider;
@@ -43,10 +45,10 @@ public class GameStateMatchHost implements GameState, MatchHost {
     private ReadOnlyList<GameObject> _readOnlyGameObjects;
     private ReadOnlyList<Player> _readOnlyPlayers;
 
-    // TODO
     private double[] _battleGroundLatLon;
     private final int GET_READY_COUNT;
     private final int NUM_PACKET_PER_FRAME;
+    private CharacterFactory _charFactory;
 
     public GameStateMatchHost(GameStateContextHost parent){
         _parent = parent;
@@ -57,6 +59,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
         _newGameObjects = new ArrayList<>();
         _players = new ArrayList<>();
         _collider = new Collider();
+        _charFactory = new CharacterFactory(_factory);
 
         _readOnlyGameObjects = new ReadOnlyList<>(_gameObjects);
         _readOnlyPlayers = new ReadOnlyList<>(_players);
@@ -271,6 +274,11 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
     @Override
     public ReadOnlyList<Player> getPlayers() { return _readOnlyPlayers; }
+
+    @Override
+    public CharacterFactory getCharacterFactory() {
+        return _charFactory;
+    }
 
     @Override
     public Collider getCollider(){ return _collider; }

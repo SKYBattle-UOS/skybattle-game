@@ -9,7 +9,7 @@ import Common.IngameInfoListener;
 import Common.Skill;
 
 public class PlayerClient extends GameObjectClient implements Player {
-    private PlayerProperty _property = new PlayerProperty(this){
+    private PlayerProperty _property = new PlayerProperty(){
         @Override
         public void setHealth(int health) {
             super.setHealth(health);
