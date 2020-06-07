@@ -353,4 +353,3 @@ public class AndroidGoogleMap implements Map {
         return bitmap;
     }
 }
-
