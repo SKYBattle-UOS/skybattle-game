@@ -18,66 +18,58 @@
         android:text="방제"
         android:textSize="30sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:textSize="30sp" />
-
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:id="@+id/imageView1"
         android:src="@drawable/zombie"/>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:textSize="30sp" />
+        android:layout_height="130dp"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/edit_nickname"
-        android:singleLine = "true"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:backgroundTint="#90A4AE"
-        android:fontFamily="@font/bmeuljirottf"
-        android:hint="  닉네임 입력"
-        android:textSize="13sp"/>
+        <EditText
+            android:id="@+id/edit_nickname"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:backgroundTint="#90A4AE"
+            android:fontFamily="@font/bmeuljirottf"
+            android:hint="  닉네임 입력"
+            android:singleLine="true"
+            android:textSize="13sp" />
 
-    <EditText
-        android:id="@+id/editTitle"
-        android:singleLine = "true"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:backgroundTint="#90A4AE"
-        android:fontFamily="@font/bmeuljirottf"
-        android:hint="  방 제목 입력"
-        android:textSize="13sp" />
-
-    <TextView
-        android:layout_width="50dp"
-        android:layout_weight="1"
-        android:textSize="30sp"
-        android:layout_height="25dp" />
+        <EditText
+            android:id="@+id/editTitle"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="1"
+            android:backgroundTint="#90A4AE"
+            android:fontFamily="@font/bmeuljirottf"
+            android:hint="  방 제목 입력"
+            android:singleLine="true"
+            android:textSize="13sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_marginBottom="40dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+
             android:textSize="30sp" />
 
         <Button
@@ -112,19 +104,12 @@
             android:textSize="30sp" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:textSize="30sp" />
-
     <ListView
         android:id="@+id/playerlist"
         android:layout_width="match_parent"
-        android:layout_height="376dp"
+        android:layout_height="350dp"
         android:layout_gravity="bottom"
-        android:dividerHeight="2dp"
+        android:dividerHeight="1dp"
         android:entries="@array/reboot_screen_items"
         android:fontFamily="@font/bmeuljirottf" />
 
