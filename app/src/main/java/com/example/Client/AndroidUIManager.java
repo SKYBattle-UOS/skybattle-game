@@ -178,6 +178,14 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     }
 
     @Override
+    public void reconstructSkillButtons() {
+        _mainHandler.post(() -> {
+            _ingameFrag.clearSkillButtons();
+            _ingameFrag.addSkillButtons();
+        });
+    }
+
+    @Override
     public int findButtonIndex(Skill skill) {
         Player thisPlayer = Core.get().getMatch().getThisPlayer();
         int index = thisPlayer.getProperty().getSkills().indexOf(skill);

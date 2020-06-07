@@ -24,6 +24,7 @@ public interface UIManager {
     void setHealth(int health);
     void setRoomUserInfos(ArrayList<RoomUserInfo> roomInfos);
     void updateItems();
+    void reconstructSkillButtons();
     int findButtonIndex(Skill skill);
 
     void failConnection();

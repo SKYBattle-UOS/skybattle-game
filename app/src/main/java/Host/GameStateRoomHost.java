@@ -35,11 +35,7 @@ public class GameStateRoomHost implements GameState, ConnectionListener {
     @Override
     public void update(long ms) {
         receive();
-        try {
-            send();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        send();
     }
 
     private void receive(){
@@ -63,7 +59,7 @@ public class GameStateRoomHost implements GameState, ConnectionListener {
         }
     }
 
-    private void send() throws IOException {
+    private void send() {
         OutputBitStream packetToSend = CoreHost.get().getNetworkManager().getPacketToSend();
         if (_settingsToSend.writeToStream(packetToSend))
             CoreHost.get().getNetworkManager().shouldSendThisFrame();

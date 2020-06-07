@@ -31,8 +31,8 @@ public class CharacterFactory {
 
     private PlayerProperty makeZombie() {
         PlayerProperty property = new PlayerProperty();
-        property.setHealth(99999000);
-        property.setMaxHealth(99999000);
+        property.setHealth(2000000);
+        property.setMaxHealth(2000000);
 
         List<Skill> skills = property.getSkills(friend);
         skills.add(_goFactory.createSkill(Util.SuicideClassId));

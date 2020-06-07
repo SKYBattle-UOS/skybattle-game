@@ -121,23 +121,20 @@ public class GameStateMatchHost implements GameState, MatchHost {
             lastPlayerId = info.playerId;
             newPlayer.setPosition(37.716140, 127.046620);
             newPlayer.setName(info.name);
-            newPlayer.getProperty().setTeam(info.team);
             newPlayer.setLook(ImageType.MARKER);
         }
 
         DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
         dummy.getProperty().setPlayerId(lastPlayerId + 1);
         dummy.setPosition(37.716109 - 0.0005, 127.048926 - 0.0005);
-        dummy.setName("테스트용 팀 A");
+        dummy.setName("연습용 봇 1");
         dummy.setLook(ImageType.MARKER);
-        dummy.getProperty().setTeam(0);
 
         DummyPlayerHost dummy2 = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
         dummy2.getProperty().setPlayerId(lastPlayerId + 2);
         dummy2.setPosition(37.716109 - 0.0005, 127.048926 + 0.0005);
-        dummy2.setName("테스트용 팀 B");
+        dummy2.setName("연습용 봇 2");
         dummy2.setLook(ImageType.MARKER);
-        dummy2.getProperty().setTeam(1);
 
         GameObject respawnPoint = createGameObject(Util.ItemClassId, true);
         respawnPoint.setPosition(37.715151, 127.045780);

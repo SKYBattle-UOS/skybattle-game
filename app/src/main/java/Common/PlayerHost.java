@@ -57,6 +57,8 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         }
     };
 
+    private boolean _shouldMakeZombie;
+
     @Override
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
         super.writeToStream(stream, dirtyFlag);
@@ -103,6 +105,11 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         if (!_itemsToRemove.isEmpty()){
             getHeader().dirtyFlag |= itemsDirtyFlag;
             _itemsToRemove.clear();
+        }
+
+        if (_shouldMakeZombie){
+            makeZombie();
+            _shouldMakeZombie = false;
         }
     }
 
@@ -166,11 +173,23 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         if (health > _property.getMaxHealth())
             health = _property.getMaxHealth();
         else if (health <= 0){
-            makeGhost();
-            health = 0;
+            if (getProperty().getPlayerState() == PlayerState.NORMAL){
+                _shouldMakeZombie = true;
+                health = 10;
+            }
+            else if (getProperty().getPlayerState() == PlayerState.ZOMBIE)
+                health = makeGhost();
         }
 
         return health;
+    }
+
+    private int makeZombie() {
+        _match.getCharacterFactory().setCharacterProperty(this, 1);
+        getProperty().setTeam(1);
+        getProperty().setPlayerState(PlayerState.ZOMBIE);
+        setName(getName() + " (좀비)");
+        return getProperty().getHealth();
     }
 
     @Override
@@ -198,12 +217,13 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         _property.getFromFactory(property);
     }
 
-    private void makeGhost(){
+    private int makeGhost(){
         getProperty().setHealth(100000);
         setDamageApplier(new ZeroDamageApplier());
         setDamageCalculator(new ZeroDamageCalculator());
         getProperty().setPlayerState(PlayerState.GHOST);
         setLook(ImageType.INVISIBLE);
+        return 100000;
     }
 
     public void setDamageApplier(@NonNull DamageApplier applier){

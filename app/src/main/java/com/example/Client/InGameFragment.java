@@ -35,9 +35,20 @@ public class InGameFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        addSkillButtons();
+
+        Button btn_map = view.findViewById(R.id.btn_map);
+        btn_map.setOnClickListener(v -> ((MatchActivity) getActivity()).showDebugMap());
+
+        TextView health = view.findViewById(R.id.health_text);
+        AndroidUIManager uiManager = (AndroidUIManager) Core.get().getUIManager();
+        uiManager.getHealth().observe(this, i -> health.setText(String.format("체력 : %.1f", (float)(i / 1000))));
+    }
+
+    public void addSkillButtons(){
         ReadOnlyList<Skill> skills = Core.get().getMatch().getThisPlayer().getProperty().getSkills();
         AndroidUIManager uiManager = (AndroidUIManager) Core.get().getUIManager();
-        LinearLayout linLayout = view.findViewById(R.id.ingame_linlayout);
+        LinearLayout linLayout = getActivity().findViewById(R.id.ingame_linlayout);
 
         _buttons = new Button[skills.size()];
         for (int i = 0; i < _buttons.length; i++){
@@ -51,12 +62,13 @@ public class InGameFragment extends Fragment {
 
             setButtonListener(skills.get(i), _buttons[i], i);
         }
+    }
 
-        Button btn_map = view.findViewById(R.id.btn_map);
-        btn_map.setOnClickListener(v -> ((MatchActivity) getActivity()).showDebugMap());
-
-        TextView health = view.findViewById(R.id.health_text);
-        uiManager.getHealth().observe(this, i -> health.setText(String.format("체력 : %.1f", (float)(i / 1000))));
+    public void clearSkillButtons(){
+        LinearLayout linLayout = getActivity().findViewById(R.id.ingame_linlayout);
+        for (Button btn : _buttons){
+            linLayout.removeView(btn);
+        }
     }
 
     public void addItemButton(OnButtonCreatedListener callback){

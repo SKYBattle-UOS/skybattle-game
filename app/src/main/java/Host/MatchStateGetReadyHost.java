@@ -1,5 +1,7 @@
 package Host;
 
+import com.example.Client.PlayerState;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -67,6 +69,7 @@ class MatchStateGetReadyHost implements GameState {
             for (int playerId : _zombiePlayerIds){
                 packet.write(playerId, 8);
                 Player victim = Util.findPlayerById(_match, playerId);
+                victim.getProperty().setTeam(1);
                 _match.getCharacterFactory().setCharacterProperty(victim, 1);
             }
             _sentZombies = true;

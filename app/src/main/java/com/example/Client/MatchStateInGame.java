@@ -22,6 +22,8 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
         _thisPlayer = (PlayerClient) Core.get().getMatch().getThisPlayer();
         _thisPlayer.setIngameInfoListener(this);
         Core.get().getUIManager().setDefaultTopText("게임이 시작되었습니다");
+        if (_thisPlayer.getProperty().getPlayerState() == PlayerState.ZOMBIE)
+            Core.get().getUIManager().setTopText("당신은 좀비입니다", 3f);
     }
 
     @Override
@@ -40,8 +42,12 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
     public void onPlayerStateChange(PlayerState state) {
         switch (state){
             case NORMAL:
-                if (_playerState == PlayerState.GHOST)
-                    tearDownDeathScreen();
+                setGameUI();
+                break;
+
+            case ZOMBIE:
+                Core.get().getUIManager().setTopText("좀비가 되었습니다", 3f);
+                Core.get().getUIManager().reconstructSkillButtons();
                 setGameUI();
                 break;
 

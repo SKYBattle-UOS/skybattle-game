@@ -12,9 +12,9 @@ public class PlayerProperty {
     public static int maxHealthDirtyFlag;
     public static int teamDirtyFlag;
     public static int skillDirtyFlag;
+    public static int playerStateDirtyFlag;
     public static int endOfFlag;
     public static int endOfFlagPos;
-    public static int playerStateDirtyFlag;
 
     static {
         int i = GameObject.EndOfFlagPos;
