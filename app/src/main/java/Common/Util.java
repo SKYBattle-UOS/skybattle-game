@@ -32,7 +32,7 @@ public class Util {
 
         SpiderMineClassId = factory.registerSkill(SpiderMineClient::new);
         GlobalWazakWazakClassId = factory.registerSkill(GlobalWazakWazakClient::new);
-        HealthUpClassId = factory.registerSkill(HealthUpCommon::new);
+        HealthUpClassId = factory.registerSkill(HealthUpClient::new);
         SuicideClassId = factory.registerSkill(SuicideClient::new);
     }
 

@@ -105,7 +105,10 @@ public class InGameFragment extends Fragment {
         btn.setOnClickListener(v -> {
             MatchActivity ma = ((MatchActivity) getActivity());
             ma.showClickMap(
-                    (lat, lon) -> Core.get().getInputManager().castSkill(i, new SkillTarget(lat, lon)),
+                    (lat, lon) -> {
+                        Core.get().getInputManager().castSkill(i, new SkillTarget(lat, lon));
+                        Core.get().getUIManager().setButtonActive(i, false);
+                    },
                     () -> uiManager.setTopText(uiManager.getDefaultTopText())
             );
             uiManager.setTopText("시전 위치를 선택하세요");
@@ -126,7 +129,10 @@ public class InGameFragment extends Fragment {
             MatchActivity ma = ((MatchActivity) getActivity());
             uiManager.setTopText("시전 대상을 선택하세요");
             ma.showTargetPlayers(
-                networkId -> Core.get().getInputManager().castSkill(i, new SkillTarget(networkId)),
+                networkId -> {
+                    Core.get().getInputManager().castSkill(i, new SkillTarget(networkId));
+                    Core.get().getUIManager().setButtonActive(i, false);
+                },
                 () -> uiManager.setTopText(uiManager.getDefaultTopText())
             );
         });

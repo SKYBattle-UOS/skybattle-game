@@ -1,11 +1,10 @@
 package Host;
 
 import Common.GameObject;
-import Common.HealthUpCommon;
+import Common.HealthUpClient;
 import Common.PlayerHost;
-import Common.PlayerProperty;
 
-public class HealthUpHost extends HealthUpCommon {
+public class HealthUpHost extends PlayerTargetSkillHost {
     @Override
     public void cast(GameObject caster) {
         PlayerHost player = (PlayerHost) CoreHost.get()

@@ -47,7 +47,7 @@ public abstract class Skill {
     private void _runCoolTime(){
         int buttonIndex = Core.get().getUIManager().findButtonIndex(this);
         if (_coolTime > 0){
-            Core.get().getUIManager().setButtonText(buttonIndex, String.valueOf(_coolTime));
+            Core.get().getUIManager().setButtonText(buttonIndex, String.format("%s (%d)", getName(), _coolTime));
             Core.get().getMatch().setTimer(this::_runCoolTime, 1);
             _coolTime--;
         }

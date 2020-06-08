@@ -1,11 +1,12 @@
 package Common;
 
 import com.example.Client.Core;
+import com.example.Client.PlayerTargetSkillClient;
 
 import Common.GameObject;
 import Common.PlayerTargetSkill;
 
-public class HealthUpCommon extends PlayerTargetSkill {
+public class HealthUpClient extends PlayerTargetSkillClient {
     @Override
     public String getName() {
         return "회복";
@@ -17,6 +18,7 @@ public class HealthUpCommon extends PlayerTargetSkill {
             String targetName = Core.get()
                     .getMatch().getRegistry().getGameObject(_networkId).getName();
             Core.get().getUIManager().setTopText(targetName + "(을)를 회복했습니다", 2);
+            runCoolTime(3);
         }
     }
 }
