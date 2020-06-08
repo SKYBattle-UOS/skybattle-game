@@ -5,12 +5,7 @@ import Common.InstantSkill;
 import Common.PlayerHost;
 import Common.SuicideClient;
 
-public class SuicideHost extends InstantSkill {
-    @Override
-    public String getName() {
-        return null;
-    }
-
+public class SuicideHost extends InstantSkillHost {
     @Override
     public void cast(GameObject caster) {
         PlayerHost player = (PlayerHost) caster;

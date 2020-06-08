@@ -7,12 +7,7 @@ import Common.InstantSkill;
 import Common.SpiderMineClient;
 import Common.Util;
 
-public class SpiderMineHost extends InstantSkill {
-    @Override
-    public String getName() {
-        return null;
-    }
-
+public class SpiderMineHost extends InstantSkillHost {
     @Override
     public void cast(GameObject caster){
         GameObject spawned = CoreHost.get().getMatch().createGameObject(Util.ItemClassId, true);
