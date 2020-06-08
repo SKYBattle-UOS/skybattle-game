@@ -1,11 +1,8 @@
 package Host;
 import com.example.Client.Core;
-import com.example.Client.PlayerTargetSkillClient;
+import Common.PlayerTargetSkillClient;
 
 import Common.GameObject;
-import Common.ImageType;
-import Common.Player;
-import Common.PlayerTargetSkill;
 
 public class CantAttackClient extends PlayerTargetSkillClient {
     public String getName(){

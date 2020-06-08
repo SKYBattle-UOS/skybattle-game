@@ -3,8 +3,7 @@ package Host;
 import Common.ImageType;
 
 import Common.GameObject;
-import Common.InstantSkill;
-import Common.SpiderMineClient;
+import Common.InstantSkillHost;
 import Common.Util;
 
 public class SpiderMineHost extends InstantSkillHost {

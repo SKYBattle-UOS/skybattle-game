@@ -15,8 +15,8 @@ import androidx.lifecycle.LifecycleObserver;
 
 import java.util.ArrayList;
 
-import Common.CoordinateSkill;
-import Common.PlayerTargetSkill;
+import Common.CoordinateSkillClient;
+import Common.PlayerTargetSkillClient;
 import Common.ReadOnlyList;
 import Common.Skill;
 import Host.SkillTarget;
@@ -92,9 +92,9 @@ public class InGameFragment extends Fragment {
     }
 
     public void setButtonListener(Skill skill, Button button, int qwer){
-        if (skill instanceof PlayerTargetSkill)
+        if (skill instanceof PlayerTargetSkillClient)
             setPlayerBtnListener(button, qwer);
-        else if (skill instanceof CoordinateSkill)
+        else if (skill instanceof CoordinateSkillClient)
             setCoordBtnListener(button, qwer);
         else
             setInsantBtnListener(button, qwer);

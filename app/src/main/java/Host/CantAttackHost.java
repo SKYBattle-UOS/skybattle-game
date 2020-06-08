@@ -1,6 +1,7 @@
 package Host;
 import Common.GameObject;
 import Common.PlayerHost;
+import Common.PlayerTargetSkillHost;
 
 public class CantAttackHost extends PlayerTargetSkillHost {
     @Override

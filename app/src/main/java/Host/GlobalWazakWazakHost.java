@@ -1,9 +1,9 @@
 package Host;
 
+import Common.CoordinateSkillHost;
 import Common.ImageType;
 
 import Common.GameObject;
-import Common.GlobalWazakWazakClient;
 import Common.ItemHost;
 import Common.Util;
 

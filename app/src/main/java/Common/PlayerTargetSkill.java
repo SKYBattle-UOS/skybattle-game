@@ -1,8 +1,6 @@
 package Common;
 
-import java.io.IOException;
-
-public abstract class PlayerTargetSkill extends Skill {
+abstract class PlayerTargetSkill extends Skill {
     protected int _networkId;
 
     public void setTargetPlayer(int networkId) {

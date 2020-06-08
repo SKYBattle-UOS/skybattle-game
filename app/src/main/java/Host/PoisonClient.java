@@ -3,9 +3,9 @@ package Host;
 import com.example.Client.Core;
 
 import Common.GameObject;
-import Common.PlayerTargetSkill;
+import Common.PlayerTargetSkillClient;
 
-public class PosionCommon extends PlayerTargetSkill {
+public class PoisonClient extends PlayerTargetSkillClient {
     public String getName(){
         return "독공격";
     }

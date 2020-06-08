@@ -1,8 +1,8 @@
 package Host;
 
 import Common.GameObject;
-import Common.HealthUpClient;
 import Common.PlayerHost;
+import Common.PlayerTargetSkillHost;
 
 public class HealthUpHost extends PlayerTargetSkillHost {
     @Override

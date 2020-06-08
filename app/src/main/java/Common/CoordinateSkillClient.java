@@ -1,6 +1,4 @@
-package com.example.Client;
-
-import Common.CoordinateSkill;
+package Common;
 
 public abstract class CoordinateSkillClient extends CoordinateSkill {
 }

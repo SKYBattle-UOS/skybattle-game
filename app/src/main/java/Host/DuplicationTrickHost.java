@@ -2,6 +2,7 @@ package Host;
 
 import Common.ImageType;
 import Common.GameObject;
+import Common.InstantSkillHost;
 import Common.Util;
 
 public class DuplicationTrickHost extends InstantSkillHost {

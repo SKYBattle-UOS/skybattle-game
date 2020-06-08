@@ -2,6 +2,7 @@ package Host;
 import Common.Damageable;
 import Common.GameObject;
 import Common.PlayerHost;
+import Common.PlayerTargetSkillHost;
 
 public class ReflectDamageHost extends PlayerTargetSkillHost {
     @Override

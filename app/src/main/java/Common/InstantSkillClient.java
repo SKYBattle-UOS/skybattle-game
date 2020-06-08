@@ -1,6 +1,4 @@
-package com.example.Client;
-
-import Common.InstantSkill;
+package Common;
 
 public abstract class InstantSkillClient extends InstantSkill {
 }

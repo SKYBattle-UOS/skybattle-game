@@ -1,8 +1,6 @@
-package Host;
+package Common;
 
-import Common.InstantSkill;
-
-public abstract class InstantSkillHost extends InstantSkill {
+public abstract class PlayerTargetSkillHost extends PlayerTargetSkill {
     @Override
     public final String getName() {
         throw new UnsupportedOperationException();

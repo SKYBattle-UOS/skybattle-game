@@ -1,10 +1,6 @@
 package Common;
 
 import com.example.Client.Core;
-import com.example.Client.PlayerTargetSkillClient;
-
-import Common.GameObject;
-import Common.PlayerTargetSkill;
 
 public class HealthUpClient extends PlayerTargetSkillClient {
     @Override

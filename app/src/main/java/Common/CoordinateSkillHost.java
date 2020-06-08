@@ -1,8 +1,6 @@
-package Host;
+package Common;
 
-import Common.PlayerTargetSkill;
-
-public abstract class PlayerTargetSkillHost extends PlayerTargetSkill {
+public abstract class CoordinateSkillHost extends CoordinateSkill {
     @Override
     public final String getName() {
         throw new UnsupportedOperationException();

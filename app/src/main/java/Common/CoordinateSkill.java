@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import Host.CoreHost;
 
-public abstract class CoordinateSkill extends Skill {
+abstract class CoordinateSkill extends Skill {
     protected double _lat;
     protected double _lon;
 

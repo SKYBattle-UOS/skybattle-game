@@ -1,7 +1,5 @@
 package Common;
 
-import com.example.Client.CoordinateSkillClient;
-
 public class GlobalWazakWazakClient extends CoordinateSkillClient {
     @Override
     public String getName() {

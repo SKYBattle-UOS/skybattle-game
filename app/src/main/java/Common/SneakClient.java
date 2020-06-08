@@ -1,8 +1,6 @@
 package Common;
 
 import com.example.Client.Core;
-import com.example.Client.InstantSkillClient;
-import com.example.Client.PlayerClient;
 
 
 public class SneakClient extends InstantSkillClient {

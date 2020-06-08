@@ -1,9 +1,8 @@
 package Host;
 
 import Common.GameObject;
-import Common.InstantSkill;
+import Common.InstantSkillHost;
 import Common.PlayerHost;
-import Common.SuicideClient;
 
 public class SuicideHost extends InstantSkillHost {
     @Override

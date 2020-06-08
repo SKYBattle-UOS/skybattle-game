@@ -1,7 +1,6 @@
 package Common;
 
 import com.example.Client.Core;
-import com.example.Client.InstantSkillClient;
 
 public class DuplicationTrickClient extends InstantSkillClient {
     @Override

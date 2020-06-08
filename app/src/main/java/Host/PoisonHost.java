@@ -2,9 +2,9 @@ package Host;
 
 import Common.GameObject;
 import Common.PlayerHost;
-import Common.PlayerProperty;
+import Common.PlayerTargetSkillHost;
 
-public class PosionHost extends PosionCommon {
+public class PoisonHost extends PlayerTargetSkillHost {
     @Override
     public void cast(GameObject caster) {
         for (int i= 0; i < 10; i++)
