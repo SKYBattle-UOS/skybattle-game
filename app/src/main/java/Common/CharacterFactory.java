@@ -25,8 +25,28 @@ public class CharacterFactory {
             case 1:
                 property = makeZombie();
                 break;
+            case 2:
+                property = makeZombieWannabe();
+                break;
+            case 3:
+                property = makeVulture();
+                break;
         }
         player.setProperty(property);
+    }
+
+    private PlayerProperty makeVulture() {
+        PlayerProperty property = new PlayerProperty();
+        List<Skill> skills = property.getSkills(friend);
+        skills.add(_goFactory.createSkill(Util.SpiderMineClassId));
+        return property;
+    }
+
+    private PlayerProperty makeZombieWannabe() {
+        PlayerProperty property = new PlayerProperty();
+        List<Skill> skills = property.getSkills(friend);
+        skills.add(_goFactory.createSkill(Util.SuicideClassId));
+        return property;
     }
 
     private PlayerProperty makeZombie() {
@@ -54,6 +74,10 @@ public class CharacterFactory {
                 return "테스트 캐릭터";
             case 1:
                 return "좀비";
+            case 2:
+                return "좀비 워너비";
+            case 3:
+                return "벌쳐";
         }
         return "No Name";
     }
@@ -63,6 +87,6 @@ public class CharacterFactory {
     }
 
     public int[] getAvailableCharacterIndices(){
-        return new int[]{ 0 };
+        return new int[]{ 2, 3 };
     }
 }

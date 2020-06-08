@@ -1,7 +1,6 @@
 package Common;
 
 import com.example.Client.BattleFieldClient;
-import com.example.Client.GameObjectClient;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.PlayerClient;
 
@@ -10,7 +9,7 @@ import Host.DummyPlayerHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
 import Host.SuicideHost;
-import Host.WazakWazakHost;
+import Host.SpiderMineHost;
 
 public class Util {
     public static final int PORT = 9998;
@@ -20,7 +19,7 @@ public class Util {
     public static int DummyPlayerClassId;
     public static int BattleFieldClassId;
 
-    public static int WazakWazakClassId;
+    public static int SpiderMineClassId;
     public static int GlobalWazakWazakClassId;
     public static int HealthUpClassId;
     public static int SuicideClassId;
@@ -31,10 +30,10 @@ public class Util {
         DummyPlayerClassId = factory.registerGameObject(PlayerClient::new);
         BattleFieldClassId = factory.registerGameObject(BattleFieldClient::new);
 
-        WazakWazakClassId = factory.registerSkill(WazakWazakCommon::new);
+        SpiderMineClassId = factory.registerSkill(SpiderMineClient::new);
         GlobalWazakWazakClassId = factory.registerSkill(GlobalWazakWazakCommon::new);
         HealthUpClassId = factory.registerSkill(HealthUpCommon::new);
-        SuicideClassId = factory.registerSkill(SuicideCommon::new);
+        SuicideClassId = factory.registerSkill(SuicideClient::new);
     }
 
     public static void registerGameObjectsHost(GameObjectFactory factory){
@@ -44,7 +43,7 @@ public class Util {
         factory.registerGameObject(DummyPlayerHost::new);
         factory.registerGameObject(BattleFieldHost::new);
 
-        factory.registerSkill(WazakWazakHost::new);
+        factory.registerSkill(SpiderMineHost::new);
         factory.registerSkill(GlobalWazakWazakHost::new);
         factory.registerSkill(HealthUpHost::new);
         factory.registerSkill(SuicideHost::new);

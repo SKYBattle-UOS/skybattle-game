@@ -113,8 +113,10 @@ public class InGameFragment extends Fragment {
     }
 
     private void setInsantBtnListener(Button btn, int i){
-        btn.setOnClickListener(v ->
-                Core.get().getInputManager().castSkill(i, new SkillTarget())
+        btn.setOnClickListener(v -> {
+                Core.get().getInputManager().castSkill(i, new SkillTarget());
+                Core.get().getUIManager().setButtonActive(i, false);
+            }
         );
     }
 
