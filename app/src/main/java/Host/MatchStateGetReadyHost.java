@@ -9,6 +9,7 @@ import Common.GameState;
 import Common.MatchStateType;
 import Common.OutputBitStream;
 import Common.Player;
+import Common.PlayerHost;
 import Common.ReadOnlyList;
 import Common.Util;
 
@@ -69,8 +70,7 @@ class MatchStateGetReadyHost implements GameState {
             for (int playerId : _zombiePlayerIds){
                 packet.write(playerId, 8);
                 Player victim = Util.findPlayerById(_match, playerId);
-                victim.getProperty().setTeam(1);
-                _match.getCharacterFactory().setCharacterProperty(victim, 1);
+                ((PlayerHost) victim).makeZombie();
             }
             _sentZombies = true;
         }

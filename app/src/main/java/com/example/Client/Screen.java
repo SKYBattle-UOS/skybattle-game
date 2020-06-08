@@ -6,7 +6,7 @@ enum ScreenType {
     MAP,
     CHARACTERSELECT,
     INGAME,
-    END
+    GAMEOVER
 }
 
 public interface Screen {

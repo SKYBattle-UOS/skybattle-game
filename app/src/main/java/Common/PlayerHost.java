@@ -184,7 +184,7 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         return health;
     }
 
-    private int makeZombie() {
+    public int makeZombie() {
         _match.getCharacterFactory().setCharacterProperty(this, 1);
         getProperty().setTeam(1);
         getProperty().setPlayerState(PlayerState.ZOMBIE);

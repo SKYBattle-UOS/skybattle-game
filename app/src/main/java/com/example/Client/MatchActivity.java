@@ -122,6 +122,10 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
             case INGAME:
                 trans.add(R.id.frag, new InGameFragment());
                 break;
+
+            case GAMEOVER:
+                trans.add(R.id.frag, new GameOverFragment());
+                break;
         }
 
         trans.commit();

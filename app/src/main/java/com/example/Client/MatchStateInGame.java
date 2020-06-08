@@ -4,8 +4,12 @@ import Common.GameObject;
 import Common.GameState;
 import Common.ImageType;
 import Common.IngameInfoListener;
+import Common.InputBitStream;
+import Common.MatchStateType;
 import Common.ReadOnlyList;
 import Common.Skill;
+import Common.Util;
+import Common.GameOverState;
 
 public class MatchStateInGame implements GameState, IngameInfoListener {
     private GameStateMatch _match;
@@ -20,6 +24,7 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
     public void start() {
         _thisPlayer = (PlayerClient) Core.get().getMatch().getThisPlayer();
         _thisPlayer.setIngameInfoListener(this);
+        onPlayerStateChange(_thisPlayer.getProperty().getPlayerState());
         Core.get().getUIManager().setDefaultTopText("게임이 시작되었습니다");
         if (_thisPlayer.getProperty().getPlayerState() == PlayerState.ZOMBIE)
             Core.get().getUIManager().setTopText("당신은 좀비입니다", 3f);
@@ -27,6 +32,35 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
 
     @Override
     public void update(long ms) {
+        receiveRemainingTime();
+        receiveGameOver();
+    }
+
+    private void receiveGameOver() {
+        InputBitStream stream = Core.get().getPakcetManager().getPacketStream();
+        if (stream == null) return;
+
+        GameOverState state = GameOverState.GOING;
+        if (Util.hasMessage(stream)){
+            int stateIndex = stream.read(2);
+            state = GameOverState.values()[stateIndex];
+        }
+
+        if (state != GameOverState.GOING){
+            Core.get().getUIManager().setGameOver(state);
+            Core.get().getUIManager().switchScreen(ScreenType.GAMEOVER, null);
+            _match.switchState(MatchStateType.GAMEOVER);
+        }
+    }
+
+    private void receiveRemainingTime() {
+        InputBitStream stream = Core.get().getPakcetManager().getPacketStream();
+        if (stream == null) return;
+
+        if (Util.hasMessage(stream)){
+            int remainingSeconds = stream.read(10);
+            Core.get().getUIManager().setRemainingTime(remainingSeconds);
+        }
     }
 
     @Override

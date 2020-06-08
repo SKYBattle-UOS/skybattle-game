@@ -3,7 +3,7 @@ package Common;
 import java.nio.charset.StandardCharsets;
 
 public class RoomSettings {
-    public String roomTitle;
+    public String roomTitle = "방제";
     public boolean roomTitleChanged;
     public boolean startButtonPressed;
 

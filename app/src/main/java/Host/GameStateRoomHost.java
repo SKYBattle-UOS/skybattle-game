@@ -89,6 +89,7 @@ public class GameStateRoomHost implements GameState, ConnectionListener {
         info.playerId = client.getPlayerId();
         _parent.getUsers().put(client, info);
         _usersDirty = true;
+        _settingsToSend.roomTitleChanged = true;
     }
 
     @Override

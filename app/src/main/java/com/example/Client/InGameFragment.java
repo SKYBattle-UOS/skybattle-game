@@ -43,6 +43,9 @@ public class InGameFragment extends Fragment {
         TextView health = view.findViewById(R.id.health_text);
         AndroidUIManager uiManager = (AndroidUIManager) Core.get().getUIManager();
         uiManager.getHealth().observe(this, i -> health.setText(String.format("체력 : %.1f", (float)(i / 1000))));
+
+        TextView time = view.findViewById(R.id.time_text);
+        uiManager.getRemainingTime().observe(this, t -> time.setText(String.format("남은 시간 : %d초", t)));
     }
 
     public void addSkillButtons(){

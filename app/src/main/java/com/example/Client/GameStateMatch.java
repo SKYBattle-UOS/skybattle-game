@@ -118,6 +118,9 @@ public class GameStateMatch implements GameState, Match {
             case INGAME:
                 _currentState = new MatchStateInGame(this);
                 break;
+            case GAMEOVER:
+                _currentState = new MatchStateGameOver(this);
+                break;
         }
         _currentState.start();
     }

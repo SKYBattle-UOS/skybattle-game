@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements MainScreen, AutoP
 
         Button btn_makeroom = findViewById(R.id.btn_makeroom);
         btn_makeroom.setOnClickListener(v -> {
+            btn_makeroom.setEnabled(false);
             CoreHost.createInstance();
             Core.get().open("localhost", true);
         });

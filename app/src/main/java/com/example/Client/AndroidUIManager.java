@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import Common.GameOverState;
 import Common.Item;
 import Common.Player;
 import Common.RoomUserInfo;
@@ -28,7 +29,6 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     private String _defaultTopText;
     private long _timer;
 
-    private Map<Integer, Runnable> _callbackMapping = new HashMap<>();
     private Handler _mainHandler = new Handler(Looper.getMainLooper());
 
     @SuppressWarnings("unchecked")
@@ -39,6 +39,8 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     private MutableLiveData<String> _titleText = new MutableLiveData<>();
     private MutableLiveData<Integer> _health = new MutableLiveData<>();
     private MutableLiveData<ArrayList<RoomUserInfo>> _roomInfos = new MutableLiveData<>();
+    private MutableLiveData<Integer> _remainingTime = new MutableLiveData<>();
+    private MutableLiveData<GameOverState> _gameOverState = new MutableLiveData<>();
 
     private InGameFragment _ingameFrag;
 
@@ -159,6 +161,16 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     }
 
     @Override
+    public void setRemainingTime(int seconds) {
+        _remainingTime.postValue(seconds);
+    }
+
+    @Override
+    public void setGameOver(GameOverState state) {
+        _gameOverState.postValue(state);
+    }
+
+    @Override
     public void updateItems() {
         Player thisPlayer = Core.get().getMatch().getThisPlayer();
 
@@ -246,4 +258,7 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
 
     public MutableLiveData<ArrayList<RoomUserInfo>> getRoomUserInfos(){ return _roomInfos; }
 
+    public MutableLiveData<Integer> getRemainingTime() { return _remainingTime; }
+
+    public MutableLiveData<GameOverState> getGameOverState() { return _gameOverState; }
 }

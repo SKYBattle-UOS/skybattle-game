@@ -240,6 +240,9 @@ public class GameStateMatchHost implements GameState, MatchHost {
             case INGAME:
                 _currentState = new MatchStateInGameHost(this);
                 break;
+            case GAMEOVER:
+                _currentState = new MatchStateGameOverHost(this);
+                break;
         }
         _currentState.start();
     }
