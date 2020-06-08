@@ -9,12 +9,13 @@
         android:id="@+id/btn_debugUp"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="2dp"
         android:background="@drawable/btn_up"
         android:fontFamily="@font/bmeuljirottf"
-        android:textColor="#37474F"
-        android:layout_marginLeft="40dp"
-        android:layout_marginBottom="5dp"
-        android:text="▲" />
+        android:textColor="#37474F" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="40dp"
@@ -27,7 +28,16 @@
             android:background="@drawable/btn_left"
             android:fontFamily="@font/bmeuljirottf"
             android:textColor="#37474F"
-            android:text="◀" />
+             />
+
+        <Button
+            android:id="@+id/btn_debugDown"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_down"
+            android:fontFamily="@font/bmeuljirottf"
+            android:textColor="#37474F"
+            />
 
         <Button
             android:id="@+id/btn_debugRight"
@@ -36,19 +46,9 @@
             android:background="@drawable/btn_right"
             android:fontFamily="@font/bmeuljirottf"
             android:textColor="#37474F"
-            android:layout_marginLeft="40dp"
-            android:text="▶" />
+             />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_debugDown"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/btn_down"
-        android:fontFamily="@font/bmeuljirottf"
-        android:textColor="#37474F"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="40dp"
-        android:text="▼" />
+
 
 </LinearLayout>
