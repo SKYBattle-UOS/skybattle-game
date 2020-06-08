@@ -31,7 +31,7 @@ public class Util {
         BattleFieldClassId = factory.registerGameObject(BattleFieldClient::new);
 
         SpiderMineClassId = factory.registerSkill(SpiderMineClient::new);
-        GlobalWazakWazakClassId = factory.registerSkill(GlobalWazakWazakCommon::new);
+        GlobalWazakWazakClassId = factory.registerSkill(GlobalWazakWazakClient::new);
         HealthUpClassId = factory.registerSkill(HealthUpCommon::new);
         SuicideClassId = factory.registerSkill(SuicideClient::new);
     }

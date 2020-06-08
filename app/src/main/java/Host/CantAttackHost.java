@@ -1,9 +1,8 @@
 package Host;
 import Common.GameObject;
 import Common.PlayerHost;
-import Common.PlayerProperty;
 
-public class CantAttackHost extends CantAttackCommon {
+public class CantAttackHost extends PlayerTargetSkillHost {
     @Override
     public void cast(GameObject caster) {
         PlayerHost player = (PlayerHost) CoreHost.get()

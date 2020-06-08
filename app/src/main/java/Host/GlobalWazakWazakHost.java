@@ -3,13 +3,11 @@ package Host;
 import Common.ImageType;
 
 import Common.GameObject;
-import Common.GlobalWazakWazakCommon;
+import Common.GlobalWazakWazakClient;
 import Common.ItemHost;
-import Common.Pickable;
-import Common.PlayerProperty;
 import Common.Util;
 
-public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
+public class GlobalWazakWazakHost extends CoordinateSkillHost {
     @Override
     public void cast(GameObject caster) {
         MatchHost match = CoreHost.get().getMatch();

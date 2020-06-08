@@ -1,8 +1,8 @@
 package Host;
 
-import Common.InstantSkill;
+import Common.CoordinateSkill;
 
-public abstract class InstantSkillHost extends InstantSkill {
+public abstract class CoordinateSkillHost extends CoordinateSkill {
     @Override
     public String getName() {
         throw new UnsupportedOperationException();

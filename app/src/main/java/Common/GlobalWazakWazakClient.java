@@ -1,8 +1,8 @@
 package Common;
 
-import android.util.Log;
+import com.example.Client.CoordinateSkillClient;
 
-public class GlobalWazakWazakCommon extends CoordinateSkill {
+public class GlobalWazakWazakClient extends CoordinateSkillClient {
     @Override
     public String getName() {
         return "원격 와작와작 뻥!";
@@ -10,6 +10,6 @@ public class GlobalWazakWazakCommon extends CoordinateSkill {
 
     @Override
     public void cast(GameObject caster) {
-        Log.i("hehe", String.format("원격 와작와작 지뢰: %f %f", _lat, _lon));
+        runCoolTime(100);
     }
 }

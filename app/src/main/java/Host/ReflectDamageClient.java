@@ -1,9 +1,11 @@
 package Host;
 import com.example.Client.Core;
+import com.example.Client.PlayerTargetSkillClient;
+
 import Common.GameObject;
 import Common.PlayerTargetSkill;
 
-public class ReflectDamageCommon extends PlayerTargetSkill {
+public class ReflectDamageClient extends PlayerTargetSkillClient {
     public String getName(){
         return "공격 반사";
     }

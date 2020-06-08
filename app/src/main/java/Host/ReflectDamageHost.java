@@ -2,10 +2,8 @@ package Host;
 import Common.Damageable;
 import Common.GameObject;
 import Common.PlayerHost;
-import Common.PlayerProperty;
-import Common.PlayerTargetSkill;
 
-public class ReflectDamageHost extends ReflectDamageCommon {
+public class ReflectDamageHost extends PlayerTargetSkillHost {
     @Override
     public void cast(GameObject caster) {
         MatchHost match = CoreHost.get().getMatch();
