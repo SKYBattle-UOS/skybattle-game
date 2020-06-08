@@ -1,10 +1,14 @@
 package Common;
 
-import com.example.Client.Core;
-
 public abstract class Skill {
     private boolean _isDirty;
     private int _coolTime;
+    private UIManager _uiManager;
+    private MatchCommon _match;
+
+    public Skill(MatchCommon match){
+        _match = match;
+    }
 
     public abstract String getName();
     public abstract void cast(GameObject caster);
@@ -39,21 +43,26 @@ public abstract class Skill {
         return _isDirty;
     }
 
-    protected void runCoolTime(int seconds) {
+    public MatchCommon getMatch(){
+        return _match;
+    }
+
+    protected void runCoolTime(int seconds, UIManager uiManager) {
         _coolTime = seconds;
+        _uiManager = uiManager;
         _runCoolTime();
     }
 
     private void _runCoolTime(){
-        int buttonIndex = Core.get().getUIManager().findButtonIndex(this);
+        int buttonIndex = _uiManager.findButtonIndex(this);
         if (_coolTime > 0){
-            Core.get().getUIManager().setButtonText(buttonIndex, String.format("%s (%d)", getName(), _coolTime));
-            Core.get().getMatch().setTimer(this::_runCoolTime, 1);
+            _uiManager.setButtonText(buttonIndex, String.format("%s (%d)", getName(), _coolTime));
+            _match.setTimer(this::_runCoolTime, 1);
             _coolTime--;
         }
         else {
-            Core.get().getUIManager().setButtonActive(buttonIndex, true);
-            Core.get().getUIManager().setButtonText(buttonIndex, getName());
+            _uiManager.setButtonActive(buttonIndex, true);
+            _uiManager.setButtonText(buttonIndex, getName());
         }
     }
 }

@@ -5,9 +5,14 @@ import Common.ImageType;
 
 import Common.GameObject;
 import Common.ItemHost;
+import Common.MatchCommon;
 import Common.Util;
 
 public class GlobalWazakWazakHost extends CoordinateSkillHost {
+    public GlobalWazakWazakHost(MatchCommon match) {
+        super(match);
+    }
+
     @Override
     public void cast(GameObject caster) {
         MatchHost match = CoreHost.get().getMatch();

@@ -1,10 +1,13 @@
 package Host;
 import Common.GameObject;
-import Common.PlayerHost;
+import Common.MatchCommon;
 import Common.InvincibilityCommon;
-import Common.PlayerProperty;
 
 public class InvincibilityHost extends InvincibilityCommon {
+    public InvincibilityHost(MatchCommon match) {
+        super(match);
+    }
+
     @Override
     public void cast(GameObject caster){
         todo(caster,true);

@@ -2,12 +2,18 @@ package Common;
 
 import com.example.Client.BattleFieldClient;
 import com.example.Client.GameObjectFactory;
+import com.example.Client.GlobalWazakWazakClient;
+import com.example.Client.HealthUpClient;
+import com.example.Client.ItemClient;
 import com.example.Client.PlayerClient;
+import com.example.Client.SpiderMineClient;
+import com.example.Client.SuicideClient;
 
 import Host.BattleFieldHost;
 import Host.DummyPlayerHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
+import Host.PlayerHost;
 import Host.SuicideHost;
 import Host.SpiderMineHost;
 
@@ -24,29 +30,29 @@ public class Util {
     public static int HealthUpClassId;
     public static int SuicideClassId;
 
-    public static void registerGameObjects(GameObjectFactory factory){
+    public static void registerGameObjects(GameObjectFactory factory, MatchCommon match){
         PlayerClassId = factory.registerGameObject(PlayerClient::new);
         ItemClassId = factory.registerGameObject(ItemClient::new);
         DummyPlayerClassId = factory.registerGameObject(PlayerClient::new);
         BattleFieldClassId = factory.registerGameObject(BattleFieldClient::new);
 
-        SpiderMineClassId = factory.registerSkill(SpiderMineClient::new);
-        GlobalWazakWazakClassId = factory.registerSkill(GlobalWazakWazakClient::new);
-        HealthUpClassId = factory.registerSkill(HealthUpClient::new);
-        SuicideClassId = factory.registerSkill(SuicideClient::new);
+        SpiderMineClassId = factory.registerSkill(() -> new SpiderMineClient(match));
+        GlobalWazakWazakClassId = factory.registerSkill(() -> new GlobalWazakWazakClient(match));
+        HealthUpClassId = factory.registerSkill(() -> new HealthUpClient(match));
+        SuicideClassId = factory.registerSkill(() -> new SuicideClient(match));
     }
 
-    public static void registerGameObjectsHost(GameObjectFactory factory){
+    public static void registerGameObjectsHost(GameObjectFactory factory, MatchCommon match){
         // should be same order as registerGameObjects !!!!!!!!!!
         factory.registerGameObject(PlayerHost::new);
         factory.registerGameObject(ItemHost::new);
         factory.registerGameObject(DummyPlayerHost::new);
         factory.registerGameObject(BattleFieldHost::new);
 
-        factory.registerSkill(SpiderMineHost::new);
-        factory.registerSkill(GlobalWazakWazakHost::new);
-        factory.registerSkill(HealthUpHost::new);
-        factory.registerSkill(SuicideHost::new);
+        factory.registerSkill(() -> new SpiderMineHost(match));
+        factory.registerSkill(() -> new GlobalWazakWazakHost(match));
+        factory.registerSkill(() -> new HealthUpHost(match));
+        factory.registerSkill(() -> new SuicideHost(match));
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {

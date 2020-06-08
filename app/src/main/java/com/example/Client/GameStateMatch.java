@@ -53,11 +53,13 @@ public class GameStateMatch implements GameState, Match {
 
         _readOnlyGameObjects = new ReadOnlyList<>(_gameObjects);
         _readOnlyPlayers = new ReadOnlyList<>(_players);
+
     }
 
     @Override
     public void start() {
         Core.get().setMatch(this);
+        Util.registerGameObjects(Core.get().getGameObjectFactory(), this);
     }
 
     @Override

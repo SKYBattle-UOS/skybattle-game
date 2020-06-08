@@ -1,6 +1,5 @@
 package Host;
 
-import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
 
@@ -21,7 +20,6 @@ import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.MatchStateType;
 import Common.Player;
-import Common.PlayerHost;
 import Common.ReadOnlyList;
 import Common.RoomUserInfo;
 import Common.TimerStruct;
@@ -95,7 +93,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
     @Override
     public void setTimer(Runnable callback, float seconds) {
-        long timeToBeFired = Core.get().getTime().getStartOfFrame();
+        long timeToBeFired = CoreHost.get().getTime().getStartOfFrame();
         timeToBeFired += (long) seconds * 1000;
         _timerQueue.add(new TimerStruct(callback, timeToBeFired));
     }
@@ -142,6 +140,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     @Override
     public void start() {
         CoreHost.get().setMatch(this);
+        Util.registerGameObjectsHost(_factory, this);
     }
 
     @Override
@@ -174,7 +173,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
             TimerStruct ts = _timerQueue.peek();
             if (ts == null) return;
 
-            if (ts.timeToBeFired < Core.get().getTime().getStartOfFrame()){
+            if (ts.timeToBeFired < CoreHost.get().getTime().getStartOfFrame()){
                 ts.callback.run();
                 _timerQueue.poll();
             }

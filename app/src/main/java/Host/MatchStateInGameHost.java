@@ -1,19 +1,12 @@
 package Host;
 
-import com.example.Client.PlayerClient;
 import com.example.Client.PlayerState;
 
-import java.util.Collection;
-
-import Common.CollisionState;
-import Common.Damageable;
-import Common.GameObject;
 import Common.GameOverState;
 import Common.GameState;
 import Common.MatchStateType;
 import Common.OutputBitStream;
 import Common.Player;
-import Common.PlayerHost;
 import Common.ReadOnlyList;
 import Common.Util;
 

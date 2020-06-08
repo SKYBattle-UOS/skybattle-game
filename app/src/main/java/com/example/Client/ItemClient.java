@@ -1,7 +1,10 @@
-package Common;
+package com.example.Client;
 
-import com.example.Client.Core;
-import com.example.Client.GameObjectClient;
+import Common.GameObject;
+import Common.ImageType;
+import Common.InputBitStream;
+import Common.Item;
+import Common.ItemProperty;
 
 public class ItemClient extends GameObjectClient implements Item {
     ItemProperty _property = new ItemProperty(){
@@ -14,7 +17,7 @@ public class ItemClient extends GameObjectClient implements Item {
     };
 
     public ItemClient() {
-        _property.setSkill(new HealthUpClient());
+        _property.setSkill(new HealthUpClient(getMatch()));
     }
 
     @Override

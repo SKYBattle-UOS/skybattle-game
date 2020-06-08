@@ -1,4 +1,7 @@
-package com.example.Client;
+package Common;
+
+import com.example.Client.Screen;
+import com.example.Client.ScreenType;
 
 import java.util.ArrayList;
 

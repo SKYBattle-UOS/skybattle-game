@@ -10,14 +10,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.OnLifecycleEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import Common.GameOverState;
 import Common.Item;
 import Common.Player;
 import Common.RoomUserInfo;
 import Common.Skill;
+import Common.UIManager;
 
 public class AndroidUIManager implements UIManager, LifecycleObserver {
     private Screen _currentScreen;

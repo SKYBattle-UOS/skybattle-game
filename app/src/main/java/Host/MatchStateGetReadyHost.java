@@ -1,7 +1,5 @@
 package Host;
 
-import com.example.Client.PlayerState;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -9,7 +7,6 @@ import Common.GameState;
 import Common.MatchStateType;
 import Common.OutputBitStream;
 import Common.Player;
-import Common.PlayerHost;
 import Common.ReadOnlyList;
 import Common.Util;
 

@@ -1,9 +1,16 @@
-package Common;
+package com.example.Client;
 
-import com.example.Client.Core;
+import Common.GameObject;
+import Common.ImageType;
+import Common.InstantSkillClient;
+import Common.MatchCommon;
+import Common.Player;
 
 
 public class SneakClient extends InstantSkillClient {
+    public SneakClient(MatchCommon match) {
+        super(match);
+    }
 
     @Override
     public String getName() {

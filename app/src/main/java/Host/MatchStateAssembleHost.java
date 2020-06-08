@@ -1,7 +1,5 @@
 package Host;
 
-import com.example.Client.Core;
-
 import java.util.Collection;
 
 import Common.CollisionState;

@@ -1,4 +1,4 @@
-package Common;
+package Host;
 
 import androidx.annotation.NonNull;
 
@@ -8,13 +8,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
 
-import Host.ClientProxy;
-import Host.CoreHost;
-import Host.DamageApplier;
-import Host.DamageCalculator;
-import Host.GameObjectHost;
-import Host.ZeroDamageApplier;
-import Host.ZeroDamageCalculator;
+import Common.CollisionState;
+import Common.CoordinateSkillHost;
+import Common.Damageable;
+import Common.GameObject;
+import Common.ImageType;
+import Common.InputState;
+import Common.Item;
+import Common.ItemHost;
+import Common.ItemProperty;
+import Common.OutputBitStream;
+import Common.Pickable;
+import Common.Player;
+import Common.PlayerProperty;
+import Common.PlayerTargetSkillHost;
+import Common.Skill;
 
 import static Common.PlayerProperty.*;
 
@@ -159,11 +167,11 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
                     // target is coordinate
                     if (input.lat * input.lon != 0){
                         _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
-                        ((CoordinateSkill) skill).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
+                        ((CoordinateSkillHost) skill).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
                     }
                     // target is player
                     else if (input.playerId >= 0){
-                        ((PlayerTargetSkill) skill).setTargetPlayer(input.playerId);
+                        ((PlayerTargetSkillHost) skill).setTargetPlayer(input.playerId);
                     }
                     break;
             }

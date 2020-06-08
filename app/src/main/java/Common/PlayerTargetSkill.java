@@ -3,6 +3,10 @@ package Common;
 abstract class PlayerTargetSkill extends Skill {
     protected int _networkId;
 
+    public PlayerTargetSkill(MatchCommon match) {
+        super(match);
+    }
+
     public void setTargetPlayer(int networkId) {
         _networkId = networkId;
     }
