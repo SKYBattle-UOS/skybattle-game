@@ -1,6 +1,7 @@
 package Host;
 
 import Common.Damageable;
+import Common.GameObject;
 import Common.Player;
 
 public class ReverseDamageApplier implements DamageApplier {
@@ -13,9 +14,9 @@ public class ReverseDamageApplier implements DamageApplier {
     }
 
     @Override
-    public void applyDamage(Player victim, Player attacker, int damage) {
+    public void applyDamage(Player victim, GameObject attacker, int damage) {
         if (attacker == mTarget)
-            mTarget.takeDamage(victim, damage);
+            mTarget.takeDamage((GameObject) victim, damage);
         else
             mIfNotTarget.applyDamage(victim, attacker, damage);
     }

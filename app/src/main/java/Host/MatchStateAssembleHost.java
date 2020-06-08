@@ -63,15 +63,25 @@ class MatchStateAssembleHost implements GameState {
             _assemblePoint.setLook(ImageType.MARKER);
             _assemblePoint.setRadius(2.5f);
 
-            GameObject respawnPoint = _match.createGameObject(Util.ItemClassId, true);
-            respawnPoint.setPosition(_assemblePoint.getPosition());
-            respawnPoint.setName("부활지점");
-            respawnPoint.setRadius(20);
-            respawnPoint.setLook(ImageType.INVISIBLE);
+            setUpBattleGround();
 
             CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
         }
+    }
+
+    private void setUpBattleGround() {
+        GameObject respawnPoint = _match.createGameObject(Util.ItemClassId, true);
+        respawnPoint.setPosition(_assemblePoint.getPosition());
+        respawnPoint.setName("부활지점");
+        respawnPoint.setRadius(20);
+        respawnPoint.setLook(ImageType.INVISIBLE);
+
+        GameObject battleGround = _match.createGameObject(Util.BattleFieldClassId, true);
+        battleGround.setPosition(_assemblePoint.getPosition());
+        battleGround.setRadius(100);
+        battleGround.setLook(ImageType.CIRCLE);
+        battleGround.setName("Korimart전장");
     }
 
     private boolean hasEverybodyAssembled() {

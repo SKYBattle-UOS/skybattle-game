@@ -68,7 +68,7 @@ public abstract class GameObject {
 
         if ((dirtyFlag & radiusDirtyFlag) != 0){
             float r = getRadius();
-            int rInt = (int) r * 10;
+            int rInt = (int) (r * 10);
             stream.write(rInt, 16);
         }
 

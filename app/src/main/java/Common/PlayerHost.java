@@ -58,6 +58,7 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
     };
 
     private boolean _shouldMakeZombie;
+    private boolean _isInsideBattleField;
 
     @Override
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
@@ -193,7 +194,7 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
     }
 
     @Override
-    public void takeDamage(Player attacker, int damage) {
+    public void takeDamage(GameObject attacker, int damage) {
         _damageApplier.applyDamage(this, attacker, damage);
     }
 

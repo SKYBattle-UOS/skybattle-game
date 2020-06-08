@@ -109,6 +109,7 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
             uiManager.setButtonActive(UIManager.BUTTON_Q + i++, true);
         }
         uiManager.setHealth(_thisPlayer.getProperty().getHealth());
+        uiManager.setRemainingTime(300);
     }
 
     private void setDeathScreen() {

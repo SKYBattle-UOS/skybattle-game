@@ -1,8 +1,11 @@
 package Common;
 
+import com.example.Client.BattleFieldClient;
+import com.example.Client.GameObjectClient;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.PlayerClient;
 
+import Host.BattleFieldHost;
 import Host.DummyPlayerHost;
 import Host.GlobalWazakWazakHost;
 import Host.HealthUpHost;
@@ -15,6 +18,7 @@ public class Util {
     public static int PlayerClassId;
     public static int ItemClassId;
     public static int DummyPlayerClassId;
+    public static int BattleFieldClassId;
 
     public static int WazakWazakClassId;
     public static int GlobalWazakWazakClassId;
@@ -25,6 +29,7 @@ public class Util {
         PlayerClassId = factory.registerGameObject(PlayerClient::new);
         ItemClassId = factory.registerGameObject(ItemClient::new);
         DummyPlayerClassId = factory.registerGameObject(PlayerClient::new);
+        BattleFieldClassId = factory.registerGameObject(BattleFieldClient::new);
 
         WazakWazakClassId = factory.registerSkill(WazakWazakCommon::new);
         GlobalWazakWazakClassId = factory.registerSkill(GlobalWazakWazakCommon::new);
@@ -37,6 +42,7 @@ public class Util {
         factory.registerGameObject(PlayerHost::new);
         factory.registerGameObject(ItemHost::new);
         factory.registerGameObject(DummyPlayerHost::new);
+        factory.registerGameObject(BattleFieldHost::new);
 
         factory.registerSkill(WazakWazakHost::new);
         factory.registerSkill(GlobalWazakWazakHost::new);
@@ -68,6 +74,13 @@ public class Util {
             if (p.getProperty().getPlayerId() == playerId)
                 return p;
 
+        return null;
+    }
+
+    public static GameObject findGOByName(MatchCommon match, String name) {
+        for (GameObject go : match.getWorld())
+            if (go.getName().equals(name))
+                return go;
         return null;
     }
 }

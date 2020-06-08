@@ -1,7 +1,13 @@
 package Host;
 
+import com.example.Client.PlayerClient;
 import com.example.Client.PlayerState;
 
+import java.util.Collection;
+
+import Common.CollisionState;
+import Common.Damageable;
+import Common.GameObject;
 import Common.GameOverState;
 import Common.GameState;
 import Common.MatchStateType;
@@ -23,6 +29,8 @@ class MatchStateInGameHost implements GameState {
     @Override
     public void start() {
         letTheHungerGamesBegin();
+        BattleFieldHost battleField = (BattleFieldHost) Util.findGOByName(_match, "Korimart전장");
+        battleField.setDPS(20000);
     }
 
     @Override
