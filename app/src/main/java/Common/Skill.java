@@ -1,5 +1,4 @@
 package Common;
-import java.io.IOException;
 
 public abstract class Skill {
     private boolean _isDirty;
@@ -8,21 +7,17 @@ public abstract class Skill {
     public abstract void cast(GameObject caster);
 
     public final void writeToStream(OutputBitStream stream){
-        try {
-            if (_isDirty){
-                stream.write(1, 1);
-                writeToStream2(stream);
-                _isDirty = false;
-            }
-            else
-                stream.write(0, 1);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (_isDirty){
+            stream.write(1, 1);
+            writeToStream2(stream);
+            _isDirty = false;
         }
+        else
+            stream.write(0, 1);
+
     }
 
-    protected abstract void writeToStream2(OutputBitStream stream) throws IOException;
+    protected abstract void writeToStream2(OutputBitStream stream);
 
     public final void readFromStream(InputBitStream stream){
         if (stream.read(1) == 1){

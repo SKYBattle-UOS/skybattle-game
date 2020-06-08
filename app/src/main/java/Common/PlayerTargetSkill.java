@@ -10,7 +10,7 @@ public abstract class PlayerTargetSkill extends Skill {
     }
 
     @Override
-    protected void writeToStream2(OutputBitStream stream) throws IOException {
+    protected void writeToStream2(OutputBitStream stream) {
         stream.write(_networkId, 32);
     }
 

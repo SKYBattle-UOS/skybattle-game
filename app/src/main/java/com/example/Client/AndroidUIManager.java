@@ -25,7 +25,6 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     private Runnable _onComplete;
     private boolean _shouldSwitch;
     private final Object _mutex = new Object();
-    private String _topTextCache;
     private String _defaultTopText;
     private long _timer;
 
@@ -55,11 +54,10 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
 
     @Override
     public void update(long ms) {
-        if (_topTextCache != null){
+        if (_timer > 0){
             _timer -= ms;
-            if (_timer < 0){
-                _topText.postValue(_topTextCache);
-                _topTextCache = null;
+            if (_timer <= 0){
+                _topText.postValue(_defaultTopText);
             }
         }
     }
@@ -124,16 +122,11 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
 
     @Override
     public void setTopText(String text){
-        if (_topTextCache != null)
-            _topTextCache = text;
         _topText.postValue(text);
     }
 
     @Override
     public void setTopText(String text, float seconds) {
-        if (_topTextCache == null)
-            _topTextCache = _topText.getValue();
-
         _timer = (long )(seconds * 1000);
         _topText.postValue(text);
     }

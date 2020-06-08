@@ -58,7 +58,6 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
     };
 
     private boolean _shouldMakeZombie;
-    private boolean _isInsideBattleField;
 
     @Override
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
@@ -92,7 +91,7 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
             Skill skill = item.getProperty().getSkill();
             if (skill.isDirty()){
                 skill.cast(this);
-                getHeader().dirtyFlag |= skillDirtyFlag;
+                ((ItemHost) item).getHeader().dirtyFlag |= ItemProperty.skillDirtyFlag;
                 _itemsToRemove.add(item);
             }
         }
@@ -103,6 +102,7 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         for (Item item : _itemsToRemove){
             getItems().remove(item);
         }
+
         if (!_itemsToRemove.isEmpty()){
             getHeader().dirtyFlag |= itemsDirtyFlag;
             _itemsToRemove.clear();
@@ -218,7 +218,7 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         _property.getFromFactory(property);
     }
 
-    private int makeGhost(){
+    public int makeGhost(){
         getProperty().setHealth(100000);
         setDamageApplier(new ZeroDamageApplier());
         setDamageCalculator(new ZeroDamageCalculator());

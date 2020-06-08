@@ -17,9 +17,6 @@ public class HealthUpCommon extends PlayerTargetSkill {
             String targetName = Core.get()
                     .getMatch().getRegistry().getGameObject(_networkId).getName();
             Core.get().getUIManager().setTopText(targetName + "(을)를 회복했습니다", 2);
-
-            int btnIndex = Core.get().getUIManager().findButtonIndex(this);
-            Core.get().getUIManager().setButtonActive(btnIndex, false);
         }
     }
 }

@@ -3,7 +3,7 @@ package Common;
 import com.example.Client.PlayerState;
 
 public interface IngameInfoListener {
-    void onPlayerStateChange(PlayerState state);
-    void onItemsChange();
-    void onHealthChange(int health);
+    default void onPlayerStateChange(PlayerState state){}
+    default void onItemsChange(){}
+    default void onHealthChange(int health){}
 }

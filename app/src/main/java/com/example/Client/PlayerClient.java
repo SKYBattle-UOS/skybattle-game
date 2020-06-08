@@ -18,9 +18,9 @@ public class PlayerClient extends GameObjectClient implements Player {
 
         @Override
         public void setPlayerState(PlayerState state) {
-            super.setPlayerState(state);
             if (state == PlayerState.ZOMBIE)
                 _match.getCharacterFactory().setCharacterProperty(PlayerClient.this, 1);
+            super.setPlayerState(state);
             _ingameInfoListener.onPlayerStateChange(state);
         }
     };
