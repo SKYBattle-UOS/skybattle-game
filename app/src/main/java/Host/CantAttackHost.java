@@ -1,26 +1,20 @@
 package Host;
 import Common.GameObject;
-import Common.PlayerHost;
+import Common.MatchCommon;
+import Common.PlayerTargetSkillHost;
 
-public class CantAttackHost extends CantAttackCommon {
-    public CantAttackHost(int index) {
-        super(index);
+public class CantAttackHost extends PlayerTargetSkillHost {
+    public CantAttackHost(MatchCommon match) {
+        super(match);
     }
 
     @Override
     public void cast(GameObject caster) {
-        todo(true);
-        CoreHost.get().getMatch().setTimer(() -> todo(false),10);
-    }
-
-    public void todo(boolean value){
         PlayerHost player = (PlayerHost) CoreHost.get()
                 .getMatch().getRegistry().getGameObject(_networkId);
 
-        player.getProperty().setCantAttack(value);
-
-        CoreHost.get().getMatch()
-                .getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), player.getProperty().cantAttackFlag);
+        DamageCalculator originalDC = player.getDamageCalculator();
+        player.setDamageCalculator(new ZeroDamageCalculator());
+        CoreHost.get().getMatch().setTimer(() -> player.setDamageCalculator(originalDC), 3f);
     }
 }

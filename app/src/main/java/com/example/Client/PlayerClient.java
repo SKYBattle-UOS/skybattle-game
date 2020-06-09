@@ -2,28 +2,43 @@ package com.example.Client;
 
 import Common.GameObject;
 import Common.InputBitStream;
+import Common.Item;
 import Common.Player;
 import Common.PlayerProperty;
+import Common.IngameInfoListener;
 import Common.Skill;
 
 public class PlayerClient extends GameObjectClient implements Player {
-    public static class Friend {
-        private Friend(){}
-    }
-
-    private static final Friend friend = new Friend();
-
-    private PlayerProperty _property = new PlayerProperty(this){
+    private PlayerProperty _property = new PlayerProperty(){
         @Override
         public void setHealth(int health) {
             super.setHealth(health);
-            onSetHealth(health);
+            _ingameInfoListener.onHealthChange(health);
+        }
+
+        @Override
+        public void setPlayerState(PlayerState state) {
+            if (state == PlayerState.ZOMBIE)
+                _match.getCharacterFactory().setCharacterProperty(PlayerClient.this, 1);
+            super.setPlayerState(state);
+            _ingameInfoListener.onPlayerStateChange(state);
         }
     };
 
-    private boolean _reconstructSkills;
-    private PlayerStateBase _playerState = new PlayerStateBase(this);
-    private boolean _shouldChangeState;
+    // dummy
+    private IngameInfoListener _ingameInfoListener = new IngameInfoListener() {
+        @Override
+        public void onPlayerStateChange(PlayerState state) {
+        }
+
+        @Override
+        public void onItemsChange() {
+        }
+
+        @Override
+        public void onHealthChange(int health) {
+        }
+    };
 
     @Override
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
@@ -37,23 +52,19 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void update(long ms) {
-        if (_shouldChangeState){
-            changeState();
-            _shouldChangeState = false;
-        }
-
         for (Skill skill : _property.getSkills())
             if (skill.isDirty()){
                 skill.cast(this);
                 skill.setDirty(false);
             }
 
-        if (_reconstructSkills){
-            reconstructSkills();
-            _reconstructSkills = false;
+        for (Item item : getItems()){
+            Skill skill = item.getProperty().getSkill();
+            if (skill.isDirty()){
+                skill.cast(this);
+                skill.setDirty(false);
+            }
         }
-
-        _playerState.update(ms);
     }
 
     @Override
@@ -62,7 +73,7 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void onItemsDirty() {
-        _reconstructSkills = true;
+        _ingameInfoListener.onItemsChange();
     }
 
     @Override
@@ -77,45 +88,10 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void setProperty(PlayerProperty property) {
-        _property.move(property);
+        _property.getFromFactory(property);
     }
 
-    @Override
-    public void onPlayerStateChange(PlayerState state){
-        _shouldChangeState = true;
-    }
-
-    private void reconstructSkills(){
-        if (Core.get().getMatch().getThisPlayer() == this)
-            Core.get().getUIManager().updateItems();
-
-        while (_property.getSkills().size() > 4)
-            _property.getSkills(friend).remove(_property.getSkills().size() - 1);
-
-        for (int i = 0; i < getItems().size(); i++)
-            _property.getSkills(friend).add(getItems().get(i).getProperty().getSkill());
-    }
-
-    private void onSetHealth(int health) {
-        if (Core.get().getMatch().getThisPlayer() == this)
-            Core.get().getUIManager().setHealth(health);
-    }
-
-
-    private void changeState(){
-        _playerState.finish();
-
-        PlayerState state = getProperty().getPlayerState();
-        switch (state){
-            case NORMAL:
-                _playerState = new PlayerStateNormal(this);
-                break;
-
-            case GHOST:
-                _playerState = new PlayerStateGhost(this);
-                break;
-        }
-
-        _playerState.start();
+    public void setIngameInfoListener(IngameInfoListener listener){
+        _ingameInfoListener = listener;
     }
 }

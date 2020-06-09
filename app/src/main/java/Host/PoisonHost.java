@@ -1,10 +1,14 @@
 package Host;
 
 import Common.GameObject;
-import Common.PlayerHost;
-import Common.PlayerProperty;
+import Common.MatchCommon;
+import Common.PlayerTargetSkillHost;
 
-public class PosionHost extends PosionCommon {
+public class PoisonHost extends PlayerTargetSkillHost {
+    public PoisonHost(MatchCommon match) {
+        super(match);
+    }
+
     @Override
     public void cast(GameObject caster) {
         for (int i= 0; i < 10; i++)
@@ -18,13 +22,5 @@ public class PosionHost extends PosionCommon {
                 .getMatch().getRegistry().getGameObject(_networkId);
 
         player.getProperty().setHealth(player.getProperty().getHealth() - 5000);
-
-        CoreHost.get()
-                .getMatch()
-                .getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), PlayerProperty.healthDirtyFlag);
-
-        CoreHost.get().getMatch().getWorldSetterHost()
-                .generateUpdateInstruction(player.getNetworkId(), PlayerProperty.skillDirtyFlag);
     }
 }

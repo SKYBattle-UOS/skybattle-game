@@ -5,7 +5,6 @@ import com.example.Client.GameObjectFactory;
 import Common.AndroidTime;
 import Common.GameStateType;
 import Common.Time;
-import Common.Util;
 
 public class CoreHost {
     private static CoreHost _instance;
@@ -22,8 +21,6 @@ public class CoreHost {
         _gameStateContext = new GameStateContextHost();
         _time = new AndroidTime();
         _factory = new GameObjectFactory();
-
-        Util.registerGameObjectsHost(_factory);
     }
 
     public static void createInstance(){

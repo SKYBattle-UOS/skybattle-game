@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Vector;
 
+import Common.CharacterFactory;
 import Common.Collider;
 import Common.GameObject;
 import Common.GameState;
@@ -14,6 +15,7 @@ import Common.MatchStateType;
 import Common.Player;
 import Common.ReadOnlyList;
 import Common.TimerStruct;
+import Common.Util;
 
 /**
  * 앱의 각 화면에 대한 상태패턴의 상태 객체 중 매치화면.
@@ -37,6 +39,7 @@ public class GameStateMatch implements GameState, Match {
     private PriorityQueue<TimerStruct> _timerQueue = new PriorityQueue<>();
 
     private GameState _currentState;
+    private CharacterFactory _charFactory;
 
     GameStateMatch(GameStateContext parent){
         _parent = parent;
@@ -46,14 +49,17 @@ public class GameStateMatch implements GameState, Match {
         _players = new ArrayList<>();
         _worldSetter = new WorldSetter(this, _gameObjects, _players);
         _battleGroundLatLon = new double[2];
+        _charFactory = new CharacterFactory(Core.get().getGameObjectFactory());
 
         _readOnlyGameObjects = new ReadOnlyList<>(_gameObjects);
         _readOnlyPlayers = new ReadOnlyList<>(_players);
+
     }
 
     @Override
     public void start() {
         Core.get().setMatch(this);
+        Util.registerGameObjects(Core.get().getGameObjectFactory(), this);
     }
 
     @Override
@@ -114,6 +120,9 @@ public class GameStateMatch implements GameState, Match {
             case INGAME:
                 _currentState = new MatchStateInGame(this);
                 break;
+            case GAMEOVER:
+                _currentState = new MatchStateGameOver(this);
+                break;
         }
         _currentState.start();
     }
@@ -140,6 +149,11 @@ public class GameStateMatch implements GameState, Match {
     }
 
     @Override
+    public CharacterFactory getCharacterFactory() {
+        return _charFactory;
+    }
+
+    @Override
     public void setTimer(Runnable callback, float seconds) {
         long timeToBeFired = Core.get().getTime().getStartOfFrame();
         timeToBeFired += (long) seconds * 1000;
@@ -148,13 +162,7 @@ public class GameStateMatch implements GameState, Match {
 
     @Override
     public Player getThisPlayer() {
-        ReadOnlyList<Player> gos = getPlayers();
-        for (Player go : gos){
-            if (go.getProperty().getPlayerId() == Core.get().getPakcetManager().getPlayerId()) {
-                return go;
-            }
-        }
-        return null;
+        return Util.findPlayerById(this, Core.get().getPakcetManager().getPlayerId());
     }
 
     private void killGameObjects(){

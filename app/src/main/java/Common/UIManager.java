@@ -1,7 +1,11 @@
-package com.example.Client;
+package Common;
+
+import com.example.Client.Screen;
+import com.example.Client.ScreenType;
 
 import java.util.ArrayList;
 
+import Common.GameOverState;
 import Common.RoomUserInfo;
 import Common.Skill;
 
@@ -23,7 +27,10 @@ public interface UIManager {
     void setButtonActive(int button, boolean active);
     void setHealth(int health);
     void setRoomUserInfos(ArrayList<RoomUserInfo> roomInfos);
+    void setRemainingTime(int seconds);
+    void setGameOver(GameOverState state);
     void updateItems();
+    void reconstructSkillButtons();
     int findButtonIndex(Skill skill);
 
     void failConnection();

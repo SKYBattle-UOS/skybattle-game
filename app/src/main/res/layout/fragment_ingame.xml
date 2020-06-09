@@ -15,34 +15,6 @@
         android:id="@+id/ingame_linlayout">
 
         <Button
-            android:id="@+id/btn_q"
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:text="Q"
-            android:textSize="20sp" />
-
-        <Button
-            android:id="@+id/btn_w"
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:text="W"
-            android:textSize="20sp" />
-
-        <Button
-            android:id="@+id/btn_e"
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:text="E"
-            android:textSize="20sp" />
-
-        <Button
-            android:id="@+id/btn_r"
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:text="R"
-            android:textSize="20sp" />
-
-        <Button
             android:id="@+id/btn_map"
             android:layout_width="match_parent"
             android:layout_height="95dp"
@@ -61,5 +33,16 @@
             android:textStyle="bold"
             android:typeface="normal" />
 
+        <TextView
+            android:id="@+id/time_text"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:background="#676767"
+            android:gravity="center"
+            android:text="Time Text"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:typeface="normal" />
     </LinearLayout>
 </ScrollView>

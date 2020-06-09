@@ -2,5 +2,5 @@ package Common;
 
 public interface Pickable {
     boolean isPickedUp();
-    boolean pickUp(GameObject owner);
+    boolean getPickedUpBy(GameObject owner);
 }

@@ -3,10 +3,8 @@ package Common;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -46,7 +44,6 @@ public abstract class GameObject {
     private ImageType _imageType;
     private ArrayList<Runnable> _onDeathListeners = new ArrayList<>();
     private ArrayList<Item> _items = new ArrayList<>();
-    private ReadOnlyList<Item> _readOnlyItems = new ReadOnlyList<>(_items);
 
     protected MatchCommon _match;
     protected double[] _restoreTemp = new double[2];
@@ -59,50 +56,30 @@ public abstract class GameObject {
             _match.getConverter().convertLatLon(pos[0], pos[1], _convertTemp);
             int lat = _convertTemp[0];
             int lon = _convertTemp[1];
-            try {
-                stream.write(lat, 32);
-                stream.write(lon, 32);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(lat, 32);
+            stream.write(lon, 32);
         }
 
         if ((dirtyFlag & nameDirtyFlag) != 0){
             byte[] b = _name.getBytes(StandardCharsets.UTF_8);
-            try {
-                stream.write(b.length, 8);
-                stream.write(b, b.length * 8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(b.length, 8);
+            stream.write(b, b.length * 8);
         }
 
         if ((dirtyFlag & radiusDirtyFlag) != 0){
             float r = getRadius();
-            int rInt = (int) r * 10;
-            try {
-                stream.write(rInt, 16);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            int rInt = (int) (r * 10);
+            stream.write(rInt, 16);
         }
 
         if ((dirtyFlag & imageTypeDirtyFlag) != 0){
-            try {
-                stream.write(_imageType.ordinal(), 4);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(_imageType.ordinal(), 4);
         }
 
         if ((dirtyFlag & itemsDirtyFlag) != 0){
-            try {
-                stream.write(_items.size(), 4);
-                for (Item item : _items){
-                    stream.write(item.getGameObject().getNetworkId(), 32);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            stream.write(_items.size(), 4);
+            for (Item item : _items){
+                stream.write(item.getGameObject().getNetworkId(), 32);
             }
         }
     }
@@ -170,6 +147,10 @@ public abstract class GameObject {
             _match.getCollider().positionDirty(this);
     }
 
+    public void setPosition(double[] position){
+        setPosition(position[0], position[1]);
+    }
+
     public void setName(String name){
         _name = name;
     }
@@ -205,16 +186,8 @@ public abstract class GameObject {
         _imageType = type;
     }
 
-    public ReadOnlyList<Item> getItems(){
-        return _readOnlyItems;
-    }
-
-    protected void addItem(Item item) {
-        _items.add(item);
-    }
-
-    protected void removeItem(int index) {
-        _items.remove(index);
+    public List<Item> getItems(){
+        return _items;
     }
     // endregion
 }

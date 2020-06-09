@@ -1,12 +1,10 @@
 package Common;
 
-import com.example.Client.Core;
-import com.example.Client.UIManager;
+//import com.example.Client.Core;
 
 public class InvincibilityCommon extends PlayerTargetSkill {
-
-    public InvincibilityCommon(int index) {
-        setTargetPlayer(index);
+    public InvincibilityCommon(MatchCommon match) {
+        super(match);
     }
 
     @Override
@@ -16,9 +14,10 @@ public class InvincibilityCommon extends PlayerTargetSkill {
 
     @Override
     public void cast(GameObject caster) {
-        if (caster == Core.get().getMatch().getThisPlayer()){
-            Core.get().getUIManager().setTopText("무적을 사용 했습니다", 10);
-         // Core.get().getUIManager().setButtonActive(UIManager.findButtonIndex(Skill) , false);
-        }
+//        if (caster == Core.get().getMatch().getThisPlayer()){
+//            Core.get().getUIManager().setTopText("무적을 사용 했습니다", 10);
+//            int btnIndex = Core.get().getUIManager().findButtonIndex(this);
+//            Core.get().getUIManager().setButtonActive(btnIndex, false);
+//        }
     }
 }

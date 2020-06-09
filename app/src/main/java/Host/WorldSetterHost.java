@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.example.Client.GameObjectRegistry;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,21 +42,13 @@ public class WorldSetterHost {
 
         _toRemove.clear();
 
-        try {
-            packetToSend.write(0, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        packetToSend.write(0, 1);
     }
 
     private void writeInstruction(WorldSetterHeader header, OutputBitStream packetToSend){
         CoreHost.get().getNetworkManager().shouldSendThisFrame();
 
-        try {
-            packetToSend.write(1, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        packetToSend.write(1, 1);
 
         header.writeToStream(packetToSend);
 
@@ -71,7 +62,7 @@ public class WorldSetterHost {
         header.dirtyFlag = 0;
     }
 
-    public void generateCreateInstruction(int classId, int networkId, int dirtyFlag) {
+    public WorldSetterHeader generateCreateInstruction(int classId, int networkId, int dirtyFlag) {
         WorldSetterHeader header = new WorldSetterHeader();
         header.action = WorldSetterAction.CREATE;
         header.networkId = networkId;
@@ -79,13 +70,7 @@ public class WorldSetterHost {
         header.dirtyFlag = dirtyFlag;
 
         _mappingN2I.put(networkId, header);
-    }
-
-    public void generateUpdateInstruction(int networkId, int dirtyFlag){
-        WorldSetterHeader header = _mappingN2I.get(networkId);
-        if (header == null || header.action != WorldSetterAction.UPDATE) return;
-
-        header.dirtyFlag |= dirtyFlag;
+        return header;
     }
 
     public void generateDestroyInstruction(int networkId){

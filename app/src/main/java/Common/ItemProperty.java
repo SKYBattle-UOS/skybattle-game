@@ -2,11 +2,10 @@ package Common;
 
 import com.example.Client.GameObjectRegistry;
 
-import java.io.IOException;
-
 public class ItemProperty {
     public static int isPickedUpDirtyFlag;
     public static int ownerDirtyFlag;
+    public static int skillDirtyFlag;
     public static int endOfFlag;
     public static int endOfFlagPos;
 
@@ -14,6 +13,7 @@ public class ItemProperty {
         int i = GameObject.EndOfFlagPos;
         isPickedUpDirtyFlag = 1 << i++;
         ownerDirtyFlag = 1 << i++;
+        skillDirtyFlag = 1 << i++;
         endOfFlagPos = i;
         endOfFlag = 1 << i++;
     }
@@ -24,22 +24,18 @@ public class ItemProperty {
 
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
         if ((dirtyFlag & isPickedUpDirtyFlag) != 0){
-            try {
-                stream.write(isPickedUp() ? 1 : 0, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(isPickedUp() ? 1 : 0, 1);
         }
 
         if ((dirtyFlag & ownerDirtyFlag) != 0){
-            try {
-                if (_owner == null)
-                    stream.write(0, 32);
-                else
-                    stream.write(_owner.getNetworkId(), 32);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if (_owner == null)
+                stream.write(0, 32);
+            else
+                stream.write(_owner.getNetworkId(), 32);
+        }
+
+        if ((dirtyFlag & skillDirtyFlag) != 0){
+            _skill.writeToStream(stream);
         }
     }
 
@@ -50,6 +46,10 @@ public class ItemProperty {
 
         if ((dirtyFlag & ownerDirtyFlag) != 0){
             _owner = registry.getGameObject(stream.read(32));
+        }
+
+        if ((dirtyFlag & skillDirtyFlag) != 0){
+            _skill.readFromStream(stream);
         }
     }
 

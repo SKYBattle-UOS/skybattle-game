@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.Client">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -19,7 +20,9 @@
         <activity android:name="com.example.Client.SelectCharacterFragment" />
         <activity android:name="com.example.Client.MatchActivity" />
         <activity android:name="com.example.Client.RoomActivity"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity android:name="com.example.Client.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

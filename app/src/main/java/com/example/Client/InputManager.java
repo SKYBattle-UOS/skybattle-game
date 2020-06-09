@@ -2,7 +2,6 @@ package com.example.Client;
 
 import android.content.Context;
 
-import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -48,7 +47,7 @@ public class InputManager {
             double[] _newPos = location.getLocation();
 
             InputState state = new InputState();
-            state.qwer = 0;
+            state.command = 0;
             _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
             state.lat = _convertTemp[0];
             state.lon = _convertTemp[1];
@@ -84,7 +83,7 @@ public class InputManager {
         }
 
         InputState state = new InputState();
-        state.qwer = 0;
+        state.command = 0;
         _converter.convertLatLon(_newPos[0], _newPos[1], _convertTemp);
         state.lat = _convertTemp[0];
         state.lon = _convertTemp[1];
@@ -97,7 +96,7 @@ public class InputManager {
             _converter.convertLatLon(lat + (destLat - lat) / 100 * step, lon + (destLon - lon) / 100 * step, _convertTemp);
             newState.lat = _convertTemp[0];
             newState.lon = _convertTemp[1];
-            newState.qwer = 0;
+            newState.command = 0;
             _inputStates.offer(newState);
             _elapsed = 0;
             step++;
@@ -110,28 +109,20 @@ public class InputManager {
         InputState input = _inputStates.poll();
         if (input != null){
             // sending one input in the packet
-            try {
-                stream.write(1, 2);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(1, 2);
 
             input.writeToStream(stream);
             Core.get().getPakcetManager().shouldSendThisFrame();
         }
         else {
             // sending 0 input in the packet
-            try {
-                stream.write(0, 2);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            stream.write(0, 2);
         }
     }
 
-    public void qwer(SkillTarget target){
+    public void castSkill(int qwer, SkillTarget target){
         InputState state = new InputState();
-        state.qwer = target.qwer;
+        state.command = qwer + 1;
         state.playerId = target.networkId;
         if (target.lat * target.lon != 0){
             _converter.convertLatLon(target.lat, target.lon, _convertTemp);

@@ -1,8 +1,9 @@
 package Host;
 
-import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
+
+import Common.CharacterFactory;
 import Common.ImageType;
 
 import Common.Collider;
@@ -10,7 +11,6 @@ import Common.GameObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -20,19 +20,18 @@ import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.MatchStateType;
 import Common.Player;
-import Common.PlayerHost;
 import Common.ReadOnlyList;
 import Common.RoomUserInfo;
 import Common.TimerStruct;
 import Common.Util;
+import Common.WorldSetterHeader;
 
 public class GameStateMatchHost implements GameState, MatchHost {
     private GameStateContextHost _parent;
     private GameState _currentState;
     private WorldSetterHost _worldSetter;
     private ArrayList<GameObject> _gameObjects;
-    private ArrayList<GameObject> _newGameObjects;
-    private ArrayList<Integer> _newGOClassId;
+    private ArrayList<GameObjectHost> _newGameObjects;
     private ArrayList<Player> _players;
     private GameObjectRegistry _registry;
     private GameObjectFactory _factory;
@@ -44,10 +43,10 @@ public class GameStateMatchHost implements GameState, MatchHost {
     private ReadOnlyList<GameObject> _readOnlyGameObjects;
     private ReadOnlyList<Player> _readOnlyPlayers;
 
-    // TODO
     private double[] _battleGroundLatLon;
     private final int GET_READY_COUNT;
     private final int NUM_PACKET_PER_FRAME;
+    private CharacterFactory _charFactory;
 
     public GameStateMatchHost(GameStateContextHost parent){
         _parent = parent;
@@ -56,9 +55,9 @@ public class GameStateMatchHost implements GameState, MatchHost {
         _factory = CoreHost.get().getGameObjectFactory();
         _gameObjects = new ArrayList<>();
         _newGameObjects = new ArrayList<>();
-        _newGOClassId = new ArrayList<>();
         _players = new ArrayList<>();
         _collider = new Collider();
+        _charFactory = new CharacterFactory(_factory);
 
         _readOnlyGameObjects = new ReadOnlyList<>(_gameObjects);
         _readOnlyPlayers = new ReadOnlyList<>(_players);
@@ -71,8 +70,8 @@ public class GameStateMatchHost implements GameState, MatchHost {
     }
 
     @Override
-    public GameObject createGameObject(int classId, boolean addToCollider){
-        GameObject ret = _factory.createGameObject(classId);
+    public GameObjectHost createGameObject(int classId, boolean addToCollider){
+        GameObjectHost ret = (GameObjectHost) _factory.createGameObject(classId);
         int networkId = _nextNetworkId++;
 
         ret.setMatch(this);
@@ -84,32 +83,32 @@ public class GameStateMatchHost implements GameState, MatchHost {
         }
 
         _newGameObjects.add(ret);
-        _newGOClassId.add(classId);
+
+        WorldSetterHeader header = _worldSetter
+                .generateCreateInstruction(classId, networkId, -1);
+        ret.setHeader(header);
 
         return ret;
     }
 
     @Override
     public void setTimer(Runnable callback, float seconds) {
-        long timeToBeFired = Core.get().getTime().getStartOfFrame();
+        long timeToBeFired = CoreHost.get().getTime().getStartOfFrame();
         timeToBeFired += (long) seconds * 1000;
         _timerQueue.add(new TimerStruct(callback, timeToBeFired));
     }
 
     private void addNewGameObjectsToWorld(){
-        int i = 0;
-        for (GameObject go : _newGameObjects){
+        for (GameObjectHost go : _newGameObjects){
             _registry.add(go.getNetworkId(), go);
-            go.setIndexInWorld(_gameObjects.size());
             _gameObjects.add(go);
-            _worldSetter.generateCreateInstruction(_newGOClassId.get(i++), go.getNetworkId(), -1);
+            go.setIndexInWorld(_gameObjects.size());
 
             if (go instanceof Player)
                 _players.add((Player) go);
         }
 
         _newGameObjects.clear();
-        _newGOClassId.clear();
     }
 
     public void createPlayers() {
@@ -120,29 +119,20 @@ public class GameStateMatchHost implements GameState, MatchHost {
             lastPlayerId = info.playerId;
             newPlayer.setPosition(37.716140, 127.046620);
             newPlayer.setName(info.name);
-            newPlayer.getProperty().setTeam(info.team);
             newPlayer.setLook(ImageType.MARKER);
         }
 
         DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
         dummy.getProperty().setPlayerId(lastPlayerId + 1);
         dummy.setPosition(37.716109 - 0.0005, 127.048926 - 0.0005);
-        dummy.setName("테스트용 팀 A");
+        dummy.setName("연습용 봇 1");
         dummy.setLook(ImageType.MARKER);
-        dummy.getProperty().setTeam(0);
 
         DummyPlayerHost dummy2 = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
         dummy2.getProperty().setPlayerId(lastPlayerId + 2);
         dummy2.setPosition(37.716109 - 0.0005, 127.048926 + 0.0005);
-        dummy2.setName("테스트용 팀 B");
+        dummy2.setName("연습용 봇 2");
         dummy2.setLook(ImageType.MARKER);
-        dummy2.getProperty().setTeam(1);
-
-        GameObject respawnPoint = createGameObject(Util.ItemClassId, true);
-        respawnPoint.setPosition(37.715151, 127.045780);
-        respawnPoint.setName("부활지점");
-        respawnPoint.setRadius(20);
-        respawnPoint.setLook(ImageType.INVISIBLE);
 
         addNewGameObjectsToWorld();
     }
@@ -150,6 +140,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     @Override
     public void start() {
         CoreHost.get().setMatch(this);
+        Util.registerGameObjectsHost(_factory, this);
     }
 
     @Override
@@ -182,7 +173,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
             TimerStruct ts = _timerQueue.peek();
             if (ts == null) return;
 
-            if (ts.timeToBeFired < Core.get().getTime().getStartOfFrame()){
+            if (ts.timeToBeFired < CoreHost.get().getTime().getStartOfFrame()){
                 ts.callback.run();
                 _timerQueue.poll();
             }
@@ -248,6 +239,9 @@ public class GameStateMatchHost implements GameState, MatchHost {
             case INGAME:
                 _currentState = new MatchStateInGameHost(this);
                 break;
+            case GAMEOVER:
+                _currentState = new MatchStateGameOverHost(this);
+                break;
         }
         _currentState.start();
     }
@@ -275,12 +269,12 @@ public class GameStateMatchHost implements GameState, MatchHost {
     public ReadOnlyList<Player> getPlayers() { return _readOnlyPlayers; }
 
     @Override
-    public Collider getCollider(){ return _collider; }
+    public CharacterFactory getCharacterFactory() {
+        return _charFactory;
+    }
 
     @Override
-    public WorldSetterHost getWorldSetterHost() {
-        return _worldSetter;
-    }
+    public Collider getCollider(){ return _collider; }
 
     @Override
     public LatLonByteConverter getConverter(){ return _parent.getConverter(); }

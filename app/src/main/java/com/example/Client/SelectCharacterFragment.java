@@ -11,10 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
 import Common.CharacterFactory;
 
 public class SelectCharacterFragment extends Fragment {
-    private Button[] mButtons;
+    private ArrayList<Button> mButtons = new ArrayList<>();
     private CharacterFactory mFactory;
     private MatchStateSelectCharacter mMatchState;
 
@@ -28,10 +30,9 @@ public class SelectCharacterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mMatchState = (MatchStateSelectCharacter) ((GameStateMatch) Core.get().getState()).getState();
-        mFactory = mMatchState.getCharacterFactory();
-        mButtons = new Button[mFactory.size()];
+        mFactory = Core.get().getMatch().getCharacterFactory();
 
-        for (int i = 0; i < mFactory.size(); i++){
+        for (int i : mFactory.getAvailableCharacterIndices()){
             Button button = (Button) LayoutInflater
                     .from(getContext()).inflate(R.layout.button_simple, (ViewGroup) view, false);
             setUpSimpleButton(button, i);
@@ -40,7 +41,7 @@ public class SelectCharacterFragment extends Fragment {
     }
 
     private void setUpSimpleButton(Button button, int index){
-        mButtons[index] = button;
+        mButtons.add(button);
         button.setText(mFactory.getCharacterName(index));
         button.setOnClickListener(v -> {
             mMatchState.selectCharacter(index);

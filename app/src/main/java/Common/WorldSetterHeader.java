@@ -1,11 +1,5 @@
 package Common;
 
-import android.util.Log;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 public class WorldSetterHeader {
     static final int actionLen = WorldSetterAction.values().length - 1;
     static final WorldSetterAction[] actionValues = WorldSetterAction.values();
@@ -24,15 +18,11 @@ public class WorldSetterHeader {
     }
 
     public void writeToStream(OutputBitStream stream){
-        try {
-            stream.write(actionToInt(action), 2);
-            if (action == WorldSetterAction.CREATE)
-                stream.write(classId, 8);
-            stream.write(networkId, 8);
-            stream.write(dirtyFlag, 32);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        stream.write(actionToInt(action), 2);
+        if (action == WorldSetterAction.CREATE)
+            stream.write(classId, 8);
+        stream.write(networkId, 8);
+        stream.write(dirtyFlag, 32);
     }
 
     private int actionToInt(WorldSetterAction action){

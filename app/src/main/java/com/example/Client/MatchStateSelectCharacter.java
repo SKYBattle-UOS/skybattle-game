@@ -1,8 +1,5 @@
 package com.example.Client;
 
-import java.io.IOException;
-
-import Common.CharacterFactory;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
@@ -20,13 +17,11 @@ import Common.Util;
 public class MatchStateSelectCharacter implements GameState {
     private GameStateMatch _match;
     private boolean _waiting;
-    private CharacterFactory _charFactory;
     private int _selectedCharacter = -1;
     private boolean _sentCharacter;
 
     MatchStateSelectCharacter(GameStateMatch match) {
         _match = match;
-        _charFactory = new CharacterFactory(Core.get().getGameObjectFactory());
         Core.get().getUIManager().setTopText("집합 완료 : 캐릭터를 선택하세요");
     }
 
@@ -42,20 +37,12 @@ public class MatchStateSelectCharacter implements GameState {
         _selectedCharacter = index;
     }
 
-    public CharacterFactory getCharacterFactory(){
-        return _charFactory;
-    }
-
     private void send() {
         OutputBitStream packetToSend = Core.get().getPakcetManager().getPacketToSend();
         boolean shouldSend = (_selectedCharacter >= 0 && !_sentCharacter);
         Util.sendHas(packetToSend, shouldSend);
         if (shouldSend){
-            try {
-                packetToSend.write(_selectedCharacter, 8);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            packetToSend.write(_selectedCharacter, 8);
             Core.get().getPakcetManager().shouldSendThisFrame();
             _sentCharacter = true;
         }
@@ -72,7 +59,7 @@ public class MatchStateSelectCharacter implements GameState {
                 int playerId = packet.read(32);
                 int character = packet.read(8);
                 Player player = findPlayer(playerId);
-                _charFactory.setCharacterProperty(player, character);
+                _match.getCharacterFactory().setCharacterProperty(player, character);
             }
 
             _waiting = true;

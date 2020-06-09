@@ -8,7 +8,7 @@ import Common.GameState;
 import Common.GameStateType;
 import Common.LatLonByteConverter;
 import Common.Time;
-import Common.Util;
+import Common.UIManager;
 
 /**
  * 앱이 사용하는 여러 클래스를 초기화하고 작동순서대로 호출합니다.
@@ -18,7 +18,7 @@ import Common.Util;
  * @version 0.0
  * @since 2020-04-21
  */
-public class Core {
+class Core {
 
     private static Core _coreInstance;
 
@@ -46,8 +46,6 @@ public class Core {
         _inputManager = new InputManager(context, _converter);
         _stateContext = new GameStateContext(_converter);
         _time = new AndroidTime();
-
-        Util.registerGameObjects(_gameObjectFactory);
     }
 
     public static void createInstance(Context context){

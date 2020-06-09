@@ -1,14 +1,8 @@
 package Host;
 
-import com.example.Client.Core;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import Common.CharacterFactory;
 import Common.GameState;
 import Common.InputBitStream;
 import Common.MatchStateType;
@@ -19,11 +13,9 @@ import Common.Util;
 class MatchStateSelectCharacterHost implements GameState, ConnectionListener {
     private GameStateMatchHost _match;
     private HashMap<Integer, Integer> _characters = new HashMap<>();
-    private CharacterFactory _charFactory;
 
     public MatchStateSelectCharacterHost(GameStateMatchHost gameStateMatchHost) {
         _match = gameStateMatchHost;
-        _charFactory = new CharacterFactory(CoreHost.get().getGameObjectFactory());
     }
 
     @Override
@@ -49,14 +41,10 @@ class MatchStateSelectCharacterHost implements GameState, ConnectionListener {
         Util.sendHas(outputPacket, allset);
         if (allset) {
             createCharacters();
-            try {
-                outputPacket.write(_characters.size(), 8);
-                for (Map.Entry<Integer, Integer> e : _characters.entrySet()){
-                    outputPacket.write(e.getKey(), 32);
-                    outputPacket.write(e.getValue(), 8);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            outputPacket.write(_characters.size(), 8);
+            for (Map.Entry<Integer, Integer> e : _characters.entrySet()){
+                outputPacket.write(e.getKey(), 32);
+                outputPacket.write(e.getValue(), 8);
             }
             CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.GET_READY);
@@ -65,18 +53,9 @@ class MatchStateSelectCharacterHost implements GameState, ConnectionListener {
 
     private void createCharacters() {
         for (Map.Entry<Integer, Integer> e : _characters.entrySet()){
-            Player player = findPlayer(e.getKey());
-            _charFactory.setCharacterProperty(player, e.getValue());
+            Player player = Util.findPlayerById(_match, e.getKey());
+            _match.getCharacterFactory().setCharacterProperty(player, e.getValue());
         }
-    }
-
-    private Player findPlayer(int playerId) {
-        for (Player p : _match.getPlayers()){
-            if (p.getProperty().getPlayerId() == playerId)
-                return p;
-        }
-
-        return null;
     }
 
     private void receive() {

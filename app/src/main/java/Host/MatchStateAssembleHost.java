@@ -1,7 +1,5 @@
 package Host;
 
-import com.example.Client.Core;
-
 import java.util.Collection;
 
 import Common.CollisionState;
@@ -52,10 +50,6 @@ class MatchStateAssembleHost implements GameState {
                         _assemblePoint = p.getGameObject();
                         _assemblePoint.setLook(ImageType.CIRCLE_WITH_MARKER);
                         _assemblePoint.setRadius(100);
-                        _match.getWorldSetterHost()
-                                .generateUpdateInstruction(
-                                        _assemblePoint.getNetworkId(),
-                                        GameObject.imageTypeDirtyFlag | GameObject.radiusDirtyFlag);
                         return;
                     }
                 }
@@ -66,13 +60,26 @@ class MatchStateAssembleHost implements GameState {
         if (assembled){
             _assemblePoint.setLook(ImageType.MARKER);
             _assemblePoint.setRadius(2.5f);
-            _match.getWorldSetterHost()
-                    .generateUpdateInstruction(
-                            _assemblePoint.getNetworkId(),
-                            GameObject.imageTypeDirtyFlag | GameObject.radiusDirtyFlag);
+
+            setUpBattleGround();
+
             CoreHost.get().getNetworkManager().shouldSendThisFrame();
             _match.switchState(MatchStateType.SELECT_CHARACTER);
         }
+    }
+
+    private void setUpBattleGround() {
+        GameObject respawnPoint = _match.createGameObject(Util.ItemClassId, true);
+        respawnPoint.setPosition(_assemblePoint.getPosition());
+        respawnPoint.setName("부활지점");
+        respawnPoint.setRadius(20);
+        respawnPoint.setLook(ImageType.INVISIBLE);
+
+        GameObject battleGround = _match.createGameObject(Util.BattleFieldClassId, true);
+        battleGround.setPosition(_assemblePoint.getPosition());
+        battleGround.setRadius(100);
+        battleGround.setLook(ImageType.CIRCLE);
+        battleGround.setName("Korimart전장");
     }
 
     private boolean hasEverybodyAssembled() {
