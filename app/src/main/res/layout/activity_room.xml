@@ -11,192 +11,160 @@
     <TextView
         android:id="@+id/roomTitle"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="0dp"
         android:fontFamily="@font/bmeuljirottf"
         android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="0.1"
+        android:layout_marginTop="15dp"
         android:text="방제"
+        android:textAlignment="center"
         android:textSize="30sp" />
 
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.075"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        android:textSize="30sp" />
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="25dp"
+        android:id="@+id/imageView1"
+        android:src="@drawable/zombie"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:layout_weight="0.075"
+        android:orientation="horizontal"
+        android:weightSum="1">
 
         <TextView
-            android:layout_width="50dp"
-            android:layout_weight="1"
-            android:textSize="30sp"
-            android:layout_height="40dp" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25" />
+
+        <EditText
+            android:id="@+id/edit_nickname"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:backgroundTint="#90A4AE"
+            android:fontFamily="@font/bmeuljirottf"
+            android:hint="  닉네임 입력"
+            android:singleLine="true"
+            android:textSize="13sp" />
 
         <Button
-            android:id="@+id/teamAButton"
+            android:id="@+id/btn_nickname"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="0.15"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/btn"
             android:fontFamily="@font/bmeuljirottf"
             android:padding="0dp"
-            android:background="@drawable/btn_teama"
-            android:textColor="#37474F"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:bottomLeftRadius="12dp"
-            android:text="팀 A" />
+            android:text="변경"
+            android:textColor="#37474F" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/teamBButton"
-            android:fontFamily="@font/bmeuljirottf"
-            android:padding="0dp"
-            android:background="@drawable/btn_teamb"
-            android:textColor="#37474F"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:text="팀 B" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.085"
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="2dp"
+        android:weightSum="1">
 
         <TextView
-            android:layout_width="50dp"
-            android:layout_weight="1"
-            android:textSize="30sp"
-            android:layout_height="40dp" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25" />
+
+        <EditText
+            android:id="@+id/editTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:layout_marginTop="2dp"
+            android:backgroundTint="#90A4AE"
+            android:fontFamily="@font/bmeuljirottf"
+            android:hint="  방 제목 입력"
+            android:singleLine="true"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/editTitleButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="7dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.15"
+            android:background="@drawable/btn"
+            android:fontFamily="@font/bmeuljirottf"
+            android:padding="0dp"
+            android:text="변경"
+            android:textColor="#37474F" />
+
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:textSize="30sp" />
-
-    <EditText
-        android:id="@+id/edit_nickname"
-        android:singleLine = "true"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:backgroundTint="#90A4AE"
-        android:fontFamily="@font/bmeuljirottf"
-        android:hint="  닉네임 입력"
-        android:textSize="13sp"/>
-
-    <EditText
-        android:id="@+id/editTitle"
-        android:singleLine = "true"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:backgroundTint="#90A4AE"
-        android:fontFamily="@font/bmeuljirottf"
-        android:hint="  방 제목 입력"
-        android:textSize="13sp" />
-
-    <TextView
-        android:layout_width="50dp"
-        android:layout_weight="1"
-        android:textSize="30sp"
-        android:layout_height="25dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:textSize="30sp" />
-
-    <Button
-        android:id="@+id/btn_nickname"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_weight="0.5"
-        android:background="@drawable/btn"
-        android:fontFamily="@font/bmeuljirottf"
-        android:padding="0dp"
-        android:text="닉네임 변경"
-        android:textColor="#37474F" />
-
-        <Button
-        android:id="@+id/editTitleButton"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
-        android:layout_gravity="center"
-        android:layout_weight="0.5"
-        android:background="@drawable/btn"
-        android:fontFamily="@font/bmeuljirottf"
-        android:padding="0dp"
-        android:text="방 제목 변경"
-        android:textColor="#37474F" />
-
-        <TextView
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:textSize="30sp" />
-</LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:textSize="30sp" />
+        android:layout_height="0dp"
+        android:layout_weight="0.05"
+        android:orientation="horizontal"/>
 
     <ListView
         android:id="@+id/playerlist"
         android:layout_width="match_parent"
-        android:dividerHeight="2dp"
-        android:layout_height="398dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
         android:layout_gravity="bottom"
+        android:dividerHeight="1dp"
         android:entries="@array/reboot_screen_items"
         android:fontFamily="@font/bmeuljirottf" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.07"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/exitButton"
             android:fontFamily="@font/bmeuljirottf"
             android:padding="0dp"
-            android:background="@drawable/btn"
-            android:textColor="#37474F"
-            android:layout_width="60dp"
-            android:layout_height="40dp"
+            android:background="#00FF0000"
+            android:textColor="#FFFFFF"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
             android:layout_gravity="left"
-            android:layout_weight="1"
             android:text="나가기" />
 
         <TextView
-            android:layout_width="10dp"
-            android:layout_weight="1"
-            android:textSize="30sp"
-            android:layout_height="60dp" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4" />
 
         <Button
             android:id="@+id/startButton"
             android:fontFamily="@font/bmeuljirottf"
             android:padding="0dp"
-            android:background="@drawable/btn"
-            android:textColor="#37474F"
-            android:layout_width="60dp"
-            android:layout_height="40dp"
+            android:background="#00FF0000"
+            android:textColor="#F7B633"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
             android:layout_gravity="right"
-            android:layout_weight="1"
             android:text="시작" />
 
     </LinearLayout>

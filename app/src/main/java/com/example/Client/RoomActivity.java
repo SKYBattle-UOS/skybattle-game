@@ -46,9 +46,14 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
         EditText editTitle = findViewById((R.id.editTitle));
         findViewById(R.id.editTitleButton).setOnClickListener(
-                v -> {roomState.changeRoomTitle(editTitle.getText().toString());
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(editTitle.getWindowToken(), 0);
+                v -> {
+                    if (editTitle.getText().toString().replace(" ", "").equals("")) { }
+                    else{
+                        roomState.changeRoomTitle(editTitle.getText().toString());
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(editTitle.getWindowToken(), 0);
+                        editTitle.setText(null);
+                    }
                 });
 
         if (!Core.get().isHost()){
@@ -94,10 +99,10 @@ public class RoomActivity extends AppCompatActivity implements Screen {
             Core.get().close();
         });
 
-        Button teamA = findViewById(R.id.teamAButton);
-        Button teamB = findViewById(R.id.teamBButton);
-        teamA.setOnClickListener(v -> roomState.setTeam(0));
-        teamB.setOnClickListener(v -> roomState.setTeam(1));
+        //Button teamA = findViewById(R.id.teamAButton);
+        //Button teamB = findViewById(R.id.teamBButton);
+        //teamA.setOnClickListener(v -> roomState.setTeam(0));
+        //teamB.setOnClickListener(v -> roomState.setTeam(1));
 }
 
   /*한 화면에 리스트뷰, 텍스트뷰, 버튼을 표현하기 위해 커스텀 어댑터 사용*/
@@ -116,8 +121,8 @@ public class RoomActivity extends AppCompatActivity implements Screen {
             final TextView userName = v.findViewById(R.id.userName);
             userName.setText(getItem(position).name);
 
-            final TextView roleView = v.findViewById(R.id.rolelist);
-            roleView.setText(getItem(position).team == 0 ? "팀A" : "팀B");
+            //final TextView roleView = v.findViewById(R.id.rolelist);
+            //roleView.setText(getItem(position).team == 0 ? "팀A" : "팀B");
 
             return v;
         }
