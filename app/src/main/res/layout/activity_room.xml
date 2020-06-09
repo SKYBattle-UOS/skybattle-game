@@ -13,27 +13,27 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fontFamily="@font/bmeuljirottf"
-        android:layout_gravity="center"
+        android:layout_gravity="center|right"
         android:layout_weight="0.1"
+        android:paddingVertical="15dp"
         android:layout_marginTop="15dp"
         android:text="방제"
+        android:background="#F7B633"
+        android:textColor="#000000"
         android:textAlignment="center"
-        android:textSize="30sp" />
+        android:textSize="35sp" />
 
-    <ImageView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.075"
-        android:layout_gravity="center"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="25dp"
-        android:id="@+id/imageView1"
-        android:src="@drawable/zombie"/>
+        android:layout_weight="0.05"
+        android:orientation="horizontal"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.075"
+        android:layout_marginTop="30dp"
         android:orientation="horizontal"
         android:weightSum="1">
 
@@ -52,7 +52,7 @@
             android:fontFamily="@font/bmeuljirottf"
             android:hint="  닉네임 입력"
             android:singleLine="true"
-            android:textSize="13sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btn_nickname"
@@ -67,8 +67,9 @@
             android:background="@drawable/btn"
             android:fontFamily="@font/bmeuljirottf"
             android:padding="0dp"
+            android:textSize="18sp"
             android:text="변경"
-            android:textColor="#37474F" />
+            android:textColor="#000000" />
     </LinearLayout>
 
     <LinearLayout
@@ -96,7 +97,7 @@
             android:fontFamily="@font/bmeuljirottf"
             android:hint="  방 제목 입력"
             android:singleLine="true"
-            android:textSize="13sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/editTitleButton"
@@ -111,8 +112,9 @@
             android:background="@drawable/btn"
             android:fontFamily="@font/bmeuljirottf"
             android:padding="0dp"
+            android:textSize="18sp"
             android:text="변경"
-            android:textColor="#37474F" />
+            android:textColor="#000000" />
 
     </LinearLayout>
 
@@ -126,9 +128,10 @@
         android:id="@+id/playerlist"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="0.45"
         android:layout_gravity="bottom"
-        android:dividerHeight="1dp"
+        android:dividerHeight="2dp"
+        android:textSize="30sp"
         android:entries="@array/reboot_screen_items"
         android:fontFamily="@font/bmeuljirottf" />
 
@@ -148,6 +151,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.3"
             android:layout_gravity="left"
+            android:textSize="25sp"
             android:text="나가기" />
 
         <TextView
@@ -165,6 +169,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.3"
             android:layout_gravity="right"
+            android:textSize="25sp"
             android:text="시작" />
 
     </LinearLayout>

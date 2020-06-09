@@ -31,23 +31,25 @@
              />
 
         <Button
-            android:id="@+id/btn_debugDown"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/btn_down"
-            android:fontFamily="@font/bmeuljirottf"
-            android:textColor="#37474F"
-            />
-
-        <Button
             android:id="@+id/btn_debugRight"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginLeft="40dp"
             android:background="@drawable/btn_right"
             android:fontFamily="@font/bmeuljirottf"
             android:textColor="#37474F"
              />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_debugDown"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:background="@drawable/btn_down"
+        android:fontFamily="@font/bmeuljirottf"
+        android:textColor="#37474F"
+        />
 
 
 
