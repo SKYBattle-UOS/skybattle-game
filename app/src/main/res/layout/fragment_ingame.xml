@@ -1,48 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/sky"
     android:id="@+id/ingame_fragment"
-    android:fillViewport="true">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background" >
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/ingame_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="1000dp"
-        android:id="@+id/ingame_linlayout">
-
-        <Button
-            android:id="@+id/btn_map"
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:text="DEBUG: 지도보기"
-            android:textSize="20sp" />
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="0"
+        android:gravity="center"
+        android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/health_text"
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:background="#676767"
-            android:gravity="center"
-            android:text="Health Text"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:typeface="normal" />
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:paddingHorizontal="15dp"
+            android:gravity="start"
+            android:text="체력: 100.0"
+            android:textColor="#f7b633"
+            android:textSize="30sp"
+            android:typeface="normal"
+            android:fontFamily="@font/bmeuljirottf" />
 
         <TextView
             android:id="@+id/time_text"
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:background="#676767"
-            android:gravity="center"
-            android:text="Time Text"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:typeface="normal" />
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:paddingHorizontal="15dp"
+            android:gravity="end"
+            android:text="시간: xxxx초"
+            android:textColor="#f7b633"
+            android:textSize="30sp"
+            android:typeface="normal"
+            android:fontFamily="@font/bmeuljirottf" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ingame_bot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btn_map"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/location"
+            android:text=" "
+            android:fontFamily="@font/bmeuljirottf"
+            android:textColor="#000000" />
     </LinearLayout>
-</ScrollView>
+
+    <ScrollView
+        android:id="@+id/ingame_skills"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:id="@+id/ingame_linlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
