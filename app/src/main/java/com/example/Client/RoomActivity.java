@@ -57,7 +57,7 @@ public class RoomActivity extends AppCompatActivity implements Screen {
                 });
 
         if (!Core.get().isHost()){
-            LinearLayout roomLinLayout = findViewById(R.id.roomLinLayout);
+            LinearLayout roomLinLayout = findViewById(R.id.roomEditLinLayout);
             roomLinLayout.removeView(editTitle);
             roomLinLayout.removeView(findViewById(R.id.editTitleButton));
         }
@@ -88,7 +88,9 @@ public class RoomActivity extends AppCompatActivity implements Screen {
             startButton.setEnabled(false);
         });
 
-        if (!Core.get().isHost()) startButton.setEnabled(false);
+        if (!Core.get().isHost()){
+            ((LinearLayout) findViewById(R.id.roomStartLinLayout)).removeView(startButton);
+        }
 
         // 나가기 버튼
         Button exitButton = findViewById(R.id.exitButton);
