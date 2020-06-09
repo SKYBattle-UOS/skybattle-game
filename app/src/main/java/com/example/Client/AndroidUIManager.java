@@ -10,13 +10,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.OnLifecycleEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
+import Common.GameOverState;
 import Common.Item;
 import Common.Player;
 import Common.RoomUserInfo;
 import Common.Skill;
+import Common.UIManager;
 
 public class AndroidUIManager implements UIManager, LifecycleObserver {
     private Screen _currentScreen;
@@ -24,11 +24,9 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     private Runnable _onComplete;
     private boolean _shouldSwitch;
     private final Object _mutex = new Object();
-    private String _topTextCache;
     private String _defaultTopText;
     private long _timer;
 
-    private Map<Integer, Runnable> _callbackMapping = new HashMap<>();
     private Handler _mainHandler = new Handler(Looper.getMainLooper());
 
     @SuppressWarnings("unchecked")
@@ -39,6 +37,8 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     private MutableLiveData<String> _titleText = new MutableLiveData<>();
     private MutableLiveData<Integer> _health = new MutableLiveData<>();
     private MutableLiveData<ArrayList<RoomUserInfo>> _roomInfos = new MutableLiveData<>();
+    private MutableLiveData<Integer> _remainingTime = new MutableLiveData<>();
+    private MutableLiveData<GameOverState> _gameOverState = new MutableLiveData<>();
 
     private InGameFragment _ingameFrag;
 
@@ -53,11 +53,10 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
 
     @Override
     public void update(long ms) {
-        if (_topTextCache != null){
+        if (_timer > 0){
             _timer -= ms;
-            if (_timer < 0){
-                _topText.postValue(_topTextCache);
-                _topTextCache = null;
+            if (_timer <= 0){
+                _topText.postValue(_defaultTopText);
             }
         }
     }
@@ -122,16 +121,11 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
 
     @Override
     public void setTopText(String text){
-        if (_topTextCache != null)
-            _topTextCache = text;
         _topText.postValue(text);
     }
 
     @Override
     public void setTopText(String text, float seconds) {
-        if (_topTextCache == null)
-            _topTextCache = _topText.getValue();
-
         _timer = (long )(seconds * 1000);
         _topText.postValue(text);
     }
@@ -159,6 +153,16 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
     }
 
     @Override
+    public void setRemainingTime(int seconds) {
+        _remainingTime.postValue(seconds);
+    }
+
+    @Override
+    public void setGameOver(GameOverState state) {
+        _gameOverState.postValue(state);
+    }
+
+    @Override
     public void updateItems() {
         Player thisPlayer = Core.get().getMatch().getThisPlayer();
 
@@ -174,6 +178,14 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
                 });
                 i++;
             }
+        });
+    }
+
+    @Override
+    public void reconstructSkillButtons() {
+        _mainHandler.post(() -> {
+            _ingameFrag.clearSkillButtons();
+            _ingameFrag.addSkillButtons();
         });
     }
 
@@ -238,4 +250,7 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
 
     public MutableLiveData<ArrayList<RoomUserInfo>> getRoomUserInfos(){ return _roomInfos; }
 
+    public MutableLiveData<Integer> getRemainingTime() { return _remainingTime; }
+
+    public MutableLiveData<GameOverState> getGameOverState() { return _gameOverState; }
 }

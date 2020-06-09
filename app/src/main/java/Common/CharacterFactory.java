@@ -25,14 +25,43 @@ public class CharacterFactory {
             case 1:
                 property = makeZombie();
                 break;
+            case 2:
+                property = makeZombieWannabe();
+                break;
+            case 3:
+                property = makeVulture();
+                break;
+            case 4:
+                property = makeHealthMan();
         }
         player.setProperty(property);
     }
 
+    private PlayerProperty makeHealthMan() {
+        PlayerProperty property = new PlayerProperty();
+        List<Skill> skills = property.getSkills(friend);
+        skills.add(_goFactory.createSkill(Util.HealthUpClassId));
+        return property;
+    }
+
+    private PlayerProperty makeVulture() {
+        PlayerProperty property = new PlayerProperty();
+        List<Skill> skills = property.getSkills(friend);
+        skills.add(_goFactory.createSkill(Util.SpiderMineClassId));
+        return property;
+    }
+
+    private PlayerProperty makeZombieWannabe() {
+        PlayerProperty property = new PlayerProperty();
+        List<Skill> skills = property.getSkills(friend);
+        skills.add(_goFactory.createSkill(Util.SuicideClassId));
+        return property;
+    }
+
     private PlayerProperty makeZombie() {
         PlayerProperty property = new PlayerProperty();
-        property.setHealth(99999000);
-        property.setMaxHealth(99999000);
+        property.setHealth(2000000);
+        property.setMaxHealth(2000000);
 
         List<Skill> skills = property.getSkills(friend);
         skills.add(_goFactory.createSkill(Util.SuicideClassId));
@@ -54,6 +83,12 @@ public class CharacterFactory {
                 return "테스트 캐릭터";
             case 1:
                 return "좀비";
+            case 2:
+                return "좀비 워너비";
+            case 3:
+                return "벌쳐";
+            case 4:
+                return "회복맨";
         }
         return "No Name";
     }
@@ -63,6 +98,6 @@ public class CharacterFactory {
     }
 
     public int[] getAvailableCharacterIndices(){
-        return new int[]{ 0 };
+        return new int[]{ 2, 3, 4 };
     }
 }

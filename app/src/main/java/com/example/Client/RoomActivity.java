@@ -83,13 +83,17 @@ public class RoomActivity extends AppCompatActivity implements Screen {
 
         //게임 시작 버튼
         Button startButton = findViewById(R.id.startButton);
-        startButton.setOnClickListener(v -> roomState.startGame());
+        startButton.setOnClickListener(v -> {
+            roomState.startGame();
+            startButton.setEnabled(false);
+        });
 
         if (!Core.get().isHost()) startButton.setEnabled(false);
 
         // 나가기 버튼
-        Button btn_exit = findViewById(R.id.exitButton);
-        btn_exit.setOnClickListener(v -> {
+        Button exitButton = findViewById(R.id.exitButton);
+        exitButton.setOnClickListener(v -> {
+            exitButton.setEnabled(false);
             if (Core.get().isHost())
                 CoreHost.destroyInstance();
             Core.get().close();

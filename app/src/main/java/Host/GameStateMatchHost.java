@@ -1,6 +1,5 @@
 package Host;
 
-import com.example.Client.Core;
 import com.example.Client.GameObjectFactory;
 import com.example.Client.GameObjectRegistry;
 
@@ -21,7 +20,6 @@ import Common.InputState;
 import Common.LatLonByteConverter;
 import Common.MatchStateType;
 import Common.Player;
-import Common.PlayerHost;
 import Common.ReadOnlyList;
 import Common.RoomUserInfo;
 import Common.TimerStruct;
@@ -95,7 +93,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
 
     @Override
     public void setTimer(Runnable callback, float seconds) {
-        long timeToBeFired = Core.get().getTime().getStartOfFrame();
+        long timeToBeFired = CoreHost.get().getTime().getStartOfFrame();
         timeToBeFired += (long) seconds * 1000;
         _timerQueue.add(new TimerStruct(callback, timeToBeFired));
     }
@@ -121,29 +119,20 @@ public class GameStateMatchHost implements GameState, MatchHost {
             lastPlayerId = info.playerId;
             newPlayer.setPosition(37.716140, 127.046620);
             newPlayer.setName(info.name);
-            newPlayer.getProperty().setTeam(info.team);
             newPlayer.setLook(ImageType.MARKER);
         }
 
         DummyPlayerHost dummy = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
         dummy.getProperty().setPlayerId(lastPlayerId + 1);
         dummy.setPosition(37.716109 - 0.0005, 127.048926 - 0.0005);
-        dummy.setName("테스트용 팀 A");
+        dummy.setName("연습용 봇 1");
         dummy.setLook(ImageType.MARKER);
-        dummy.getProperty().setTeam(0);
 
         DummyPlayerHost dummy2 = (DummyPlayerHost) createGameObject(Util.DummyPlayerClassId, true);
         dummy2.getProperty().setPlayerId(lastPlayerId + 2);
         dummy2.setPosition(37.716109 - 0.0005, 127.048926 + 0.0005);
-        dummy2.setName("테스트용 팀 B");
+        dummy2.setName("연습용 봇 2");
         dummy2.setLook(ImageType.MARKER);
-        dummy2.getProperty().setTeam(1);
-
-        GameObject respawnPoint = createGameObject(Util.ItemClassId, true);
-        respawnPoint.setPosition(37.715151, 127.045780);
-        respawnPoint.setName("부활지점");
-        respawnPoint.setRadius(20);
-        respawnPoint.setLook(ImageType.INVISIBLE);
 
         addNewGameObjectsToWorld();
     }
@@ -151,6 +140,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
     @Override
     public void start() {
         CoreHost.get().setMatch(this);
+        Util.registerGameObjectsHost(_factory, this);
     }
 
     @Override
@@ -183,7 +173,7 @@ public class GameStateMatchHost implements GameState, MatchHost {
             TimerStruct ts = _timerQueue.peek();
             if (ts == null) return;
 
-            if (ts.timeToBeFired < Core.get().getTime().getStartOfFrame()){
+            if (ts.timeToBeFired < CoreHost.get().getTime().getStartOfFrame()){
                 ts.callback.run();
                 _timerQueue.poll();
             }
@@ -248,6 +238,9 @@ public class GameStateMatchHost implements GameState, MatchHost {
                 break;
             case INGAME:
                 _currentState = new MatchStateInGameHost(this);
+                break;
+            case GAMEOVER:
+                _currentState = new MatchStateGameOverHost(this);
                 break;
         }
         _currentState.start();

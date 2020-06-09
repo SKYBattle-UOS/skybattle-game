@@ -312,16 +312,12 @@ public class AndroidGoogleMap implements Map {
 //    }
 
     private void _addCircle(int number,double lat, double lon, int color, float radius) {
-        String color_fill="";
         LatLng position = new LatLng(lat, lon);
-        if(color==Color.RED)
-            color_fill="#88FF0000";
 
         Circle circle = _googleMap.addCircle(new CircleOptions()
                 .center(position)
                 .radius(radius)
-                .strokeColor(color)
-                .fillColor(Color.parseColor(color_fill)));
+                .strokeColor(color));
 
         _circles.put(number, circle);
     }

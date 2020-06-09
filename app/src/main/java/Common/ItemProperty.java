@@ -5,6 +5,7 @@ import com.example.Client.GameObjectRegistry;
 public class ItemProperty {
     public static int isPickedUpDirtyFlag;
     public static int ownerDirtyFlag;
+    public static int skillDirtyFlag;
     public static int endOfFlag;
     public static int endOfFlagPos;
 
@@ -12,6 +13,7 @@ public class ItemProperty {
         int i = GameObject.EndOfFlagPos;
         isPickedUpDirtyFlag = 1 << i++;
         ownerDirtyFlag = 1 << i++;
+        skillDirtyFlag = 1 << i++;
         endOfFlagPos = i;
         endOfFlag = 1 << i++;
     }
@@ -31,6 +33,10 @@ public class ItemProperty {
             else
                 stream.write(_owner.getNetworkId(), 32);
         }
+
+        if ((dirtyFlag & skillDirtyFlag) != 0){
+            _skill.writeToStream(stream);
+        }
     }
 
     public void readFromStream(InputBitStream stream, int dirtyFlag, GameObjectRegistry registry) {
@@ -40,6 +46,10 @@ public class ItemProperty {
 
         if ((dirtyFlag & ownerDirtyFlag) != 0){
             _owner = registry.getGameObject(stream.read(32));
+        }
+
+        if ((dirtyFlag & skillDirtyFlag) != 0){
+            _skill.readFromStream(stream);
         }
     }
 

@@ -1,13 +1,13 @@
 package Host;
 
-
 import Common.GameObject;
-import Common.PlayerHost;
-import Common.PlayerProperty;
-import Common.SneakCommon;
-import Common.Util;
+import Common.InstantSkillHost;
+import Common.MatchCommon;
 
-public class SneakHost extends SneakCommon {
+public class SneakHost extends InstantSkillHost {
+    public SneakHost(MatchCommon match) {
+        super(match);
+    }
 
     @Override
     public void cast(GameObject caster){

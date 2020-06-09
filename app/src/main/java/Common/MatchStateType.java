@@ -35,5 +35,5 @@ public enum MatchStateType {
     /**
      * 게임 종료 후 재집합 안내 화면.
      */
-    END
+    GAMEOVER
 }

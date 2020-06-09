@@ -1,4 +1,4 @@
-package Common;
+package Host;
 
 import androidx.annotation.NonNull;
 
@@ -8,13 +8,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
 
-import Host.ClientProxy;
-import Host.CoreHost;
-import Host.DamageApplier;
-import Host.DamageCalculator;
-import Host.GameObjectHost;
-import Host.ZeroDamageApplier;
-import Host.ZeroDamageCalculator;
+import Common.CollisionState;
+import Common.CoordinateSkillHost;
+import Common.Damageable;
+import Common.GameObject;
+import Common.ImageType;
+import Common.InputState;
+import Common.Item;
+import Common.ItemHost;
+import Common.ItemProperty;
+import Common.OutputBitStream;
+import Common.Pickable;
+import Common.Player;
+import Common.PlayerProperty;
+import Common.PlayerTargetSkillHost;
+import Common.Skill;
 
 import static Common.PlayerProperty.*;
 
@@ -57,6 +65,8 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         }
     };
 
+    private boolean _shouldMakeZombie;
+
     @Override
     public void writeToStream(OutputBitStream stream, int dirtyFlag) {
         super.writeToStream(stream, dirtyFlag);
@@ -89,7 +99,7 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
             Skill skill = item.getProperty().getSkill();
             if (skill.isDirty()){
                 skill.cast(this);
-                getHeader().dirtyFlag |= skillDirtyFlag;
+                ((ItemHost) item).getHeader().dirtyFlag |= ItemProperty.skillDirtyFlag;
                 _itemsToRemove.add(item);
             }
         }
@@ -100,9 +110,15 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         for (Item item : _itemsToRemove){
             getItems().remove(item);
         }
+
         if (!_itemsToRemove.isEmpty()){
             getHeader().dirtyFlag |= itemsDirtyFlag;
             _itemsToRemove.clear();
+        }
+
+        if (_shouldMakeZombie){
+            makeZombie();
+            _shouldMakeZombie = false;
         }
     }
 
@@ -151,11 +167,11 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
                     // target is coordinate
                     if (input.lat * input.lon != 0){
                         _match.getConverter().restoreLatLon(input.lat, input.lon, _newPosTemp);
-                        ((CoordinateSkill) skill).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
+                        ((CoordinateSkillHost) skill).setTargetCoord(_newPosTemp[0], _newPosTemp[1]);
                     }
                     // target is player
                     else if (input.playerId >= 0){
-                        ((PlayerTargetSkill) skill).setTargetPlayer(input.playerId);
+                        ((PlayerTargetSkillHost) skill).setTargetPlayer(input.playerId);
                     }
                     break;
             }
@@ -166,15 +182,27 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         if (health > _property.getMaxHealth())
             health = _property.getMaxHealth();
         else if (health <= 0){
-            makeGhost();
-            health = 0;
+            if (getProperty().getPlayerState() == PlayerState.NORMAL){
+                _shouldMakeZombie = true;
+                health = 10;
+            }
+            else if (getProperty().getPlayerState() == PlayerState.ZOMBIE)
+                health = makeGhost();
         }
 
         return health;
     }
 
+    public int makeZombie() {
+        _match.getCharacterFactory().setCharacterProperty(this, 1);
+        getProperty().setTeam(1);
+        getProperty().setPlayerState(PlayerState.ZOMBIE);
+        setName(getName() + " (좀비)");
+        return getProperty().getHealth();
+    }
+
     @Override
-    public void takeDamage(Player attacker, int damage) {
+    public void takeDamage(GameObject attacker, int damage) {
         _damageApplier.applyDamage(this, attacker, damage);
     }
 
@@ -198,12 +226,13 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         _property.getFromFactory(property);
     }
 
-    private void makeGhost(){
+    public int makeGhost(){
         getProperty().setHealth(100000);
         setDamageApplier(new ZeroDamageApplier());
         setDamageCalculator(new ZeroDamageCalculator());
         getProperty().setPlayerState(PlayerState.GHOST);
         setLook(ImageType.INVISIBLE);
+        return 100000;
     }
 
     public void setDamageApplier(@NonNull DamageApplier applier){

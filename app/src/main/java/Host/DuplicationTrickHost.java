@@ -1,13 +1,16 @@
 package Host;
 
 import Common.ImageType;
-import Common.DuplicationTrickCommon;
 import Common.GameObject;
-import Common.PlayerHost;
-import Common.PlayerProperty;
+import Common.InstantSkillHost;
+import Common.MatchCommon;
 import Common.Util;
 
-public class DuplicationTrickHost extends DuplicationTrickCommon {
+public class DuplicationTrickHost extends InstantSkillHost {
+    public DuplicationTrickHost(MatchCommon match) {
+        super(match);
+    }
+
     @Override
     public void cast(GameObject caster) {
         for(int i=0;i<3;i++) {

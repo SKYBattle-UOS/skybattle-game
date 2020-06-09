@@ -1,10 +1,14 @@
 package Host;
 
 import Common.GameObject;
-import Common.PlayerHost;
-import Common.PlayerProperty;
+import Common.MatchCommon;
+import Common.PlayerTargetSkillHost;
 
-public class PosionHost extends PosionCommon {
+public class PoisonHost extends PlayerTargetSkillHost {
+    public PoisonHost(MatchCommon match) {
+        super(match);
+    }
+
     @Override
     public void cast(GameObject caster) {
         for (int i= 0; i < 10; i++)

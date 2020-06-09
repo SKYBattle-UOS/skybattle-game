@@ -67,7 +67,7 @@ class MatchStateGetReadyHost implements GameState {
             for (int playerId : _zombiePlayerIds){
                 packet.write(playerId, 8);
                 Player victim = Util.findPlayerById(_match, playerId);
-                _match.getCharacterFactory().setCharacterProperty(victim, 1);
+                ((PlayerHost) victim).makeZombie();
             }
             _sentZombies = true;
         }

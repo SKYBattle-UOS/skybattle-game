@@ -4,14 +4,20 @@ import Common.GameObject;
 import Common.GameState;
 import Common.ImageType;
 import Common.IngameInfoListener;
+import Common.InputBitStream;
+import Common.MatchStateType;
+import Common.Player;
 import Common.ReadOnlyList;
 import Common.Skill;
+import Common.UIManager;
+import Common.Util;
+import Common.GameOverState;
 
 public class MatchStateInGame implements GameState, IngameInfoListener {
     private GameStateMatch _match;
     private PlayerClient _thisPlayer;
     private String _originalName;
-    private PlayerState _playerState;
+    private boolean _shouldUpdateVisibles;
 
     MatchStateInGame(GameStateMatch gameStateMatch) {
         _match = gameStateMatch;
@@ -21,11 +27,70 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
     public void start() {
         _thisPlayer = (PlayerClient) Core.get().getMatch().getThisPlayer();
         _thisPlayer.setIngameInfoListener(this);
+        onPlayerStateChange(_thisPlayer.getProperty().getPlayerState());
         Core.get().getUIManager().setDefaultTopText("게임이 시작되었습니다");
+
+        PlayerState playerState = _thisPlayer.getProperty().getPlayerState();
+        if (playerState == PlayerState.ZOMBIE)
+            Core.get().getUIManager().setTopText("당신은 좀비입니다", 3f);
+
+        for (Player p : _match.getPlayers()){
+            if (p == _thisPlayer) continue;
+
+            ((PlayerClient) p).setIngameInfoListener(new IngameInfoListener() {
+                @Override
+                public void onPlayerStateChange(PlayerState state) {
+                    _shouldUpdateVisibles = true;
+                }
+            });
+        }
+    }
+
+    private void updateVisibles() {
+        for (Player p : _match.getPlayers()) {
+            if (p.getProperty().getPlayerState() != _thisPlayer.getProperty().getPlayerState())
+                p.getGameObject().setLook(ImageType.INVISIBLE);
+            else
+                p.getGameObject().setLook(ImageType.MARKER);
+        }
     }
 
     @Override
     public void update(long ms) {
+        receiveRemainingTime();
+        receiveGameOver();
+
+        if (_shouldUpdateVisibles){
+            updateVisibles();
+            _shouldUpdateVisibles = false;
+        }
+    }
+
+    private void receiveGameOver() {
+        InputBitStream stream = Core.get().getPakcetManager().getPacketStream();
+        if (stream == null) return;
+
+        GameOverState state = GameOverState.GOING;
+        if (Util.hasMessage(stream)){
+            int stateIndex = stream.read(2);
+            state = GameOverState.values()[stateIndex];
+        }
+
+        if (state != GameOverState.GOING){
+            Core.get().getUIManager().setGameOver(state);
+            Core.get().getUIManager().switchScreen(ScreenType.GAMEOVER, null);
+            _match.switchState(MatchStateType.GAMEOVER);
+        }
+    }
+
+    private void receiveRemainingTime() {
+        InputBitStream stream = Core.get().getPakcetManager().getPacketStream();
+        if (stream == null) return;
+
+        if (Util.hasMessage(stream)){
+            int remainingSeconds = stream.read(10);
+            Core.get().getUIManager().setRemainingTime(remainingSeconds);
+        }
     }
 
     @Override
@@ -38,10 +103,16 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
 
     @Override
     public void onPlayerStateChange(PlayerState state) {
+        _shouldUpdateVisibles = true;
+
         switch (state){
             case NORMAL:
-                if (_playerState == PlayerState.GHOST)
-                    tearDownDeathScreen();
+                setGameUI();
+                break;
+
+            case ZOMBIE:
+                Core.get().getUIManager().setTopText("좀비가 되었습니다", 3f);
+                Core.get().getUIManager().reconstructSkillButtons();
                 setGameUI();
                 break;
 
@@ -50,8 +121,6 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
                 makeGhost();
                 break;
         }
-
-        _playerState = state;
     }
 
     @Override
@@ -72,6 +141,7 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
             uiManager.setButtonActive(UIManager.BUTTON_Q + i++, true);
         }
         uiManager.setHealth(_thisPlayer.getProperty().getHealth());
+        uiManager.setRemainingTime(300);
     }
 
     private void setDeathScreen() {
@@ -79,7 +149,7 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
         uiManager.setTopText("당신은 죽었습니다. 부활지점으로 이동하세요.");
         uiManager.switchScreen(ScreenType.MAP, null);
 
-        GameObject respawnArea = findRespawnArea();
+        GameObject respawnArea = Util.findGOByName(_match, "부활지점");
         respawnArea.setLook(ImageType.CIRCLE_WITH_MARKER);
         double[] respawnLatLon = respawnArea.getPosition();
         Core.get().getCamera().move(respawnLatLon[0], respawnLatLon[1]);
@@ -90,7 +160,7 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
         uiManager.setTopText(uiManager.getDefaultTopText());
         _thisPlayer.setName(_originalName);
 
-        GameObject respawnArea = findRespawnArea();
+        GameObject respawnArea = Util.findGOByName(_match, "부활지점");
         respawnArea.setLook(ImageType.INVISIBLE);
     }
 
@@ -98,14 +168,5 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
         _originalName = _thisPlayer.getName();
         _thisPlayer.setLook(ImageType.MARKER);
         _thisPlayer.setName("유령");
-    }
-
-    private GameObject findRespawnArea(){
-        ReadOnlyList<GameObject> world = Core.get().getMatch().getWorld();
-        for (GameObject go : world)
-            if (go.getName().equals("부활지점"))
-                return go;
-
-        return null;
     }
 }

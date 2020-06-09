@@ -1,11 +1,14 @@
-package Common;
-
-import com.example.Client.Core;
+package com.example.Client;
 
 import Common.GameObject;
-import Common.PlayerTargetSkill;
+import Common.MatchCommon;
+import Common.PlayerTargetSkillClient;
 
-public class HealthUpCommon extends PlayerTargetSkill {
+public class HealthUpClient extends PlayerTargetSkillClient {
+    public HealthUpClient(MatchCommon match) {
+        super(match);
+    }
+
     @Override
     public String getName() {
         return "회복";
@@ -17,9 +20,7 @@ public class HealthUpCommon extends PlayerTargetSkill {
             String targetName = Core.get()
                     .getMatch().getRegistry().getGameObject(_networkId).getName();
             Core.get().getUIManager().setTopText(targetName + "(을)를 회복했습니다", 2);
-
-            int btnIndex = Core.get().getUIManager().findButtonIndex(this);
-            Core.get().getUIManager().setButtonActive(btnIndex, false);
+            runCoolTime(3, Core.get().getUIManager());
         }
     }
 }

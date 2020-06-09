@@ -1,15 +1,18 @@
 package Host;
 
+import Common.CoordinateSkillHost;
 import Common.ImageType;
 
 import Common.GameObject;
-import Common.GlobalWazakWazakCommon;
 import Common.ItemHost;
-import Common.Pickable;
-import Common.PlayerProperty;
+import Common.MatchCommon;
 import Common.Util;
 
-public class GlobalWazakWazakHost extends GlobalWazakWazakCommon {
+public class GlobalWazakWazakHost extends CoordinateSkillHost {
+    public GlobalWazakWazakHost(MatchCommon match) {
+        super(match);
+    }
+
     @Override
     public void cast(GameObject caster) {
         MatchHost match = CoreHost.get().getMatch();

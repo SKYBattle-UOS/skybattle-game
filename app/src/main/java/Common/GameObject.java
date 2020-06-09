@@ -68,7 +68,7 @@ public abstract class GameObject {
 
         if ((dirtyFlag & radiusDirtyFlag) != 0){
             float r = getRadius();
-            int rInt = (int) r * 10;
+            int rInt = (int) (r * 10);
             stream.write(rInt, 16);
         }
 
@@ -145,6 +145,10 @@ public abstract class GameObject {
 
         if (_match.getCollider() != null && _collision)
             _match.getCollider().positionDirty(this);
+    }
+
+    public void setPosition(double[] position){
+        setPosition(position[0], position[1]);
     }
 
     public void setName(String name){

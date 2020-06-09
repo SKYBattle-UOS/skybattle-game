@@ -1,11 +1,14 @@
 package Host;
 
 import Common.GameObject;
-import Common.PlayerHost;
-import Common.PlayerProperty;
-import Common.SuicideCommon;
+import Common.InstantSkillHost;
+import Common.MatchCommon;
 
-public class SuicideHost extends SuicideCommon {
+public class SuicideHost extends InstantSkillHost {
+    public SuicideHost(MatchCommon match) {
+        super(match);
+    }
+
     @Override
     public void cast(GameObject caster) {
         PlayerHost player = (PlayerHost) caster;
