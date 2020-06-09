@@ -35,6 +35,11 @@ public class SelectCharacterFragment extends Fragment {
             Button button = (Button) LayoutInflater
                     .from(getContext()).inflate(R.layout.button_simple, (ViewGroup) view, false);
             setUpSimpleButton(button, i);
+
+            // 버튼 왼쪽에 캐릭터 이미지 추가하는 코드; 캐릭터 해당 이미지 설정하면 됨
+            button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.character_knight, 0,
+                    0, 0);
+
             ((LinearLayout) view).addView(button);
         }
     }

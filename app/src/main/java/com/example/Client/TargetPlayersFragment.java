@@ -30,17 +30,16 @@ public class TargetPlayersFragment extends Fragment {
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.fragment_target_players, container, false);
 
         for (Player player : Core.get().getMatch().getPlayers()){
-            Button btn = new Button(view.getContext());
-            btn.setTextSize(20);
-            btn.setHeight(200);
-            btn.setOnClickListener(v -> _onButtonClick.accept(player.getGameObject().getNetworkId()));
+            Button button = (Button) LayoutInflater
+                    .from(getContext()).inflate(R.layout.button_simple, (ViewGroup) view, false);
+            button.setOnClickListener(v -> _onButtonClick.accept(player.getGameObject().getNetworkId()));
 
             if (player == Core.get().getMatch().getThisPlayer())
-                btn.setText(player.getGameObject().getName() + " (자기 자신)");
+                button.setText(player.getGameObject().getName() + " (자기 자신)");
             else
-                btn.setText(player.getGameObject().getName());
+                button.setText(player.getGameObject().getName());
 
-            view.addView(btn);
+            view.addView(button);
         }
 
         return view;
