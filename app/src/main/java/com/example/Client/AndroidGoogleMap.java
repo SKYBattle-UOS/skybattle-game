@@ -274,7 +274,7 @@ public class AndroidGoogleMap implements Map {
         LatLng position = new LatLng(latitude, longitude);
 
         _tv_marker.setText(name);
-        _tv_marker.setBackgroundResource(R.drawable.marker_mask);
+        _tv_marker.setBackgroundResource(R.drawable.marker_mask_mm);
         _tv_marker.setTextColor(Color.WHITE);
 
         Marker marker = _googleMap.addMarker(new MarkerOptions()
@@ -313,11 +313,17 @@ public class AndroidGoogleMap implements Map {
 
     private void _addCircle(int number,double lat, double lon, int color, float radius) {
         LatLng position = new LatLng(lat, lon);
+        if(color==Color.RED)
+            color_fill="#22FF0000";
 
         Circle circle = _googleMap.addCircle(new CircleOptions()
                 .center(position)
                 .radius(radius)
+                .strokeColor(color)
+                .strokeWidth((float) 1.0)
+                .fillColor(Color.parseColor(color_fill)));
                 .strokeColor(color));
+
 
         _circles.put(number, circle);
     }
@@ -370,4 +376,3 @@ public class AndroidGoogleMap implements Map {
         return bitmap;
     }
 }
-

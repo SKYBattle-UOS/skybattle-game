@@ -8,8 +8,10 @@
     <TextView
         android:id="@+id/topText"
         android:layout_width="match_parent"
-        android:layout_height="57dp"
-        android:gravity="center_horizontal"
+        android:layout_height="72dp"
+        android:fontFamily="@font/bmeuljirottf"
+        android:background="#607D8B"
+        android:textColor="#F7B633"
         android:padding="1dp"
         android:textSize="25sp" />
 
