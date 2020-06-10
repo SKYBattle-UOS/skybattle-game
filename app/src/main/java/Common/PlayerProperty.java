@@ -145,4 +145,15 @@ public class PlayerProperty {
         _maxHealth = fromFactory._maxHealth;
         _dps = fromFactory._dps;
     }
+
+    public void killSkillTimers(Player player){
+        GameObject playerGO = player.getGameObject();
+
+        for (Skill skill : getSkills())
+            playerGO.getMatch().killAllTimers(skill);
+
+        for (Item item : player.getGameObject().getItems()){
+            playerGO.getMatch().killAllTimers(item.getProperty().getSkill());
+        }
+    }
 }

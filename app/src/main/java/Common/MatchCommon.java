@@ -9,5 +9,6 @@ public interface MatchCommon {
     ReadOnlyList<GameObject> getWorld();
     ReadOnlyList<Player> getPlayers();
     CharacterFactory getCharacterFactory();
-    void setTimer(Runnable callback, float seconds);
+    void setTimer(Object timerOwner, Runnable callback, float seconds);
+    void killAllTimers(Object owner);
 }

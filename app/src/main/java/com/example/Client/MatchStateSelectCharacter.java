@@ -25,6 +25,11 @@ public class MatchStateSelectCharacter implements GameState {
     }
 
     @Override
+    public void start() {
+        Core.get().getUIManager().setTopText("캐릭터를 선택하세요");
+    }
+
+    @Override
     public void update(long ms) {
         if (_waiting) return;
 

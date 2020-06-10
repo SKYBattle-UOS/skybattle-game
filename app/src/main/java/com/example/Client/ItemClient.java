@@ -17,7 +17,7 @@ public class ItemClient extends GameObjectClient implements Item {
     };
 
     public ItemClient() {
-        _property.setSkill(new HealthUpClient(getMatch()));
+        _property.setSkill(new HealthUpClient(getMatch(), Core.get().getUIManager()));
     }
 
     @Override

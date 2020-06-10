@@ -132,16 +132,12 @@ public class AndroidUIManager implements UIManager, LifecycleObserver {
 
     @Override
     public void setButtonText(int button, String text) {
-        if (button < 0) return;
-
         if (button - BUTTON_Q < 4)
             _qwerTexts[button - BUTTON_Q].postValue(text);
     }
 
     @Override
     public void setButtonActive(int button, boolean active) {
-        if (button < 0) return;
-
         if (button - BUTTON_Q < 4)
             _qwerEnables[button - BUTTON_Q].postValue(active);
     }

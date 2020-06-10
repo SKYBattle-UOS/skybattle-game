@@ -1,8 +1,8 @@
 package Common;
 
 public abstract class PlayerTargetSkillHost extends PlayerTargetSkill {
-    public PlayerTargetSkillHost(MatchCommon match) {
-        super(match);
+    public PlayerTargetSkillHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
@@ -11,7 +11,7 @@ public abstract class PlayerTargetSkillHost extends PlayerTargetSkill {
     }
 
     @Override
-    protected final void runCoolTime(int seconds, UIManager uiManager) {
+    protected final void runCoolTime(int seconds) {
         throw new UnsupportedOperationException();
     }
 }

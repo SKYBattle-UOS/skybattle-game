@@ -3,10 +3,11 @@ import Common.MatchCommon;
 import Common.PlayerTargetSkillClient;
 
 import Common.GameObject;
+import Common.UIManager;
 
 public class ReflectDamageClient extends PlayerTargetSkillClient {
-    public ReflectDamageClient(MatchCommon match) {
-        super(match);
+    public ReflectDamageClient(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     public String getName(){

@@ -60,11 +60,12 @@ public class CharacterFactory {
 
     private PlayerProperty makeZombie() {
         PlayerProperty property = new PlayerProperty();
-        property.setHealth(2000000);
-        property.setMaxHealth(2000000);
+        property.setHealth(500000);
+        property.setMaxHealth(500000);
 
         List<Skill> skills = property.getSkills(friend);
-        skills.add(_goFactory.createSkill(Util.SuicideClassId));
+        skills.add(_goFactory.createSkill(Util.ZombieSensorId));
+        skills.add(_goFactory.createSkill(Util.ZombieSightId));
         return property;
     }
 

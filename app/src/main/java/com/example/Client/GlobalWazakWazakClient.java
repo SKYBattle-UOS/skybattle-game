@@ -3,10 +3,11 @@ package com.example.Client;
 import Common.CoordinateSkillClient;
 import Common.GameObject;
 import Common.MatchCommon;
+import Common.UIManager;
 
 public class GlobalWazakWazakClient extends CoordinateSkillClient {
-    public GlobalWazakWazakClient(MatchCommon match) {
-        super(match);
+    public GlobalWazakWazakClient(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
@@ -16,6 +17,6 @@ public class GlobalWazakWazakClient extends CoordinateSkillClient {
 
     @Override
     public void cast(GameObject caster) {
-        runCoolTime(100, Core.get().getUIManager());
+        runCoolTime(100);
     }
 }

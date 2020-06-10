@@ -35,16 +35,24 @@ class MatchStateInGameHost implements GameState {
 
     private void sendGameOver() {
         GameOverState state = GameOverState.ZOMBIESWIN;
+
         if (_remainingTimeMS < 0)
             state = GameOverState.HUMANSWIN;
         else {
+            int numZombies = 0;
+            int numHumans = 0;
             ReadOnlyList<Player> players = _match.getPlayers();
             for (Player p : players){
-                if (p.getProperty().getPlayerState() == PlayerState.NORMAL){
-                    state = GameOverState.GOING;
-                    break;
-                }
+                if (p.getProperty().getPlayerState() == PlayerState.ZOMBIE)
+                    numZombies++;
+                else if (p.getProperty().getPlayerState() == PlayerState.NORMAL)
+                    numHumans++;
             }
+
+            if (numZombies == 0)
+                state = GameOverState.HUMANSWIN;
+            else if (numHumans > 0)
+                state = GameOverState.GOING;
         }
 
         OutputBitStream stream = CoreHost.get().getNetworkManager().getPacketToSend();

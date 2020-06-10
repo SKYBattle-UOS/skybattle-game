@@ -3,8 +3,8 @@ package Common;
 //import com.example.Client.Core;
 
 public class InvincibilityCommon extends PlayerTargetSkill {
-    public InvincibilityCommon(MatchCommon match) {
-        super(match);
+    public InvincibilityCommon(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override

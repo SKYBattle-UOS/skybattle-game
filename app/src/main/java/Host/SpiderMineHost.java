@@ -5,11 +5,12 @@ import Common.ImageType;
 import Common.GameObject;
 import Common.InstantSkillHost;
 import Common.MatchCommon;
+import Common.UIManager;
 import Common.Util;
 
 public class SpiderMineHost extends InstantSkillHost {
-    public SpiderMineHost(MatchCommon match) {
-        super(match);
+    public SpiderMineHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override

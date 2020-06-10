@@ -1,8 +1,8 @@
 package Common;
 
 public abstract class InstantSkillHost extends InstantSkill {
-    public InstantSkillHost(MatchCommon match) {
-        super(match);
+    public InstantSkillHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
@@ -11,7 +11,7 @@ public abstract class InstantSkillHost extends InstantSkill {
     }
 
     @Override
-    protected final void runCoolTime(int seconds, UIManager uiManager) {
+    protected final void runCoolTime(int seconds) {
         throw new UnsupportedOperationException();
     }
 }

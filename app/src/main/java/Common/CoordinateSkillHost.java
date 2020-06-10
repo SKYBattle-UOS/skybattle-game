@@ -1,8 +1,8 @@
 package Common;
 
 public abstract class CoordinateSkillHost extends CoordinateSkill {
-    public CoordinateSkillHost(MatchCommon match) {
-        super(match);
+    public CoordinateSkillHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
@@ -11,7 +11,7 @@ public abstract class CoordinateSkillHost extends CoordinateSkill {
     }
 
     @Override
-    protected final void runCoolTime(int seconds, UIManager uiManager) {
+    protected final void runCoolTime(int seconds) {
         throw new UnsupportedOperationException();
     }
 }

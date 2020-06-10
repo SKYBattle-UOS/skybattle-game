@@ -6,11 +6,12 @@ import Common.ImageType;
 import Common.GameObject;
 import Common.ItemHost;
 import Common.MatchCommon;
+import Common.UIManager;
 import Common.Util;
 
 public class GlobalWazakWazakHost extends CoordinateSkillHost {
-    public GlobalWazakWazakHost(MatchCommon match) {
-        super(match);
+    public GlobalWazakWazakHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
@@ -22,7 +23,7 @@ public class GlobalWazakWazakHost extends CoordinateSkillHost {
         spawned.setPosition(_lat, _lon);
         spawned.setLook(ImageType.MARKER);
 
-        match.setTimer(() -> {
+        match.setTimer(this, () -> {
             if (!spawned.isPickedUp())
                 spawned.scheduleDeath();
         }, 10);

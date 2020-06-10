@@ -3,10 +3,11 @@ package Host;
 import Common.GameObject;
 import Common.InstantSkillHost;
 import Common.MatchCommon;
+import Common.UIManager;
 
 public class SuicideHost extends InstantSkillHost {
-    public SuicideHost(MatchCommon match) {
-        super(match);
+    public SuicideHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override

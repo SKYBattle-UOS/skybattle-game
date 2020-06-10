@@ -92,10 +92,24 @@ public class GameStateMatchHost implements GameState, MatchHost {
     }
 
     @Override
-    public void setTimer(Runnable callback, float seconds) {
+    public void setTimer(Object timerOwner, Runnable callback, float seconds) {
         long timeToBeFired = CoreHost.get().getTime().getStartOfFrame();
         timeToBeFired += (long) seconds * 1000;
-        _timerQueue.add(new TimerStruct(callback, timeToBeFired));
+        _timerQueue.add(new TimerStruct(timerOwner, callback, timeToBeFired));
+    }
+
+    @Override
+    public void killAllTimers(Object owner) {
+        ArrayList<TimerStruct> toKill = new ArrayList<>();
+        for (TimerStruct ts : _timerQueue){
+            if (ts.owner == owner){
+                toKill.add(ts);
+            }
+        }
+
+        for (TimerStruct ts : toKill){
+            _timerQueue.remove(ts);
+        }
     }
 
     private void addNewGameObjectsToWorld(){

@@ -3,10 +3,11 @@ package Host;
 import Common.GameObject;
 import Common.MatchCommon;
 import Common.PlayerTargetSkillHost;
+import Common.UIManager;
 
 public class HealthUpHost extends PlayerTargetSkillHost {
-    public HealthUpHost(MatchCommon match) {
-        super(match);
+    public HealthUpHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override

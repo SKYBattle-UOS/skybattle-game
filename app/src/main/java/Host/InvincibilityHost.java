@@ -2,16 +2,17 @@ package Host;
 import Common.GameObject;
 import Common.MatchCommon;
 import Common.InvincibilityCommon;
+import Common.UIManager;
 
 public class InvincibilityHost extends InvincibilityCommon {
-    public InvincibilityHost(MatchCommon match) {
-        super(match);
+    public InvincibilityHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
     public void cast(GameObject caster){
         todo(caster,true);
-        CoreHost.get().getMatch().setTimer(() -> todo(caster,false),10);
+        CoreHost.get().getMatch().setTimer(this, () -> todo(caster,false), 10);
     }
 
     public void todo(GameObject caster, boolean value){

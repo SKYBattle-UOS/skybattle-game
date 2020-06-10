@@ -1,5 +1,7 @@
 package com.example.Client;
 
+import java.util.ArrayList;
+
 import Common.GameObject;
 import Common.InputBitStream;
 import Common.Item;
@@ -13,32 +15,22 @@ public class PlayerClient extends GameObjectClient implements Player {
         @Override
         public void setHealth(int health) {
             super.setHealth(health);
-            _ingameInfoListener.onHealthChange(health);
+            _ingameInfoListeners.forEach(
+                    ingameInfoListener -> ingameInfoListener.onHealthChange(health));
         }
 
         @Override
         public void setPlayerState(PlayerState state) {
+            getProperty().killSkillTimers(PlayerClient.this);
             if (state == PlayerState.ZOMBIE)
                 _match.getCharacterFactory().setCharacterProperty(PlayerClient.this, 1);
             super.setPlayerState(state);
-            _ingameInfoListener.onPlayerStateChange(state);
+            _ingameInfoListeners.forEach(
+                    ingameInfoListener -> ingameInfoListener.onPlayerStateChange(state));
         }
     };
 
-    // dummy
-    private IngameInfoListener _ingameInfoListener = new IngameInfoListener() {
-        @Override
-        public void onPlayerStateChange(PlayerState state) {
-        }
-
-        @Override
-        public void onItemsChange() {
-        }
-
-        @Override
-        public void onHealthChange(int health) {
-        }
-    };
+    private ArrayList<IngameInfoListener> _ingameInfoListeners = new ArrayList<>();
 
     @Override
     public void readFromStream(InputBitStream stream, int dirtyFlag) {
@@ -73,7 +65,7 @@ public class PlayerClient extends GameObjectClient implements Player {
 
     @Override
     public void onItemsDirty() {
-        _ingameInfoListener.onItemsChange();
+        _ingameInfoListeners.forEach(IngameInfoListener::onItemsChange);
     }
 
     @Override
@@ -92,6 +84,10 @@ public class PlayerClient extends GameObjectClient implements Player {
     }
 
     public void setIngameInfoListener(IngameInfoListener listener){
-        _ingameInfoListener = listener;
+        _ingameInfoListeners.add(listener);
+    }
+
+    public void removeIngameInfoListener(IngameInfoListener listener){
+        _ingameInfoListeners.remove(listener);
     }
 }

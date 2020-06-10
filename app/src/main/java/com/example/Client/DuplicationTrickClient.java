@@ -6,10 +6,11 @@ import Common.InstantSkillClient;
 import Common.MatchCommon;
 import Common.Player;
 import Common.ReadOnlyList;
+import Common.UIManager;
 
 public class DuplicationTrickClient extends InstantSkillClient {
-    public DuplicationTrickClient(MatchCommon match) {
-        super(match);
+    public DuplicationTrickClient(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override

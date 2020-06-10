@@ -3,10 +3,11 @@ package com.example.Client;
 import Common.GameObject;
 import Common.MatchCommon;
 import Common.PlayerTargetSkillClient;
+import Common.UIManager;
 
 public class HealthUpClient extends PlayerTargetSkillClient {
-    public HealthUpClient(MatchCommon match) {
-        super(match);
+    public HealthUpClient(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
@@ -20,7 +21,7 @@ public class HealthUpClient extends PlayerTargetSkillClient {
             String targetName = Core.get()
                     .getMatch().getRegistry().getGameObject(_networkId).getName();
             Core.get().getUIManager().setTopText(targetName + "(을)를 회복했습니다", 2);
-            runCoolTime(3, Core.get().getUIManager());
+            runCoolTime(3);
         }
     }
 }

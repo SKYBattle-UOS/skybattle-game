@@ -1,8 +1,8 @@
 package Common;
 
 abstract class InstantSkill extends Skill {
-    public InstantSkill(MatchCommon match) {
-        super(match);
+    public InstantSkill(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override

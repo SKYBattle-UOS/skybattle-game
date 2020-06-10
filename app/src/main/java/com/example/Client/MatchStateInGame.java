@@ -135,6 +135,7 @@ public class MatchStateInGame implements GameState, IngameInfoListener {
 
     private void setGameUI(){
         UIManager uiManager = Core.get().getUIManager();
+        uiManager.switchScreen(ScreenType.INGAME, null);
         int i = 0;
         for (Skill skill : _thisPlayer.getProperty().getSkills()){
             uiManager.setButtonText(UIManager.BUTTON_Q + i, skill.getName());

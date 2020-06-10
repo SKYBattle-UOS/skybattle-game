@@ -6,8 +6,9 @@ public abstract class Skill {
     private UIManager _uiManager;
     private MatchCommon _match;
 
-    public Skill(MatchCommon match){
+    public Skill(MatchCommon match, UIManager uiManager){
         _match = match;
+        _uiManager = uiManager;
     }
 
     public abstract String getName();
@@ -47,9 +48,10 @@ public abstract class Skill {
         return _match;
     }
 
-    protected void runCoolTime(int seconds, UIManager uiManager) {
+    public UIManager getUIManager() { return _uiManager; }
+
+    protected void runCoolTime(int seconds) {
         _coolTime = seconds;
-        _uiManager = uiManager;
         _runCoolTime();
     }
 
@@ -57,7 +59,7 @@ public abstract class Skill {
         int buttonIndex = _uiManager.findButtonIndex(this);
         if (_coolTime > 0){
             _uiManager.setButtonText(buttonIndex, String.format("%s (%d)", getName(), _coolTime));
-            _match.setTimer(this::_runCoolTime, 1);
+            _match.setTimer(this, this::_runCoolTime, 1);
             _coolTime--;
         }
         else {

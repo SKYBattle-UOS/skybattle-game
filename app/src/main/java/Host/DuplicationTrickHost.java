@@ -4,11 +4,12 @@ import Common.ImageType;
 import Common.GameObject;
 import Common.InstantSkillHost;
 import Common.MatchCommon;
+import Common.UIManager;
 import Common.Util;
 
 public class DuplicationTrickHost extends InstantSkillHost {
-    public DuplicationTrickHost(MatchCommon match) {
-        super(match);
+    public DuplicationTrickHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
@@ -23,7 +24,7 @@ public class DuplicationTrickHost extends InstantSkillHost {
             else
                 spawned.setPosition(caster.getPosition()[0] -Math.random()*0.005, caster.getPosition()[1] +Math.random()*0.005);
             spawned.setLook(ImageType.INVISIBLE);
-            CoreHost.get().getMatch().setTimer(spawned::scheduleDeath,60);
+            CoreHost.get().getMatch().setTimer(this, spawned::scheduleDeath, 60);
         }
     }
 }

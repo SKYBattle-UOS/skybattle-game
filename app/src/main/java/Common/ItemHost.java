@@ -22,7 +22,7 @@ public class ItemHost extends GameObjectHost implements Pickable, Item {
     private PickUpCondition _pickUpCondition = new PickUpTest();
 
     public ItemHost() {
-        _property.setSkill(new HealthUpHost(getMatch()));
+        _property.setSkill(new HealthUpHost(getMatch(), null));
     }
 
     @Override

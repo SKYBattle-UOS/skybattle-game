@@ -3,10 +3,11 @@ import Common.Damageable;
 import Common.GameObject;
 import Common.MatchCommon;
 import Common.PlayerTargetSkillHost;
+import Common.UIManager;
 
 public class ReflectDamageHost extends PlayerTargetSkillHost {
-    public ReflectDamageHost(MatchCommon match) {
-        super(match);
+    public ReflectDamageHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
@@ -18,6 +19,6 @@ public class ReflectDamageHost extends PlayerTargetSkillHost {
         DamageApplier originalDA = castingPlayer.getDamageApplier();
         castingPlayer.setDamageApplier(new ReverseDamageApplier(target, originalDA));
 
-        match.setTimer(() -> castingPlayer.setDamageApplier(originalDA), 3f);
+        match.setTimer(this, () -> castingPlayer.setDamageApplier(originalDA), 3f);
     }
 }

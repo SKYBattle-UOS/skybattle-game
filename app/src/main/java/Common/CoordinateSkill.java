@@ -7,8 +7,8 @@ abstract class CoordinateSkill extends Skill {
     private int[] _intTemp = new int[2];
     private double[] _doubleTemp = new double[2];
 
-    public CoordinateSkill(MatchCommon match) {
-        super(match);
+    public CoordinateSkill(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     public void setTargetCoord(double lat, double lon) {

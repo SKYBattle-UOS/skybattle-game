@@ -2,10 +2,11 @@ package Host;
 import Common.GameObject;
 import Common.MatchCommon;
 import Common.PlayerTargetSkillHost;
+import Common.UIManager;
 
 public class CantAttackHost extends PlayerTargetSkillHost {
-    public CantAttackHost(MatchCommon match) {
-        super(match);
+    public CantAttackHost(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     @Override
@@ -15,6 +16,6 @@ public class CantAttackHost extends PlayerTargetSkillHost {
 
         DamageCalculator originalDC = player.getDamageCalculator();
         player.setDamageCalculator(new ZeroDamageCalculator());
-        CoreHost.get().getMatch().setTimer(() -> player.setDamageCalculator(originalDC), 3f);
+        CoreHost.get().getMatch().setTimer(this, () -> player.setDamageCalculator(originalDC), 3f);
     }
 }

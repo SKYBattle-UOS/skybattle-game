@@ -11,10 +11,10 @@ public class TimerStructTest {
 
     @Test
     public void compare(){
-        timerQueue.add(new TimerStruct(null, 1));
-        timerQueue.add(new TimerStruct(null, 2));
-        timerQueue.add(new TimerStruct(null, 3));
-        timerQueue.add(new TimerStruct(null, 4));
+        timerQueue.add(new TimerStruct(, null, 1, ));
+        timerQueue.add(new TimerStruct(, null, 2, ));
+        timerQueue.add(new TimerStruct(, null, 3, ));
+        timerQueue.add(new TimerStruct(, null, 4, ));
 
         while (true){
             TimerStruct ts = timerQueue.poll();

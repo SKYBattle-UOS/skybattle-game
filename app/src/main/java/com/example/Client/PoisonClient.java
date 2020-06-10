@@ -3,10 +3,11 @@ package com.example.Client;
 import Common.GameObject;
 import Common.MatchCommon;
 import Common.PlayerTargetSkillClient;
+import Common.UIManager;
 
 public class PoisonClient extends PlayerTargetSkillClient {
-    public PoisonClient(MatchCommon match) {
-        super(match);
+    public PoisonClient(MatchCommon match, UIManager uiManager) {
+        super(match, uiManager);
     }
 
     public String getName(){

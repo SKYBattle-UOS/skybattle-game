@@ -1,10 +1,12 @@
 package Common;
 
 public class TimerStruct implements Comparable<TimerStruct> {
+    public Object owner;
     public Runnable callback;
     public long timeToBeFired;
 
-    public TimerStruct(Runnable callback, long timeToBeFired){
+    public TimerStruct(Object owner, Runnable callback, long timeToBeFired){
+        this.owner = owner;
         this.callback = callback;
         this.timeToBeFired = timeToBeFired;
     }

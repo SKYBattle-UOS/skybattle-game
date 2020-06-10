@@ -182,6 +182,8 @@ public class PlayerHost extends GameObjectHost implements Damageable, Player {
         if (health > _property.getMaxHealth())
             health = _property.getMaxHealth();
         else if (health <= 0){
+            getProperty().killSkillTimers(this);
+
             if (getProperty().getPlayerState() == PlayerState.NORMAL){
                 _shouldMakeZombie = true;
                 health = 10;

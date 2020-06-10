@@ -18,7 +18,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 
 import java.util.function.Consumer;
 
-public class MatchActivity extends AppCompatActivity implements Screen, OnMapReadyCallback {
+import Common.IngameInfoListener;
+
+public class MatchActivity extends AppCompatActivity implements Screen, OnMapReadyCallback, IngameInfoListener {
     private View marker_root_view;
     private TextView _topText;
     private TextView tv_marker;
@@ -64,11 +66,13 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
                 .replace(R.id.frag, _mapFragment)
                 .commit();
         _mapFragment.getMapAsync(this);
+
         _topText = findViewById(R.id.topText);
         ((AndroidUIManager) Core.get().getUIManager())
-                .getTopText().observe(this, text -> _topText.setText(text));
-        ((AndroidUIManager) Core.get().getUIManager())
-                .getTopText().observe(this, text -> _topText.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL));
+                .getTopText().observe(this, text -> {
+                    _topText.setText(text);
+                    _topText.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+        });
     }
 
     @Override
@@ -106,7 +110,6 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
 
         Fragment currentFragmnet = getSupportFragmentManager()
                 .findFragmentById(R.id.frag);
-
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
 
         if (currentFragmnet != _mapFragment)
@@ -124,6 +127,7 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
 
             case INGAME:
                 trans.add(R.id.frag, new InGameFragment());
+                ((PlayerClient) Core.get().getMatch().getThisPlayer()).setIngameInfoListener(this);
                 break;
 
             case GAMEOVER:
@@ -203,5 +207,17 @@ public class MatchActivity extends AppCompatActivity implements Screen, OnMapRea
 
         getSupportFragmentManager()
                 .addOnBackStackChangedListener(_targetPlayerBackStack);
+    }
+
+    @Override
+    public void onPlayerStateChange(PlayerState state) {
+        runOnUiThread(this::removeSkillFragment);
+    }
+
+    private void removeSkillFragment(){
+        Fragment frag = getSupportFragmentManager().findFragmentById(R.id.frag);
+        if (frag instanceof TargetPlayersFragment || frag == _mapFragment){
+            getSupportFragmentManager().popBackStackImmediate();
+        }
     }
 }

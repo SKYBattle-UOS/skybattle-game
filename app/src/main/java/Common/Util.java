@@ -8,6 +8,8 @@ import com.example.Client.ItemClient;
 import com.example.Client.PlayerClient;
 import com.example.Client.SpiderMineClient;
 import com.example.Client.SuicideClient;
+import com.example.Client.ZombieSensorClient;
+import com.example.Client.ZombieSightClient;
 
 import Host.BattleFieldHost;
 import Host.DummyPlayerHost;
@@ -16,6 +18,8 @@ import Host.HealthUpHost;
 import Host.PlayerHost;
 import Host.SuicideHost;
 import Host.SpiderMineHost;
+import Host.ZombieSensorHost;
+import Host.ZombieSightHost;
 
 public class Util {
     public static final int PORT = 9998;
@@ -29,17 +33,21 @@ public class Util {
     public static int GlobalWazakWazakClassId;
     public static int HealthUpClassId;
     public static int SuicideClassId;
+    public static int ZombieSensorId;
+    public static int ZombieSightId;
 
-    public static void registerGameObjects(GameObjectFactory factory, MatchCommon match){
+    public static void registerGameObjects(GameObjectFactory factory, MatchCommon match, UIManager uiManager){
         PlayerClassId = factory.registerGameObject(PlayerClient::new);
         ItemClassId = factory.registerGameObject(ItemClient::new);
         DummyPlayerClassId = factory.registerGameObject(PlayerClient::new);
         BattleFieldClassId = factory.registerGameObject(BattleFieldClient::new);
 
-        SpiderMineClassId = factory.registerSkill(() -> new SpiderMineClient(match));
-        GlobalWazakWazakClassId = factory.registerSkill(() -> new GlobalWazakWazakClient(match));
-        HealthUpClassId = factory.registerSkill(() -> new HealthUpClient(match));
-        SuicideClassId = factory.registerSkill(() -> new SuicideClient(match));
+        SpiderMineClassId = factory.registerSkill(() -> new SpiderMineClient(match, uiManager));
+        GlobalWazakWazakClassId = factory.registerSkill(() -> new GlobalWazakWazakClient(match, uiManager));
+        HealthUpClassId = factory.registerSkill(() -> new HealthUpClient(match, uiManager));
+        SuicideClassId = factory.registerSkill(() -> new SuicideClient(match, uiManager));
+        ZombieSensorId = factory.registerSkill(() -> new ZombieSensorClient(match, uiManager));
+        ZombieSightId = factory.registerSkill(() -> new ZombieSightClient(match, uiManager));
     }
 
     public static void registerGameObjectsHost(GameObjectFactory factory, MatchCommon match){
@@ -49,10 +57,12 @@ public class Util {
         factory.registerGameObject(DummyPlayerHost::new);
         factory.registerGameObject(BattleFieldHost::new);
 
-        factory.registerSkill(() -> new SpiderMineHost(match));
-        factory.registerSkill(() -> new GlobalWazakWazakHost(match));
-        factory.registerSkill(() -> new HealthUpHost(match));
-        factory.registerSkill(() -> new SuicideHost(match));
+        factory.registerSkill(() -> new SpiderMineHost(match, null));
+        factory.registerSkill(() -> new GlobalWazakWazakHost(match, null));
+        factory.registerSkill(() -> new HealthUpHost(match, null));
+        factory.registerSkill(() -> new SuicideHost(match, null));
+        factory.registerSkill(() -> new ZombieSensorHost(match, null));
+        factory.registerSkill(() -> new ZombieSightHost(match, null));
     }
 
     public static void sendHas(OutputBitStream outPacket, boolean has) {
@@ -66,6 +76,12 @@ public class Util {
     public static float distanceBetweenLatLon(double lat0, double lon0, double lat1, double lon1){
         float[] results = new float[3];
         android.location.Location.distanceBetween(lat0, lon0, lat1, lon1, results);
+        return results[0];
+    }
+
+    public static float distanceBetweenLatLon(double[] latlon0, double[] latlon1){
+        float[] results = new float[3];
+        android.location.Location.distanceBetween(latlon0[0], latlon0[1], latlon1[0], latlon1[1], results);
         return results[0];
     }
 
