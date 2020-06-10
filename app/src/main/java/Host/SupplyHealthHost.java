@@ -9,8 +9,8 @@ import Common.MatchCommon;
 import Common.UIManager;
 import Common.Util;
 
-public class GlobalWazakWazakHost extends CoordinateSkillHost {
-    public GlobalWazakWazakHost(MatchCommon match, UIManager uiManager) {
+public class SupplyHealthHost extends CoordinateSkillHost {
+    public SupplyHealthHost(MatchCommon match, UIManager uiManager) {
         super(match, uiManager);
     }
 
@@ -19,13 +19,8 @@ public class GlobalWazakWazakHost extends CoordinateSkillHost {
         MatchHost match = CoreHost.get().getMatch();
 
         ItemHost spawned = (ItemHost) match.createGameObject(Util.ItemClassId, true);
-        spawned.setName("원격 와작와작 지뢰");
+        spawned.setName("포션");
         spawned.setPosition(_lat, _lon);
         spawned.setLook(ImageType.MARKER);
-
-        match.setTimer(this, () -> {
-            if (!spawned.isPickedUp())
-                spawned.scheduleDeath();
-        }, 10);
     }
 }

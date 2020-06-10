@@ -41,6 +41,7 @@ public class CharacterFactory {
         PlayerProperty property = new PlayerProperty();
         List<Skill> skills = property.getSkills(friend);
         skills.add(_goFactory.createSkill(Util.HealthUpClassId));
+        skills.add(_goFactory.createSkill(Util.SupplyHealthClassId));
         return property;
     }
 
@@ -72,7 +73,7 @@ public class CharacterFactory {
     private PlayerProperty makeTestChar(){
         PlayerProperty property = new PlayerProperty();
         List<Skill> skills = property.getSkills(friend);
-        skills.add(_goFactory.createSkill(Util.GlobalWazakWazakClassId));
+        skills.add(_goFactory.createSkill(Util.SupplyHealthClassId));
         skills.add(_goFactory.createSkill(Util.HealthUpClassId));
         skills.add(_goFactory.createSkill(Util.SuicideClassId));
         return property;

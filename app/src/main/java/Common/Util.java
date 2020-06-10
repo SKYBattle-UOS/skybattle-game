@@ -2,7 +2,7 @@ package Common;
 
 import com.example.Client.BattleFieldClient;
 import com.example.Client.GameObjectFactory;
-import com.example.Client.GlobalWazakWazakClient;
+import com.example.Client.SupplyHealthClient;
 import com.example.Client.HealthUpClient;
 import com.example.Client.ItemClient;
 import com.example.Client.PlayerClient;
@@ -13,7 +13,7 @@ import com.example.Client.ZombieSightClient;
 
 import Host.BattleFieldHost;
 import Host.DummyPlayerHost;
-import Host.GlobalWazakWazakHost;
+import Host.SupplyHealthHost;
 import Host.HealthUpHost;
 import Host.PlayerHost;
 import Host.SuicideHost;
@@ -30,7 +30,7 @@ public class Util {
     public static int BattleFieldClassId;
 
     public static int SpiderMineClassId;
-    public static int GlobalWazakWazakClassId;
+    public static int SupplyHealthClassId;
     public static int HealthUpClassId;
     public static int SuicideClassId;
     public static int ZombieSensorId;
@@ -43,7 +43,7 @@ public class Util {
         BattleFieldClassId = factory.registerGameObject(BattleFieldClient::new);
 
         SpiderMineClassId = factory.registerSkill(() -> new SpiderMineClient(match, uiManager));
-        GlobalWazakWazakClassId = factory.registerSkill(() -> new GlobalWazakWazakClient(match, uiManager));
+        SupplyHealthClassId = factory.registerSkill(() -> new SupplyHealthClient(match, uiManager));
         HealthUpClassId = factory.registerSkill(() -> new HealthUpClient(match, uiManager));
         SuicideClassId = factory.registerSkill(() -> new SuicideClient(match, uiManager));
         ZombieSensorId = factory.registerSkill(() -> new ZombieSensorClient(match, uiManager));
@@ -58,7 +58,7 @@ public class Util {
         factory.registerGameObject(BattleFieldHost::new);
 
         factory.registerSkill(() -> new SpiderMineHost(match, null));
-        factory.registerSkill(() -> new GlobalWazakWazakHost(match, null));
+        factory.registerSkill(() -> new SupplyHealthHost(match, null));
         factory.registerSkill(() -> new HealthUpHost(match, null));
         factory.registerSkill(() -> new SuicideHost(match, null));
         factory.registerSkill(() -> new ZombieSensorHost(match, null));

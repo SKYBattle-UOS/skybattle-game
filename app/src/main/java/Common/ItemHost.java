@@ -1,5 +1,6 @@
 package Common;
 
+import Host.CoreHost;
 import Host.GameObjectHost;
 import Host.HealthUpHost;
 import Host.PickUpCondition;
@@ -22,7 +23,7 @@ public class ItemHost extends GameObjectHost implements Pickable, Item {
     private PickUpCondition _pickUpCondition = new PickUpTest();
 
     public ItemHost() {
-        _property.setSkill(new HealthUpHost(getMatch(), null));
+        _property.setSkill(new HealthUpHost(CoreHost.get().getMatch(), null));
     }
 
     @Override
