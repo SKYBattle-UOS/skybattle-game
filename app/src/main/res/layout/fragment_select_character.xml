@@ -8,20 +8,6 @@
     android:clickable="true"
     android:focusable="true" >
 
-
-    <TextView
-        android:gravity="center"
-        android:id="@+id/text_character_select"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:paddingVertical="10dp"
-        android:text="캐릭터 선택중"
-        android:textColor="#f7b633"
-        android:textSize="40sp"
-        android:fontFamily="@font/bmeuljirottf"
-        android:layout_marginTop="20dp"
-        />
-
         <!--
         <LinearLayout
             android:gravity="center"
