@@ -38,8 +38,26 @@ public class SelectCharacterFragment extends Fragment {
             setUpSimpleButton(button, i);
 
             // 버튼 왼쪽에 캐릭터 이미지 추가하는 코드; 캐릭터 해당 이미지 설정하면 됨
-            button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.character_knight, 0,
-                    0, 0);
+            String character = mFactory.getCharacterName(i).toString();
+            switch (character) {
+                case "좀비 워너비":
+                    button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.character_zombie,
+                            0, 0, 0);
+                    break;
+                case "벌쳐":
+                    button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.character_bird,
+                            0, 0, 0);
+                    break;
+                case "회복맨":
+                    button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.character_nurse,
+                            0, 0, 0);
+                    break;
+
+                default:
+                    button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.character_knight,
+                            0, 0, 0);
+            }
+
 
             ((LinearLayout) view).addView(button);
         }

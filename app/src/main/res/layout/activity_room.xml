@@ -18,10 +18,15 @@
         android:paddingVertical="15dp"
         android:layout_marginTop="15dp"
         android:text="방제"
-        android:background="#F7B633"
-        android:textColor="#000000"
+        android:textColor="#F7B633"
         android:textAlignment="center"
         android:textSize="35sp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#607d8b"
+        android:layout_marginHorizontal="10dp"/>
 
     <TextView
         android:layout_width="match_parent"

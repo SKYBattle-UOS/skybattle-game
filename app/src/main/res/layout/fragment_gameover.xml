@@ -17,13 +17,15 @@
         <TextView
             android:id="@+id/summary_text"
             android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:background="#676767"
+            android:layout_height="72dp"
+            android:padding="1dp"
+            android:background="#607D8B"
             android:gravity="center"
             android:text="Summary Text"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:typeface="normal" />
+            android:textColor="#F7B633"
+            android:textSize="25sp"
+            android:typeface="normal"
+            android:fontFamily="@font/bmeuljirottf" />
+
     </LinearLayout>
 </ScrollView>
