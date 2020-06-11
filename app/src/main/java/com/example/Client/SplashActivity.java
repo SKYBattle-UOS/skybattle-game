@@ -50,7 +50,7 @@ public class SplashActivity  extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 500);
+        }, 2000);
         //500 부분 말고 권한 확인 후 넘어가도록 수정 필요
     }
 
