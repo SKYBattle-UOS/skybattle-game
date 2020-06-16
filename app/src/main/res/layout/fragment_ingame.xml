@@ -28,7 +28,11 @@
             android:textColor="#f7b633"
             android:textSize="30sp"
             android:typeface="normal"
-            android:fontFamily="@font/bmeuljirottf" />
+            android:fontFamily="@font/bmeuljirottf"
+            android:shadowColor="#37474f"
+            android:shadowDx="7"
+            android:shadowDy="7"
+            android:shadowRadius="10" />
 
         <TextView
             android:id="@+id/time_text"
@@ -41,7 +45,11 @@
             android:textColor="#f7b633"
             android:textSize="30sp"
             android:typeface="normal"
-            android:fontFamily="@font/bmeuljirottf" />
+            android:fontFamily="@font/bmeuljirottf"
+            android:shadowColor="#37474f"
+            android:shadowDx="7"
+            android:shadowDy="7"
+            android:shadowRadius="10" />
     </RelativeLayout>
 
     <LinearLayout

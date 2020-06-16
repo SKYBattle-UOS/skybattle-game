@@ -9,11 +9,15 @@
         android:id="@+id/topText"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:fontFamily="@font/bmeuljirottf"
+        android:padding="1dp"
         android:background="#607D8B"
         android:textColor="#F7B633"
-        android:padding="1dp"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        android:fontFamily="@font/bmeuljirottf"
+        android:shadowColor="#37474f"
+        android:shadowDx="7"
+        android:shadowDy="7"
+        android:shadowRadius="10" />
 
     <FrameLayout
         android:id="@+id/frag"

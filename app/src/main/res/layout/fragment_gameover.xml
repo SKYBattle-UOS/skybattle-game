@@ -10,22 +10,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="1000dp"
         android:id="@+id/ingame_linlayout">
 
         <TextView
             android:id="@+id/summary_text"
             android:layout_width="match_parent"
             android:layout_height="72dp"
+            android:layout_marginBottom="90dp"
             android:padding="1dp"
-            android:background="#607D8B"
             android:gravity="center"
             android:text="Summary Text"
             android:textColor="#F7B633"
-            android:textSize="25sp"
+            android:textSize="48sp"
             android:typeface="normal"
-            android:fontFamily="@font/bmeuljirottf" />
+            android:fontFamily="@font/bmeuljirottf"
+            android:shadowColor="#37474f"
+            android:shadowDx="7"
+            android:shadowDy="7"
+            android:shadowRadius="10" />
 
     </LinearLayout>
 </ScrollView>
