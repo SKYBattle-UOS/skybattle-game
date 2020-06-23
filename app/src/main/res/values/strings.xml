@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">SKYBATTLE</string>
     <string name="red_fill">#88FF0000</string>
     <string name="red_stroke">#FFFF0000</string>
     <string name="orange_fill">#88FFA500</string>
@@ -18,4 +18,5 @@
     <string name="violet_stroke">#FF8A2BE2</string>
     <string name="skyblue_fill">#8887CEFA</string>
     <string name="skyblue_stroke">#FF87CEFA</string>
+    <string name="intro">intro image with title</string>
 </resources>

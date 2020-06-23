@@ -7,36 +7,39 @@
 
     <Button
         android:id="@+id/btn_debugUp"
-        android:layout_width="40dp"
+        android:layout_width="35dp"
         android:layout_height="30dp"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/btn_up"
+        android:layout_marginLeft="47dp"
+        android:background="@drawable/arrow"
         android:fontFamily="@font/bmeuljirottf"
         android:textColor="#37474F" />
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="35dp"
+        android:layout_marginVertical="1dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_debugLeft"
-            android:layout_width="30dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/btn_left"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="15dp"
+            android:rotation="270"
+            android:background="@drawable/arrow"
             android:fontFamily="@font/bmeuljirottf"
             android:textColor="#37474F"
              />
 
         <Button
             android:id="@+id/btn_debugRight"
-            android:layout_width="30dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="50dp"
-            android:background="@drawable/btn_right"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="29dp"
+            android:rotation="90"
+            android:background="@drawable/arrow"
             android:fontFamily="@font/bmeuljirottf"
             android:textColor="#37474F"
              />
@@ -44,11 +47,11 @@
 
     <Button
         android:id="@+id/btn_debugDown"
-        android:layout_width="40dp"
+        android:layout_width="35dp"
         android:layout_height="30dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="40dp"
-        android:background="@drawable/btn_down"
+        android:layout_marginLeft="47dp"
+        android:rotation="180"
+        android:background="@drawable/arrow"
         android:fontFamily="@font/bmeuljirottf"
         android:textColor="#37474F"
         />

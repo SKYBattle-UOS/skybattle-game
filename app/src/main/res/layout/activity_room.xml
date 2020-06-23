@@ -20,7 +20,11 @@
         android:text="방제"
         android:textColor="#F7B633"
         android:textAlignment="center"
-        android:textSize="35sp" />
+        android:textSize="35sp"
+        android:shadowColor="#37474f"
+        android:shadowDx="7"
+        android:shadowDy="7"
+        android:shadowRadius="10" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -159,7 +163,11 @@
             android:layout_weight="0.3"
             android:layout_gravity="left"
             android:textSize="25sp"
-            android:text="나가기" />
+            android:text="나가기"
+            android:shadowColor="#37474f"
+            android:shadowDx="7"
+            android:shadowDy="7"
+            android:shadowRadius="10" />
 
         <TextView
             android:layout_width="0dp"
@@ -177,7 +185,11 @@
             android:layout_weight="0.3"
             android:layout_gravity="right"
             android:textSize="25sp"
-            android:text="시작" />
+            android:text="시작"
+            android:shadowColor="#37474f"
+            android:shadowDx="7"
+            android:shadowDy="7"
+            android:shadowRadius="10" />
 
     </LinearLayout>
 
